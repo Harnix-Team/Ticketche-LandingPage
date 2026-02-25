@@ -33,7 +33,7 @@ export const Header = () => {
   };
 
   const getButtonText = () => {
-    if (typeof window === 'undefined') return "Télécharger l'app";
+    if (typeof window === "undefined") return "Télécharger l'app";
     return isMobileDevice() ? "Télécharger maintenant" : "Télécharger l'app";
   };
 
@@ -78,6 +78,12 @@ export const Header = () => {
                   Emplacements
                 </Link>
                 <Link
+                  href={getLinkHref("#events")}
+                  className="px-4 py-2 text-gray-700 hover:text-[#005f69] hover:bg-[#005f69]/5 rounded-xl transition-all duration-300 font-medium"
+                >
+                  Event
+                </Link>
+                <Link
                   href={getLinkHref("#reviews")}
                   className="px-4 py-2 text-gray-700 hover:text-[#005f69] hover:bg-[#005f69]/5 rounded-xl transition-all duration-300 font-medium"
                 >
@@ -115,7 +121,11 @@ export const Header = () => {
                 className="lg:hidden p-2 text-gray-700 hover:text-[#005f69] hover:bg-[#005f69]/5 rounded-xl transition-all duration-300"
                 aria-label="Toggle menu"
               >
-                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {isMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
               </button>
             </div>
 
@@ -136,6 +146,13 @@ export const Header = () => {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Emplacements
+                  </Link>
+                  <Link
+                    href={getLinkHref("#events")}
+                    className="block px-4 py-3 text-gray-700 hover:text-[#005f69] hover:bg-[#005f69]/5 rounded-xl transition-all duration-300 font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Event
                   </Link>
                   <Link
                     href={getLinkHref("#reviews")}

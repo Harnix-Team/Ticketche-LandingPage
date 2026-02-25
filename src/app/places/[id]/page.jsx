@@ -1,4 +1,4 @@
-import PlaceDetailsClient from "@/components/place/PlaceDetailsClient";import { fetchAllPlaces } from "@/app/services/api";
+import PlaceDetailsClient from "@/components/Place/PlaceDetailsClient";import { fetchAllPlaces } from "@/app/services/api";
 
 export async function generateStaticParams() {
   try {
