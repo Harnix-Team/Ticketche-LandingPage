@@ -86,9 +86,10 @@ export const EstablishmentsSection = () => {
   };
 
   // Fonction pour rediriger vers les détails de l'emplacement
-  const handlePlaceClick = (placeId) => {
-    window.open(`https://app.ticketche.com/places/details?placeId=${placeId}`, '_blank');
-  };
+  const handlePlaceClick = (place) => {
+  localStorage.setItem("selectedPlace", JSON.stringify(place));
+  window.open(`/places/${place.id}`, "_blank");
+};
 
   // Fonction pour rediriger vers l'itinéraire
   const handleItineraryClick = (e, placeId) => {
@@ -189,7 +190,7 @@ export const EstablishmentsSection = () => {
               <motion.div
                 key={place.id}
                 variants={itemVariants}
-                onClick={() => handlePlaceClick(place.id)}
+                onClick={() => handlePlaceClick(place)}
                 className="bg-gray-50 border border-gray-200 p-3 rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300"
               >
                 {/* Image avec badge rating */}
