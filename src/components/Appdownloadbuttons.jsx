@@ -7,9 +7,9 @@
 //  * @param {string} className - Classes CSS additionnelles pour le conteneur
 //  * @param {string} buttonSize - Taille des boutons ('sm', 'md', 'lg')
 //  */
-// export const AppDownloadButtons = ({ 
-//   className = "", 
-//   buttonSize = "md" 
+// export const AppDownloadButtons = ({
+//   className = "",
+//   buttonSize = "md"
 // }) => {
 //   const stores = [
 //     {
@@ -49,16 +49,16 @@
 //               alt={store.alt}
 //               className={`${buttonHeight} w-auto`}
 //             />
-//             <div 
+//             <div
 //               className="
-//                 absolute inset-0 
-//                 bg-gradient-to-r 
-//                 from-[#005f69]/0 
-//                 to-[#005f69]/0 
-//                 group-hover:from-[#005f69]/10 
-//                 group-hover:to-transparent 
-//                 rounded-lg 
-//                 transition-all 
+//                 absolute inset-0
+//                 bg-gradient-to-r
+//                 from-[#005f69]/0
+//                 to-[#005f69]/0
+//                 group-hover:from-[#005f69]/10
+//                 group-hover:to-transparent
+//                 rounded-lg
+//                 transition-all
 //                 duration-300
 //               "
 //             />
@@ -71,7 +71,6 @@
 
 "use client";
 
-import { getDownloadLink } from "@/utils/deviceDetection";
 import { Apple, Play } from "lucide-react";
 
 /**
@@ -79,10 +78,7 @@ import { Apple, Play } from "lucide-react";
  * @param {string} className - Classes CSS additionnelles pour le conteneur
  * @param {string} buttonSize - Taille des boutons ('sm', 'md', 'lg')
  */
-export const AppDownloadButtons = ({ 
-  className = "", 
-  buttonSize = "md" 
-}) => {
+export const AppDownloadButtons = ({ className = "", buttonSize = "md" }) => {
   const stores = [
     {
       icon: Apple,
@@ -95,6 +91,7 @@ export const AppDownloadButtons = ({
       label: "Android",
       sublabel: "Cliquez ici pour",
       type: "android",
+      href: "https://play.google.com/store/apps/details?id=com.harnixsas.ticketche",
     },
   ];
 
@@ -128,7 +125,7 @@ export const AppDownloadButtons = ({
         return (
           <a
             key={idx}
-            href={getDownloadLink()}
+            href={store.href}
             target="_blank"
             rel="noopener noreferrer"
             className={`
@@ -154,7 +151,9 @@ export const AppDownloadButtons = ({
           >
             <Icon className={`${sizes.icon} flex-shrink-0`} />
             <div className="flex flex-col items-start">
-              <span className={`${sizes.sublabel} hidden md:block text-gray-300 leading-tight`}>
+              <span
+                className={`${sizes.sublabel} hidden md:block text-gray-300 leading-tight`}
+              >
                 {store.sublabel}
               </span>
               <span className={`${sizes.label} font-semibold leading-tight`}>
