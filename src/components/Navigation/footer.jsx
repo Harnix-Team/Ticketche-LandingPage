@@ -103,7 +103,7 @@ export const Footer = () => {
 
         .tck-brand { display: flex; flex-direction: column; gap: 14px; max-width: 320px; }
         .tck-tagline {
-          font-size: 13.5px;
+          font-size: 12px;
           font-weight: 400;
           color: #4a7a80;
           line-height: 1.75;
@@ -170,7 +170,7 @@ export const Footer = () => {
 
         .tck-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
         .tck-col ul li a {
-          font-size: 13.5px;
+          font-size: 12px;
           font-weight: 400;
           color: #3a6a70;
           text-decoration: none;
@@ -199,7 +199,7 @@ export const Footer = () => {
 
         .tck-policy-row { display: flex; gap: 20px; flex-wrap: wrap; }
         .tck-policy-row a {
-          font-size: 12px;
+          font-size: 11px;
           color: #6a9da3;
           text-decoration: none;
           transition: color 0.2s;
