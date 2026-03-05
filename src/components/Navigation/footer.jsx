@@ -137,22 +137,22 @@ export const Footer = () => {
                 solution numérique innovante et intuitive.
               </p>
 
-              {/* Socials + App buttons décalés vers le bas pour aligner avec les titres des colonnes */}
+              {/* App buttons en haut, socials en bas */}
               <div style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "14px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  {socialLinks.map(({ icon: Icon, href, label }) => (
-                    <Link key={label} href={href} aria-label={label} className="footer-social-btn">
-                      <Icon size={17} weight="fill" />
-                    </Link>
-                  ))}
-                </div>
-
                 <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "10px" }}>
                   {appStoreLinks.map(({ href, src, alt }) => (
                     <a key={alt} href={href} target="_blank" rel="noopener noreferrer" className="footer-app-btn">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={src} alt={alt} style={{ height: "38px", width: "auto", display: "block" }} />
                     </a>
+                  ))}
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  {socialLinks.map(({ icon: Icon, href, label }) => (
+                    <Link key={label} href={href} aria-label={label} className="footer-social-btn">
+                      <Icon size={17} weight="fill" />
+                    </Link>
                   ))}
                 </div>
               </div>
