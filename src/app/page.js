@@ -10,12 +10,12 @@ export default function Home() {
   return (
     <div>
       <Hero />
-      <About />
+      {/* <About />
       <EventsCarousel />
       <EstablishmentsSection />
       <WhyTicketcheSection />
       <TestimonialsSection />
-      <CTASection />
+      <CTASection /> */}
     </div>
   );
 }

@@ -34,7 +34,7 @@ export const Header = () => {
   const navLinks = [
     { href: "#events", label: "Événements" },
     { href: "#emplacements", label: "Emplacements" },
-    { href: "/nos-services", label: "Services", isPage: true },
+ //   { href: "/nos-services", label: "Services", isPage: true },
     { href: "/a-propos", label: "À propos", isPage: true },
     { href: "/contact", label: "FAQ & Contact", isPage: true },
   ];
