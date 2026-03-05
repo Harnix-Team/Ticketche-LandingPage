@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FacebookLogo, InstagramLogo, LinkedinLogo } from "@phosphor-icons/react";
 
-
 export const Footer = () => {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
@@ -60,182 +59,259 @@ export const Footer = () => {
   return (
     <>
       <style>{`
-        .footer-social-btn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 38px;
-          height: 38px;
-          border-radius: 10px;
-          background: #006974;
-          color: #fff;
-          flex-shrink: 0;
-          transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .footer-social-btn:hover {
-          background: #004d57;
-          transform: translateY(-3px) scale(1.08);
-          box-shadow: 0 6px 18px rgba(0,105,116,0.35);
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+        .tck-footer {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          background: #f0f7f8;
+          border-top: 1px solid #c2dde0;
+          color: #1a3a3f;
+          position: relative;
+          overflow: hidden;
         }
 
-        /* Effet glow + légère rotation au survol */
-        .footer-app-btn {
+        /* Subtle teal wash in the corner */
+        .tck-footer::before {
+          content: '';
+          position: absolute;
+          top: -120px;
+          right: -120px;
+          width: 420px;
+          height: 420px;
+          background: radial-gradient(circle, rgba(0,105,116,0.08) 0%, transparent 70%);
+          pointer-events: none;
+        }
+
+        .tck-footer-inner {
+          position: relative;
+          z-index: 1;
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 64px 32px 0;
+        }
+
+        /* ── TOP BAND : logo + tagline + app/socials ── */
+        .tck-top {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 32px;
+          padding-bottom: 48px;
+          border-bottom: 1px solid #c2dde0;
+          flex-wrap: wrap;
+        }
+
+        .tck-brand { display: flex; flex-direction: column; gap: 14px; max-width: 320px; }
+        .tck-tagline {
+          font-size: 13.5px;
+          font-weight: 400;
+          color: #4a7a80;
+          line-height: 1.75;
+        }
+        .tck-tagline b { color: #006974; font-weight: 600; }
+
+        .tck-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 20px; }
+
+        .tck-app-row { display: flex; gap: 10px; align-items: center; }
+        .tck-app-btn {
           display: inline-block;
-          border-radius: 10px;
+          border-radius: 9px;
           overflow: hidden;
           line-height: 0;
-          transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, filter 0.3s ease;
+          transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s ease;
         }
-        .footer-app-btn:hover {
-          transform: scale(1.08) rotate(-1.5deg);
-          box-shadow: 0 10px 28px rgba(0,105,116,0.28);
-          filter: brightness(1.08) saturate(1.1);
-        }
-        .footer-app-btn:active {
-          transform: scale(0.97);
-          filter: brightness(0.95);
+        .tck-app-btn:hover {
+          transform: translateY(-3px) scale(1.05);
+          box-shadow: 0 8px 22px rgba(0,105,116,0.22);
         }
 
-        /* Texte description : max 3 lignes */
-        .footer-desc {
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          font-family: inherit;
-          font-size: inherit;
-          color: #374151;
-          line-height: 1.7;
+        .tck-socials { display: flex; gap: 8px; }
+        .tck-social {
+          width: 36px; height: 36px;
+          border-radius: 9px;
+          background: #006974;
+          color: #fff;
+          display: flex; align-items: center; justify-content: center;
+          transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+        .tck-social:hover {
+          background: #004d57;
+          transform: translateY(-3px);
+          box-shadow: 0 6px 16px rgba(0,105,116,0.3);
+        }
+
+        /* ── LINKS GRID ── */
+        .tck-links {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 40px 32px;
+          padding: 48px 0;
+          border-bottom: 1px solid #c2dde0;
+        }
+
+        .tck-col-title {
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #006974;
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .tck-col-title::after {
+          content: '';
+          display: block;
+          flex: 1;
+          height: 1px;
+          background: #c2dde0;
+        }
+
+        .tck-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+        .tck-col ul li a {
+          font-size: 13.5px;
+          font-weight: 400;
+          color: #3a6a70;
+          text-decoration: none;
+          transition: color 0.2s, padding-left 0.2s;
+          display: block;
+        }
+        .tck-col ul li a:hover {
+          color: #006974;
+          padding-left: 6px;
+        }
+
+        /* ── BOTTOM BAR ── */
+        .tck-bottom {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 20px 0 24px;
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+        .tck-copy {
+          font-size: 12.5px;
+          color: #6a9da3;
+        }
+        .tck-copy span { font-weight: 600; color: #006974; }
+
+        .tck-policy-row { display: flex; gap: 20px; flex-wrap: wrap; }
+        .tck-policy-row a {
+          font-size: 12px;
+          color: #6a9da3;
+          text-decoration: none;
+          transition: color 0.2s;
+        }
+        .tck-policy-row a:hover { color: #006974; }
+
+        @media (max-width: 900px) {
+          .tck-top { flex-direction: column; }
+          .tck-actions { align-items: flex-start; }
+          .tck-links { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 540px) {
+          .tck-links { grid-template-columns: 1fr; }
+          .tck-bottom { flex-direction: column; align-items: flex-start; }
         }
       `}</style>
 
-      <footer className="relative text-black overflow-hidden border-t border-[#8fbdc2]">
-        <div className="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-4">
+      <footer className="tck-footer">
+        <div className="tck-footer-inner">
 
-          {/*
-            Grid asymétrique :
-            - Col 1 (logo) : 2 fractions → plus large pour contenir logo + texte + boutons
-            - Cols 2-5 : 1 fraction chacune → même largeur, même écart
-          */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
-            gap: "48px",
-          }}>
-
-            {/* ── Col 1 : Logo + desc + socials + app buttons ── */}
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <Image
-                src="/images/logo.png"
-                alt="Ticketché Logo"
-                width={160}
-                height={54}
-                style={{ marginBottom: "20px" }}
-              />
-
-              <p className="footer-desc">
+          {/* ── TOP : brand + app/socials ── */}
+          <div className="tck-top">
+            <div className="tck-brand">
+              <Image src="/images/logo.png" alt="Ticketché Logo" width={148} height={50} />
+              <p className="tck-tagline">
                 <b>ticketché</b> simplifie la gestion de vos véhicules avec une
                 solution numérique innovante et intuitive.
               </p>
+            </div>
 
-              {/* App buttons en haut, socials en bas */}
-              <div style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "14px" }}>
-                <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "10px" }}>
-                  {appStoreLinks.map(({ href, src, alt }) => (
-                    <a key={alt} href={href} target="_blank" rel="noopener noreferrer" className="footer-app-btn">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={src} alt={alt} style={{ height: "38px", width: "auto", display: "block" }} />
-                    </a>
-                  ))}
-                </div>
-
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  {socialLinks.map(({ icon: Icon, href, label }) => (
-                    <Link key={label} href={href} aria-label={label} className="footer-social-btn">
-                      <Icon size={17} weight="fill" />
-                    </Link>
-                  ))}
-                </div>
+            <div className="tck-actions">
+              {/* App store badges */}
+              <div className="tck-app-row">
+                {appStoreLinks.map(({ href, src, alt }) => (
+                  <a key={alt} href={href} target="_blank" rel="noopener noreferrer" className="tck-app-btn">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt={alt} style={{ height: "36px", width: "auto", display: "block" }} />
+                  </a>
+                ))}
+              </div>
+              {/* Socials */}
+              <div className="tck-socials">
+                {socialLinks.map(({ icon: Icon, href, label }) => (
+                  <Link key={label} href={href} aria-label={label} className="tck-social">
+                    <Icon size={16} weight="fill" />
+                  </Link>
+                ))}
               </div>
             </div>
-
-            {/* ── Col 2 : Navigation ── */}
-            <div>
-              <h3 className="font-semibold text-lg mb-6">Navigation</h3>
-              <ul className="space-y-4">
-                {navigationLinks.map((link, index) => (
-                  <li key={index}>
-                    <Link
-                      href={link.href.startsWith("#") ? getLinkHref(link.href) : link.href}
-                      className="text-gray-700 hover:text-[#005f69] transition"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* ── Col 3 : Liens utiles ── */}
-            <div>
-              <h3 className="font-semibold text-lg mb-6">Liens utiles</h3>
-              <ul className="space-y-4">
-                {usefulLinks.map((link, index) => (
-                  <li key={index}>
-                    <Link
-                      href={link.href.startsWith("#") ? getLinkHref(link.href) : link.href}
-                      className="text-gray-700 hover:text-[#005f69] transition"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* ── Col 4 : Politiques ── */}
-            <div>
-              <h3 className="font-semibold text-lg mb-6">Politiques</h3>
-              <ul className="space-y-4">
-                {policyLinks.map((link, index) => (
-                  <li key={index}>
-                    <Link
-                      href={link.href}
-                      className="text-gray-700 hover:text-[#005f69] transition"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* ── Col 5 : Contact ── */}
-            <div>
-              <h3 className="font-semibold text-lg mb-6">Contact</h3>
-              <ul className="space-y-4">
-                {contactLinks.map((link, index) => (
-                  <li key={index}>
-                    <Link
-                      href={link.href}
-                      className="text-gray-700 hover:text-[#005f69] transition"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
           </div>
 
-          {/* ── Copyright ── */}
-          <div style={{ marginTop: "48px", paddingTop: "20px", paddingBottom: "12px", textAlign: "center", borderTop: "1px solid #8fbdc2" }}>
-            <p className="text-gray-700 text-sm">
-              © {currentYear}{" "}
-              <span className="font-semibold text-[#005f69]">ticketché</span>.
-              Tous droits réservés.
+          {/* ── LINKS GRID : 4 colonnes égales ── */}
+          <div className="tck-links">
+            <div className="tck-col">
+              <div className="tck-col-title">Navigation</div>
+              <ul>
+                {navigationLinks.map((link, i) => (
+                  <li key={i}>
+                    <Link href={link.href.startsWith("#") ? getLinkHref(link.href) : link.href}>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="tck-col">
+              <div className="tck-col-title">Liens utiles</div>
+              <ul>
+                {usefulLinks.map((link, i) => (
+                  <li key={i}>
+                    <Link href={link.href.startsWith("#") ? getLinkHref(link.href) : link.href}>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="tck-col">
+              <div className="tck-col-title">Politiques</div>
+              <ul>
+                {policyLinks.map((link, i) => (
+                  <li key={i}>
+                    <Link href={link.href}>{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="tck-col">
+              <div className="tck-col-title">Contact</div>
+              <ul>
+                {contactLinks.map((link, i) => (
+                  <li key={i}>
+                    <Link href={link.href}>{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* ── BOTTOM BAR ── */}
+          <div className="tck-bottom">
+            <p className="tck-copy">
+              © {currentYear} <span>ticketché</span>. Tous droits réservés.
             </p>
+            <nav className="tck-policy-row">
+              {policyLinks.map((link, i) => (
+                <Link key={i} href={link.href}>{link.label}</Link>
+              ))}
+            </nav>
           </div>
 
         </div>
