@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FacebookLogo, InstagramLogo, LinkedinLogo } from "@phosphor-icons/react";
 
+
 export const Footer = () => {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
