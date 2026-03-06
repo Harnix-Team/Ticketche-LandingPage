@@ -6,6 +6,7 @@ export const Confetti = ({ density = "medium", colors = "default" }) => {
     high: 20,
   };
 
+  
   // Configurations de couleurs
   const colorSchemes = {
     default: [
