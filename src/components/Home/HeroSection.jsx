@@ -138,8 +138,7 @@ export const Hero = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                className="title-hero"
-              >
+className="title-hero text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"              >
                 <span>Retrouvez vos</span>
                 <br />
                 <span className="inline-block min-w-[160px]">

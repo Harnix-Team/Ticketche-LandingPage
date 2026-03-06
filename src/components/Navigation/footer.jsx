@@ -59,168 +59,209 @@ export const Footer = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+  .tck-footer {
+    font-family: 'Archivo', var(--font-archivo), sans-serif;
+    background: linear-gradient(180deg, #f4fafb 0%, #eef7f8 100%);
+    border-top: 1px solid rgba(0,105,116,0.15);
+    color: #123c40;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(6px);
+  }
 
-        .tck-footer {
-          font-family: 'Plus Jakarta Sans', sans-serif;
-          background: #f0f7f8;
-          border-top: 1px solid #c2dde0;
-          color: #1a3a3f;
-          position: relative;
-          overflow: hidden;
-        }
+  .tck-footer::before {
+    content: '';
+    position: absolute;
+    top: -140px; right: -140px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,105,116,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
 
-        /* Subtle teal wash in the corner */
-        .tck-footer::before {
-          content: '';
-          position: absolute;
-          top: -120px;
-          right: -120px;
-          width: 420px;
-          height: 420px;
-          background: radial-gradient(circle, rgba(0,105,116,0.08) 0%, transparent 70%);
-          pointer-events: none;
-        }
+  .tck-footer-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 64px 40px 0;
+  }
 
-        .tck-footer-inner {
-          position: relative;
-          z-index: 1;
-          max-width: 1280px;
-          margin: 0 auto;
-          padding: 64px 32px 0;
-        }
+  /* ══ TOP BAND ══ */
+  .tck-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 40px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid rgba(0,105,116,0.15);
+    flex-wrap: wrap;
+  }
 
-        /* ── TOP BAND : logo + tagline + app/socials ── */
-        .tck-top {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          gap: 32px;
-          padding-bottom: 48px;
-          border-bottom: 1px solid #c2dde0;
-          flex-wrap: wrap;
-        }
+  .tck-brand { display: flex; flex-direction: column; gap: 14px; max-width: 280px; }
 
-        .tck-brand { display: flex; flex-direction: column; gap: 14px; max-width: 320px; }
-        .tck-tagline {
-          font-size: 12px;
-          font-weight: 400;
-          color: #4a7a80;
-          line-height: 1.75;
-        }
-        .tck-tagline b { color: #006974; font-weight: 600; }
+  .tck-tagline {
+    font-size: 13px;
+    font-weight: 400;
+    color: #4f7f85;
+    line-height: 1.8;
+  }
 
-        .tck-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 20px; }
+  .tck-tagline b {
+    font-weight: 600;
+    color: #006974;
+  }
 
-        .tck-app-row { display: flex; gap: 10px; align-items: center; }
-        .tck-app-btn {
-          display: inline-block;
-          border-radius: 9px;
-          overflow: hidden;
-          line-height: 0;
-          transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s ease;
-        }
-        .tck-app-btn:hover {
-          transform: translateY(-3px) scale(1.05);
-          box-shadow: 0 8px 22px rgba(0,105,116,0.22);
-        }
+  .tck-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 14px; }
 
-        .tck-socials { display: flex; gap: 8px; }
-        .tck-social {
-          width: 36px; height: 36px;
-          border-radius: 9px;
-          background: #006974;
-          color: #fff;
-          display: flex; align-items: center; justify-content: center;
-          transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-        }
-        .tck-social:hover {
-          background: #004d57;
-          transform: translateY(-3px);
-          box-shadow: 0 6px 16px rgba(0,105,116,0.3);
-        }
+  /* App badges */
+  .tck-app-row { display: flex; gap: 10px; align-items: center; }
+  .tck-app-btn {
+    display: inline-block;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform .4s cubic-bezier(.22,1,.36,1), 
+                box-shadow .4s ease, 
+                filter .4s ease;
+  }
+  .tck-app-btn:hover {
+    transform: translateY(-4px) scale(1.06);
+    box-shadow: 0 14px 32px rgba(0,105,116,0.25);
+    filter: brightness(1.08);
+  }
+  .tck-app-btn:active { transform: scale(0.97); }
 
-        /* ── LINKS GRID ── */
-        .tck-links {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 40px 32px;
-          padding: 48px 0;
-          border-bottom: 1px solid #c2dde0;
-        }
+  /* Social buttons – glass soft */
+  .tck-socials { display: flex; gap: 10px; }
+  .tck-social {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: rgba(0,105,116,0.08);
+    border: 1px solid rgba(0,105,116,0.2);
+    backdrop-filter: blur(8px);
+    color: #006974;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .35s cubic-bezier(.22,1,.36,1);
+  }
+  .tck-social:hover {
+    background: #006974;
+    color: #fff;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,105,116,0.35);
+  }
 
-        .tck-col-title {
-          font-size: 11px;
-          font-weight: 700;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: #006974;
-          margin-bottom: 20px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-        .tck-col-title::after {
-          content: '';
-          display: block;
-          flex: 1;
-          height: 1px;
-          background: #c2dde0;
-        }
+  /* ══ LINKS GRID ══ */
+  .tck-links {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px 32px;
+    padding: 52px 0;
+    border-bottom: 1px solid rgba(0,105,116,0.15);
+  }
 
-        .tck-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
-        .tck-col ul li a {
-          font-size: 12px;
-          font-weight: 400;
-          color: #3a6a70;
-          text-decoration: none;
-          transition: color 0.2s, padding-left 0.2s;
-          display: block;
-        }
-        .tck-col ul li a:hover {
-          color: #006974;
-          padding-left: 6px;
-        }
+ .tck-col-title {
+  font-size: 11px;
+  font-weight: 800; /* plus gras */
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #003f46; /* teal plus foncé pour meilleur contraste */
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+  .tck-col-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(0,63,70,0.35);
+}
 
-        /* ── BOTTOM BAR ── */
-        .tck-bottom {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 20px 0 24px;
-          flex-wrap: wrap;
-          gap: 12px;
-        }
-        .tck-copy {
-          font-size: 12.5px;
-          color: #6a9da3;
-        }
-        .tck-copy span { font-weight: 600; color: #006974; }
+  .tck-col ul {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 12px;
+  }
 
-        .tck-policy-row { display: flex; gap: 20px; flex-wrap: wrap; }
-        .tck-policy-row a {
-          font-size: 11px;
-          color: #6a9da3;
-          text-decoration: none;
-          transition: color 0.2s;
-        }
-        .tck-policy-row a:hover { color: #006974; }
+  /* 🔥 Liens navigation premium */
+  .tck-col ul li a {
+    font-size: 13px;
+    font-weight: 500;
+    color: #3f7076;
+    text-decoration: none;
+    position: relative;
+    transition: color .3s ease, transform .3s ease;
+  }
 
-        @media (max-width: 900px) {
-          .tck-top { flex-direction: column; }
-          .tck-actions { align-items: flex-start; }
-          .tck-links { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 540px) {
-          .tck-links { grid-template-columns: 1fr; }
-          .tck-bottom { flex-direction: column; align-items: flex-start; }
-        }
-      `}</style>
+  .tck-col ul li a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, #006974, #00a0ad);
+    border-radius: 4px;
+    transition: width .35s cubic-bezier(.22,1,.36,1);
+  }
+
+  .tck-col ul li a:hover {
+    color: #006974;
+    transform: translateX(4px);
+  }
+
+  .tck-col ul li a:hover::after {
+    width: 100%;
+  }
+
+  /* ══ BOTTOM BAR ══ */
+  .tck-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 0 18px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .tck-copy {
+    font-size: 12px;
+    color: #7aaeb4;
+  }
+
+  .tck-copy span {
+  font-weight: 600;
+  color: #006974;
+  font-size: 15px; /* légèrement plus petit que le texte principal */
+  letter-spacing: 0.2px;
+}
+  .tck-policy-row { display: flex; gap: 22px; flex-wrap: wrap; }
+
+  .tck-policy-row a {
+    font-size: 12px;
+    color: #6fa4aa;
+    text-decoration: none;
+    transition: color .3s ease;
+  }
+
+  .tck-policy-row a:hover {
+    color: #006974;
+  }
+
+  @media (max-width: 900px) {
+    .tck-top { flex-direction: column; }
+    .tck-actions { align-items: flex-start; }
+    .tck-links { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 540px) {
+    .tck-links { grid-template-columns: 1fr; }
+    .tck-bottom { flex-direction: column; align-items: flex-start; }
+  }
+`}</style>
 
       <footer className="tck-footer">
         <div className="tck-footer-inner">
 
-          {/* ── TOP : brand + app/socials ── */}
+          {/* ── TOP ── */}
           <div className="tck-top">
             <div className="tck-brand">
               <Image src="/images/logo.png" alt="Ticketché Logo" width={148} height={50} />
@@ -231,7 +272,6 @@ export const Footer = () => {
             </div>
 
             <div className="tck-actions">
-              {/* App store badges */}
               <div className="tck-app-row">
                 {appStoreLinks.map(({ href, src, alt }) => (
                   <a key={alt} href={href} target="_blank" rel="noopener noreferrer" className="tck-app-btn">
@@ -240,7 +280,6 @@ export const Footer = () => {
                   </a>
                 ))}
               </div>
-              {/* Socials */}
               <div className="tck-socials">
                 {socialLinks.map(({ icon: Icon, href, label }) => (
                   <Link key={label} href={href} aria-label={label} className="tck-social">
@@ -251,7 +290,7 @@ export const Footer = () => {
             </div>
           </div>
 
-          {/* ── LINKS GRID : 4 colonnes égales ── */}
+          {/* ── LIENS 4 colonnes ── */}
           <div className="tck-links">
             <div className="tck-col">
               <div className="tck-col-title">Navigation</div>
