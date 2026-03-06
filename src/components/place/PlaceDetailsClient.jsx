@@ -144,6 +144,7 @@ export default function PlaceDetailsClient() {
         }
       } catch (err) {
         console.error(err);
+        
       } finally {
         setLoading(false);
       }
