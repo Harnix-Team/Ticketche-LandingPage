@@ -1,151 +1,201 @@
 "use client";
+import { useState, useEffect, useRef, useCallback } from "react";
+
+const images = [
+  { src: "/images/mockups/c1.png", alt: "Ticketché utilisateur" },
+  { src: "/images/mockups/c2.png", alt: "Ticketché gérant" },
+  { src: "/images/mockups/c3.png", alt: "Ticketché organisateur" },
+  { src: "/images/mockups/c1.png", alt: "Ticketché accueil" },
+  { src: "/images/mockups/c2.png", alt: "Ticketché événement" },
+  { src: "/images/mockups/c3.png", alt: "Ticketché parking" },
+  { src: "/images/mockups/c2.png", alt: "Ticketché garage" },
+  { src: "/images/mockups/c1.png", alt: "Ticketché app" },
+];
+
+const VISIBLE = 3;
+const GAP = 32;
+const TOTAL = images.length;
 
 export default function TicketcheFonction() {
-    return (
-        <section style={{
-            padding: "clamp(48px, 7vw, 90px) clamp(20px, 5vw, 72px)",
-            paddingBottom: "clamp(240px, 28vw, 360px)",
-            position: "relative",
-            background: "#ecf5f6",
+  const [current, setCurrent]       = useState(0);
+  const [animDir, setAnimDir]       = useState(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const intervalRef  = useRef(null);
+  const animatingRef = useRef(false); // ref pour éviter la closure stale
+
+  /* ── slide : utilise la ref pour éviter le stale closure ── */
+  const slide = useCallback((dir) => {
+    if (animatingRef.current) return;
+    animatingRef.current = true;
+    setIsAnimating(true);
+    setAnimDir(dir);
+
+    setTimeout(() => {
+      setCurrent(prev =>
+        dir === "right" ? (prev + 1) % TOTAL : (prev - 1 + TOTAL) % TOTAL
+      );
+      animatingRef.current = false;
+      setIsAnimating(false);
+      setAnimDir(null);
+    }, 420);
+  }, []); // pas de dépendances → stable entre les renders
+
+  /* ── reset intervalle ── */
+  const resetInterval = useCallback(() => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => slide("right"), 3200);
+  }, [slide]);
+
+  /* ── auto-slide au mount ── */
+  useEffect(() => {
+    intervalRef.current = setInterval(() => slide("right"), 3200);
+    return () => clearInterval(intervalRef.current);
+  }, [slide]);
+
+  const prev = () => { slide("left");  resetInterval(); };
+  const next = () => { slide("right"); resetInterval(); };
+
+  const visibleIndices = Array.from({ length: VISIBLE }, (_, i) => (current + i) % TOTAL);
+
+  return (
+    <section style={{
+      padding: "clamp(48px, 7vw, 90px) clamp(20px, 5vw, 72px)",
+      paddingBottom: "clamp(140px, 18vw, 220px)",
+      position: "relative",
+      background: "#ecf5f6",
+    }}>
+      <div style={{ maxWidth: "1280px", margin: "0 auto", position: "relative" }}>
+
+        {/* ── GRANDE CARTE SOMBRE ── */}
+        <div style={{
+          background: "#001e22",
+          borderRadius: "clamp(24px, 3vw, 36px)",
+          padding: "clamp(36px, 5vw, 60px) clamp(28px, 5vw, 80px)",
+          paddingBottom: "clamp(280px, 32vw, 400px)",
+          position: "relative",
+          overflow: "visible",
         }}>
-            <div style={{ maxWidth: "1280px", margin: "0 auto", position: "relative" }}>
 
-                {/* ── GRANDE CARTE SOMBRE ── élargie avec marges négatives */}
-                <div style={{
-                    background: "#001e22",
-                    borderRadius: "clamp(24px, 3vw, 36px)",
-                    padding: "clamp(36px, 5vw, 60px) clamp(28px, 5vw, 80px)",
-                    paddingBottom: "clamp(380px, 44vw, 560px)",      // ← PLUS HAUT pour laisser place aux cartes
-                    marginLeft: "clamp(-150px, -40vw, -200px)",        // ← DÉBORDE À GAUCHE
-                    marginRight: "clamp(-40px, -6vw, -120px)",       // ← DÉBORDE À DROITE
-                    position: "relative",
-                    overflow: "visible",
-                }}>
+          {/* Halos déco */}
+          <div style={{ position: "absolute", top: "-60px", right: "-40px", width: "420px", height: "420px", borderRadius: "50%", background: "radial-gradient(circle, rgba(0,95,105,0.22) 0%, transparent 70%)", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", bottom: "0", left: "15%", width: "320px", height: "320px", borderRadius: "50%", background: "radial-gradient(circle, rgba(0,95,105,0.1) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-                    {/* Halos */}
-                    <div style={{ position: "absolute", top: "-60px", right: "-40px", width: "420px", height: "420px", borderRadius: "50%", background: "radial-gradient(circle, rgba(0,95,105,0.22) 0%, transparent 70%)", pointerEvents: "none" }} />
-                    <div style={{ position: "absolute", bottom: "0", left: "15%", width: "320px", height: "320px", borderRadius: "50%", background: "radial-gradient(circle, rgba(0,95,105,0.1) 0%, transparent 70%)", pointerEvents: "none" }} />
+          {/* EN-TÊTE */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "clamp(20px, 4vw, 60px)", flexWrap: "wrap", position: "relative", zIndex: 1 }}>
+            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 3.2rem)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.025em", color: "#ffffff", maxWidth: "460px", margin: 0 }}>
+              Sécurisé &amp; Pratique{" "}
+              <span style={{ color: "#00c9a7" }}>pour tous</span>
+            </h2>
+            <p style={{ fontSize: "clamp(0.88rem, 1.2vw, 1rem)", color: "rgba(255,255,255,0.5)", lineHeight: 1.75, maxWidth: "360px", margin: 0, paddingTop: "6px" }}>
+              Payez et encaissez en toute confiance grâce à notre plateforme.
+              Transactions instantanées, sans commission cachée et sans mauvaise surprise.
+            </p>
+          </div>
 
-                    {/* EN-TÊTE */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "clamp(20px, 4vw, 60px)", flexWrap: "wrap", position: "relative", zIndex: 1 }}>
-                        <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 3.2rem)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.025em", color: "#ffffff", maxWidth: "460px", margin: 0 }}>
-                            Sécurisé &amp; Pratique{" "}
-                            <span style={{ color: "#00c9a7" }}>pour tous</span>
-                        </h2>
-                        <p style={{ fontSize: "clamp(0.88rem, 1.2vw, 1rem)", color: "rgba(255,255,255,0.5)", lineHeight: 1.75, maxWidth: "360px", margin: 0, paddingTop: "6px" }}>
-                            Payez et encaissez en toute confiance grâce à notre plateforme.
-                            Transactions instantanées, sans commission cachée et sans mauvaise surprise.
-                        </p>
-                    </div>
+          {/* ── CARROUSEL ── */}
+          <div style={{
+            position: "absolute",
+            bottom: "-150px",
+            left: "clamp(20px, 4vw, 60px)",
+            right: "clamp(20px, 4vw, 60px)",
+            zIndex: 10,
+          }}>
 
-                    {/* 3 CARTES — positionnées en bas de la carte sombre */}
-                    <div style={{
-                        position: "absolute",
-                        bottom: "-120px",                             // décalage vers le bas
-                        left: "clamp(20px, 4vw, 60px)",
-                        right: "clamp(20px, 4vw, 60px)",
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                        gap: "clamp(32px, 5vw, 64px)",
-                        zIndex: 10,
-                        paddingTop: "clamp(40px, 5vw, 80px)",         // ← ESPACE EN HAUT DES CARDS
-                    }}>
-
-                        {/* ── CARTE 1 ── */}
-                        <div style={{
-                            background: "#fff",
-                            borderRadius: "clamp(16px, 2vw, 24px)",
-                            padding: "clamp(22px, 2.5vw, 32px) clamp(18px, 2vw, 28px) 0",
-                            overflow: "visible",
-                            boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
-                            display: "flex",
-                            flexDirection: "column",
-                            minHeight: "300px",
-                            position: "relative",
-                        }}>
-                            <span style={{ display: "inline-block", background: "rgba(0,95,105,0.1)", color: "#005f69", fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", padding: "4px 11px", borderRadius: "100px", marginBottom: "14px", width: "fit-content" }}>Instantané</span>
-                            <h3 style={{ fontSize: "clamp(1rem, 1.6vw, 1.35rem)", fontWeight: 800, color: "#0a1a1c", lineHeight: 1.25, letterSpacing: "-0.015em", marginBottom: "10px" }}>Paiement Instantané,<br />Sans Frais</h3>
-                            <p style={{ fontSize: "clamp(0.78rem, 0.95vw, 0.88rem)", color: "#6b7280", lineHeight: 1.65, marginBottom: "20px" }}>Effectuez ou recevez vos paiements en quelques secondes, en espèces ou Mobile Money, sans commission surprise.</p>
-
-                            {/* Mockup carte 1 */}
-                            <div style={{ position: "absolute", bottom: "-5vw", left: "50%", transform: "translateX(-44%) translateX(-18vw)", width: "0%", zIndex: 5 }}>
-                                <div style={{ width: "100%", overflow: "hidden" }}>
-                                    <img
-                                        src="/images/mockups/user.png"
-                                        alt="mockup"
-                                        style={{ width: "100%", height: "auto", display: "block" }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* ── CARTE 2 ── */}
-                        <div style={{
-                            background: "#fff",
-                            borderRadius: "clamp(16px, 2vw, 24px)",
-                            padding: "clamp(22px, 2.5vw, 32px) clamp(18px, 2vw, 28px) 0",
-                            overflow: "visible",
-                            boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
-                            display: "flex",
-                            flexDirection: "column",
-                            minHeight: "650px",
-                            position: "relative",
-                        }}>
-                            <span style={{ display: "inline-block", background: "rgba(0,95,105,0.1)", color: "#005f69", fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", padding: "4px 11px", borderRadius: "100px", marginBottom: "14px", width: "fit-content" }}>Statistiques</span>
-                            <h3 style={{ fontSize: "clamp(1rem, 1.6vw, 1.35rem)", fontWeight: 800, color: "#0a1a1c", lineHeight: 1.25, letterSpacing: "-0.015em", marginBottom: "10px" }}>Suivez votre Trésorerie<br />en Temps Réel</h3>
-                            <p style={{ fontSize: "clamp(0.78rem, 0.95vw, 0.88rem)", color: "#6b7280", lineHeight: 1.65, marginBottom: "20px" }}>Visualisez toutes vos entrées et sorties d'argent. Cartes, Mobile Money, espèces — tout centralisé en un clin d'œil.</p>
-
-                            {/* Mockup carte 2 */}
-                            <div style={{ position: "absolute", bottom: "4px", left: "-10%", transform: "translateX(-44%) rotate(-10deg)", transformOrigin: "bottom right", width: "200%", zIndex: 5 }}>
-                                <div style={{
-                                    width: "100%",
-                                    overflow: "hidden",
-                                    WebkitMaskImage: "linear-gradient(to bottom, black 90%, transparent 100%)",
-                                    maskImage: "linear-gradient(to bottom, black 90%, transparent 100%)"
-                                }}>
-                                    <img
-                                        src="/images/mockups/gerant.png"
-                                        alt="mockup"
-                                        style={{ width: "100%", height: "auto", display: "block" }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* ── CARTE 3 ── */}
-                        <div style={{
-                            background: "#fff",
-                            borderRadius: "clamp(16px, 2vw, 24px)",
-                            padding: "0 clamp(18px, 2vw, 28px) clamp(22px, 2.5vw, 32px)",
-                            overflow: "visible",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "flex-end",
-                            minHeight: "300px",
-                            position: "relative",
-                        }}>
-                            {/* Mockup carte 3 */}
-<div style={{ position: "absolute", bottom: "-965px", left: "-22%", transform: "translateX(-42%) rotate(-10deg)", transformOrigin: "bottom left", width: "200%", zIndex: 18 }}>                                
-    <div style={{ width: "130%", aspectRatio: "9/19", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                    <img
-                                        src="/images/mockups/organisateur.png"
-                                        alt="mockup"
-                                        style={{ width: "100%", height: "auto", display: "block" }}
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Textes en bas */}
-                            <div style={{ paddingTop: "clamp(180px, 24vw, 230px)" }}>
-                                <span style={{ display: "inline-block", background: "rgba(0,95,105,0.1)", color: "#005f69", fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", padding: "4px 11px", borderRadius: "100px", marginBottom: "14px", width: "fit-content" }}>Contrôle total</span>
-                                <h3 style={{ fontSize: "clamp(1rem, 1.6vw, 1.35rem)", fontWeight: 800, color: "#0a1a1c", lineHeight: 1.25, letterSpacing: "-0.015em", marginBottom: "10px" }}>Zéro Abonnement<br />Indésirable</h3>
-                                <p style={{ fontSize: "clamp(0.78rem, 0.95vw, 0.88rem)", color: "#6b7280", lineHeight: 1.65 }}>Vous restez maître de votre budget. Aucun prélèvement automatique sans votre accord. Transparence totale.</p>
-                            </div>
-                        </div>
-
-                    </div>{/* fin grid */}
-                </div>{/* fin grande carte sombre */}
+            {/* Track */}
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${VISIBLE}, 1fr)`,
+              gap: `${GAP}px`,
+              overflow: "hidden",
+            }}>
+              {visibleIndices.map((imgIdx, pos) => (
+                <div
+                  key={`${current}-${pos}`}
+                  style={{
+                    borderRadius: "clamp(16px, 2vw, 24px)",
+                    overflow: "hidden",
+                    boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
+                    aspectRatio: "3/4",
+                    animation: isAnimating
+                      ? animDir === "right"
+                        ? "slideFromRight 0.42s cubic-bezier(0.4,0,0.2,1) both"
+                        : "slideFromLeft 0.42s cubic-bezier(0.4,0,0.2,1) both"
+                      : "none",
+                  }}
+                >
+                  <img
+                    src={images[imgIdx].src}
+                    alt={images[imgIdx].alt}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                </div>
+              ))}
             </div>
-        </section>
-    );
+
+            {/* Contrôles */}
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              gap: "16px", marginTop: "24px",
+            }}>
+              <button
+                onClick={prev}
+                style={{
+                  width: "38px", height: "38px", borderRadius: "50%",
+                  background: "rgba(255,255,255,0.12)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  color: "#fff", fontSize: "1.2rem", cursor: "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  transition: "background 0.2s", flexShrink: 0,
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(0,201,167,0.3)"}
+                onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.12)"}
+              >‹</button>
+
+              <div style={{ display: "flex", gap: "8px" }}>
+                {images.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => { setCurrent(i); resetInterval(); }}
+                    style={{
+                      width: i === current ? "24px" : "8px",
+                      height: "8px", borderRadius: "4px",
+                      background: i === current ? "#00c9a7" : "rgba(255,255,255,0.3)",
+                      border: "none", cursor: "pointer", padding: 0,
+                      transition: "all 0.3s ease",
+                    }}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={next}
+                style={{
+                  width: "38px", height: "38px", borderRadius: "50%",
+                  background: "rgba(255,255,255,0.12)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  color: "#fff", fontSize: "1.2rem", cursor: "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  transition: "background 0.2s", flexShrink: 0,
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(0,201,167,0.3)"}
+                onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.12)"}
+              >›</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes slideFromRight {
+          from { opacity: 0; transform: translateX(60px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideFromLeft {
+          from { opacity: 0; transform: translateX(-60px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
+    </section>
+  );
 }

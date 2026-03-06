@@ -182,16 +182,9 @@ html { scroll-behavior: smooth; }
 /* ═══════════════════════════════════════════════════════
    FOOTER — tailles de police augmentées (+4px)
 ═══════════════════════════════════════════════════════ */
-footer p,
-footer .text-sm,
-footer .text-base { font-size: 1.125rem !important; } /* 14px → 18px */
-
-footer h3,
-footer h3.text-lg,
-footer h3.text-xl { font-size: 1.375rem !important; } /* 18px → 22px */
-
-footer a,
-footer li a { font-size: 1.125rem !important; } /* 16px → 18px */
+footer p, footer .text-sm, footer .text-base { font-size: 1rem !important; }
+footer h3, footer h3.text-lg, footer h3.text-xl { font-size: 1.25rem !important; }
+footer a, footer li a { font-size: 1rem !important; }
 
 /* ═══════════════════════════════════════════════════════
    APP DOWNLOAD BUTTONS

@@ -100,7 +100,7 @@ export const Footer = () => {
   .tck-brand { display: flex; flex-direction: column; gap: 14px; max-width: 280px; }
 
   .tck-tagline {
-    font-size: 13px;
+    font-size: 12px; /* ← -1 */
     font-weight: 400;
     color: #4f7f85;
     line-height: 1.8;
@@ -130,7 +130,7 @@ export const Footer = () => {
   }
   .tck-app-btn:active { transform: scale(0.97); }
 
-  /* Social buttons – glass soft */
+  /* Social buttons */
   .tck-socials { display: flex; gap: 10px; }
   .tck-social {
     width: 38px; height: 38px;
@@ -158,23 +158,23 @@ export const Footer = () => {
     border-bottom: 1px solid rgba(0,105,116,0.15);
   }
 
- .tck-col-title {
-  font-size: 11px;
-  font-weight: 800; /* plus gras */
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: #003f46; /* teal plus foncé pour meilleur contraste */
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+  .tck-col-title {
+    font-size: 10px; /* ← -1 */
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: #003f46;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
   .tck-col-title::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: rgba(0,63,70,0.35);
-}
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(0,63,70,0.35);
+  }
 
   .tck-col ul {
     list-style: none;
@@ -182,9 +182,8 @@ export const Footer = () => {
     display: flex; flex-direction: column; gap: 12px;
   }
 
-  /* 🔥 Liens navigation premium */
   .tck-col ul li a {
-    font-size: 13px;
+    font-size: 12px; /* ← -1 */
     font-weight: 500;
     color: #3f7076;
     text-decoration: none;
@@ -224,20 +223,21 @@ export const Footer = () => {
   }
 
   .tck-copy {
-    font-size: 12px;
+    font-size: 11px; /* ← -1 */
     color: #7aaeb4;
   }
 
   .tck-copy span {
-  font-weight: 600;
-  color: #006974;
-  font-size: 15px; /* légèrement plus petit que le texte principal */
-  letter-spacing: 0.2px;
-}
+    font-weight: 600;
+    color: #006974;
+    font-size: 14px; /* ← -1 */
+    letter-spacing: 0.2px;
+  }
+
   .tck-policy-row { display: flex; gap: 22px; flex-wrap: wrap; }
 
   .tck-policy-row a {
-    font-size: 12px;
+    font-size: 11px; /* ← -1 */
     color: #6fa4aa;
     text-decoration: none;
     transition: color .3s ease;

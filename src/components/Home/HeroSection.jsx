@@ -16,12 +16,11 @@ function RocketFire() {
       x: W / 2 + (Math.random() - 0.5) * 18,
       y: 8,
       vx: (Math.random() - 0.5) * 1.1,
-      vy: Math.random() * 2.4 + 1.6,
-      life: Math.random() * 0.4 + 0.6,
+vy: Math.random() * 1.2 + 0.8,      life: Math.random() * 0.4 + 0.6,
       decay: Math.random() * 0.022 + 0.016,
-      r: Math.random() * 11 + 5,
+r: Math.random() * 11 + 2,
     });
-    const ps = Array.from({ length: 55 }, mk);
+const ps = Array.from({ length: 30 }, mk);
     let raf;
     const loop = () => {
       ctx.clearRect(0, 0, W, H);
@@ -51,42 +50,27 @@ function RocketFire() {
   );
 }
 
-/* ─────────────────────────────────────────────
-   FUSÉE — petite, inline à côté de Money, nez → droite
-───────────────────────────────────────────── */
-/* ─────────────────────────────────────────────
-   FUSÉE — absolute dans le conteneur titre,
-   parallèle à "Money", nez → droite
-───────────────────────────────────────────── */
 function Rocket() {
   return (
     <div style={{
       position: "absolute",
-      /* ─ AJUSTER CES DEUX VALEURS pour déplacer la fusée ─
-         top  : remonte/descend sur la ligne "Money"
-         right: écarte/rapproche du bord droit du titre    */
       top: "-8%",
       right: "-14%",
-      /* ─────────────────────────────────────────────────── */
       zIndex: 8,
-      /* ~45deg oblique : nez pointe vers haut-droite */
       transform: "rotate(45deg)",
       animation: "rocketFloat 3.8s ease-in-out infinite",
       transformOrigin: "center center",
     }}>
       <div style={{
         position: "relative",
-        /* ─ TAILLE de la fusée ─ */
         width: "clamp(28px,3vw,42px)",
         height: "clamp(68px,7vw,100px)",
       }}>
-        {/* Halo */}
         <div style={{
           position: "absolute", inset: "-25%",
           background: "radial-gradient(circle, rgba(0,210,230,0.22) 0%, transparent 68%)",
           filter: "blur(22px)",
         }} />
-        {/* Nez */}
         <div style={{
           position: "absolute", top: 0, left: "50%",
           transform: "translateX(-50%)", width: "54%", height: "33%",
@@ -94,13 +78,11 @@ function Rocket() {
           borderRadius: "50% 50% 16% 16% / 80% 80% 20% 20%",
           boxShadow: "inset -5px 0 10px rgba(0,0,0,0.38), inset 3px 0 8px rgba(255,255,255,0.18)",
         }} />
-        {/* Reflet nez */}
         <div style={{
           position: "absolute", top: "2%", left: "54%",
           width: "9%", height: "14%",
           background: "rgba(255,255,255,0.55)", borderRadius: "50%",
         }} />
-        {/* Corps */}
         <div style={{
           position: "absolute", top: "28%", left: "50%",
           transform: "translateX(-50%)", width: "100%", height: "54%",
@@ -108,14 +90,12 @@ function Rocket() {
           borderRadius: "10px",
           boxShadow: "inset -8px 0 14px rgba(0,0,0,0.42), inset 4px 0 10px rgba(255,255,255,0.14)",
         }} />
-        {/* Reflet corps */}
         <div style={{
           position: "absolute", top: "30%", left: "57%",
           width: "6%", height: "46%",
           background: "linear-gradient(180deg, rgba(255,255,255,0.44) 0%, rgba(255,255,255,0.1) 55%, transparent 100%)",
           borderRadius: "3px",
         }} />
-        {/* Hublot */}
         <div style={{
           position: "absolute", top: "38%", left: "50%",
           transform: "translateX(-50%)", width: "37%", height: "15%",
@@ -125,27 +105,23 @@ function Rocket() {
           animation: "windowGlow 2.2s ease-in-out infinite",
           zIndex: 2,
         }} />
-        {/* Reflet hublot */}
         <div style={{
           position: "absolute", top: "38.5%", left: "53%",
           width: "9%", height: "5.5%",
           background: "rgba(255,255,255,0.72)", borderRadius: "50%", zIndex: 3,
         }} />
-        {/* Aile gauche */}
         <div style={{
           position: "absolute", bottom: "7%", left: "-21%",
           width: "28%", height: "27%",
           background: "linear-gradient(138deg, #00869a 0%, #003a42 100%)",
           clipPath: "polygon(100% 0%, 100% 100%, 0% 100%)",
         }} />
-        {/* Aile droite */}
         <div style={{
           position: "absolute", bottom: "7%", right: "-21%",
           width: "28%", height: "27%",
           background: "linear-gradient(222deg, #00869a 0%, #003a42 100%)",
           clipPath: "polygon(0% 0%, 100% 100%, 0% 100%)",
         }} />
-        {/* Tuyère */}
         <div style={{
           position: "absolute", bottom: 0, left: "50%",
           transform: "translateX(-50%)", width: "50%", height: "9%",
@@ -159,60 +135,40 @@ function Rocket() {
   );
 }
 
-/* ─────────────────────────────────────────────
-   ARC EN POINTILLÉS — grand, à gauche du texte
-   avec mini-fusée à l'extrémité basse
-───────────────────────────────────────────── */
 function DashedArc() {
-  const R = 100;           // rayon pour un bel arc descendant
+  const R = 100;
   const size = R * 2 + 60;
   const cx = R + 30;
   const cy = R + 30;
-
-  // Angles pour un arc qui descend bien vers la gauche/bas
-  const startAngle = -40 * (Math.PI / 180);  // départ haut-droit
-  const endAngle = -650 * (Math.PI / 180);  // fin bas-gauche
-
+  const startAngle = -40 * (Math.PI / 180);
+  const endAngle = -650 * (Math.PI / 180);
   const startX = cx + R * Math.cos(startAngle);
   const startY = cy + R * Math.sin(startAngle);
   const endX = cx + R * Math.cos(endAngle);
   const endY = cy + R * Math.sin(endAngle);
-
   const arcDeg = 210;
   const arcLen = R * (arcDeg * Math.PI / 180);
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: "30%",                // ← DESCENDU (plus bas que 50%)
-        //       left: "-10%",              // ← DÉCALÉ VERS LA GAUCHE
-        transform: "translate(-50%, -50%)",
-        width: size,
-        height: size,
-        pointerEvents: "none",
-        zIndex: 5,
-      }}
-    >
-      <svg
-        width={size}
-        height={size}
-        viewBox={`0 0 ${size} ${size}`}
-        fill="none"
-        style={{ overflow: "visible" }}
-      >
-        {/* Arc principal – plus de pointillés visibles */}
+    <div style={{
+      position: "absolute",
+      top: "30%",
+      transform: "translate(-50%, -50%)",
+      width: size,
+      height: size,
+      pointerEvents: "none",
+      zIndex: 5,
+    }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} fill="none" style={{ overflow: "visible" }}>
         <path
           d={`M ${startX} ${startY} A ${R} ${R} 0 1 0 ${endX} ${endY}`}
           stroke="#367e86"
           strokeWidth="2.5"
-          strokeDasharray="14 10"     // ← plus dense, plus de traits
+          strokeDasharray="14 10"
           strokeLinecap="round"
           fill="none"
           style={{ animation: "dashScroll 8s linear infinite" }}
         />
-
-        {/* Glow animé */}
         <path
           d={`M ${startX} ${startY} A ${R} ${R} 0 1 0 ${endX} ${endY}`}
           stroke="rgba(54,126,134,0.45)"
@@ -222,39 +178,27 @@ function DashedArc() {
           strokeDasharray={`${arcLen} ${arcLen}`}
           style={{ animation: "dashDraw 6s ease-in-out infinite" }}
         />
-
-        {/* Flèche au bout – pointe vers la droite */}
         <g transform={`translate(${endX}, ${endY}) rotate(20)`}>
-          <path
-            d="M 0 0 L -8 -16 M 0 0 L 8 -16"
-            stroke="#367e86"
-            strokeWidth="2.4"
-            strokeLinecap="round"
-            fill="none"
-          />
+          <path d="M 0 0 L -8 -16 M 0 0 L 8 -16" stroke="#367e86" strokeWidth="2.4" strokeLinecap="round" fill="none" />
         </g>
       </svg>
-
-      {/* Petite fusée au bout de l'arc */}
-      <div
-        style={{
-          position: "absolute",
-          // Ajuste ces deux lignes pour la position exacte au bout de l'arc
-          left: `${endX - 30}px`,   // ← décalé à gauche pour centrer sous la pointe
-          top: `${endY - 30}px`,    // ← un peu plus haut pour qu'elle "parte" de l'arc
-          fontSize: "clamp(26px, 3.2vw, 36px)",  // un peu plus grosse pour bien voir l'oblique
-          color: "#367e86",         // couleur assortie au thème
-          animation: "miniRocketFly 2.8s ease-in-out infinite",
-          filter: "drop-shadow(0 4px 12px rgba(54,126,134,0.7))",
-          transform: "rotate(25deg)",  // ← OBLIQUE : 35° = nez vers haut-droit, très naturel
-          transformOrigin: "center bottom",  // pivot au bas pour un effet "décollage"
-        }}
-      >
+      <div style={{
+        position: "absolute",
+        left: `${endX - 30}px`,
+        top: `${endY - 30}px`,
+        fontSize: "clamp(26px, 3.2vw, 36px)",
+        color: "#367e86",
+        animation: "miniRocketFly 2.8s ease-in-out infinite",
+        filter: "drop-shadow(0 4px 12px rgba(54,126,134,0.7))",
+        transform: "rotate(25deg)",
+        transformOrigin: "center bottom",
+      }}>
         🚀
       </div>
     </div>
   );
 }
+
 /* ─────────────────────────────────────────────
    HERO
 ───────────────────────────────────────────── */
@@ -281,10 +225,6 @@ export const Hero = () => {
           80%   { stroke-dashoffset: 0; opacity: 0.7; }
           100%  { stroke-dashoffset: -533; opacity: 0; }
         }
-        @keyframes miniRocketBounce {
-          0%,100% { transform: rotate(90deg) translateY(0); }
-          50%     { transform: rotate(90deg) translateY(-6px); }
-        }
         @keyframes badgePulse {
           0%,100% { box-shadow: 0 0 0 0 rgba(0,81,90,0.28); }
           50%     { box-shadow: 0 0 0 8px rgba(0,81,90,0); }
@@ -307,30 +247,12 @@ export const Hero = () => {
         fontFamily: "'Archivo', sans-serif",
       }}>
         {/* ══ BACKGROUNDS ══ */}
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 1,
-          background: "radial-gradient(ellipse 65% 55% at -5% 0%, rgba(0,81,90,0.55) 0%, rgba(0,81,90,0.20) 45%, transparent 75%)"
-        }} />
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 1,
-          background: "radial-gradient(ellipse 65% 55% at 105% 0%, rgba(0,81,90,0.55) 0%, rgba(0,81,90,0.20) 45%, transparent 75%)"
-        }} />
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 2,
-          background: "radial-gradient(ellipse 40% 50% at -2% 55%, rgba(0,81,90,0.30) 0%, transparent 70%)"
-        }} />
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 2,
-          background: "radial-gradient(ellipse 40% 50% at 102% 55%, rgba(0,81,90,0.30) 0%, transparent 70%)"
-        }} />
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 3,
-          background: "radial-gradient(ellipse 110% 75% at 50% 110%, rgba(0,42,48,0.82) 0%, rgba(0,63,72,0.65) 25%, rgba(0,81,90,0.38) 52%, rgba(0,101,116,0.15) 70%, transparent 88%)"
-        }} />
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 4,
-          background: "radial-gradient(ellipse 90% 70% at 50% 5%, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 35%, rgba(255,255,255,0.55) 58%, rgba(255,255,255,0.10) 75%, transparent 88%)"
-        }} />
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "radial-gradient(ellipse 65% 55% at -5% 0%, rgba(0,81,90,0.55) 0%, rgba(0,81,90,0.20) 45%, transparent 75%)" }} />
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "radial-gradient(ellipse 65% 55% at 105% 0%, rgba(0,81,90,0.55) 0%, rgba(0,81,90,0.20) 45%, transparent 75%)" }} />
+        <div style={{ position: "absolute", inset: 0, zIndex: 2, background: "radial-gradient(ellipse 40% 50% at -2% 55%, rgba(0,81,90,0.30) 0%, transparent 70%)" }} />
+        <div style={{ position: "absolute", inset: 0, zIndex: 2, background: "radial-gradient(ellipse 40% 50% at 102% 55%, rgba(0,81,90,0.30) 0%, transparent 70%)" }} />
+        <div style={{ position: "absolute", inset: 0, zIndex: 3, background: "radial-gradient(ellipse 110% 75% at 50% 110%, rgba(0,42,48,0.82) 0%, rgba(0,63,72,0.65) 25%, rgba(0,81,90,0.38) 52%, rgba(0,101,116,0.15) 70%, transparent 88%)" }} />
+        <div style={{ position: "absolute", inset: 0, zIndex: 4, background: "radial-gradient(ellipse 90% 70% at 50% 5%, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 35%, rgba(255,255,255,0.55) 58%, rgba(255,255,255,0.10) 75%, transparent 88%)" }} />
 
         {/* ══ CONTENU PRINCIPAL ══ */}
         <div style={{
@@ -345,71 +267,61 @@ export const Hero = () => {
           gap: "clamp(16px, 2.4vw, 26px)",
         }}>
 
-          {/* ── Badge glass transparent + "Fly Smarter" en noir ── */}
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "10px",
-              padding: "clamp(10px, 1.5vw, 14px) clamp(22px, 3vw, 32px)",
-              borderRadius: "999px",
-              background: "rgba(255, 255, 255, 0.04)",           // ultra-transparent
-              backdropFilter: "blur(18px) saturate(160%)",       // glass fort mais discret
-              border: "1px solid rgba(0, 81, 90, 0.22)",         // bordure subtile en #00515a
-              boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06)",       // ombre très légère
-              animation: "badgePulse 3.5s ease-in-out infinite, fadeUp 0.8s ease 0.1s both",
-            }}
-          >
-            {/* Point coloré */}
-            <div
-              style={{
-                width: "clamp(8px, 1vw, 10px)",
-                height: "clamp(8px, 1vw, 10px)",
-                borderRadius: "50%",
-                background: "#00515a",                             // ta couleur thème
-                boxShadow: "0 0 10px rgba(0, 81, 90, 0.5)",
-                flexShrink: 0,
-              }}
-            />
-
-            {/* Texte bicolore : Fly Smarter en noir */}
-            <span
-              style={{
-                fontSize: "clamp(0.78rem, 1.4vw, 0.92rem)",
-                fontWeight: 700,
-                letterSpacing: "0.3px",
-              }}
-            >
-              <span style={{ color: "#000000" }}>Fly Smarter</span>{" "}
-              <span style={{ color: "#00515a" }}>With App.AI</span>
+          {/* ── Badge ── */}
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "10px",
+            padding: "clamp(10px, 1.5vw, 14px) clamp(22px, 3vw, 32px)",
+            borderRadius: "999px",
+            background: "rgba(255, 255, 255, 0.04)",
+            backdropFilter: "blur(18px) saturate(160%)",
+            border: "1px solid rgba(0, 81, 90, 0.22)",
+            boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06)",
+            animation: "badgePulse 3.5s ease-in-out infinite, fadeUp 0.8s ease 0.1s both",
+          }}>
+            <div style={{
+              width: "clamp(8px, 1vw, 10px)",
+              height: "clamp(8px, 1vw, 10px)",
+              borderRadius: "50%",
+              background: "#00515a",
+              boxShadow: "0 0 10px rgba(0, 81, 90, 0.5)",
+              flexShrink: 0,
+            }} />
+            <span style={{
+              fontSize: "clamp(0.78rem, 1.4vw, 0.92rem)",
+              fontWeight: 700,
+              letterSpacing: "0.3px",
+            }}>
+              <span style={{ color: "#000000" }}>Gérez Mieux</span>{" "}
+              <span style={{ color: "#00515a" }}>Avec Ticketché</span>
             </span>
           </div>
 
-          {/* ── Titre — conteneur relatif pour l'arc */}
+          {/* ── Titre ── */}
           <div style={{
             position: "relative",
             display: "inline-block",
             textAlign: "center",
             animation: "fadeUp 0.7s ease 0.25s both",
           }}>
-            {/* Arc pointillé à gauche */}
             <DashedArc />
-            {/* Fusée absolute à droite de Money */}
             <Rocket />
 
+            {/* h1 réduit de -20% : clamp(2.6→2.08, 6.2→4.96vw, 5→4rem) */}
             <h1 style={{
               position: "relative", zIndex: 2,
-              fontSize: "clamp(2.6rem, 6.2vw, 5rem)",
+              fontSize: "clamp(2.08rem, 4.96vw, 4rem)",
               fontWeight: 900,
               color: "#0a0a0a",
               lineHeight: 1.06,
               letterSpacing: "-0.03em",
               margin: 0,
             }}>
-              Save Time &amp; Money
+              Parking, Lavage &amp; Événements
               <br />
               <span style={{ display: "inline-flex", alignItems: "center", gap: "14px" }}>
-                On Every Trip
+                Dans Votre Poche
                 <span style={{ display: "inline-flex", gap: "8px", marginLeft: "6px" }}>
                   <span style={{
                     width: "clamp(26px,3vw,42px)", height: "clamp(26px,3vw,42px)",
@@ -430,7 +342,7 @@ export const Hero = () => {
             </h1>
           </div>
 
-          {/* ── Sous-titre */}
+          {/* ── Sous-titre ── */}
           <p style={{
             fontSize: "clamp(0.875rem, 1.7vw, 1rem)",
             color: "#4b5563",
@@ -441,11 +353,11 @@ export const Hero = () => {
             margin: 0,
             animation: "fadeUp 0.7s ease 0.45s both",
           }}>
-            Discover the best deals, get personalized recommendations, and book
-            effortlessly with our intuitive AI-powered platform.
+            Réservez votre parking, planifiez un lavage, gérez votre garage ou
+            achetez vos billets d'événements — le tout en quelques secondes.
           </p>
 
-          {/* ── Bouton Search Flights Now – rendu exact comme ton image ── */}
+          {/* ── Bouton ── */}
           <button
             style={{
               position: "relative",
@@ -453,8 +365,8 @@ export const Hero = () => {
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "space-between",
-              padding: "clamp(5px, 0.2vw, 2px) clamp(2px, 3vw, 32px) clamp(1px, 1.2vw, 3px) clamp(36px, 5vw, 48px)", // ← hauteur réduite + espace droite pour cercle
-              background: "#00515a", // ton code couleur
+              padding: "clamp(5px, 0.2vw, 2px) clamp(2px, 3vw, 32px) clamp(1px, 1.2vw, 3px) clamp(36px, 5vw, 48px)",
+              background: "#00515a",
               color: "white",
               border: "none",
               borderRadius: "999px",
@@ -463,8 +375,8 @@ export const Hero = () => {
               cursor: "pointer",
               boxShadow: "0 6px 20px rgba(0,81,90,0.3)",
               transition: "all 0.28s ease",
-              minWidth: "clamp(220px, 32vw, 300px)", // largeur compacte
-              whiteSpace: "nowrap", // empêche le retour à la ligne
+              minWidth: "clamp(220px, 32vw, 300px)",
+              whiteSpace: "nowrap",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateY(-3px)";
@@ -475,36 +387,27 @@ export const Hero = () => {
               e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,81,90,0.3)";
             }}
           >
-            {/* Texte à gauche */}
             <span style={{ flex: 1, textAlign: "center", paddingRight: "clamp(8px, 1.5vw, 12px)" }}>
-              Search Flights Now
+              Télécharger l'Application
             </span>
-
-            {/* Cercle blanc grand et collé à droite */}
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "clamp(52px, 7vw, 64px)",      // ← GRAND comme dans ton image
-                height: "clamp(52px, 7vw, 64px)",
-                background: "#ffffff",                 // blanc pur
-                borderRadius: "50%",
-                marginRight: "-28px",                  // ← colle très fort à la bordure droite
-                color: "#00515a",                      // flèche en ta couleur thème
-                fontSize: "clamp(1.5rem, 2.4vw, 1.9rem)",
-                fontWeight: 900,
-                boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
-                transition: "transform 0.3s ease",
-              }}
-            >
+            <div style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "clamp(52px, 7vw, 64px)",
+              height: "clamp(52px, 7vw, 64px)",
+              background: "#ffffff",
+              borderRadius: "50%",
+              marginRight: "-28px",
+              color: "#00515a",
+              fontSize: "clamp(1.5rem, 2.4vw, 1.9rem)",
+              fontWeight: 900,
+              boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+              transition: "transform 0.3s ease",
+            }}>
               →
             </div>
           </button>
-
-
-
-
 
           {/* ══ MOCKUP MOBILE ══ */}
           <div style={{
@@ -515,7 +418,6 @@ export const Hero = () => {
             height: "clamp(320px, 44vw, 540px)",
             animation: "fadeUp 0.9s ease 0.9s both",
           }}>
-            {/* Halo de fond */}
             <div style={{
               position: "absolute",
               inset: "10% 5%",
@@ -524,7 +426,7 @@ export const Hero = () => {
               pointerEvents: "none",
             }} />
 
-            {/* TÉLÉPHONE CENTRAL (img1) */}
+            {/* TÉLÉPHONE CENTRAL */}
             <div style={{
               position: "absolute",
               left: "55%", top: "-100%",
@@ -533,50 +435,46 @@ export const Hero = () => {
               height: "clamp(700px, 90vw, 1100px)",
               zIndex: 4,
             }}>
-              <img src="/images/Hero/img11.png" alt="App mobile" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <img src="/images/Hero/img11.png" alt="App Ticketché" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             </div>
 
-            {/* CARTE GAUCHE GRANDE (img3) */}
+            {/* CARTE GAUCHE */}
             <div style={{
               position: "absolute",
-              left: "-10%",           // ← rapproche du téléphone (qui est à ~58%)
-              top: "30%",            // ← descend vers le bas
-              width: "clamp(200px, 35vw, 400px)",   // ← plus grande
+              left: "-12%", top: "30%",
+              width: "clamp(200px, 35vw, 400px)",
               borderRadius: "clamp(14px, 1.8vw, 22px)",
               overflow: "hidden",
               boxShadow: "0 20px 56px rgba(0,0,0,0.15), 0 4px 16px rgba(0,81,90,0.12)",
-              animation: "floatLeft 4.4s ease-in-out infinite",
-              zIndex: 6,             // ← au-dessus du téléphone (zIndex 4)
+              zIndex: 6,
             }}>
-              <img src="/images/Hero/img3.jpg" alt="Carte gauche" style={{ width: "100%", height: "auto", display: "block" }} />
+              <img src="/images/Hero/img3.jpg" alt="Parking Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
             </div>
 
-            {/* CARTE DROITE HAUT (img2) */}
+            {/* CARTE DROITE HAUT */}
             <div style={{
               position: "absolute",
-              right: "-5%", top: "20%",
+              right: "-9%", top: "20%",
               width: "clamp(200px, 250vw, 350px)",
               borderRadius: "clamp(14px, 1.8vw, 20px)",
               overflow: "hidden",
               boxShadow: "0 16px 44px rgba(0,0,0,0.13), 0 4px 14px rgba(0,81,90,0.11)",
               zIndex: 5,
-              animation: "floatRight2 5s ease-in-out infinite",
             }}>
-              <img src="/images/Hero/img2.png" alt="Carte droite haut" style={{ width: "100%", height: "auto", display: "block" }} />
+              <img src="/images/Hero/img2.png" alt="Événements Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
             </div>
 
-            {/* CARTE DROITE BAS (img4) */}
+            {/* CARTE DROITE BAS */}
             <div style={{
               position: "absolute",
-              right: "4%", bottom: "5%",
+              right: "-12%", bottom: "5%",
               width: "clamp(400px, 19vw, 300px)",
               borderRadius: "clamp(14px, 1.8vw, 20px)",
               overflow: "hidden",
               boxShadow: "0 16px 44px rgba(0,0,0,0.13), 0 4px 14px rgba(0,81,90,0.11)",
-              animation: "floatRight2 5s ease-in-out infinite",
               zIndex: 5,
             }}>
-              <img src="/images/Hero/img44.jpg" alt="Carte droite bas" style={{ width: "100%", height: "auto", display: "block" }} />
+              <img src="/images/Hero/img44.jpg" alt="Garage Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
             </div>
           </div>
 

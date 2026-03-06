@@ -34,12 +34,11 @@ export const Header = () => {
   const navLinks = [
     { href: "#events", label: "Événements" },
     { href: "#emplacements", label: "Emplacements" },
- //   { href: "/nos-services", label: "Services", isPage: true },
     { href: "/a-propos", label: "À propos", isPage: true },
     { href: "/contact", label: "FAQ & Contact", isPage: true },
   ];
 
-  // ─── ScrollSpy (supporte les sections chargées en async)
+  // ─── ScrollSpy
   useEffect(() => {
     const observedSections = new Set();
 
@@ -62,7 +61,6 @@ export const Header = () => {
       { root: null, rootMargin: "-20% 0px -60% 0px", threshold: 0 }
     );
 
-    // Observe une section si pas déjà observée
     const observeSection = (el) => {
       if (el.id && !observedSections.has(el.id)) {
         observedSections.add(el.id);
@@ -70,10 +68,8 @@ export const Header = () => {
       }
     };
 
-    // Observe les sections déjà présentes
     document.querySelectorAll("section[id]").forEach(observeSection);
 
-    // Observe les sections ajoutées dynamiquement (ex: après fetch API)
     const mutationObserver = new MutationObserver(() => {
       document.querySelectorAll("section[id]").forEach(observeSection);
     });
@@ -213,11 +209,20 @@ export const Header = () => {
         </div>
       </div>
 
-      {/* ─── CSS soulignement actif décalé ─── */}
+      {/* ─── CSS ─── */}
       <style jsx>{`
         .hdrLink {
+          font-size: clamp(0.92rem, 1.05vw, 1rem);    /* taille réduite ~15-16px */
+          font-weight: 600;
+          padding: 0 1rem;
+          color: #333;
+          transition: color 0.3s ease;
           position: relative;
           padding-bottom: 4px;
+        }
+        .hdrLink:hover,
+        .hdrLink.active {
+          color: #00c4cc;
         }
         .hdrLink.active::after {
           content: "";
@@ -228,6 +233,50 @@ export const Header = () => {
           height: 2px;
           background-color: #00c4cc;
           border-radius: 1px;
+        }
+
+        .hdrCta {
+          font-size: clamp(0.92rem, 1.05vw, 1rem);    /* même taille réduite */
+          font-weight: 700;
+          background: #00515a;
+          color: white;
+          padding: clamp(0.55rem, 0.9vw, 0.75rem) clamp(1.3rem, 1.8vw, 1.6rem);
+          border-radius: 999px;
+          transition: all 0.3s ease;
+          min-width: 130px;
+          text-align: center;
+        }
+        .hdrCta:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(0, 196, 204, 0.3);
+        }
+
+        .hdrMobileLink {
+          font-size: clamp(0.98rem, 4vw, 1.1rem);     /* réduit mais lisible */
+          font-weight: 600;
+          color: #333;
+          padding: 1rem 0;
+          display: block;
+          transition: color 0.3s;
+        }
+        .hdrMobileLink:hover {
+          color: #00515a;
+        }
+
+        .hdrMobileCta {
+          font-size: clamp(1.02rem, 4.5vw, 1.15rem);  /* légèrement plus gros */
+          font-weight: 700;
+          background: #00515a;
+          color: white;
+          padding: 1rem 1.5rem;
+          border-radius: 999px;
+          text-align: center;
+          display: block;
+          margin-top: 1.5rem;
+          transition: all 0.3s;
+        }
+        .hdrMobileCta:hover {
+          transform: translateY(-2px);
         }
       `}</style>
     </header>

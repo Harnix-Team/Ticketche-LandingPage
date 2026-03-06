@@ -29,11 +29,10 @@ export default function HowItWorks() {
   const ring3Ref = useRef(null);
   const [activeStep, setActiveStep] = useState(0);
   const stepsRef = useRef([]);
+  const [dotTop, setDotTop] = useState(10);
 
-  // Animate rings
   useEffect(() => {
-    let frame;
-    let a1 = 0, a2 = 0, a3 = 0;
+    let frame, a1 = 0, a2 = 0, a3 = 0;
     const animate = () => {
       a1 += 0.003; a2 -= 0.002; a3 += 0.0015;
       if (ring1Ref.current) ring1Ref.current.style.transform = `rotate(${a1}rad)`;
@@ -45,7 +44,6 @@ export default function HowItWorks() {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  // Auto-cycle steps
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveStep((prev) => (prev + 1) % steps.length);
@@ -53,24 +51,11 @@ export default function HowItWorks() {
     return () => clearInterval(interval);
   }, []);
 
-  // Compute dot Y position based on active step row
-  const getDotTop = () => {
-    const el = stepsRef.current[activeStep];
-    if (!el) return 0;
-    const parent = el.offsetParent;
-    let top = el.offsetTop + 10; // center vertically in row
-    return top;
-  };
-
-  const [dotTop, setDotTop] = useState(10);
-
   useEffect(() => {
-    const update = () => {
+    const t = setTimeout(() => {
       const el = stepsRef.current[activeStep];
       if (el) setDotTop(el.offsetTop + el.offsetHeight / 2 - 7);
-    };
-    // small delay to let layout settle
-    const t = setTimeout(update, 50);
+    }, 50);
     return () => clearTimeout(t);
   }, [activeStep]);
 
@@ -78,21 +63,26 @@ export default function HowItWorks() {
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap');
-        .hiw-section * { box-sizing: border-box; }
+
         .hiw-section {
           font-family: 'Archivo', sans-serif;
           background: #f8fafb;
           padding: clamp(60px, 8vw, 110px) clamp(20px, 5vw, 72px);
-          overflow: hidden;
+          overflow: visible;
+          box-sizing: border-box;
         }
+
         .hiw-inner {
           max-width: 1200px;
           margin: 0 auto;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: clamp(40px, 6vw, 100px);
+          gap: clamp(40px, 6vw, 80px);
           align-items: center;
+          box-sizing: border-box;
+          overflow: visible;
         }
+
         @media (max-width: 768px) {
           .hiw-inner { grid-template-columns: 1fr; }
           .hiw-left { order: 2; }
@@ -102,11 +92,15 @@ export default function HowItWorks() {
         /* ── LEFT ── */
         .hiw-left {
           position: relative;
+          width: 100%;
+          height: 560px;
           display: flex;
           align-items: center;
           justify-content: center;
-          height: clamp(460px, 100vw, 620px);
+          overflow: visible;
+          box-sizing: border-box;
         }
+
         .hiw-rings {
           position: absolute;
           inset: 0;
@@ -114,36 +108,70 @@ export default function HowItWorks() {
           align-items: center;
           justify-content: center;
         }
-        .hiw-ring {
-          position: absolute;
-          border-radius: 50%;
-          border: 1.5px dashed rgba(0,95,105,0.2);
-        }
-        .hiw-ring-1 { width: clamp(300px,42vw,480px); height: clamp(300px,42vw,480px); }
-        .hiw-ring-2 {
-          width: clamp(220px,30vw,350px); height: clamp(220px,30vw,350px);
-          border-color: rgba(0,201,167,0.25); border-style: solid; border-width: 1px;
-        }
-        .hiw-ring-3 {
-          width: clamp(380px,52vw,600px); height: clamp(380px,52vw,600px);
-          border-color: rgba(0,30,34,0.08); border-width: 1px;
-        }
-        .hiw-ring-dot {
-          position: absolute; width: 8px; height: 8px; border-radius: 50%;
-          background: #00c9a7; top: 50%; left: -4px; margin-top: -4px;
-          box-shadow: 0 0 10px rgba(0,201,167,0.6);
-        }
-        .hiw-ring-dot-2 {
-          top: -4px; left: 50%; margin-left: -4px;
-          background: #005f69; box-shadow: 0 0 10px rgba(0,95,105,0.5);
-        }
-        .hiw-ring-dot-3 {
-          top: 50%; left: auto; right: -4px; margin-top: -4px;
-          background: #00c9a7; width: 5px; height: 5px;
-        }
+
+       .hiw-ring {
+  position: absolute;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+/* Anneau 1 – pointillés, épais, couleur principale */
+.hiw-ring-1 {
+  width: 420px;
+  height: 420px;
+  border: 4px dashed #367e86;          /* ← POINTILLÉS + ÉPAIS + TA COULEUR */
+  opacity: 0.9;                         /* plus visible */
+}
+
+/* Anneau 2 – pointillés, un peu plus fin mais visible */
+.hiw-ring-2 {
+  width: 320px;
+  height: 320px;
+  border: 3.2px dashed #367e86;        /* ← POINTILLÉS + TA COULEUR */
+  opacity: 0.85;
+}
+
+/* Anneau 3 – pointillés, fond plus subtil */
+.hiw-ring-3 {
+  width: 520px;
+  height: 520px;
+  border: 2.8px dashed #367e86;        /* ← POINTILLÉS + TA COULEUR */
+  opacity: 0.75;
+}
+
+/* Points sur les anneaux – adaptés à la nouvelle couleur */
+.hiw-ring-dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #367e86;
+  top: 50%;
+  left: -6px;
+  margin-top: -6px;
+  box-shadow: 0 0 16px rgba(54, 126, 134, 0.9);
+}
+
+.hiw-ring-dot-2 {
+  top: -6px;
+  left: 50%;
+  margin-left: -6px;
+  background: #367e86;
+  box-shadow: 0 0 16px rgba(54, 126, 134, 0.9);
+}
+
+.hiw-ring-dot-3 {
+  top: 50%;
+  right: -6px;
+  margin-top: -6px;
+  background: #367e86;
+  width: 8px;
+  height: 8px;
+  box-shadow: 0 0 12px rgba(54, 126, 134, 0.8);
+}
         .hiw-platform {
           position: absolute;
-          width: clamp(300px,80vw,100px); height: clamp(20px,23vw,270px);
+          width: 240px; height: 240px;
           border-radius: 50%;
           background: radial-gradient(ellipse at 40% 30%, rgba(0,201,167,0.22) 0%, rgba(0,95,105,0.1) 45%, transparent 75%);
           border: 1.5px solid rgba(0,201,167,0.35);
@@ -151,137 +179,158 @@ export default function HowItWorks() {
           z-index: 8;
           transform: perspective(500px) rotateX(22deg);
         }
+
         .hiw-platform-shadow {
           position: absolute;
-          width: clamp(140px,18vw,210px); height: clamp(20px,2.5vw,30px);
+          width: 180px; height: 24px;
           border-radius: 50%;
           background: radial-gradient(ellipse, rgba(0,30,34,0.2) 0%, transparent 70%);
-          bottom: clamp(62px,8vw,92px); z-index: 7; filter: blur(10px);
+          bottom: 70px; z-index: 7; filter: blur(10px);
         }
-        .hiw-phone-wrap {
-          position: relative; z-index: 10;
-          filter: drop-shadow(0 48px 36px rgba(0,30,34,0.25)) drop-shadow(0 6px 12px rgba(0,30,34,0.12));
-          animation: phoneFloat 4s ease-in-out infinite;
-          transition: transform 0.6s ease;
-        }
-        .hiw-phone-wrap:hover { animation-play-state: paused; }
-        @keyframes phoneFloat {
-          0%,100% { transform: perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(0px); }
-          50%      { transform: perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(-12px); }
-        }
-        .hiw-phone-img {
-          width: clamp(800px,900vw,5000px); 
-          display: block; border-radius: 36px;
-        }
+
         .hiw-glow {
           position: absolute;
-          width: clamp(220px,30vw,340px); height: clamp(220px,30vw,340px);
+          width: 280px; height: 280px;
           border-radius: 50%;
           background: radial-gradient(circle, rgba(0,201,167,0.15) 0%, transparent 70%);
           z-index: 5; pointer-events: none;
         }
 
+        /* Phone — fixed pixel size, position absolute centered */
+       .hiw-phone-wrap {
+  position: absolute;
+  z-index: 10;
+  width: clamp(480px, 90vw, 1400px);  /* ← TAILLE TRÈS AUGMENTÉE : jusqu'à 1400px sur desktop */
+  max-width: 90vw;                    /* évite qu'elle dépasse trop sur très grand écran */
+  animation: phoneFloat 4s ease-in-out infinite;
+  filter: drop-shadow(0 50px 100px rgba(0,30,34,0.4));  /* ombre plus forte pour matcher la taille */
+}
+        .hiw-phone-wrap:hover { animation-play-state: paused; }
+
+        @keyframes phoneFloat {
+          0%,100% { transform: perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(0px); }
+          50%      { transform: perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(-12px); }
+        }
+
+        .hiw-phone-img {
+          width: 5500px;
+          height: auto;
+          display: block;
+          border-radius: 32px;
+        }
+
         /* ── RIGHT ── */
+        .hiw-right { box-sizing: border-box; }
+
         .hiw-heading {
-          font-size: clamp(1.7rem,3.5vw,2.8rem);
+          font-size: clamp(1.7rem, 3.5vw, 2.8rem);
           font-weight: 900; color: #0a1a1c;
           line-height: 1.12; letter-spacing: -0.03em;
-          margin: 0 0 clamp(28px,4vw,48px) 0;
+          margin: 0 0 clamp(28px, 4vw, 48px) 0;
         }
         .hiw-heading span { color: #00c9a7; }
 
-        /* Steps container — relative for the moving dot */
         .hiw-steps-wrap { position: relative; }
 
-        /* The single vertical line */
         .hiw-track {
           position: absolute;
           left: 6px; top: 10px; bottom: 10px;
           width: 2px;
-          background: linear-gradient(to bottom, rgba(0,201,167,0.15), rgba(0,201,167,0.05));
+          background: linear-gradient(to bottom, rgba(0,201,167,0.2), rgba(0,201,167,0.04));
         }
 
-        /* The moving dot */
         .hiw-moving-dot {
           position: absolute;
-          left: 0px;
+          left: 0;
           width: 14px; height: 14px;
           border-radius: 50%;
           background: #001e22;
           border: 3px solid #00c9a7;
-          box-shadow: 0 0 0 5px rgba(0,201,167,0.18), 0 0 14px rgba(0,201,167,0.4);
           transition: top 0.55s cubic-bezier(0.4, 0, 0.2, 1);
           z-index: 2;
+          animation: pulse 1.8s ease-out infinite;
         }
 
-        /* Pulse on dot */
         @keyframes pulse {
           0%   { box-shadow: 0 0 0 0px rgba(0,201,167,0.5), 0 0 14px rgba(0,201,167,0.4); }
           70%  { box-shadow: 0 0 0 8px rgba(0,201,167,0), 0 0 14px rgba(0,201,167,0.4); }
           100% { box-shadow: 0 0 0 0px rgba(0,201,167,0), 0 0 14px rgba(0,201,167,0.4); }
         }
-        .hiw-moving-dot { animation: pulse 1.8s ease-out infinite; }
 
-        /* Each step row */
         .hiw-step {
           display: flex;
-          padding: clamp(10px,1.4vw,16px) clamp(10px,1.4vw,16px);
-          padding-left: 34px;
+          padding: 12px 14px 12px 34px;
           border-radius: 12px;
           cursor: pointer;
           transition: background 0.3s ease;
         }
         .hiw-step:hover { background: rgba(0,201,167,0.04); }
 
-        /* titre — toujours visible, s'intensifie au passage */
-.hiw-step-title {
-  font-size: clamp(0.9rem,1.3vw,1.05rem);
-  font-weight: 700;
-  margin: 0;
-  letter-spacing: -0.01em;
-  transition: color 0.4s ease, transform 0.4s ease;
-  color: #9ca3af;
-}
-.hiw-step.active .hiw-step-title {
-  color: #0a1a1c;
-  transform: translateX(4px);
-}
+        .hiw-step-title {
+          font-size: 1rem;
+          font-weight: 700;
+          margin: 0;
+          letter-spacing: -0.01em;
+          color: #c4c9cc;
+          transition: color 0.4s ease, transform 0.4s ease;
+        }
+        .hiw-step.active .hiw-step-title {
+          color: #0a1a1c;
+          transform: translateX(4px);
+        }
 
-/* description — toujours visible */
-.hiw-step-desc {
-  font-size: clamp(0.76rem,1vw,0.86rem);
-  color: #9ca3af;
-  line-height: 1.65;
-  margin-top: 4px;
-  transition: color 0.4s ease, transform 0.4s ease;
-}
-.hiw-step.active .hiw-step-desc {
-  color: #6b7280;
-  transform: translateX(4px);
-}
+        .hiw-step-desc {
+          font-size: 0.85rem;
+          color: #c4c9cc;
+          line-height: 1.65;
+          margin-top: 4px;
+          transition: color 0.4s ease, transform 0.4s ease;
+        }
+        .hiw-step.active .hiw-step-desc {
+          color: #6b7280;
+          transform: translateX(4px);
+        }
       `}</style>
 
       <section className="hiw-section">
         <div className="hiw-inner">
 
-          {/* LEFT */}
-          <div className="hiw-left">
-            <div className="hiw-rings">
-              <div ref={ring3Ref} className="hiw-ring hiw-ring-3" />
-              <div ref={ring1Ref} className="hiw-ring hiw-ring-1">
-                <div className="hiw-ring-dot" />
-                <div className="hiw-ring-dot hiw-ring-dot-2" />
-                <div className="hiw-ring-dot hiw-ring-dot-3" />
-              </div>
-              <div ref={ring2Ref} className="hiw-ring hiw-ring-2" />
-            </div>
-            <div className="hiw-glow" />
-            <div className="hiw-platform" />
-            <div className="hiw-platform-shadow" />
-            <div className="hiw-phone-wrap">
-              <img src="/images/Hero/accueil.png" alt="Ticketché app mockup" className="hiw-phone-img" />
-            </div>
-          </div>
+         {/* LEFT – partie avec l’image très grande */}
+<div className="hiw-left">
+  <div className="hiw-rings">
+    <div ref={ring3Ref} className="hiw-ring hiw-ring-3" />
+    <div ref={ring1Ref} className="hiw-ring hiw-ring-1">
+      <div className="hiw-ring-dot" />
+      <div className="hiw-ring-dot hiw-ring-dot-2" />
+      <div className="hiw-ring-dot hiw-ring-dot-3" />
+    </div>
+    <div ref={ring2Ref} className="hiw-ring hiw-ring-2" />
+  </div>
+
+  <div className="hiw-glow" />
+  <div className="hiw-platform" />
+  <div className="hiw-platform-shadow" />
+
+  {/* Mockup téléphone – TAILLE TRÈS AUGMENTÉE */}
+  <div className="hiw-phone-wrap" style={{
+    width: "clamp(480px, 85vw, 1100px)",      // ← très large sur desktop (1100px max)
+    transform: "scale(1.4)",                   // ← grossit de 40% supplémentaire
+    transformOrigin: "center center",
+    animation: "phoneFloat 4s ease-in-out infinite",
+    filter: "drop-shadow(0 40px 80px rgba(0,30,34,0.35))", // ombre plus forte
+  }}>
+    <img
+      src="/images/Hero/accueil.png"
+      alt="Ticketché app mockup"
+      style={{
+        width: "100%",
+        height: "auto",
+        display: "block",
+        borderRadius: "clamp(32px, 4vw, 56px)", // coins plus arrondis pour grand format
+      }}
+    />
+  </div>
+</div>
 
           {/* RIGHT */}
           <div className="hiw-right">
@@ -292,13 +341,8 @@ export default function HowItWorks() {
             </h2>
 
             <div className="hiw-steps-wrap">
-              {/* Vertical track */}
               <div className="hiw-track" />
-
-              {/* Single moving dot */}
               <div className="hiw-moving-dot" style={{ top: `${dotTop}px` }} />
-
-              {/* Steps */}
               {steps.map((step, i) => (
                 <div
                   key={i}
