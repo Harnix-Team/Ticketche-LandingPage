@@ -10,6 +10,7 @@ export default function AppNotificationCompact() {
   const [deviceOS, setDeviceOS] = useState('other');
 
   
+  
   useEffect(() => {
     setDeviceOS(getDeviceOS());
   }, []);
