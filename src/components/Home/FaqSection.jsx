@@ -39,11 +39,9 @@ const images = [
   "/images/faq/faq3.jpg",
 ];
 
-// SliderSlot : affiche une image qui se remplace par glissement bas→haut
 function SliderSlot({ current, next, animating }) {
   return (
     <div style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden", borderRadius: "inherit" }}>
-      {/* Image courante : sort vers le haut */}
       <img
         src={current}
         alt=""
@@ -55,7 +53,6 @@ function SliderSlot({ current, next, animating }) {
           zIndex: 2,
         }}
       />
-      {/* Image suivante : entre par le bas */}
       <img
         src={next}
         alt=""
@@ -73,7 +70,7 @@ function SliderSlot({ current, next, animating }) {
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState(1);
-  const [step, setStep] = useState(0);           // index de paire actuelle
+  const [step, setStep] = useState(0);
   const [animating, setAnimating] = useState(false);
   const pairCount = Math.ceil(images.length / 2);
 
@@ -90,30 +87,28 @@ export default function FAQSection() {
 
   const toggle = (i) => setOpenIndex(openIndex === i ? null : i);
 
-  // Images courantes et suivantes (par paires)
   const curTop    = images[(step * 2) % images.length];
   const curBottom = images[(step * 2 + 1) % images.length];
   const nxtStep   = (step + 1) % pairCount;
   const nxtTop    = images[(nxtStep * 2) % images.length];
   const nxtBottom = images[(nxtStep * 2 + 1) % images.length];
 
-  const BORDER_R = "clamp(14px, 2vw, 22px)";
-  const OVERFLOW = "clamp(20px, 2.5vw, 30px)";  // combien les images débordent
+  const BORDER_R = "clamp(12px, 1.6vw, 18px)";
+  const OVERFLOW = "clamp(16px, 2vw, 24px)";
 
   return (
     <section style={{
-      background: "#8daeb1",
-      padding: `clamp(60px, 8vw, 100px) clamp(20px, 6vw, 80px)`,
+      padding: `clamp(50px, 7vw, 88px) clamp(20px, 6vw, 80px)`,
       fontFamily: "'Archivo', sans-serif",
     }}>
       <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
 
       <div style={{
-        maxWidth: "1400px",
+        maxWidth: "1200px",
         margin: "0 auto",
         display: "grid",
         gridTemplateColumns: "1.2fr 0.8fr",
-        gap: "clamp(40px, 5vw, 80px)",
+        gap: "clamp(36px, 4.5vw, 70px)",
         alignItems: "center",
       }}>
 
@@ -121,11 +116,11 @@ export default function FAQSection() {
         <div>
           <h2 style={{
             fontFamily: "'Archivo', sans-serif",
-            fontSize: "clamp(1.8rem, 2.8vw, 2.8rem)",
+            fontSize: "clamp(1.6rem, 2.4vw, 2.4rem)",
             fontWeight: 900,
             lineHeight: 1.1,
             color: "#001e22",
-            margin: "0 0 clamp(32px, 4vw, 48px) 0",
+            margin: "0 0 clamp(28px, 3.5vw, 42px) 0",
           }}>
             Vous avez des questions<br />sur Ticketché ?
           </h2>
@@ -136,12 +131,12 @@ export default function FAQSection() {
                 onClick={() => toggle(i)}
                 style={{
                   width: "100%", display: "flex", justifyContent: "space-between",
-                  alignItems: "center", padding: "clamp(14px,2vw,20px) 0",
+                  alignItems: "center", padding: "clamp(12px,1.7vw,18px) 0",
                   background: "none", border: "none", cursor: "pointer", textAlign: "left", gap: "16px",
                 }}
               >
                 <span style={{
-                  fontSize: "clamp(1rem, 1.2vw, 1.2rem)",
+                  fontSize: "clamp(0.92rem, 1.1vw, 1.1rem)",
                   fontWeight: openIndex === i ? 700 : 500,
                   color: openIndex === i ? "#001e22" : "#2a4a4d",
                   transition: "all 0.2s", lineHeight: 1.4,
@@ -149,19 +144,19 @@ export default function FAQSection() {
                   {faq.question}
                 </span>
                 <span style={{
-                  width: "28px", height: "28px", borderRadius: "50%",
+                  width: "26px", height: "26px", borderRadius: "50%",
                   background: openIndex === i ? "#04545d" : "rgba(0,30,34,0.1)",
                   color: openIndex === i ? "#fff" : "#2a4a4d",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: "1.2rem", fontWeight: 300, flexShrink: 0, transition: "all 0.25s ease",
+                  fontSize: "1.1rem", fontWeight: 300, flexShrink: 0, transition: "all 0.25s ease",
                 }}>
                   {openIndex === i ? "−" : "+"}
                 </span>
               </button>
               <div style={{ maxHeight: openIndex === i ? "200px" : "0", overflow: "hidden", transition: "max-height 0.35s ease" }}>
                 <p style={{
-                  fontSize: "clamp(0.95rem,1.3vw,1.1rem)", color: "rgba(0,30,34,0.65)",
-                  lineHeight: 1.75, paddingBottom: "clamp(14px,2vw,20px)", margin: 0,
+                  fontSize: "clamp(0.88rem,1.1vw,1rem)", color: "rgba(0,30,34,0.65)",
+                  lineHeight: 1.75, paddingBottom: "clamp(12px,1.7vw,18px)", margin: 0,
                 }}>
                   {faq.answer}
                 </p>
@@ -172,63 +167,59 @@ export default function FAQSection() {
 
         {/* ── CARTE + 2 IMAGES ── */}
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-          {/*
-            Le wrapper a un padding vertical = OVERFLOW
-            pour que les images qui débordent ne soient pas clippées par le parent.
-          */}
           <div style={{
             position: "relative",
-            width: "clamp(460px, 62vw, 720px)",
+            width: "clamp(320px, 42vw, 520px)",
             paddingTop: OVERFLOW,
             paddingBottom: OVERFLOW,
           }}>
 
-            {/* Carte verte — overflow: visible pour laisser déborder */}
+            {/* Carte verte */}
             <div style={{
               background: "#04545d",
-              borderRadius: "clamp(24px, 3vw, 40px)",
+              borderRadius: "clamp(20px, 2.5vw, 34px)",
               width: "100%",
-              height: "clamp(420px, 54vw, 620px)",
+              height: "clamp(340px, 44vw, 500px)",
               position: "relative",
               overflow: "visible",
-              boxShadow: "0 30px 80px rgba(0,30,34,0.35)",
+              boxShadow: "0 24px 64px rgba(0,30,34,0.32)",
             }}>
 
               {/* Halo déco */}
               <div style={{
-                position: "absolute", top: "-40px", right: "-40px",
-                width: "180px", height: "180px", borderRadius: "50%",
+                position: "absolute", top: "-36px", right: "-36px",
+                width: "160px", height: "160px", borderRadius: "50%",
                 background: "radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%)",
                 pointerEvents: "none",
               }} />
 
-              {/* ── IMAGE HAUT : déborde vers le haut ── */}
+              {/* IMAGE HAUT */}
               <div style={{
                 position: "absolute",
-                top: `calc(-1 * ${OVERFLOW})`,      /* déborde au-dessus */
-                left: "clamp(20px, 3vw, 32px)",
-                right: "clamp(20px, 3vw, 32px)",
-                bottom: "calc(50% + 8px)",
+                top: `calc(-1 * ${OVERFLOW})`,
+                left: "clamp(16px, 2.5vw, 28px)",
+                right: "clamp(16px, 2.5vw, 28px)",
+                bottom: "calc(50% + 7px)",
                 borderRadius: BORDER_R,
                 overflow: "hidden",
-                border: "6px solid #ffffff",
-                boxShadow: "0 16px 48px rgba(0,30,34,0.32)",
+                border: "5px solid #ffffff",
+                boxShadow: "0 12px 40px rgba(0,30,34,0.30)",
                 zIndex: 5,
               }}>
                 <SliderSlot current={curTop} next={nxtTop} animating={animating} />
               </div>
 
-              {/* ── IMAGE BAS : déborde vers le bas ── */}
+              {/* IMAGE BAS */}
               <div style={{
                 position: "absolute",
-                top: "calc(50% + 8px)",
-                left: "clamp(20px, 3vw, 32px)",
-                right: "clamp(20px, 3vw, 32px)",
-                bottom: `calc(-1 * ${OVERFLOW})`,    /* déborde en dessous */
+                top: "calc(50% + 7px)",
+                left: "clamp(16px, 2.5vw, 28px)",
+                right: "clamp(16px, 2.5vw, 28px)",
+                bottom: `calc(-1 * ${OVERFLOW})`,
                 borderRadius: BORDER_R,
                 overflow: "hidden",
-                border: "6px solid #ffffff",
-                boxShadow: "0 16px 48px rgba(0,30,34,0.32)",
+                border: "5px solid #ffffff",
+                boxShadow: "0 12px 40px rgba(0,30,34,0.30)",
                 zIndex: 5,
               }}>
                 <SliderSlot current={curBottom} next={nxtBottom} animating={animating} />
@@ -251,7 +242,7 @@ export default function FAQSection() {
                   key={i}
                   onClick={() => setStep(i)}
                   style={{
-                    width: step === i ? "20px" : "6px",
+                    width: step === i ? "18px" : "6px",
                     height: "6px",
                     borderRadius: "3px",
                     background: step === i ? "#001e22" : "rgba(0,30,34,0.25)",

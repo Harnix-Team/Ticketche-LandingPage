@@ -99,7 +99,6 @@ export default function ActiveUsers() {
 
   return (
     <section style={{
-      background: "#fff",
       fontFamily: "'Archivo', sans-serif",
       padding: "clamp(60px,8vw,100px) clamp(24px,5vw,80px)",
       overflow: "hidden",

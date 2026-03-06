@@ -21,9 +21,10 @@ export default function Home() {
       <TicketcheFonction />
       <HowItWorks />
       <FAQSection />
-      <CTADownload />
-      <ActiveUsers />
       <ReviewsSection />
+      <ActiveUsers />
+      {/* <CTADownload /> */}
+
       {/* <About />
       <EventsCarousel />
       <EstablishmentsSection />

@@ -64,265 +64,165 @@ export default function HowItWorks() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap');
 
-        .hiw-section {
-          font-family: 'Archivo', sans-serif;
-          background: #f8fafb;
-          padding: clamp(80px, 10vw, 140px) clamp(20px, 5vw, 100px);
-          overflow: visible;
-          box-sizing: border-box;
-        }
-
-        .hiw-inner {
-          max-width: 1200px;
-          margin: 0 auto;
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: clamp(40px, 6vw, 80px);
-          align-items: center;
-          box-sizing: border-box;
-          overflow: visible;
-        }
-
-        @media (max-width: 768px) {
-          .hiw-inner { grid-template-columns: 1fr; }
-          .hiw-left { order: 2; }
-          .hiw-right { order: 1; }
-        }
-
-        .hiw-left {
-          position: relative;
-          width: 100%;
-          height: 560px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: visible;
-          box-sizing: border-box;
-        }
-
-        .hiw-rings {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .hiw-ring {
-          position: absolute;
-          border-radius: 50%;
-          box-sizing: border-box;
-        }
-
-        .hiw-ring-1 {
-          width: 420px; height: 420px;
-          border: 4px dashed #367e86;
-          opacity: 0.9;
-        }
-        .hiw-ring-2 {
-          width: 320px; height: 320px;
-          border: 3.2px dashed #367e86;
-          opacity: 0.85;
-        }
-        .hiw-ring-3 {
-          width: 520px; height: 520px;
-          border: 2.8px dashed #367e86;
-          opacity: 0.75;
-        }
-
-        .hiw-ring-dot {
-          position: absolute;
-          width: 12px; height: 12px;
-          border-radius: 50%;
-          background: #367e86;
-          top: 50%; left: -6px;
-          margin-top: -6px;
-          box-shadow: 0 0 16px rgba(54,126,134,0.9);
-        }
-        .hiw-ring-dot-2 {
-          top: -6px; left: 50%;
-          margin-left: -6px;
-          background: #367e86;
-          box-shadow: 0 0 16px rgba(54,126,134,0.9);
-        }
-        .hiw-ring-dot-3 {
-          top: 50%; right: -6px;
-          margin-top: -6px;
-          background: #367e86;
-          width: 8px; height: 8px;
-          box-shadow: 0 0 12px rgba(54,126,134,0.8);
-        }
-
-        .hiw-platform {
-          position: absolute;
-          width: 240px; height: 240px;
-          border-radius: 50%;
-          background: radial-gradient(ellipse at 40% 30%, rgba(0,201,167,0.22) 0%, rgba(0,95,105,0.1) 45%, transparent 75%);
-          border: 1.5px solid rgba(0,201,167,0.35);
-          box-shadow: 0 32px 64px rgba(0,30,34,0.2), inset 0 -6px 20px rgba(0,201,167,0.1), 0 0 0 10px rgba(0,201,167,0.04);
-          z-index: 8;
-          transform: perspective(500px) rotateX(22deg);
-        }
-
-        .hiw-platform-shadow {
-          position: absolute;
-          width: 180px; height: 24px;
-          border-radius: 50%;
-          background: radial-gradient(ellipse, rgba(0,30,34,0.2) 0%, transparent 70%);
-          bottom: 70px; z-index: 7; filter: blur(10px);
-        }
-
-        .hiw-glow {
-          position: absolute;
-          width: 280px; height: 280px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(0,201,167,0.15) 0%, transparent 70%);
-          z-index: 5; pointer-events: none;
-        }
-
-        .hiw-phone-wrap {
-          position: absolute;
-          z-index: 10;
-          width: clamp(480px, 85vw, 1100px);
-          transform: scale(1.4);
-          transform-origin: center center;
-          animation: phoneFloat 4s ease-in-out infinite;
-          filter: drop-shadow(0 40px 80px rgba(0,30,34,0.35));
-        }
-        .hiw-phone-wrap:hover { animation-play-state: paused; }
-
         @keyframes phoneFloat {
-          0%,100% { transform: scale(1.4) perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(0px); }
-          50%      { transform: scale(1.4) perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(-12px); }
+          0%,100% { transform: scale(1.2) perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(0px); }
+          50%      { transform: scale(1.2) perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(-10px); }
         }
-
-        .hiw-phone-img {
-          width: 100%;
-          height: auto;
-          display: block;
-          border-radius: clamp(32px, 4vw, 56px);
-        }
-
-        .hiw-right { box-sizing: border-box; }
-
-        .hiw-heading {
-          font-size: clamp(1.7rem, 3.5vw, 2.8rem);
-          font-weight: 900; color: #0a1a1c;
-          line-height: 1.12; letter-spacing: -0.03em;
-          margin: 0 0 clamp(28px, 4vw, 48px) 0;
-        }
-        .hiw-heading span { color: #00515a; }
-
-        .hiw-steps-wrap { position: relative; }
-
-        .hiw-track {
-          position: absolute;
-          left: 6px; top: 10px; bottom: 10px;
-          width: 2px;
-          background: linear-gradient(to bottom, rgba(0,201,167,0.2), rgba(0,201,167,0.04));
-        }
-
-        .hiw-moving-dot {
-          position: absolute;
-          left: 0;
-          width: 14px; height: 14px;
-          border-radius: 50%;
-          background: #001e22;
-          border: 3px solid #00515a;
-          transition: top 0.55s cubic-bezier(0.4,0,0.2,1);
-          z-index: 2;
-          animation: pulse 1.8s ease-out infinite;
-        }
-
         @keyframes pulse {
           0%   { box-shadow: 0 0 0 0px rgba(0,201,167,0.5), 0 0 14px rgba(0,201,167,0.4); }
           70%  { box-shadow: 0 0 0 8px rgba(0,201,167,0), 0 0 14px rgba(0,201,167,0.4); }
           100% { box-shadow: 0 0 0 0px rgba(0,201,167,0), 0 0 14px rgba(0,201,167,0.4); }
         }
-
-        .hiw-step {
-          display: flex;
-          padding: 12px 14px 12px 34px;
-          border-radius: 12px;
-          cursor: pointer;
-          transition: background 0.3s ease;
+        .animate-phoneFloat {
+          animation: phoneFloat 4s ease-in-out infinite;
         }
-        .hiw-step:hover { background: rgba(0,201,167,0.04); }
-
-        .hiw-step-title {
-          font-size: clamp(1.15rem, 1.8vw, 1.35rem);
-          font-weight: 800;
-          margin: 0;
-          letter-spacing: -0.01em;
-          color: #000000;
-          transition: color 0.4s ease, transform 0.4s ease, font-weight 0.3s ease;
+        .animate-phoneFloat:hover {
+          animation-play-state: paused;
         }
-        .hiw-step.active .hiw-step-title {
-          color: #00515a;
-          font-weight: 900;
-          transform: translateX(6px);
-        }
-
-        .hiw-step-desc {
-          font-size: clamp(0.95rem, 1.4vw, 1.1rem);
-          color: #c4c9cc;
-          line-height: 1.7;
-          margin-top: 6px;
-          transition: color 0.4s ease, transform 0.4s ease;
-        }
-        .hiw-step.active .hiw-step-desc {
-          color: #6b7280;
-          transform: translateX(4px);
+        .animate-pulse-dot {
+          animation: pulse 1.8s ease-out infinite;
         }
       `}</style>
 
-      <section className="hiw-section">
-        <div className="hiw-inner">
+      <section
+        className="bg-[#f8fafb] overflow-visible box-border"
+        style={{
+          fontFamily: "'Archivo', sans-serif",
+          padding: "clamp(50px,7vw,90px) clamp(16px,4vw,80px)",
+        }}
+      >
+        <div
+          className="max-w-[1100px] mx-auto grid gap-[clamp(32px,5vw,64px)] items-center overflow-visible box-border
+            grid-cols-1 md:grid-cols-2"
+        >
+          {/* ── LEFT — Rings + Phone ── */}
+          <div className="relative flex items-center justify-center overflow-visible box-border order-2 md:order-1 h-[420px] md:h-[460px] w-full">
 
-          <div className="hiw-left">
-            <div className="hiw-rings">
-              <div ref={ring3Ref} className="hiw-ring hiw-ring-3" />
-              <div ref={ring1Ref} className="hiw-ring hiw-ring-1">
-                <div className="hiw-ring-dot" />
-                <div className="hiw-ring-dot hiw-ring-dot-2" />
-                <div className="hiw-ring-dot hiw-ring-dot-3" />
+            {/* Rings */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              {/* Ring 3 — outer */}
+              <div
+                ref={ring3Ref}
+                className="absolute rounded-full box-border border-[2.5px] border-dashed border-[#367e86] opacity-75"
+                style={{ width: 390, height: 390 }}
+              />
+              {/* Ring 1 — mid with dots */}
+              <div
+                ref={ring1Ref}
+                className="absolute rounded-full box-border border-[3.5px] border-dashed border-[#367e86] opacity-90"
+                style={{ width: 310, height: 310 }}
+              >
+                {/* dot left */}
+                <div className="absolute w-[11px] h-[11px] rounded-full bg-[#367e86] top-1/2 left-[-5.5px] -translate-y-1/2 shadow-[0_0_16px_rgba(54,126,134,0.9)]" />
+                {/* dot top */}
+                <div className="absolute w-[11px] h-[11px] rounded-full bg-[#367e86] top-[-5.5px] left-1/2 -translate-x-1/2 shadow-[0_0_16px_rgba(54,126,134,0.9)]" />
+                {/* dot right */}
+                <div className="absolute w-[8px] h-[8px] rounded-full bg-[#367e86] top-1/2 right-[-4px] -translate-y-1/2 shadow-[0_0_12px_rgba(54,126,134,0.8)]" />
               </div>
-              <div ref={ring2Ref} className="hiw-ring hiw-ring-2" />
+              {/* Ring 2 — inner */}
+              <div
+                ref={ring2Ref}
+                className="absolute rounded-full box-border border-[3px] border-dashed border-[#367e86] opacity-85"
+                style={{ width: 235, height: 235 }}
+              />
             </div>
 
-            <div className="hiw-glow" />
-            <div className="hiw-platform" />
-            <div className="hiw-platform-shadow" />
+            {/* Glow */}
+            <div
+              className="absolute w-[240px] h-[240px] rounded-full z-[5] pointer-events-none"
+              style={{ background: "radial-gradient(circle, rgba(0,201,167,0.15) 0%, transparent 70%)" }}
+            />
 
-            <div className="hiw-phone-wrap">
+            {/* Platform */}
+            <div
+              className="absolute w-[190px] h-[190px] rounded-full z-[8]"
+              style={{
+                background: "radial-gradient(ellipse at 40% 30%, rgba(0,201,167,0.22) 0%, rgba(0,95,105,0.1) 45%, transparent 75%)",
+                border: "1.5px solid rgba(0,201,167,0.35)",
+                boxShadow: "0 24px 48px rgba(0,30,34,0.2), inset 0 -6px 20px rgba(0,201,167,0.1), 0 0 0 10px rgba(0,201,167,0.04)",
+                transform: "perspective(500px) rotateX(22deg)",
+              }}
+            />
+
+            {/* Platform shadow */}
+            <div
+              className="absolute z-[7] blur-[10px]"
+              style={{
+                width: 150,
+                height: 20,
+                borderRadius: "50%",
+                background: "radial-gradient(ellipse, rgba(0,30,34,0.2) 0%, transparent 70%)",
+                bottom: 68,
+              }}
+            />
+
+            {/* Phone */}
+            <div
+              className="absolute z-[10] animate-phoneFloat [filter:drop-shadow(0_32px_64px_rgba(0,30,34,0.35))]"
+              style={{ width: "clamp(340px,60vw,800px)" }}
+            >
               <img
                 src="/images/Hero/orbe.png"
                 alt="Ticketché app mockup"
-                className="hiw-phone-img"
+                className="w-full h-auto block"
+                style={{ borderRadius: "clamp(24px,3vw,44px)" }}
               />
             </div>
           </div>
 
-          <div className="hiw-right">
-            <h2 className="hiw-heading">
-              4 Étapes Rapides<br />
-              Pour Utiliser<br />
-              <span>Nos Services</span>
+          {/* ── RIGHT — Steps ── */}
+          <div className="box-border order-1 md:order-2">
+            <h2
+              className="font-black text-[#0a1a1c] leading-[1.12] tracking-[-0.03em] mb-[clamp(22px,3.5vw,40px)] m-0"
+              style={{ fontSize: "clamp(1.5rem,3vw,2.4rem)" }}
+            >
+              4 Étapes rapides
+              pour utiliser
+              <span className="text-[#00515a]"> ticketché</span>
             </h2>
 
-            <div className="hiw-steps-wrap">
-              <div className="hiw-track" />
-              <div className="hiw-moving-dot" style={{ top: `${dotTop}px` }} />
+            <div className="relative">
+              {/* Track */}
+              <div
+                className="absolute left-[6px] top-[10px] bottom-[10px] w-[2px]"
+                style={{ background: "linear-gradient(to bottom, rgba(0,201,167,0.2), rgba(0,201,167,0.04))" }}
+              />
+
+              {/* Moving dot */}
+              <div
+                className="absolute left-0 w-[14px] h-[14px] rounded-full bg-[#001e22] border-[3px] border-[#00515a] z-[2] animate-pulse-dot transition-[top] duration-[550ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+                style={{ top: `${dotTop}px` }}
+              />
+
               {steps.map((step, i) => (
                 <div
                   key={i}
                   ref={(el) => (stepsRef.current[i] = el)}
-                  className={`hiw-step ${i === activeStep ? "active" : ""}`}
+                  className={`flex pl-[34px] pr-[14px] py-[10px] rounded-xl cursor-pointer transition-colors duration-300
+                    ${i === activeStep ? "bg-[rgba(0,201,167,0.04)]" : "hover:bg-[rgba(0,201,167,0.04)]"}`}
                   onClick={() => setActiveStep(i)}
                 >
                   <div>
-                    <h3 className="hiw-step-title">{step.title}</h3>
-                    <p className="hiw-step-desc">{step.description}</p>
+                    <h3
+                      className={`font-extrabold m-0 tracking-[-0.01em] transition-all duration-400
+                        ${i === activeStep
+                          ? "text-[#00515a] font-black translate-x-[6px]"
+                          : "text-black"
+                        }`}
+                      style={{ fontSize: "clamp(1rem,1.6vw,1.2rem)" }}
+                    >
+                      {step.title}
+                    </h3>
+                    <p
+                      className={`leading-[1.7] mt-[5px] m-0 transition-all duration-400
+                        ${i === activeStep
+                          ? "text-[#6b7280] translate-x-[4px]"
+                          : "text-[#c4c9cc]"
+                        }`}
+                      style={{ fontSize: "clamp(0.85rem,1.2vw,1rem)" }}
+                    >
+                      {step.description}
+                    </p>
                   </div>
                 </div>
               ))}

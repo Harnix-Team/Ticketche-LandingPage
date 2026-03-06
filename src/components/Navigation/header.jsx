@@ -105,7 +105,7 @@ export const Header = () => {
 
               {/* Nav + CTA */}
               <div className={`hdrRight ${isScrolled ? "scrolled" : ""}`}>
-                <nav className="hdrNav">
+                <nav>
                   {navLinks.map(({ href, label, isPage }) =>
                     isPage ? (
                       <Link
@@ -212,7 +212,6 @@ export const Header = () => {
       {/* ─── CSS ─── */}
       <style jsx>{`
         .hdrLink {
-          font-size: clamp(0.92rem, 1.05vw, 1rem);    /* taille réduite ~15-16px */
           font-weight: 600;
           padding: 0 1rem;
           color: #333;

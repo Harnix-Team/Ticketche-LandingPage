@@ -3,7 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FacebookLogo, InstagramLogo, LinkedinLogo } from "@phosphor-icons/react";
+import {
+  FacebookLogo,
+  InstagramLogo,
+  LinkedinLogo,
+} from "@phosphor-icons/react";
 
 export const Footer = () => {
   const pathname = usePathname();
@@ -32,7 +36,10 @@ export const Footer = () => {
   ];
 
   const policyLinks = [
-    { label: "Politique de confidentialité", href: "/politique-confidentialite" },
+    {
+      label: "Politique de confidentialité",
+      href: "/politique-confidentialite",
+    },
     { label: "Conditions d'utilisation", href: "/conditions-utilisation" },
     { label: "Mentions légales", href: "/mentions-legales" },
   ];
@@ -100,9 +107,9 @@ export const Footer = () => {
   .tck-brand { display: flex; flex-direction: column; gap: 14px; max-width: 280px; }
 
   .tck-tagline {
-    font-size: 12px; /* ← -1 */
+    font-size: 10px;
     font-weight: 400;
-    color: #4f7f85;
+    color: #000;
     line-height: 1.8;
   }
 
@@ -133,7 +140,7 @@ export const Footer = () => {
   /* Social buttons */
   .tck-socials { display: flex; gap: 10px; }
   .tck-social {
-    width: 38px; height: 38px;
+    width: 40px; height: 40px;
     border-radius: 12px;
     background: rgba(0,105,116,0.08);
     border: 1px solid rgba(0,105,116,0.2);
@@ -260,11 +267,15 @@ export const Footer = () => {
 
       <footer className="tck-footer">
         <div className="tck-footer-inner">
-
           {/* ── TOP ── */}
           <div className="tck-top">
             <div className="tck-brand">
-              <Image src="/images/logo.png" alt="Ticketché Logo" width={148} height={50} />
+              <Image
+                src="/images/logo.png"
+                alt="Ticketché Logo"
+                width={148}
+                height={50}
+              />
               <p className="tck-tagline">
                 <b>ticketché</b> simplifie la gestion de vos véhicules avec une
                 solution numérique innovante et intuitive.
@@ -274,16 +285,35 @@ export const Footer = () => {
             <div className="tck-actions">
               <div className="tck-app-row">
                 {appStoreLinks.map(({ href, src, alt }) => (
-                  <a key={alt} href={href} target="_blank" rel="noopener noreferrer" className="tck-app-btn">
+                  <a
+                    key={alt}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tck-app-btn"
+                  >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt={alt} style={{ height: "36px", width: "auto", display: "block" }} />
+                    <img
+                      src={src}
+                      alt={alt}
+                      style={{
+                        height: "36px",
+                        width: "auto",
+                        display: "block",
+                      }}
+                    />
                   </a>
                 ))}
               </div>
               <div className="tck-socials">
                 {socialLinks.map(({ icon: Icon, href, label }) => (
-                  <Link key={label} href={href} aria-label={label} className="tck-social">
-                    <Icon size={16} weight="fill" />
+                  <Link
+                    key={label}
+                    href={href}
+                    aria-label={label}
+                    className="tck-social"
+                  >
+                    <Icon size={22} weight="fill" />
                   </Link>
                 ))}
               </div>
@@ -297,7 +327,13 @@ export const Footer = () => {
               <ul>
                 {navigationLinks.map((link, i) => (
                   <li key={i}>
-                    <Link href={link.href.startsWith("#") ? getLinkHref(link.href) : link.href}>
+                    <Link
+                      href={
+                        link.href.startsWith("#")
+                          ? getLinkHref(link.href)
+                          : link.href
+                      }
+                    >
                       {link.label}
                     </Link>
                   </li>
@@ -310,7 +346,13 @@ export const Footer = () => {
               <ul>
                 {usefulLinks.map((link, i) => (
                   <li key={i}>
-                    <Link href={link.href.startsWith("#") ? getLinkHref(link.href) : link.href}>
+                    <Link
+                      href={
+                        link.href.startsWith("#")
+                          ? getLinkHref(link.href)
+                          : link.href
+                      }
+                    >
                       {link.label}
                     </Link>
                   </li>
@@ -348,11 +390,12 @@ export const Footer = () => {
             </p>
             <nav className="tck-policy-row">
               {policyLinks.map((link, i) => (
-                <Link key={i} href={link.href}>{link.label}</Link>
+                <Link key={i} href={link.href}>
+                  {link.label}
+                </Link>
               ))}
             </nav>
           </div>
-
         </div>
       </footer>
     </>

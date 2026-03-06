@@ -183,11 +183,12 @@ export default function ReviewsSection() {
   return (
     <section
       style={{
-        background: "#ecf5f6",
         fontFamily: "'Archivo', sans-serif",
-        padding: "clamp(70px, 9vw, 110px) clamp(24px, 6vw, 80px)",
         overflow: "hidden",
+      background: "#f8fafb",
+
       }}
+      className="py-20"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -210,7 +211,7 @@ export default function ReviewsSection() {
           }} />
           <p style={{
             fontSize: "clamp(1rem, 1.5vw, 1.2rem)",
-            color: "#94a3b8", lineHeight: 1.7,
+            color: "#000", lineHeight: 1.7,
             maxWidth: "560px", margin: "0 auto",
           }}>
             Des milliers d'utilisateurs font confiance à Ticketché chaque jour.
@@ -264,7 +265,7 @@ export default function ReviewsSection() {
         {/* Dots */}
         <div style={{
           display: "flex", justifyContent: "center",
-          gap: "8px", marginTop: "clamp(32px, 4vw, 48px)",
+          gap: "8px",
         }}>
           {reviews.map((_, i) => (
             <button key={i} onClick={() => setCurrent(i)} style={{

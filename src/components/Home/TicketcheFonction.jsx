@@ -52,7 +52,7 @@ export default function TicketcheFonction() {
 
           {/* EN-TÊTE */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "clamp(20px, 4vw, 60px)", flexWrap: "wrap", position: "relative", zIndex: 1, marginBottom: "clamp(32px, 4vw, 52px)" }}>
-            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 3.2rem)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.025em", color: "#001e22", maxWidth: "460px", margin: 0 }}>
+            <h2 style={{ fontSize: "40px", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.025em", color: "#001e22", maxWidth: "460px", margin: 0 }}>
               Sécurisé &amp; Pratique{" "}
               <span style={{ color: "#00515a" }}>pour tous</span>
             </h2>
@@ -106,32 +106,31 @@ export default function TicketcheFonction() {
               onClick={scrollRight}
               style={{
                 position: "absolute",
-                right: "-20px",
+                right: "-16px",
                 top: "50%",
                 transform: "translateY(-50%)",
-                width: "50px",
-                height: "50px",
+                width: "44px",
+                height: "44px",
                 borderRadius: "50%",
                 background: "#ffffff",
                 border: "1px solid rgba(0,81,90,0.3)",
                 color: "#00515a",
-                fontSize: "1.8rem",
+                fontSize: "1.4rem",
                 cursor: "pointer",
                 zIndex: 12,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                backdropFilter: "blur(8px)",
                 transition: "all 0.2s ease",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "#f0f8f9";
-                e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,81,90,0.2)";
+                e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,81,90,0.25)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = "#ffffff";
-                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.12)";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
               }}
               aria-label="Suivant"
             >
@@ -143,10 +142,10 @@ export default function TicketcheFonction() {
               ref={scrollRef}
               style={{
                 display: "flex",
-                gap: "clamp(16px, 2vw, 32px)",
+                gap: "clamp(12px, 1.5vw, 20px)",
                 overflowX: "auto",
                 scrollBehavior: "smooth",
-                padding: "1rem 0",
+                padding: "12px 4px 20px",
                 scrollSnapType: "x mandatory",
                 WebkitOverflowScrolling: "touch",
                 scrollbarWidth: "none",
@@ -157,11 +156,11 @@ export default function TicketcheFonction() {
                   key={index}
                   style={{
                     flex: "0 0 auto",
-                    width: "clamp(280px, 70vw, 420px)",
+                    width: "clamp(180px, 22vw, 260px)",
                     scrollSnapAlign: "start",
-                    borderRadius: "20px",
+                    borderRadius: "16px",
                     overflow: "hidden",
-                    boxShadow: "0 20px 50px rgba(0,0,0,0.25)",
+                    boxShadow: "0 12px 30px rgba(0,0,0,0.35)",
                   }}
                 >
                   <img
@@ -178,11 +177,8 @@ export default function TicketcheFonction() {
               ))}
             </div>
 
-            {/* Masque scrollbar sur Webkit */}
             <style jsx>{`
-              div::-webkit-scrollbar {
-                display: none;
-              }
+              div::-webkit-scrollbar { display: none; }
             `}</style>
           </div>
 
