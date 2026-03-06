@@ -67,8 +67,8 @@ export default function HowItWorks() {
         .hiw-section {
           font-family: 'Archivo', sans-serif;
           background: #f8fafb;
-padding: clamp(90px, 100vw, 500px) clamp(20px, 5vw, 100px);  /* ← AJOUT DE MARGE HAUTE */ 
-overflow: visible;
+          padding: clamp(80px, 10vw, 140px) clamp(20px, 5vw, 100px);
+          overflow: visible;
           box-sizing: border-box;
         }
 
@@ -89,7 +89,6 @@ overflow: visible;
           .hiw-right { order: 1; }
         }
 
-        /* ── LEFT ── */
         .hiw-left {
           position: relative;
           width: 100%;
@@ -109,66 +108,51 @@ overflow: visible;
           justify-content: center;
         }
 
-       .hiw-ring {
-  position: absolute;
-  border-radius: 50%;
-  box-sizing: border-box;
-}
+        .hiw-ring {
+          position: absolute;
+          border-radius: 50%;
+          box-sizing: border-box;
+        }
 
-/* Anneau 1 – pointillés, épais, couleur principale */
-.hiw-ring-1 {
-  width: 420px;
-  height: 420px;
-  border: 4px dashed #367e86;          /* ← POINTILLÉS + ÉPAIS + TA COULEUR */
-  opacity: 0.9;                         /* plus visible */
-}
+        .hiw-ring-1 {
+          width: 420px; height: 420px;
+          border: 4px dashed #367e86;
+          opacity: 0.9;
+        }
+        .hiw-ring-2 {
+          width: 320px; height: 320px;
+          border: 3.2px dashed #367e86;
+          opacity: 0.85;
+        }
+        .hiw-ring-3 {
+          width: 520px; height: 520px;
+          border: 2.8px dashed #367e86;
+          opacity: 0.75;
+        }
 
-/* Anneau 2 – pointillés, un peu plus fin mais visible */
-.hiw-ring-2 {
-  width: 320px;
-  height: 320px;
-  border: 3.2px dashed #367e86;        /* ← POINTILLÉS + TA COULEUR */
-  opacity: 0.85;
-}
+        .hiw-ring-dot {
+          position: absolute;
+          width: 12px; height: 12px;
+          border-radius: 50%;
+          background: #367e86;
+          top: 50%; left: -6px;
+          margin-top: -6px;
+          box-shadow: 0 0 16px rgba(54,126,134,0.9);
+        }
+        .hiw-ring-dot-2 {
+          top: -6px; left: 50%;
+          margin-left: -6px;
+          background: #367e86;
+          box-shadow: 0 0 16px rgba(54,126,134,0.9);
+        }
+        .hiw-ring-dot-3 {
+          top: 50%; right: -6px;
+          margin-top: -6px;
+          background: #367e86;
+          width: 8px; height: 8px;
+          box-shadow: 0 0 12px rgba(54,126,134,0.8);
+        }
 
-/* Anneau 3 – pointillés, fond plus subtil */
-.hiw-ring-3 {
-  width: 520px;
-  height: 520px;
-  border: 2.8px dashed #367e86;        /* ← POINTILLÉS + TA COULEUR */
-  opacity: 0.75;
-}
-
-/* Points sur les anneaux – adaptés à la nouvelle couleur */
-.hiw-ring-dot {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #367e86;
-  top: 50%;
-  left: -6px;
-  margin-top: -6px;
-  box-shadow: 0 0 16px rgba(54, 126, 134, 0.9);
-}
-
-.hiw-ring-dot-2 {
-  top: -6px;
-  left: 50%;
-  margin-left: -6px;
-  background: #367e86;
-  box-shadow: 0 0 16px rgba(54, 126, 134, 0.9);
-}
-
-.hiw-ring-dot-3 {
-  top: 50%;
-  right: -6px;
-  margin-top: -6px;
-  background: #367e86;
-  width: 8px;
-  height: 8px;
-  box-shadow: 0 0 12px rgba(54, 126, 134, 0.8);
-}
         .hiw-platform {
           position: absolute;
           width: 240px; height: 240px;
@@ -196,30 +180,29 @@ overflow: visible;
           z-index: 5; pointer-events: none;
         }
 
-        /* Phone — fixed pixel size, position absolute centered */
-       .hiw-phone-wrap {
-  position: absolute;
-  z-index: 10;
-  width: clamp(480px, 90vw, 1400px);  /* ← TAILLE TRÈS AUGMENTÉE : jusqu'à 1400px sur desktop */
-  max-width: 90vw;                    /* évite qu'elle dépasse trop sur très grand écran */
-  animation: phoneFloat 4s ease-in-out infinite;
-  filter: drop-shadow(0 50px 100px rgba(0,30,34,0.4));  /* ombre plus forte pour matcher la taille */
-}
+        .hiw-phone-wrap {
+          position: absolute;
+          z-index: 10;
+          width: clamp(480px, 85vw, 1100px);
+          transform: scale(1.4);
+          transform-origin: center center;
+          animation: phoneFloat 4s ease-in-out infinite;
+          filter: drop-shadow(0 40px 80px rgba(0,30,34,0.35));
+        }
         .hiw-phone-wrap:hover { animation-play-state: paused; }
 
         @keyframes phoneFloat {
-          0%,100% { transform: perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(0px); }
-          50%      { transform: perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(-12px); }
+          0%,100% { transform: scale(1.4) perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(0px); }
+          50%      { transform: scale(1.4) perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(-12px); }
         }
 
         .hiw-phone-img {
-          width: 5500px;
+          width: 100%;
           height: auto;
           display: block;
-          border-radius: 32px;
+          border-radius: clamp(32px, 4vw, 56px);
         }
 
-        /* ── RIGHT ── */
         .hiw-right { box-sizing: border-box; }
 
         .hiw-heading {
@@ -246,7 +229,7 @@ overflow: visible;
           border-radius: 50%;
           background: #001e22;
           border: 3px solid #00515a;
-          transition: top 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: top 0.55s cubic-bezier(0.4,0,0.2,1);
           z-index: 2;
           animation: pulse 1.8s ease-out infinite;
         }
@@ -266,75 +249,60 @@ overflow: visible;
         }
         .hiw-step:hover { background: rgba(0,201,167,0.04); }
 
-   .hiw-step-title {
-  font-size: clamp(1.15rem, 1.8vw, 1.35rem);
-  font-weight: 800;
-  margin: 0;
-  letter-spacing: -0.01em;
-  color: #000000;               /* ← NOIR par défaut (quand inactif) */
-  transition: color 0.4s ease, transform 0.4s ease, font-weight 0.3s ease;
-}
+        .hiw-step-title {
+          font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+          font-weight: 800;
+          margin: 0;
+          letter-spacing: -0.01em;
+          color: #000000;
+          transition: color 0.4s ease, transform 0.4s ease, font-weight 0.3s ease;
+        }
+        .hiw-step.active .hiw-step-title {
+          color: #00515a;
+          font-weight: 900;
+          transform: translateX(6px);
+        }
 
-.hiw-step.active .hiw-step-title {
-  color: #00515a;               /* ← couleur thème quand actif (ou mets #00c9a7 si tu préfères le vert vif) */
-  font-weight: 900;
-  transform: translateX(6px);
-}
-
-.hiw-step-desc {
-  font-size: clamp(0.95rem, 1.4vw, 1.1rem);   /* ← AUGMENTÉ */
-  color: #c4c9cc;
-  line-height: 1.7;
-  margin-top: 6px;
-  transition: color 0.4s ease, transform 0.4s ease;
-}
-.hiw-step.active .hiw-step-desc {
-  color: #6b7280;
-  transform: translateX(4px);
-}
+        .hiw-step-desc {
+          font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+          color: #c4c9cc;
+          line-height: 1.7;
+          margin-top: 6px;
+          transition: color 0.4s ease, transform 0.4s ease;
+        }
+        .hiw-step.active .hiw-step-desc {
+          color: #6b7280;
+          transform: translateX(4px);
+        }
       `}</style>
 
       <section className="hiw-section">
         <div className="hiw-inner">
 
-         {/* LEFT – partie avec l’image très grande */}
-<div className="hiw-left">
-  <div className="hiw-rings">
-    <div ref={ring3Ref} className="hiw-ring hiw-ring-3" />
-    <div ref={ring1Ref} className="hiw-ring hiw-ring-1">
-      <div className="hiw-ring-dot" />
-      <div className="hiw-ring-dot hiw-ring-dot-2" />
-      <div className="hiw-ring-dot hiw-ring-dot-3" />
-    </div>
-    <div ref={ring2Ref} className="hiw-ring hiw-ring-2" />
-  </div>
+          <div className="hiw-left">
+            <div className="hiw-rings">
+              <div ref={ring3Ref} className="hiw-ring hiw-ring-3" />
+              <div ref={ring1Ref} className="hiw-ring hiw-ring-1">
+                <div className="hiw-ring-dot" />
+                <div className="hiw-ring-dot hiw-ring-dot-2" />
+                <div className="hiw-ring-dot hiw-ring-dot-3" />
+              </div>
+              <div ref={ring2Ref} className="hiw-ring hiw-ring-2" />
+            </div>
 
-  <div className="hiw-glow" />
-  <div className="hiw-platform" />
-  <div className="hiw-platform-shadow" />
+            <div className="hiw-glow" />
+            <div className="hiw-platform" />
+            <div className="hiw-platform-shadow" />
 
-  {/* Mockup téléphone – TAILLE TRÈS AUGMENTÉE */}
-  <div className="hiw-phone-wrap" style={{
-    width: "clamp(480px, 85vw, 1100px)",      // ← très large sur desktop (1100px max)
-    transform: "scale(1.4)",                   // ← grossit de 40% supplémentaire
-    transformOrigin: "center center",
-    animation: "phoneFloat 4s ease-in-out infinite",
-    filter: "drop-shadow(0 40px 80px rgba(0,30,34,0.35))", // ombre plus forte
-  }}>
-    <img
-      src="/images/Hero/accueil.png"
-      alt="Ticketché app mockup"
-      style={{
-        width: "100%",
-        height: "auto",
-        display: "block",
-        borderRadius: "clamp(32px, 4vw, 56px)", // coins plus arrondis pour grand format
-      }}
-    />
-  </div>
-</div>
+            <div className="hiw-phone-wrap">
+              <img
+                src="/images/Hero/orbe.png"
+                alt="Ticketché app mockup"
+                className="hiw-phone-img"
+              />
+            </div>
+          </div>
 
-          {/* RIGHT */}
           <div className="hiw-right">
             <h2 className="hiw-heading">
               4 Étapes Rapides<br />

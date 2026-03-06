@@ -14,7 +14,7 @@ import {
 } from "@phosphor-icons/react";
 import { Archivo } from "next/font/google";
 import Features from "./FeaturesSection";
-import { AppDownloadButtons } from "../Appdownloadbuttons";
+import  AppDownloadButtons  from "../Appdownloadbuttons";
 
 const archivo = Archivo({ subsets: ["latin"], weight: ["400", "500", "600", "700", "900"] });
 

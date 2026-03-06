@@ -6,12 +6,14 @@ import { getDeviceOS, getDownloadLink } from '@/utils/deviceDetection';
 
 export default function AppNotificationCompact() {
   const [isVisible, setIsVisible] = useState(true);
+  
   const [deviceOS, setDeviceOS] = useState('other');
 
   
   useEffect(() => {
     setDeviceOS(getDeviceOS());
   }, []);
+  
   if (!isVisible) return null;
 
   // Contenu dynamique selon l'appareil
