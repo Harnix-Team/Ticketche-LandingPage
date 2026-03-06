@@ -278,6 +278,8 @@ export const Hero = () => {
             backdropFilter: "blur(18px) saturate(160%)",
             border: "1px solid rgba(0, 81, 90, 0.22)",
             boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06)",
+            marginTop: "clamp(20px, 4vw, 60px)",   // ← ajoute cette ligne
+
             animation: "badgePulse 3.5s ease-in-out infinite, fadeUp 0.8s ease 0.1s both",
           }}>
             <div style={{
@@ -293,7 +295,7 @@ export const Hero = () => {
               fontWeight: 700,
               letterSpacing: "0.3px",
             }}>
-              <span style={{ color: "#000000" }}>Gérez Mieux</span>{" "}
+              <span style={{ color: "#000000" }}> Réservez, Payez, Profitez</span>{" "}
               <span style={{ color: "#00515a" }}>Avec Ticketché</span>
             </span>
           </div>
@@ -344,7 +346,7 @@ export const Hero = () => {
 
           {/* ── Sous-titre ── */}
           <p style={{
-            fontSize: "clamp(0.875rem, 1.7vw, 1rem)",
+fontSize: "clamp(1.1rem, 2vw, 1.3rem)",
             color: "#4b5563",
             maxWidth: "500px",
             textAlign: "center",

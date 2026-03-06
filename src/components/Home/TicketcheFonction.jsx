@@ -1,61 +1,32 @@
 "use client";
-import { useState, useEffect, useRef, useCallback } from "react";
+
+import { useRef } from "react";
 
 const images = [
-  { src: "/images/mockups/c1.png", alt: "Ticketché utilisateur" },
-  { src: "/images/mockups/c2.png", alt: "Ticketché gérant" },
-  { src: "/images/mockups/c3.png", alt: "Ticketché organisateur" },
-  { src: "/images/mockups/c1.png", alt: "Ticketché accueil" },
-  { src: "/images/mockups/c2.png", alt: "Ticketché événement" },
-  { src: "/images/mockups/c3.png", alt: "Ticketché parking" },
-  { src: "/images/mockups/c2.png", alt: "Ticketché garage" },
-  { src: "/images/mockups/c1.png", alt: "Ticketché app" },
+  { src: "/images/mockups/1.png", alt: "Ticketché utilisateur" },
+  { src: "/images/mockups/2.png", alt: "Ticketché gérant" },
+  { src: "/images/mockups/3.png", alt: "Ticketché organisateur" },
+  { src: "/images/mockups/4.png", alt: "Ticketché accueil" },
+  { src: "/images/mockups/5.png", alt: "Ticketché événement" },
+  { src: "/images/mockups/6.png", alt: "Ticketché parking" },
+  { src: "/images/mockups/7.png", alt: "Ticketché garage" },
+  { src: "/images/mockups/8.png", alt: "Ticketché app" },
 ];
 
-const VISIBLE = 3;
-const GAP = 32;
-const TOTAL = images.length;
-
 export default function TicketcheFonction() {
-  const [current, setCurrent]       = useState(0);
-  const [animDir, setAnimDir]       = useState(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const intervalRef  = useRef(null);
-  const animatingRef = useRef(false); // ref pour éviter la closure stale
+  const scrollRef = useRef(null);
 
-  /* ── slide : utilise la ref pour éviter le stale closure ── */
-  const slide = useCallback((dir) => {
-    if (animatingRef.current) return;
-    animatingRef.current = true;
-    setIsAnimating(true);
-    setAnimDir(dir);
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -320, behavior: "smooth" });
+    }
+  };
 
-    setTimeout(() => {
-      setCurrent(prev =>
-        dir === "right" ? (prev + 1) % TOTAL : (prev - 1 + TOTAL) % TOTAL
-      );
-      animatingRef.current = false;
-      setIsAnimating(false);
-      setAnimDir(null);
-    }, 420);
-  }, []); // pas de dépendances → stable entre les renders
-
-  /* ── reset intervalle ── */
-  const resetInterval = useCallback(() => {
-    clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => slide("right"), 3200);
-  }, [slide]);
-
-  /* ── auto-slide au mount ── */
-  useEffect(() => {
-    intervalRef.current = setInterval(() => slide("right"), 3200);
-    return () => clearInterval(intervalRef.current);
-  }, [slide]);
-
-  const prev = () => { slide("left");  resetInterval(); };
-  const next = () => { slide("right"); resetInterval(); };
-
-  const visibleIndices = Array.from({ length: VISIBLE }, (_, i) => (current + i) % TOTAL);
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 320, behavior: "smooth" });
+    }
+  };
 
   return (
     <section style={{
@@ -84,7 +55,7 @@ export default function TicketcheFonction() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "clamp(20px, 4vw, 60px)", flexWrap: "wrap", position: "relative", zIndex: 1 }}>
             <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 3.2rem)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.025em", color: "#ffffff", maxWidth: "460px", margin: 0 }}>
               Sécurisé &amp; Pratique{" "}
-              <span style={{ color: "#00c9a7" }}>pour tous</span>
+              <span style={{ color: "#00515a" }}>pour tous</span>
             </h2>
             <p style={{ fontSize: "clamp(0.88rem, 1.2vw, 1rem)", color: "rgba(255,255,255,0.5)", lineHeight: 1.75, maxWidth: "360px", margin: 0, paddingTop: "6px" }}>
               Payez et encaissez en toute confiance grâce à notre plateforme.
@@ -95,107 +66,136 @@ export default function TicketcheFonction() {
           {/* ── CARROUSEL ── */}
           <div style={{
             position: "absolute",
-            bottom: "-150px",
+            bottom: "-550px",
             left: "clamp(20px, 4vw, 60px)",
             right: "clamp(20px, 4vw, 60px)",
             zIndex: 10,
           }}>
 
-            {/* Track */}
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: `repeat(${VISIBLE}, 1fr)`,
-              gap: `${GAP}px`,
-              overflow: "hidden",
-            }}>
-              {visibleIndices.map((imgIdx, pos) => (
+            {/* Bouton précédent */}
+            <button
+              onClick={scrollLeft}
+              style={{
+                position: "absolute",
+                left: "-20px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: "50px",
+                height: "50px",
+                borderRadius: "50%",
+                background: "#ffffff",
+                border: "1px solid rgba(0,81,90,0.3)",
+                color: "#00515a",
+                fontSize: "1.8rem",
+                cursor: "pointer",
+                zIndex: 12,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                backdropFilter: "blur(8px)",
+                transition: "all 0.2s ease",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#f0f8f9";
+                e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,81,90,0.2)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#ffffff";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.12)";
+              }}
+              aria-label="Précédent"
+            >
+              ←
+            </button>
+
+            {/* Bouton suivant */}
+            <button
+              onClick={scrollRight}
+              style={{
+                position: "absolute",
+                right: "-20px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: "50px",
+                height: "50px",
+                borderRadius: "50%",
+                background: "#ffffff",
+                border: "1px solid rgba(0,81,90,0.3)",
+                color: "#00515a",
+                fontSize: "1.8rem",
+                cursor: "pointer",
+                zIndex: 12,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                backdropFilter: "blur(8px)",
+                transition: "all 0.2s ease",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#f0f8f9";
+                e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,81,90,0.2)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#ffffff";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.12)";
+              }}
+              aria-label="Suivant"
+            >
+              →
+            </button>
+
+            {/* Conteneur scrollable */}
+            <div
+              ref={scrollRef}
+              style={{
+                display: "flex",
+                gap: "clamp(16px, 2vw, 32px)",
+                overflowX: "auto",
+                scrollBehavior: "smooth",
+                padding: "1rem 0",
+                scrollSnapType: "x mandatory",
+                WebkitOverflowScrolling: "touch",
+                scrollbarWidth: "none",
+              }}
+            >
+              {images.map((img, index) => (
                 <div
-                  key={`${current}-${pos}`}
+                  key={index}
                   style={{
-                    borderRadius: "clamp(16px, 2vw, 24px)",
+                    flex: "0 0 auto",
+                    width: "clamp(280px, 70vw, 420px)",
+                    scrollSnapAlign: "start",
+                    borderRadius: "20px",
                     overflow: "hidden",
-                    boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
-                    aspectRatio: "3/4",
-                    animation: isAnimating
-                      ? animDir === "right"
-                        ? "slideFromRight 0.42s cubic-bezier(0.4,0,0.2,1) both"
-                        : "slideFromLeft 0.42s cubic-bezier(0.4,0,0.2,1) both"
-                      : "none",
+                    boxShadow: "0 20px 50px rgba(0,0,0,0.25)",
                   }}
                 >
                   <img
-                    src={images[imgIdx].src}
-                    alt={images[imgIdx].alt}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                    src={img.src}
+                    alt={img.alt}
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      display: "block",
+                      objectFit: "cover",
+                    }}
                   />
                 </div>
               ))}
             </div>
 
-            {/* Contrôles */}
-            <div style={{
-              display: "flex", alignItems: "center", justifyContent: "center",
-              gap: "16px", marginTop: "24px",
-            }}>
-              <button
-                onClick={prev}
-                style={{
-                  width: "38px", height: "38px", borderRadius: "50%",
-                  background: "rgba(255,255,255,0.12)",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                  color: "#fff", fontSize: "1.2rem", cursor: "pointer",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  transition: "background 0.2s", flexShrink: 0,
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = "rgba(0,201,167,0.3)"}
-                onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.12)"}
-              >‹</button>
-
-              <div style={{ display: "flex", gap: "8px" }}>
-                {images.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => { setCurrent(i); resetInterval(); }}
-                    style={{
-                      width: i === current ? "24px" : "8px",
-                      height: "8px", borderRadius: "4px",
-                      background: i === current ? "#00c9a7" : "rgba(255,255,255,0.3)",
-                      border: "none", cursor: "pointer", padding: 0,
-                      transition: "all 0.3s ease",
-                    }}
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={next}
-                style={{
-                  width: "38px", height: "38px", borderRadius: "50%",
-                  background: "rgba(255,255,255,0.12)",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                  color: "#fff", fontSize: "1.2rem", cursor: "pointer",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  transition: "background 0.2s", flexShrink: 0,
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = "rgba(0,201,167,0.3)"}
-                onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.12)"}
-              >›</button>
-            </div>
-
+            {/* Masque scrollbar sur Webkit */}
+            <style jsx>{`
+              div::-webkit-scrollbar {
+                display: none;
+              }
+            `}</style>
           </div>
+
         </div>
       </div>
-
-      <style>{`
-        @keyframes slideFromRight {
-          from { opacity: 0; transform: translateX(60px); }
-          to   { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slideFromLeft {
-          from { opacity: 0; transform: translateX(-60px); }
-          to   { opacity: 1; transform: translateX(0); }
-        }
-      `}</style>
     </section>
   );
 }

@@ -67,8 +67,8 @@ export default function HowItWorks() {
         .hiw-section {
           font-family: 'Archivo', sans-serif;
           background: #f8fafb;
-          padding: clamp(60px, 8vw, 110px) clamp(20px, 5vw, 72px);
-          overflow: visible;
+padding: clamp(90px, 100vw, 500px) clamp(20px, 5vw, 100px);  /* ← AJOUT DE MARGE HAUTE */ 
+overflow: visible;
           box-sizing: border-box;
         }
 
@@ -228,7 +228,7 @@ export default function HowItWorks() {
           line-height: 1.12; letter-spacing: -0.03em;
           margin: 0 0 clamp(28px, 4vw, 48px) 0;
         }
-        .hiw-heading span { color: #00c9a7; }
+        .hiw-heading span { color: #00515a; }
 
         .hiw-steps-wrap { position: relative; }
 
@@ -245,7 +245,7 @@ export default function HowItWorks() {
           width: 14px; height: 14px;
           border-radius: 50%;
           background: #001e22;
-          border: 3px solid #00c9a7;
+          border: 3px solid #00515a;
           transition: top 0.55s cubic-bezier(0.4, 0, 0.2, 1);
           z-index: 2;
           animation: pulse 1.8s ease-out infinite;
@@ -266,30 +266,32 @@ export default function HowItWorks() {
         }
         .hiw-step:hover { background: rgba(0,201,167,0.04); }
 
-        .hiw-step-title {
-          font-size: 1rem;
-          font-weight: 700;
-          margin: 0;
-          letter-spacing: -0.01em;
-          color: #c4c9cc;
-          transition: color 0.4s ease, transform 0.4s ease;
-        }
-        .hiw-step.active .hiw-step-title {
-          color: #0a1a1c;
-          transform: translateX(4px);
-        }
+   .hiw-step-title {
+  font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.01em;
+  color: #000000;               /* ← NOIR par défaut (quand inactif) */
+  transition: color 0.4s ease, transform 0.4s ease, font-weight 0.3s ease;
+}
 
-        .hiw-step-desc {
-          font-size: 0.85rem;
-          color: #c4c9cc;
-          line-height: 1.65;
-          margin-top: 4px;
-          transition: color 0.4s ease, transform 0.4s ease;
-        }
-        .hiw-step.active .hiw-step-desc {
-          color: #6b7280;
-          transform: translateX(4px);
-        }
+.hiw-step.active .hiw-step-title {
+  color: #00515a;               /* ← couleur thème quand actif (ou mets #00c9a7 si tu préfères le vert vif) */
+  font-weight: 900;
+  transform: translateX(6px);
+}
+
+.hiw-step-desc {
+  font-size: clamp(0.95rem, 1.4vw, 1.1rem);   /* ← AUGMENTÉ */
+  color: #c4c9cc;
+  line-height: 1.7;
+  margin-top: 6px;
+  transition: color 0.4s ease, transform 0.4s ease;
+}
+.hiw-step.active .hiw-step-desc {
+  color: #6b7280;
+  transform: translateX(4px);
+}
       `}</style>
 
       <section className="hiw-section">
