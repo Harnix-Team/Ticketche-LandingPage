@@ -13,6 +13,7 @@ export default function AppNotificationCompact() {
   useEffect(() => {
     setDeviceOS(getDeviceOS());
   }, []);
+  
   if (!isVisible) return null;
 
   // Contenu dynamique selon l'appareil
