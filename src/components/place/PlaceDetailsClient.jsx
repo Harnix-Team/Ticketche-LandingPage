@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+
 import { motion, useScroll, useTransform } from "framer-motion";
 import { fetchAllPlaces } from "@/app/services/api";
 import {
