@@ -8,6 +8,10 @@ import { EventsCarousel } from "@/components/Home/EventsCarousel";
 import { WhyTicketcheSection } from "@/components/Home/WhyTicketcheSection";
 import  TicketcheFonction  from "@/components/Home/TicketcheFonction";
 import HowItWorks from "@/components/Home/HowItWorks";
+import FAQSection from "@/components/Home/FaqSection";
+import CTADownload from "@/components/Home/Ctadownload";
+import ActiveUsers from "@/components/Home/Activeusers";
+import ReviewsSection from "@/components/Home/ReviewsSection";
 
 export default function Home() {
   return (
@@ -16,6 +20,10 @@ export default function Home() {
       <TrustedBySection />
       <TicketcheFonction />
       <HowItWorks />
+      <FAQSection />
+      <CTADownload />
+      <ActiveUsers />
+      <ReviewsSection />
       {/* <About />
       <EventsCarousel />
       <EstablishmentsSection />
