@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Users, Globe, MapTrifold, Rocket, TrendUp, CalendarBlank, Trophy } from "@phosphor-icons/react";
 
 const COUNTRIES = [
   { name: "France",        code: "fr", lat: 46.23,  lng:  2.21,  users: "24 000", growth: "+18%", since: "2023", color: "#005f69", desc: "Hub européen principal"       },
@@ -47,7 +48,6 @@ export default function ActiveUsers() {
         minZoom: 2, maxZoom: 12,
       });
 
-      /* Tiles CartoDB Voyager — couleurs douces, lisibles sur fond clair */
       L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
         maxZoom: 19,
       }).addTo(map);
@@ -115,6 +115,19 @@ export default function ActiveUsers() {
     setActive(null);
     Object.values(markersRef.current).forEach(el => el.classList.remove("tc-marker--active"));
   };
+
+  const detailRows = active ? [
+    { label: "Croissance",     val: active.growth, icon: <TrendUp weight="bold" style={{ width: 15, height: 15, color: "#00818f" }} /> },
+    { label: "Présent depuis", val: active.since,  icon: <CalendarBlank weight="bold" style={{ width: 15, height: 15, color: "#00818f" }} /> },
+    { label: "Rang",           val: `#${[...COUNTRIES].sort((a,b)=>parseInt(b.users.replace(/\s/g,""))-parseInt(a.users.replace(/\s/g,""))).findIndex(c=>c.code===active.code)+1} / ${COUNTRIES.length}`, icon: <Trophy weight="bold" style={{ width: 15, height: 15, color: "#00818f" }} /> },
+  ] : [];
+
+  const globalStats = [
+    { val: `${totalUsers.toLocaleString("fr-FR")}+`, label: "Utilisateurs actifs", icon: <Users weight="bold"       style={{ width: 22, height: 22, color: "#005f69" }} /> },
+    { val: "8",   label: "Pays couverts",  icon: <Globe       weight="bold"       style={{ width: 22, height: 22, color: "#005f69" }} /> },
+    { val: "3",   label: "Continents",     icon: <MapTrifold  weight="bold"       style={{ width: 22, height: 22, color: "#005f69" }} /> },
+    { val: "62%", label: "Croissance max", icon: <Rocket      weight="bold"       style={{ width: 22, height: 22, color: "#005f69" }} /> },
+  ];
 
   return (
     <section style={{
@@ -233,12 +246,16 @@ export default function ActiveUsers() {
         {/* Header */}
         <div style={{ textAlign:"center", marginBottom:"clamp(32px,4vw,48px)", animation:"fadeInUp 0.6s ease both" }}>
           <span style={{
-            display:"inline-block", marginBottom:"14px",
+            display:"inline-flex", alignItems:"center", gap:"6px",
+            marginBottom:"14px",
             background:"rgba(0,95,105,0.10)", color:"#005f69",
             fontSize:"0.76rem", fontWeight:700, letterSpacing:"0.09em",
             textTransform:"uppercase", padding:"5px 18px", borderRadius:"999px",
             border:"1px solid rgba(0,95,105,0.18)",
-          }}>🌍 Présence mondiale</span>
+          }}>
+            <Globe weight="bold" style={{ width: 14, height: 14 }} />
+            Présence mondiale
+          </span>
 
           <h2 style={{
             fontSize:"clamp(1.7rem,3vw,2.5rem)", fontWeight:900,
@@ -360,11 +377,7 @@ export default function ActiveUsers() {
 
               {/* Rows stats */}
               <div style={{ padding:"16px", display:"flex", flexDirection:"column", gap:"8px" }}>
-                {[
-                  { label:"Croissance",    val: active.growth, icon:"📈" },
-                  { label:"Présent depuis", val: active.since,  icon:"📅" },
-                  { label:"Rang",           val: `#${[...COUNTRIES].sort((a,b)=>parseInt(b.users.replace(/\s/g,""))-parseInt(a.users.replace(/\s/g,""))).findIndex(c=>c.code===active.code)+1} / ${COUNTRIES.length}`, icon:"🏆" },
-                ].map((s,i)=>(
+                {detailRows.map((s,i)=>(
                   <div key={i} style={{
                     display:"flex", alignItems:"center", justifyContent:"space-between",
                     padding:"10px 12px",
@@ -373,7 +386,7 @@ export default function ActiveUsers() {
                     border:"1px solid rgba(0,95,105,0.08)",
                   }}>
                     <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
-                      <span style={{ fontSize:"13px" }}>{s.icon}</span>
+                      {s.icon}
                       <span style={{ fontSize:"0.74rem", color:"rgba(10,26,28,0.50)", fontWeight:600 }}>{s.label}</span>
                     </div>
                     <span style={{ fontSize:"0.80rem", fontWeight:800, color:"#0a1a1c" }}>{s.val}</span>
@@ -409,12 +422,7 @@ export default function ActiveUsers() {
           gap:"12px", marginTop:"16px",
           animation:"fadeInUp 0.8s ease 0.2s both",
         }}>
-          {[
-            { val:`${totalUsers.toLocaleString("fr-FR")}+`, label:"Utilisateurs actifs", icon:"👥" },
-            { val:"8",   label:"Pays couverts",  icon:"🌍" },
-            { val:"3",   label:"Continents",     icon:"🗺️" },
-            { val:"62%", label:"Croissance max", icon:"🚀" },
-          ].map((s,i)=>(
+          {globalStats.map((s,i)=>(
             <div key={i} style={{
               textAlign:"center", padding:"16px 12px",
               background:"rgba(255,255,255,0.70)",
@@ -423,7 +431,7 @@ export default function ActiveUsers() {
               border:"1px solid rgba(0,95,105,0.12)",
               boxShadow:"0 2px 12px rgba(0,81,90,0.07)",
             }}>
-              <div style={{ fontSize:"1.3rem", marginBottom:"4px" }}>{s.icon}</div>
+              <div style={{ display:"flex", justifyContent:"center", marginBottom:"6px" }}>{s.icon}</div>
               <div style={{ fontSize:"clamp(1.1rem,1.8vw,1.5rem)", fontWeight:900, color:"#005f69", letterSpacing:"-0.03em", lineHeight:1 }}>
                 {s.val}
               </div>

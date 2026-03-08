@@ -71,12 +71,14 @@ export default function FAQSection() {
           </div>
         </div>
 
-        {/* ── RIGHT : teal portrait card + 2 images top & bottom ── */}
+        {/* ── RIGHT : orbe + 1 image top ── */}
         <div className="faq-right">
 
-          {/* Teal portrait background card */}
           <div className="faq-card">
             <div className="faq-halo" />
+
+            {/* Orbe background image */}
+            <img src="/images/Hero/orbe.png" alt="" className="faq-orbe" />
 
             {/* Badge */}
             <div className="faq-badge">
@@ -84,14 +86,9 @@ export default function FAQSection() {
               <span className="faq-badge-label">services<br />en 1 app</span>
             </div>
 
-            {/* Image TOP — overflows left & right, anchored near top */}
+            {/* Image TOP uniquement */}
             <div className="faq-img-wrap img-top">
               <img src="/images/faq/faq1.jpg" alt="Service Ticketché" className="faq-img" />
-            </div>
-
-            {/* Image BOTTOM — overflows left & right, anchored near bottom */}
-            <div className="faq-img-wrap img-bottom">
-              <img src="/images/faq/faq2.jpg" alt="Service Ticketché" className="faq-img" />
             </div>
           </div>
 
@@ -106,7 +103,7 @@ export default function FAQSection() {
         }
 
         .faq-root {
-          background: #f7f5f1;
+          background: #ecf5f6;
           padding: clamp(60px, 8vw, 110px) clamp(20px, 6vw, 88px);
           overflow: visible;
         }
@@ -210,17 +207,26 @@ export default function FAQSection() {
           overflow: visible;
         }
 
-        /* ── Teal portrait card (background shape) ── */
+        /* ── Orbe portrait card ── */
         .faq-card {
           position: relative;
-          background: #04545d;
+          background: transparent;
           border-radius: clamp(24px, 3vw, 40px);
-          /* portrait shape */
           width: 58%;
           aspect-ratio: 3 / 5;
-          box-shadow: 0 32px 80px rgba(0,30,34,0.28);
-          /* images overflow outside — no clip */
+          box-shadow: none;
           overflow: visible;
+        }
+
+        .faq-orbe {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: clamp(24px, 3vw, 40px);
+          pointer-events: none;
+          z-index: 0;
         }
 
         .faq-halo {
@@ -234,7 +240,6 @@ export default function FAQSection() {
           pointer-events: none;
         }
 
-        /* badge */
         .faq-badge {
           position: absolute;
           bottom: 22px;
@@ -269,9 +274,8 @@ export default function FAQSection() {
         /* ── Image cards ── */
         .faq-img-wrap {
           position: absolute;
-          /* each image is wider than the teal card — overflow on both sides */
-          left: -22%;
-          right: -22%;
+          left: -36%;
+          right: -36%;
           border-radius: clamp(14px, 1.8vw, 22px);
           overflow: hidden;
           border: 4px solid rgba(255,255,255,0.92);
@@ -280,14 +284,8 @@ export default function FAQSection() {
           z-index: 10;
         }
 
-        /* top image pushed high — teal background visible in the middle */
         .img-top {
-          top: 7%;
-        }
-
-        /* bottom image pushed low — teal background visible in the middle */
-        .img-bottom {
-          bottom: 7%;
+          top: 22%;
         }
 
         .faq-img {

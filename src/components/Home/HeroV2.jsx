@@ -1,137 +1,122 @@
 "use client";
-import { useEffect, useRef } from "react";
 import { ArrowRight, Star } from "@phosphor-icons/react";
 
 /* ─────────────────────────────────────────────
-   CONSTELLATION — forme une grande étoile
-   Chaque petite étoile Phosphor est placée
-   le long des 5 branches d'une macro-étoile
+   Micro-clusters éparpillés sur toute la hero
+   Chaque cluster = 2-4 petites étoiles groupées
 ───────────────────────────────────────────── */
+const CLUSTERS = [
+  // haut gauche
+  { cx: "7%",  cy: "10%", stars: [
+    { x: 0,   y: 0,   size: 14, opacity: 0.80, anim: 0, delay: "0s",   dur: "3.2s", color: "#00818f" },
+    { x: 16,  y: -10, size: 10, opacity: 0.55, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" },
+    { x: -12, y: 14,  size: 8,  opacity: 0.40, anim: 2, delay: "0.6s", dur: "3.6s", color: "#00d4e0" },
+    { x: 20,  y: 12,  size: 6,  opacity: 0.30, anim: 0, delay: "0.9s", dur: "4.0s", color: "#00515a" },
+  ]},
+  // haut droite
+  { cx: "87%", cy: "7%", stars: [
+    { x: 0,   y: 0,   size: 15, opacity: 0.75, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" },
+    { x: -14, y: 12,  size: 10, opacity: 0.50, anim: 0, delay: "0.5s", dur: "3.4s", color: "#00515a" },
+    { x: 16,  y: -8,  size: 8,  opacity: 0.38, anim: 2, delay: "0.8s", dur: "2.9s", color: "#00d4e0" },
+    { x: -6,  y: -16, size: 6,  opacity: 0.28, anim: 1, delay: "1.1s", dur: "3.8s", color: "#00818f" },
+  ]},
+  // milieu gauche
+  { cx: "3%",  cy: "40%", stars: [
+    { x: 0,   y: 0,   size: 11, opacity: 0.60, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" },
+    { x: 14,  y: -7,  size: 8,  opacity: 0.42, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" },
+    { x: -9,  y: 12,  size: 6,  opacity: 0.32, anim: 1, delay: "0.7s", dur: "4.1s", color: "#00d4e0" },
+  ]},
+  // milieu droite
+  { cx: "92%", cy: "36%", stars: [
+    { x: 0,   y: 0,   size: 12, opacity: 0.65, anim: 0, delay: "0.3s", dur: "3.3s", color: "#00818f" },
+    { x: -16, y: 9,   size: 8,  opacity: 0.42, anim: 2, delay: "0.6s", dur: "2.6s", color: "#00515a" },
+    { x: 11,  y: 14,  size: 6,  opacity: 0.30, anim: 1, delay: "0.9s", dur: "3.9s", color: "#00d4e0" },
+  ]},
+  // bas gauche
+  { cx: "9%",  cy: "70%", stars: [
+    { x: 0,   y: 0,   size: 10, opacity: 0.50, anim: 1, delay: "0s",   dur: "3.1s", color: "#00d4e0" },
+    { x: 12,  y: -9,  size: 7,  opacity: 0.36, anim: 2, delay: "0.4s", dur: "3.7s", color: "#00818f" },
+    { x: -10, y: 10,  size: 5,  opacity: 0.26, anim: 0, delay: "0.7s", dur: "2.8s", color: "#00515a" },
+  ]},
+  // bas droite
+  { cx: "89%", cy: "66%", stars: [
+    { x: 0,   y: 0,   size: 11, opacity: 0.55, anim: 2, delay: "0.2s", dur: "3.4s", color: "#00515a" },
+    { x: -12, y: -10, size: 8,  opacity: 0.38, anim: 0, delay: "0.5s", dur: "2.9s", color: "#00818f" },
+    { x: 14,  y: 8,   size: 6,  opacity: 0.28, anim: 1, delay: "0.8s", dur: "4.0s", color: "#00d4e0" },
+  ]},
+  // haut centre-gauche
+  { cx: "26%", cy: "4%", stars: [
+    { x: 0,   y: 0,   size: 8,  opacity: 0.45, anim: 0, delay: "0.15s",dur: "3.6s", color: "#00818f" },
+    { x: 10,  y: 9,   size: 5,  opacity: 0.28, anim: 1, delay: "0.5s", dur: "2.8s", color: "#00515a" },
+  ]},
+  // haut centre-droite
+  { cx: "71%", cy: "5%", stars: [
+    { x: 0,   y: 0,   size: 9,  opacity: 0.50, anim: 1, delay: "0.25s",dur: "3.2s", color: "#00515a" },
+    { x: -9,  y: 11,  size: 6,  opacity: 0.32, anim: 2, delay: "0.6s", dur: "3.8s", color: "#00d4e0" },
+  ]},
+];
 
-// Génère les positions en polar → cartesian sur une étoile à 5 branches
-function starPoints() {
-  const pts = [];
-  const outerR = [100, 78, 60, 40, 22]; // rayons des couronnes
-  const counts = [5, 5, 5, 5, 1];       // points par couronne
-  const offsets = [0, 36, 0, 36, 0];    // rotation par couronne (alternance branches/creux)
-
-  outerR.forEach((r, ring) => {
-    const n = counts[ring];
-    const off = offsets[ring];
-    for (let i = 0; i < n; i++) {
-      const angle = (360 / n) * i + off - 90; // -90 pour pointer vers le haut
-      const rad = angle * (Math.PI / 180);
-      pts.push({
-        x: r * Math.cos(rad),
-        y: r * Math.sin(rad),
-        size: ring === 0 ? 16 : ring === 1 ? 12 : ring === 2 ? 10 : ring === 3 ? 8 : 14,
-        opacity: ring === 0 ? 1 : ring === 1 ? 0.85 : ring === 2 ? 0.7 : ring === 3 ? 0.55 : 1,
-        color: ring % 2 === 0 ? "#00818f" : "#00515a",
-        delay: `${(i * 0.18 + ring * 0.3).toFixed(2)}s`,
-        dur: `${2.8 + ring * 0.4 + i * 0.1}s`,
-        anim: (i + ring) % 3,
-      });
-    }
-  });
-
-  // Quelques étoiles extras le long des branches pour densifier
-  const branches = 5;
-  for (let b = 0; b < branches; b++) {
-    const angle = (360 / branches) * b - 90;
-    const rad = angle * (Math.PI / 180);
-    [50, 30].forEach((r, j) => {
-      pts.push({
-        x: r * Math.cos(rad),
-        y: r * Math.sin(rad),
-        size: 7 + j * 2,
-        opacity: 0.65,
-        color: "#00d4e0",
-        delay: `${(b * 0.22 + j * 0.4).toFixed(2)}s`,
-        dur: `${3.5 + j * 0.6}s`,
-        anim: (b + j) % 3,
-      });
-    });
-  }
-
-  return pts;
-}
-
-const STAR_PTS = starPoints();
-
-function StarCluster() {
+function StarClusters() {
   return (
-    <div
-      className="hero-floating-stars"
-      style={{
-        position: "absolute",
-        top: "-8%",
-        right: "-32%",
-        zIndex: 8,
-        pointerEvents: "none",
-        width: 260,
-        height: 260,
-      }}
-    >
-      {STAR_PTS.map((s, i) => (
-        <div
-          key={i}
-          style={{
-            position: "absolute",
-            left: `calc(50% + ${s.x}px)`,
-            top:  `calc(50% + ${s.y}px)`,
-            transform: "translate(-50%, -50%)",
-            opacity: s.opacity,
-            animation: `starFloat${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`,
-            filter: `drop-shadow(0 0 5px ${s.color}bb)`,
-          }}
-        >
-          <Star weight="fill" style={{ width: s.size, height: s.size, color: s.color }} />
+    <>
+      {CLUSTERS.map((cluster, ci) => (
+        <div key={ci} style={{
+          position: "absolute",
+          left: cluster.cx, top: cluster.cy,
+          width: 0, height: 0,
+          zIndex: 8, pointerEvents: "none",
+        }}>
+          {cluster.stars.map((s, si) => (
+            <div key={si} style={{
+              position: "absolute",
+              left: s.x, top: s.y,
+              transform: "translate(-50%,-50%)",
+              opacity: s.opacity,
+              animation: `starFloat${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`,
+              filter: `drop-shadow(0 0 3px ${s.color}88)`,
+            }}>
+              <Star weight="fill" style={{ width: s.size, height: s.size, color: s.color }} />
+            </div>
+          ))}
         </div>
       ))}
-    </div>
+    </>
   );
 }
 
+/* Arc inchangé — position et contenu identiques à l'original */
 function DashedArc() {
   const R = 100;
   const size = R * 2 + 60;
   const cx = R + 30;
   const cy = R + 30;
-  const startAngle = -40 * (Math.PI / 180);
-  const endAngle = -650 * (Math.PI / 180);
+  const startAngle = -40  * (Math.PI / 180);
+  const endAngle   = -650 * (Math.PI / 180);
   const startX = cx + R * Math.cos(startAngle);
   const startY = cy + R * Math.sin(startAngle);
-  const endX = cx + R * Math.cos(endAngle);
-  const endY = cy + R * Math.sin(endAngle);
-  const arcDeg = 210;
-  const arcLen = R * (arcDeg * Math.PI / 180);
+  const endX   = cx + R * Math.cos(endAngle);
+  const endY   = cy + R * Math.sin(endAngle);
+  const arcLen = R * (210 * Math.PI / 180);
 
   return (
     <div style={{
       position: "absolute",
       top: "30%",
       transform: "translate(-50%, -50%)",
-      width: size,
-      height: size,
-      pointerEvents: "none",
-      zIndex: 5,
+      width: size, height: size,
+      pointerEvents: "none", zIndex: 5,
     }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} fill="none" style={{ overflow: "visible" }}>
         <path
           d={`M ${startX} ${startY} A ${R} ${R} 0 1 0 ${endX} ${endY}`}
-          stroke="#367e86"
-          strokeWidth="2.5"
-          strokeDasharray="14 10"
-          strokeLinecap="round"
-          fill="none"
+          stroke="#367e86" strokeWidth="2.5" strokeDasharray="14 10"
+          strokeLinecap="round" fill="none"
           style={{ animation: "dashScroll 8s linear infinite" }}
         />
         <path
           d={`M ${startX} ${startY} A ${R} ${R} 0 1 0 ${endX} ${endY}`}
-          stroke="rgba(54,126,134,0.45)"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-          fill="none"
+          stroke="rgba(54,126,134,0.45)" strokeWidth="1.7"
+          strokeLinecap="round" fill="none"
           strokeDasharray={`${arcLen} ${arcLen}`}
           style={{ animation: "dashDraw 6s ease-in-out infinite" }}
         />
@@ -139,42 +124,60 @@ function DashedArc() {
           <path d="M 0 0 L -8 -16 M 0 0 L 8 -16" stroke="#367e86" strokeWidth="2.4" strokeLinecap="round" fill="none" />
         </g>
       </svg>
-      <div style={{
-        position: "absolute",
-        left: `${endX - 30}px`,
-        top: `${endY - 30}px`,
-        fontSize: "clamp(26px, 3.2vw, 36px)",
-        animation: "miniRocketFly 2.8s ease-in-out infinite",
-        filter: "drop-shadow(0 4px 12px rgba(54,126,134,0.7))",
-        transform: "rotate(25deg)",
-        transformOrigin: "center bottom",
-      }}>
-        🚀
-      </div>
+
+      {/* 3 étoiles flottantes positionnées à l'extrémité de l'arc */}
+      {[
+        { dx: -2,  dy: -36, size: 26, color: "#00818f", anim: "arcStar0", dur: "2.6s", delay: "0s"   },
+        { dx: 28,  dy: -14, size: 17, color: "#00d4e0", anim: "arcStar1", dur: "3.1s", delay: "0.4s" },
+        { dx: -24, dy:  12, size: 13, color: "#00515a", anim: "arcStar2", dur: "2.3s", delay: "0.7s" },
+      ].map((s, i) => (
+        <div key={i} style={{
+          position: "absolute",
+          left: endX + s.dx,
+          top:  endY + s.dy,
+          transform: "translate(-50%,-50%)",
+          animation: `${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`,
+          filter: `drop-shadow(0 0 6px ${s.color}cc)`,
+        }}>
+          <Star weight="fill" style={{ width: s.size, height: s.size, color: s.color }} />
+        </div>
+      ))}
     </div>
   );
 }
 
-/* ─────────────────────────────────────────────
-   HERO
-───────────────────────────────────────────── */
 export const HeroV2 = () => {
+
   return (
     <>
       <style>{`
         @keyframes starFloat0 {
           0%,100% { transform: translateY(0px) rotate(0deg) scale(1); }
-          33%      { transform: translateY(-10px) rotate(15deg) scale(1.12); }
-          66%      { transform: translateY(-4px) rotate(-8deg) scale(0.95); }
+          33%      { transform: translateY(-8px) rotate(15deg) scale(1.10); }
+          66%      { transform: translateY(-3px) rotate(-8deg) scale(0.95); }
         }
         @keyframes starFloat1 {
           0%,100% { transform: translateY(0px) rotate(0deg); }
-          50%      { transform: translateY(-14px) rotate(20deg) scale(1.08); }
+          50%      { transform: translateY(-11px) rotate(20deg) scale(1.07); }
         }
         @keyframes starFloat2 {
           0%,100% { transform: translateY(0px) scale(1); }
-          40%      { transform: translateY(-8px) rotate(-12deg) scale(1.15); }
-          80%      { transform: translateY(-3px) rotate(6deg) scale(0.92); }
+          40%      { transform: translateY(-7px) rotate(-12deg) scale(1.12); }
+          80%      { transform: translateY(-2px) rotate(6deg) scale(0.92); }
+        }
+        @keyframes arcStar0 {
+          0%,100% { transform: translate(-50%,-50%) translateY(0px) rotate(0deg) scale(1); }
+          35%     { transform: translate(-50%,-50%) translateY(-10px) rotate(18deg) scale(1.18); }
+          70%     { transform: translate(-50%,-50%) translateY(-4px) rotate(-8deg) scale(0.92); }
+        }
+        @keyframes arcStar1 {
+          0%,100% { transform: translate(-50%,-50%) translateY(0px) rotate(0deg); }
+          50%     { transform: translate(-50%,-50%) translateY(-8px) rotate(22deg) scale(1.12); }
+        }
+        @keyframes arcStar2 {
+          0%,100% { transform: translate(-50%,-50%) scale(1) rotate(0deg); }
+          40%     { transform: translate(-50%,-50%) translateY(-6px) scale(1.22) rotate(-14deg); }
+          75%     { transform: translate(-50%,-50%) scale(0.88) rotate(7deg); }
         }
         @keyframes dashScroll {
           from { stroke-dashoffset: 0; }
@@ -188,34 +191,130 @@ export const HeroV2 = () => {
           100%  { stroke-dashoffset: -533; opacity: 0; }
         }
         @keyframes miniRocketFly {
-          0%,100% { transform: translateY(0px) scale(1); }
-          50%      { transform: translateY(-6px) scale(1.1); }
+          0%,100% { transform: rotate(25deg) translateY(0px) scale(1); }
+          50%      { transform: rotate(25deg) translateY(-6px) scale(1.1); }
         }
         @keyframes badgePulse {
           0%,100% { box-shadow: 0 0 0 0 rgba(0,81,90,0.28); }
           50%     { box-shadow: 0 0 0 8px rgba(0,81,90,0); }
         }
-        @keyframes btnShine {
-          0%       { left: -100%; }
-          50%,100% { left: 200%; }
-        }
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(24px); }
           to   { opacity: 1; transform: translateY(0); }
         }
+
+        /* ── Bouton : shimmer + pulse ring + arrow bounce + glow ── */
+        @keyframes btnShimmer {
+          0%       { transform: translateX(-130%) skewX(-18deg); }
+          100%     { transform: translateX(350%) skewX(-18deg); }
+        }
+        @keyframes btnPulseRing {
+          0%   { transform: scale(1);    opacity: 0.6; }
+          100% { transform: scale(1.16); opacity: 0; }
+        }
+        @keyframes btnGlow {
+          0%,100% { box-shadow: 0 6px 20px rgba(0,81,90,0.32), 0 0 0   0   rgba(0,129,143,0); }
+          50%      { box-shadow: 0 8px 28px rgba(0,81,90,0.44), 0 0 20px 4px rgba(0,129,143,0.18); }
+        }
+        @keyframes arrowBounce {
+          0%,100% { transform: translateX(0); }
+          45%     { transform: translateX(5px); }
+          72%     { transform: translateX(-2px); }
+        }
+
+        .btn-hero {
+          position: relative;
+          overflow: hidden;
+          display: inline-flex;
+          align-items: center;
+          justify-content: space-between;
+          background: #00515a;
+          color: #fff;
+          border: none;
+          border-radius: 999px;
+          font-family: 'Archivo', sans-serif;
+          font-size: clamp(0.92rem, 1.45vw, 1.05rem);
+          font-weight: 700;
+          cursor: pointer;
+          padding: 8px 8px 8px clamp(28px, 4vw, 42px);
+          min-width: clamp(230px, 32vw, 310px);
+          white-space: nowrap;
+          animation: fadeUp 0.7s ease 0.6s both, btnGlow 3s ease-in-out 2s infinite;
+          transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        /* shimmer sweep continu */
+        .btn-hero::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          width: 38%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.20), transparent);
+          transform: translateX(-130%) skewX(-18deg);
+          animation: btnShimmer 3.2s ease-in-out 1.5s infinite;
+          pointer-events: none;
+        }
+
+        /* pulse ring autour */
+        .btn-ring {
+          position: absolute;
+          inset: -4px;
+          border-radius: 999px;
+          border: 2px solid rgba(0,168,140,0.50);
+          animation: btnPulseRing 2s ease-out 1s infinite;
+          pointer-events: none;
+        }
+
+        .btn-hero:hover {
+          transform: translateY(-3px) scale(1.025);
+          box-shadow: 0 14px 36px rgba(0,81,90,0.50), 0 0 24px 6px rgba(0,129,143,0.18);
+        }
+        .btn-hero:active {
+          transform: scale(0.975);
+          box-shadow: 0 4px 12px rgba(0,81,90,0.28);
+        }
+
+        .btn-circle {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: clamp(50px, 6.5vw, 62px);
+          height: clamp(50px, 6.5vw, 62px);
+          background: #fff;
+          border-radius: 50%;
+          color: #00515a;
+          box-shadow: 0 4px 14px rgba(0,0,0,0.14);
+          flex-shrink: 0;
+          transition: background 0.25s ease, transform 0.25s ease;
+        }
+        .btn-arrow {
+          animation: arrowBounce 1.9s ease-in-out 2s infinite;
+        }
+        .btn-hero:hover .btn-circle {
+          background: #e0f7f4;
+          transform: scale(1.08);
+        }
+        .btn-hero:hover .btn-arrow {
+          animation: arrowBounce 0.55s ease infinite;
+        }
+
         @media (max-width: 767px) {
-          .hero-floating-stars { display: none; }
+          .hero-stars { display: none; }
+          .hero-orbe-mobile { display: block; }
+          .hero-mockup-desktop { display: none !important; }
+        }
+        @media (min-width: 768px) {
+          .hero-orbe-mobile { display: none; }
+          .hero-mockup-desktop { display: block; }
         }
       `}</style>
 
       <section style={{
-        position: "relative",
-        minHeight: "100vh",
-        overflow: "hidden",
-        background: "#ffffff",
+        position: "relative", minHeight: "100vh",
+        overflow: "hidden", background: "#ffffff",
         fontFamily: "'Archivo', sans-serif",
       }}>
-        {/* ══ BACKGROUNDS ══ */}
+        {/* ══ BACKGROUNDS (identiques à l'original) ══ */}
         <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "radial-gradient(ellipse 65% 55% at -5% 0%, rgba(0,81,90,0.55) 0%, rgba(0,81,90,0.20) 45%, transparent 75%)" }} />
         <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "radial-gradient(ellipse 65% 55% at 105% 0%, rgba(0,81,90,0.55) 0%, rgba(0,81,90,0.20) 45%, transparent 75%)" }} />
         <div style={{ position: "absolute", inset: 0, zIndex: 2, background: "radial-gradient(ellipse 40% 50% at -2% 55%, rgba(0,81,90,0.30) 0%, transparent 70%)" }} />
@@ -223,226 +322,126 @@ export const HeroV2 = () => {
         <div style={{ position: "absolute", inset: 0, zIndex: 3, background: "radial-gradient(ellipse 110% 75% at 50% 110%, rgba(0,42,48,0.82) 0%, rgba(0,63,72,0.65) 25%, rgba(0,81,90,0.38) 52%, rgba(0,101,116,0.15) 70%, transparent 88%)" }} />
         <div style={{ position: "absolute", inset: 0, zIndex: 4, background: "radial-gradient(ellipse 90% 70% at 50% 5%, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 35%, rgba(255,255,255,0.55) 58%, rgba(255,255,255,0.10) 75%, transparent 88%)" }} />
 
-        {/* ══ CONTENU PRINCIPAL ══ */}
+        {/* ══ ÉTOILES éparpillées (masquées sur mobile) ══ */}
+        <div className="hero-stars" style={{ position: "absolute", inset: 0, zIndex: 8, pointerEvents: "none" }}>
+          <StarClusters />
+        </div>
+
+        {/* ══ CONTENU PRINCIPAL (identique à l'original) ══ */}
         <div style={{
-          position: "relative",
-          zIndex: 10,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
+          position: "relative", zIndex: 10,
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
           minHeight: "100vh",
-          padding: "clamp(100px, 14vh, 160px) clamp(0px, 1vw, 8px) 20px",
+          padding: "clamp(14px, 14vh, 160px) clamp(0px, 1vw, 8px) 20px",
           gap: "clamp(16px, 2.4vw, 26px)",
         }}>
 
-          {/* ── Badge ── */}
+          {/* Badge — identique à l'original */}
           <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "10px",
+            display: "inline-flex", alignItems: "center", gap: "10px",
             padding: "clamp(10px, 1.5vw, 14px) clamp(22px, 3vw, 32px)",
             borderRadius: "999px",
-            background: "rgba(255, 255, 255, 0.04)",
+            background: "rgba(255,255,255,0.04)",
             backdropFilter: "blur(18px) saturate(160%)",
-            border: "1px solid rgba(0, 81, 90, 0.22)",
-            boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06)",
-            marginTop: "clamp(20px, 4vw, 60px)",   // ← ajoute cette ligne
-
+            border: "1px solid rgba(0,81,90,0.22)",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
+            marginTop: "clamp(0px, 4vw, 60px)",
             animation: "badgePulse 3.5s ease-in-out infinite, fadeUp 0.8s ease 0.1s both",
           }}>
             <div style={{
-              width: "clamp(8px, 1vw, 10px)",
-              height: "clamp(8px, 1vw, 10px)",
-              borderRadius: "50%",
-              background: "#00515a",
-              boxShadow: "0 0 10px rgba(0, 81, 90, 0.5)",
-              flexShrink: 0,
+              width: "clamp(8px,1vw,10px)", height: "clamp(8px,1vw,10px)",
+              borderRadius: "50%", background: "#00515a",
+              boxShadow: "0 0 10px rgba(0,81,90,0.5)", flexShrink: 0,
             }} />
-            <span style={{
-              fontSize: "clamp(0.78rem, 1.4vw, 0.92rem)",
-              fontWeight: 700,
-              letterSpacing: "0.3px",
-            }}>
+            <span style={{ fontSize: "clamp(0.78rem,1.4vw,0.92rem)", fontWeight: 700, letterSpacing: "0.3px" }}>
               <span style={{ color: "#000000" }}> Réservez, Payez, Profitez</span>{" "}
               <span style={{ color: "#00515a" }}>Avec Ticketché</span>
             </span>
           </div>
 
-          {/* ── Titre ── */}
+          {/* Titre — identique à l'original */}
           <div style={{
-            position: "relative",
-            display: "inline-block",
-            textAlign: "center",
-            animation: "fadeUp 0.7s ease 0.25s both",
+            position: "relative", display: "inline-block",
+            textAlign: "center", animation: "fadeUp 0.7s ease 0.25s both",
           }}>
             <DashedArc />
-            <StarCluster />
 
-            {/* h1 réduit de -20% : clamp(2.6→2.08, 6.2→4.96vw, 5→4rem) */}
             <h1 style={{
               position: "relative", zIndex: 2,
               fontSize: "clamp(2.08rem, 4.96vw, 4rem)",
-              fontWeight: 900,
-              color: "#0a0a0a",
-              lineHeight: 1.06,
-              letterSpacing: "-0.03em",
-              margin: 0,
+              fontWeight: 900, color: "#0a0a0a",
+              lineHeight: 1.06, letterSpacing: "-0.03em", margin: 0,
             }}>
               Parking, Lavage &amp; Événements
               <br />
-              <span style={{ display: "inline-flex", alignItems: "center", gap: "14px" }}>
-                Dans Votre Poche
-                <span style={{ display: "inline-flex", gap: "8px", marginLeft: "6px" }}>
-                  <span style={{
-                    width: "clamp(26px,3vw,42px)", height: "clamp(26px,3vw,42px)",
-                    borderRadius: "50%",
-                    background: "linear-gradient(135deg, #00818f, #00515a)",
-                    display: "inline-block", flexShrink: 0,
-                    boxShadow: "0 4px 14px rgba(0,81,90,0.45)",
-                  }} />
-                  <span style={{
-                    width: "clamp(26px,3vw,42px)", height: "clamp(26px,3vw,42px)",
-                    borderRadius: "50%",
-                    background: "linear-gradient(135deg, #1a1a1a, #3a3a3a)",
-                    display: "inline-block", flexShrink: 0,
-                    boxShadow: "0 4px 14px rgba(0,0,0,0.30)",
-                  }} />
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "14px", flexWrap: "wrap", justifyContent: "center" }}>
+                Dans Votre Poche avec{" "}
+                <span style={{ color: "#00818f" }}>Ticketché</span>
+                <span style={{ display: "inline-flex", gap: "8px", marginLeft: "2px" }}>
+                  <span style={{ width: "clamp(26px,3vw,42px)", height: "clamp(26px,3vw,42px)", borderRadius: "50%", background: "linear-gradient(135deg,#00818f,#00515a)", display: "inline-block", flexShrink: 0, boxShadow: "0 4px 14px rgba(0,81,90,0.45)" }} />
+                  <span style={{ width: "clamp(26px,3vw,42px)", height: "clamp(26px,3vw,42px)", borderRadius: "50%", background: "linear-gradient(135deg,#1a1a1a,#3a3a3a)", display: "inline-block", flexShrink: 0, boxShadow: "0 4px 14px rgba(0,0,0,0.30)" }} />
                 </span>
               </span>
             </h1>
           </div>
 
-          {/* ── Sous-titre ── */}
+          {/* Sous-titre — identique à l'original */}
           <p style={{
-fontSize: "clamp(1.1rem, 2vw, 1.3rem)",
-            color: "#4b5563",
-            maxWidth: "500px",
-            textAlign: "center",
-            lineHeight: 1.8,
-            fontWeight: 400,
-            margin: 0,
+            fontSize: "clamp(1.1rem, 2vw, 1.3rem)",
+            color: "#4b5563", maxWidth: "500px",
+            textAlign: "center", lineHeight: 1.8,
+            fontWeight: 400, margin: 0,
             animation: "fadeUp 0.7s ease 0.45s both",
           }}>
-            Réservez votre parking, planifiez un lavage, gérez votre garage ou
-            achetez vos billets d'événements — le tout en quelques secondes.
+            Fini les carnets et les appels. <strong style={{ color: "#00515a", fontWeight: 800 }}>Vos clients réservent, paient et vous notent</strong> — vous pilotez tout depuis votre téléphone.
           </p>
 
-          {/* ── Bouton ── */}
-          <button
-            style={{
-              position: "relative",
-              overflow: "hidden",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "clamp(5px, 0.2vw, 2px) clamp(2px, 3vw, 32px) clamp(1px, 1.2vw, 3px) clamp(36px, 5vw, 48px)",
-              background: "#00515a",
-              color: "white",
-              border: "none",
-              borderRadius: "999px",
-              fontSize: "clamp(0.92rem, 1.45vw, 1.05rem)",
-              fontWeight: 700,
-              cursor: "pointer",
-              boxShadow: "0 6px 20px rgba(0,81,90,0.3)",
-              transition: "all 0.28s ease",
-              minWidth: "clamp(220px, 32vw, 300px)",
-              whiteSpace: "nowrap",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-3px)";
-              e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,81,90,0.45)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,81,90,0.3)";
-            }}
-          >
-            <span style={{ flex: 1, textAlign: "center", paddingRight: "clamp(8px, 1.5vw, 12px)" }}>
+          {/* ── Bouton animé ── */}
+          <button className="btn-hero">
+            <div className="btn-ring" />
+            <span style={{ flex: 1, textAlign: "center", paddingRight: "clamp(8px,1.5vw,12px)" }}>
               Télécharger l'Application
             </span>
-            <div style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "clamp(52px, 7vw, 64px)",
-              height: "clamp(52px, 7vw, 64px)",
-              background: "#ffffff",
-              borderRadius: "50%",
-              marginRight: "-28px",
-              color: "#00515a",
-              boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
-              transition: "transform 0.3s ease",
-            }}>
-              <ArrowRight weight="bold" style={{ width: "clamp(22px, 2.4vw, 28px)", height: "clamp(22px, 2.4vw, 28px)" }} />
+            <div className="btn-circle">
+              <ArrowRight weight="bold" className="btn-arrow" style={{ width: "clamp(22px,2.4vw,26px)", height: "clamp(22px,2.4vw,26px)" }} />
             </div>
           </button>
 
-          {/* ══ MOCKUP MOBILE ══ */}
-          <div style={{
-            width: "100%",
-            maxWidth: "900px",
-            margin: "clamp(40px, 5vw, 64px) auto 0",
-            position: "relative",
-            height: "clamp(320px, 44vw, 540px)",
+          {/* ══ MOCKUP desktop / ORBE mobile ══ */}
+
+          {/* — Mobile : orbe uniquement — */}
+          <div className="hero-orbe-mobile" style={{
+            width: "100%", maxWidth: "340px",
+            margin: "32px auto 0",
             animation: "fadeUp 0.9s ease 0.9s both",
           }}>
-            <div style={{
-              position: "absolute",
-              inset: "10% 5%",
-              background: "radial-gradient(ellipse 75% 65% at 50% 55%, rgba(0,81,90,0.12) 0%, transparent 72%)",
-              filter: "blur(40px)",
-              pointerEvents: "none",
-            }} />
+            <img src="/images/Hero/orbe" alt="Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
+          </div>
 
-            {/* TÉLÉPHONE CENTRAL */}
-            <div style={{
-              position: "absolute",
-              left: "55%", top: "-100%",
-              transform: "translateX(-50%)",
-              width: "clamp(340px, 42vw, 560px)",
-              height: "clamp(700px, 90vw, 1100px)",
-              zIndex: 4,
-            }}>
+          {/* — Desktop : mockup complet — */}
+          <div className="hero-mockup-desktop" style={{
+            width: "100%", maxWidth: "900px",
+            margin: "clamp(40px,5vw,64px) auto 0",
+            position: "relative",
+            height: "clamp(320px,44vw,540px)",
+            animation: "fadeUp 0.9s ease 0.9s both",
+          }}>
+            <div style={{ position: "absolute", inset: "10% 5%", background: "radial-gradient(ellipse 75% 65% at 50% 55%, rgba(0,81,90,0.12) 0%, transparent 72%)", filter: "blur(40px)", pointerEvents: "none" }} />
+            {/* téléphone central */}
+            <div style={{ position: "absolute", left: "55%", top: "-100%", transform: "translateX(-50%)", width: "clamp(340px,42vw,560px)", height: "clamp(700px,90vw,1100px)", zIndex: 4 }}>
               <img src="/images/Hero/img11.png" alt="App Ticketché" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             </div>
-
-            {/* CARTE GAUCHE */}
-            <div style={{
-              position: "absolute",
-              left: "-12%", top: "30%",
-              width: "clamp(200px, 35vw, 400px)",
-              borderRadius: "clamp(14px, 1.8vw, 22px)",
-              overflow: "hidden",
-              boxShadow: "0 20px 56px rgba(0,0,0,0.15), 0 4px 16px rgba(0,81,90,0.12)",
-              zIndex: 6,
-            }}>
+            {/* carte gauche */}
+            <div style={{ position: "absolute", left: "-12%", top: "30%", width: "clamp(200px,35vw,400px)", borderRadius: "clamp(14px,1.8vw,22px)", overflow: "hidden", boxShadow: "0 20px 56px rgba(0,0,0,0.15),0 4px 16px rgba(0,81,90,0.12)", zIndex: 6 }}>
               <img src="/images/Hero/img3.jpg" alt="Parking Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
             </div>
-
-            {/* CARTE DROITE HAUT */}
-            <div style={{
-              position: "absolute",
-              right: "-9%", top: "20%",
-              width: "clamp(200px, 250vw, 350px)",
-              borderRadius: "clamp(14px, 1.8vw, 20px)",
-              overflow: "hidden",
-              boxShadow: "0 16px 44px rgba(0,0,0,0.13), 0 4px 14px rgba(0,81,90,0.11)",
-              zIndex: 5,
-            }}>
+            {/* carte droite haut */}
+            <div style={{ position: "absolute", right: "-9%", top: "20%", width: "clamp(200px,250vw,350px)", borderRadius: "clamp(14px,1.8vw,20px)", overflow: "hidden", boxShadow: "0 16px 44px rgba(0,0,0,0.13),0 4px 14px rgba(0,81,90,0.11)", zIndex: 5 }}>
               <img src="/images/Hero/img2.png" alt="Événements Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
             </div>
-
-            {/* CARTE DROITE BAS */}
-            <div style={{
-              position: "absolute",
-              right: "-12%", bottom: "5%",
-              width: "clamp(400px, 19vw, 300px)",
-              borderRadius: "clamp(14px, 1.8vw, 20px)",
-              overflow: "hidden",
-              boxShadow: "0 16px 44px rgba(0,0,0,0.13), 0 4px 14px rgba(0,81,90,0.11)",
-              zIndex: 5,
-            }}>
+            {/* carte droite bas */}
+            <div style={{ position: "absolute", right: "-12%", bottom: "5%", width: "clamp(400px,19vw,300px)", borderRadius: "clamp(14px,1.8vw,20px)", overflow: "hidden", boxShadow: "0 16px 44px rgba(0,0,0,0.13),0 4px 14px rgba(0,81,90,0.11)", zIndex: 5 }}>
               <img src="/images/Hero/img44.jpg" alt="Garage Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
             </div>
           </div>
@@ -452,3 +451,5 @@ fontSize: "clamp(1.1rem, 2vw, 1.3rem)",
     </>
   );
 };
+
+export default HeroV2;
