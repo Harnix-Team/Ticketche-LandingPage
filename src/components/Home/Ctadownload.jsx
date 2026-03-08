@@ -129,7 +129,7 @@ export default function CTADownload() {
                 className="text-white/60 leading-[1.75] m-0 max-w-[360px]"
                 style={{ fontSize: "clamp(0.88rem,1.1vw,1rem)" }}
               >
-                Parking, lavage, garage, événements — tout en un. Téléchargez
+                Parking, lavage, garage, billetterie & événements — tout en un. Téléchargez
                 gratuitement et rejoignez des milliers d'utilisateurs satisfaits.
               </p>
 

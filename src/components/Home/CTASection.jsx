@@ -15,13 +15,12 @@ export const CTASection = () => {
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4">
               <div className="flex-1">
                 <h2 className="title-sub mb-4 md:mb-6">
-                  Parking, garage, lavage, événements — tout en une seule app !
+                  Parking, lavage, garage, billetterie & événements — tout en une seule app !
                 </h2>
 
                 <p className="text-base sm:text-lg lg:text-xl text-white/80 mb-6 md:mb-8">
-                  Ticketché centralise tous vos services : stationnement, entretien,
-                  lavage et billetterie d'événements. Gérez tout en quelques
-                  touches, où que vous soyez au Bénin.
+                  Ticketché centralise 5 services en une seule app : parking, lavage auto,
+                  garage & mécanique, billetterie d'événements et gestion d'événements. Réservez, payez et profitez — où que vous soyez.
                 </p>
               </div>
 

@@ -62,9 +62,7 @@ export const About = () => {
                 </h2>
                 <p className="text-black text-base md:text-lg leading-relaxed">
                   Plus besoin de tourner en rond. Plus besoin de deviner.
-                  <b> ticketché</b> vous montre tous les services disponibles autour de
-                  vous parkings, garages, lavages et vous permet de réserver vos billets
-                  d'événements en quelques secondes, en temps réel.
+                  <b> Ticketché</b> vous montre en temps réel les parkings disponibles, les centres de lavage les mieux notés et les garages certifiés près de vous — et vous permet d'acheter vos billets d'événements en quelques secondes.
                 </p>
               </div>
 
@@ -138,11 +136,9 @@ export const About = () => {
                   Vous êtes gérant ou organisateur ?
                 </h2>
                 <p className="text-black text-base md:text-lg leading-relaxed">
-                  <b>ticketché</b> vous aide à gérer votre activité plus facilement et
-                  à augmenter votre rentabilité. Parkings, garages, lavages ou
-                  événements — vous gagnez en visibilité, en organisation et en
-                  efficacité : entrées, sorties, paiements, billetterie et
-                  statistiques en temps réel.
+                  <b>Ticketché</b> vous aide à digitaliser et rentabiliser votre activité.
+                  Que vous gériez un parking, un centre de lavage, un garage ou que vous organisiez des événements — 
+                  gagnez en visibilité, en organisation et en efficacité : entrées/sorties, encaissements, billetterie et statistiques en temps réel.
                 </p>
               </div>
 

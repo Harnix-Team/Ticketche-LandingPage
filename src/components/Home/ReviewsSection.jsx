@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { Star, ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 
 const reviews = [
   {
@@ -8,7 +9,7 @@ const reviews = [
     role: "Organisateur d'événements",
     photo: "/images/users/user1.png",
     rating: 5,
-    text: "Ticketché a révolutionné la gestion de mes événements. La vente de billets est simple, rapide et les paiements arrivent instantanément. Je ne peux plus m'en passer !",
+    text: "Ticketché a transformé la gestion de mes événements. Je crée mon événement, vends mes billets en ligne avec QR code et suis mes réservations en direct. Incroyablement efficace !",
     blobColor: "#00515a",
   },
   {
@@ -16,7 +17,7 @@ const reviews = [
     role: "Utilisatrice régulière",
     photo: "/images/users/user2.png",
     rating: 5,
-    text: "Une application vraiment pratique ! J'achète mes billets en quelques secondes et je reçois mon ticket directement sur mon téléphone. Zéro stress, zéro file d'attente.",
+    text: "J'utilise Ticketché pour tout : je trouve un parking en 30 secondes, je réserve mon lavage auto le week-end et j'achète mes billets de concert sans bouger de chez moi. Une app indispensable !",
     blobColor: "#04545d",
     featured: true,
   },
@@ -25,23 +26,23 @@ const reviews = [
     role: "Gérant de parking",
     photo: "/images/users/user4.png",
     rating: 5,
-    text: "La plateforme m'a permis de digitaliser entièrement mon parking. Mes clients adorent et mes recettes ont augmenté de 40% depuis que j'utilise Ticketché.",
+    text: "Depuis que j'utilise Ticketché, mon parking est 100% digitalisé. Entrées, sorties, paiements mobile money — tout est tracé. Mes recettes ont augmenté de 40% en 3 mois.",
     blobColor: "#8daeb1",
   },
   {
     name: "Fatou Traoré",
-    role: "Étudiante",
+    role: "Responsable centre de lavage",
     photo: "/images/users/user1.png",
     rating: 5,
-    text: "Je commande mes billets de concert sans me déplacer. L'interface est super intuitive et le paiement via mobile money est un vrai plus pour nous en Afrique.",
+    text: "Mes clients adorent pouvoir réserver leur lavage à l'avance et payer via mobile money. Ticketché m'a apporté plus de visibilité et a simplifié toute ma gestion quotidienne.",
     blobColor: "#00515a",
   },
   {
     name: "Olivier Dossou",
-    role: "Entrepreneur",
+    role: "Gérant de garage automobile",
     photo: "/images/users/user2.png",
     rating: 5,
-    text: "Grâce à Ticketché, j'ai pu lancer mes événements avec un système de billetterie professionnel dès le premier jour. Le support est réactif et la plateforme fiable.",
+    text: "Grâce à Ticketché, mes clients suivent leurs réparations en temps réel et reçoivent leurs factures numériques. La transparence a boosté ma crédibilité et fidélisé ma clientèle.",
     blobColor: "#04545d",
   },
 ];
@@ -50,7 +51,7 @@ function Stars({ count }) {
   return (
     <div style={{ display: "flex", gap: "4px", justifyContent: "center", marginBottom: "16px" }}>
       {Array.from({ length: count }).map((_, i) => (
-        <span key={i} style={{ fontSize: "1.1rem" }}>⭐</span>
+        <Star key={i} weight="fill" style={{ width: 18, height: 18, color: "#f59e0b" }} />
       ))}
     </div>
   );
@@ -150,9 +151,9 @@ function ReviewCard({ review, position, total }) {
           background: "#fff",
           boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: "1.2rem", zIndex: 5,
+          zIndex: 5,
           border: "2px solid rgba(0,81,90,0.1)",
-        }}>⭐</div>
+        }}><Star weight="fill" style={{ width: 22, height: 22, color: "#f59e0b" }} /></div>
       )}
     </div>
   );
@@ -220,7 +221,7 @@ export default function ReviewsSection() {
         </div>
 
         {/* Carousel */}
-        <div style={{ position: "relative", height: "clamp(380px, 50vw, 480px)" }}>
+        <div className="reviews-carousel-container" style={{ position: "relative", height: "clamp(380px, 50vw, 480px)" }}>
 
           {reviews.map((review, i) => (
             <ReviewCard
@@ -237,14 +238,14 @@ export default function ReviewsSection() {
             top: "50%", transform: "translateY(-50%)",
             width: "48px", height: "48px", borderRadius: "50%",
             background: "#fff", border: "1px solid rgba(0,81,90,0.2)",
-            color: "#00515a", fontSize: "1.4rem", cursor: "pointer",
+            color: "#00515a", cursor: "pointer",
             zIndex: 20, display: "flex", alignItems: "center", justifyContent: "center",
             boxShadow: "0 4px 16px rgba(0,81,90,0.12)",
             transition: "all 0.2s ease",
           }}
             onMouseEnter={e => { e.currentTarget.style.background = "#00515a"; e.currentTarget.style.color = "#fff"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.color = "#00515a"; }}
-          >←</button>
+          ><ArrowLeft weight="bold" style={{ width: 20, height: 20 }} /></button>
 
           {/* Bouton suivant */}
           <button onClick={next} style={{
@@ -252,14 +253,14 @@ export default function ReviewsSection() {
             top: "50%", transform: "translateY(-50%)",
             width: "48px", height: "48px", borderRadius: "50%",
             background: "#fff", border: "1px solid rgba(0,81,90,0.2)",
-            color: "#00515a", fontSize: "1.4rem", cursor: "pointer",
+            color: "#00515a", cursor: "pointer",
             zIndex: 20, display: "flex", alignItems: "center", justifyContent: "center",
             boxShadow: "0 4px 16px rgba(0,81,90,0.12)",
             transition: "all 0.2s ease",
           }}
             onMouseEnter={e => { e.currentTarget.style.background = "#00515a"; e.currentTarget.style.color = "#fff"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.color = "#00515a"; }}
-          >→</button>
+          ><ArrowRight weight="bold" style={{ width: 20, height: 20 }} /></button>
         </div>
 
         {/* Dots */}

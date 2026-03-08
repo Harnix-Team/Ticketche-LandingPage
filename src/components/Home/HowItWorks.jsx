@@ -5,19 +5,19 @@ import { useEffect, useRef, useState } from "react";
 const steps = [
   {
     title: "Téléchargez l'App",
-    description: "Disponible sur App Store et Google Play. Installez Ticketché en quelques secondes et créez votre compte gratuitement.",
+    description: "Disponible sur App Store et Google Play. Installez Ticketché en quelques secondes, créez votre compte et enregistrez vos véhicules.",
   },
   {
     title: "Choisissez un Service",
-    description: "Parking, lavage, garage ou événement — sélectionnez le service dont vous avez besoin directement depuis l'application.",
+    description: "Parking, lavage auto, garage & mécanique, billetterie d'événement ou gestion d'emplacement — sélectionnez ce dont vous avez besoin.",
   },
   {
-    title: "Effectuez le Paiement",
-    description: "Payez en toute sécurité via Mobile Money ou carte bancaire. Rapide, sans commission cachée.",
+    title: "Payez en Mobile Money",
+    description: "Réglez via Mobile Money, carte bancaire ou votre portefeuille Ticketché. Appliquez un code promo pour bénéficier d'une réduction instantanée.",
   },
   {
-    title: "Profitez du Service",
-    description: "Votre ticket est généré instantanément. Présentez-le et profitez du service sans attente ni stress.",
+    title: "Profitez & Notez",
+    description: "Votre QR code est généré instantanément. Présentez-le à l'entrée, profitez du service sans attente et laissez un avis pour la communauté.",
   },
 ];
 
@@ -96,20 +96,20 @@ export default function HowItWorks() {
             grid-cols-1 md:grid-cols-2"
         >
           {/* ── LEFT — Rings + Phone ── */}
-          <div className="relative flex items-center justify-center overflow-visible box-border order-2 md:order-1 h-[420px] md:h-[460px] w-full">
+          <div className="hiw-left-col relative flex items-center justify-center overflow-visible box-border order-2 md:order-1 h-[420px] md:h-[460px] w-full">
 
             {/* Rings */}
-            <div className="absolute inset-0 flex items-center justify-center">
+          <div className="hiw-rings-wrapper absolute inset-0 flex items-center justify-center">
               {/* Ring 3 — outer */}
               <div
                 ref={ring3Ref}
-                className="absolute rounded-full box-border border-[2.5px] border-dashed border-[#367e86] opacity-75"
+                className="hiw-ring-outer absolute rounded-full box-border border-[2.5px] border-dashed border-[#367e86] opacity-75"
                 style={{ width: 390, height: 390 }}
               />
               {/* Ring 1 — mid with dots */}
               <div
                 ref={ring1Ref}
-                className="absolute rounded-full box-border border-[3.5px] border-dashed border-[#367e86] opacity-90"
+                className="hiw-ring-mid absolute rounded-full box-border border-[3.5px] border-dashed border-[#367e86] opacity-90"
                 style={{ width: 310, height: 310 }}
               >
                 {/* dot left */}
@@ -122,7 +122,7 @@ export default function HowItWorks() {
               {/* Ring 2 — inner */}
               <div
                 ref={ring2Ref}
-                className="absolute rounded-full box-border border-[3px] border-dashed border-[#367e86] opacity-85"
+                className="hiw-ring-inner absolute rounded-full box-border border-[3px] border-dashed border-[#367e86] opacity-85"
                 style={{ width: 235, height: 235 }}
               />
             </div>
@@ -159,7 +159,7 @@ export default function HowItWorks() {
             {/* Phone */}
             <div
               className="absolute z-[10] animate-phoneFloat [filter:drop-shadow(0_32px_64px_rgba(0,30,34,0.35))]"
-              style={{ width: "clamp(340px,60vw,800px)" }}
+              style={{ width: "clamp(200px,60vw,800px)" }}
             >
               <img
                 src="/images/Hero/orbe.png"

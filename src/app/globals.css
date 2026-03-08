@@ -495,6 +495,173 @@ footer a, footer li a { font-size: 1rem !important; }
 
 
 
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE GLOBAL — mobile-first fixes
+═══════════════════════════════════════════════════════ */
+
+/* ── Global: prevent horizontal overflow ── */
+html, body { overflow-x: hidden !important; }
+
+/* ── Hero mobile cards: hidden on desktop, shown on mobile ── */
+.hero-mobile-cards {
+  display: none;
+}
+
+/* ── Hero Section ── */
+@media (max-width: 767px) {
+  /* Hide floating side cards on mobile */
+  .hero-card-left,
+  .hero-card-right-top,
+  .hero-card-right-bottom { display: none !important; }
+
+  /* Show mobile cards grid */
+  .hero-mobile-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    padding: 0 16px;
+    margin-top: 16px;
+    animation: fadeUp 0.9s ease 1s both;
+  }
+
+  .hero-mobile-card {
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.13), 0 2px 8px rgba(0,81,90,0.10);
+  }
+
+  .hero-mobile-card img {
+    width: 100%;
+    height: 90px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Re-centre and resize the phone */
+  .hero-phone-center {
+    left: 50% !important;
+    width: min(72vw, 260px) !important;
+    height: auto !important;
+    min-height: 340px !important;
+    top: -30% !important;
+  }
+
+  .hero-phone-center img {
+    object-fit: contain !important;
+    height: auto !important;
+  }
+
+  /* Wrapper height for phone */
+  .hero-mockup-wrap {
+    height: 300px !important;
+    overflow: visible !important;
+    margin-top: 24px !important;
+  }
+
+  /* Breathing room for hero text */
+  .hero-content-wrapper {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-top: 100px !important;
+    gap: 14px !important;
+  }
+
+  /* Hide the dashed arc on mobile to avoid overlap */
+  .dashed-arc-wrap { display: none !important; }
+
+  /* Reposition rocket on mobile — keep visible but contained */
+  .hero-rocket {
+    top: 0 !important;
+    right: -2% !important;
+  }
+}
+
+/* ── Tablet breakpoint (768px–1023px) ── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero-card-left { left: -4% !important; width: 26vw !important; }
+  .hero-card-right-top { right: -2% !important; width: 20vw !important; }
+  .hero-card-right-bottom { right: -4% !important; width: 16vw !important; }
+
+  .hero-phone-center {
+    left: 52% !important;
+    width: 36vw !important;
+    height: auto !important;
+  }
+
+  .hero-mockup-wrap {
+    height: clamp(280px, 38vw, 460px) !important;
+  }
+
+  .dashed-arc-wrap {
+    left: 50% !important;
+  }
+}
+
+/* ── HowItWorks — scale rings to fit mobile ── */
+@media (max-width: 767px) {
+  .hiw-left-col { overflow: hidden !important; }
+  .hiw-ring-outer { width: 310px !important; height: 310px !important; }
+  .hiw-ring-mid   { width: 245px !important; height: 245px !important; }
+  .hiw-ring-inner  { width: 185px !important; height: 185px !important; }
+}
+
+/* ── FAQ Section ── */
+@media (max-width: 768px) {
+  .faq-img-panel {
+    width: 100% !important;
+    max-width: 340px !important;
+    margin: 0 auto !important;
+  }
+}
+
+/* ── À propos page — fix narrow container on mobile ── */
+@media (max-width: 768px) {
+  .apropos-container {
+    max-width: 100% !important;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .apropos-grid-2col,
+  .apropos-mission-grid,
+  .apropos-vision-grid { grid-template-columns: 1fr !important; }
+
+  .apropos-stats-bar {
+    width: 100% !important;
+    margin-top: 20px !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .apropos-cta__inner { flex-direction: column !important; }
+  .apropos-banner { padding: 16px 20px !important; }
+  .apropos-img-wrap,
+  .apropos-mission-img,
+  .apropos-vision-img { height: 220px !important; }
+  .apropos-vision-text h2,
+  .apropos-vision-text h3,
+  .apropos-vision-text .vision-label { text-align: left !important; }
+}
+
+/* ── Contact/FAQ grid ── */
+@media (max-width: 768px) {
+  .faq-grid { grid-template-columns: 1fr !important; }
+  .faq-cats { flex-direction: row !important; overflow-x: auto !important; flex-wrap: nowrap !important; padding-bottom: 8px !important; }
+  .faq-cat-btn { min-width: 140px !important; flex-shrink: 0 !important; }
+}
+
+/* ── Reviews Section — ensure no horizontal scroll ── */
+@media (max-width: 767px) {
+  .reviews-carousel-container { overflow: hidden !important; }
+}
+
+/* ── TrustedBy — gradient fades narrower on mobile ── */
+@media (max-width: 640px) {
+  .trusted-fade-left,
+  .trusted-fade-right { width: 60px !important; }
+}
+
+/* ── General: prevent images breaking layout ── */
+img { max-width: 100%; }
+
 @keyframes floatCenter {
   0%,100% { transform: translateX(-50%) translateY(0px); }
   50%     { transform: translateX(-50%) translateY(-14px); }
@@ -519,4 +686,3 @@ footer a, footer li a { font-size: 1rem !important; }
   0%,100% { transform: translateY(0px) rotate(-0.8deg); }
   50%     { transform: translateY(-16px) rotate(1deg); }
 }
-  

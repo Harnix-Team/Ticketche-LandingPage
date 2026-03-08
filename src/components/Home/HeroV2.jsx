@@ -3,102 +3,91 @@ import { useEffect, useRef } from "react";
 import { ArrowRight, Star } from "@phosphor-icons/react";
 
 /* ─────────────────────────────────────────────
-   3 TRAÎNES D'ÉTOILES — chacune son style
+   CONSTELLATION — forme une grande étoile
+   Chaque petite étoile Phosphor est placée
+   le long des 5 branches d'une macro-étoile
 ───────────────────────────────────────────── */
 
-// Traîne 1 — teal, étoiles classiques, diagonale douce
-const TRAIL_A = [
-  { size: 4,  x: 0,   y: 148 },
-  { size: 5,  x: 14,  y: 134 },
-  { size: 6,  x: 28,  y: 120 },
-  { size: 7,  x: 42,  y: 106 },
-  { size: 9,  x: 58,  y: 92  },
-  { size: 11, x: 74,  y: 78  },
-  { size: 13, x: 92,  y: 64  },
-  { size: 15, x: 110, y: 50  },
-  { size: 17, x: 130, y: 36  },
-  { size: 20, x: 152, y: 22  },
-  { size: 23, x: 176, y: 8   },
-  { size: 26, x: 202, y: -6  },
-];
+// Génère les positions en polar → cartesian sur une étoile à 5 branches
+function starPoints() {
+  const pts = [];
+  const outerR = [100, 78, 60, 40, 22]; // rayons des couronnes
+  const counts = [5, 5, 5, 5, 1];       // points par couronne
+  const offsets = [0, 36, 0, 36, 0];    // rotation par couronne (alternance branches/creux)
 
-// Traîne 2 — cyan clair, étoiles légères, décalée vers le bas
-const TRAIL_B = [
-  { size: 3,  x: 0,   y: 162 },
-  { size: 4,  x: 13,  y: 149 },
-  { size: 5,  x: 26,  y: 136 },
-  { size: 7,  x: 40,  y: 122 },
-  { size: 8,  x: 55,  y: 108 },
-  { size: 10, x: 70,  y: 94  },
-  { size: 12, x: 86,  y: 80  },
-  { size: 14, x: 104, y: 66  },
-  { size: 16, x: 122, y: 52  },
-  { size: 19, x: 142, y: 38  },
-  { size: 22, x: 164, y: 24  },
-  { size: 25, x: 188, y: 10  },
-  { size: 28, x: 214, y: -4  },
-];
+  outerR.forEach((r, ring) => {
+    const n = counts[ring];
+    const off = offsets[ring];
+    for (let i = 0; i < n; i++) {
+      const angle = (360 / n) * i + off - 90; // -90 pour pointer vers le haut
+      const rad = angle * (Math.PI / 180);
+      pts.push({
+        x: r * Math.cos(rad),
+        y: r * Math.sin(rad),
+        size: ring === 0 ? 16 : ring === 1 ? 12 : ring === 2 ? 10 : ring === 3 ? 8 : 14,
+        opacity: ring === 0 ? 1 : ring === 1 ? 0.85 : ring === 2 ? 0.7 : ring === 3 ? 0.55 : 1,
+        color: ring % 2 === 0 ? "#00818f" : "#00515a",
+        delay: `${(i * 0.18 + ring * 0.3).toFixed(2)}s`,
+        dur: `${2.8 + ring * 0.4 + i * 0.1}s`,
+        anim: (i + ring) % 3,
+      });
+    }
+  });
 
-// Traîne 3 — mix foncé→vif, légèrement décalée en y
-const TRAIL_C = [
-  { size: 4,  x: 0,   y: 136 },
-  { size: 5,  x: 16,  y: 122 },
-  { size: 7,  x: 32,  y: 108 },
-  { size: 9,  x: 48,  y: 94  },
-  { size: 11, x: 66,  y: 80  },
-  { size: 13, x: 84,  y: 66  },
-  { size: 16, x: 104, y: 52  },
-  { size: 19, x: 126, y: 38  },
-  { size: 22, x: 150, y: 24  },
-  { size: 26, x: 176, y: 10  },
-  { size: 30, x: 204, y: -4  },
-];
+  // Quelques étoiles extras le long des branches pour densifier
+  const branches = 5;
+  for (let b = 0; b < branches; b++) {
+    const angle = (360 / branches) * b - 90;
+    const rad = angle * (Math.PI / 180);
+    [50, 30].forEach((r, j) => {
+      pts.push({
+        x: r * Math.cos(rad),
+        y: r * Math.sin(rad),
+        size: 7 + j * 2,
+        opacity: 0.65,
+        color: "#00d4e0",
+        delay: `${(b * 0.22 + j * 0.4).toFixed(2)}s`,
+        dur: `${3.5 + j * 0.6}s`,
+        anim: (b + j) % 3,
+      });
+    });
+  }
 
-const CONFIGS = [
-  { trail: TRAIL_A, cycle: "3.0s", interval: 0.16, colorFn: (i) => i < 4 ? "#00818f" : i < 8 ? "#00d4e0" : "#7fe8f0", weight: "fill" },
-  { trail: TRAIL_B, cycle: "3.4s", interval: 0.14, colorFn: (i) => i < 4 ? "#00515a" : i < 8 ? "#00818f" : "#00d4e0", weight: "fill" },
-  { trail: TRAIL_C, cycle: "2.8s", interval: 0.18, colorFn: (i) => i < 3 ? "#003d45" : i < 6 ? "#00818f" : "#7fe8f0", weight: "duotone" },
-];
+  return pts;
+}
 
-function StarTrail() {
+const STAR_PTS = starPoints();
+
+function StarCluster() {
   return (
     <div
       className="hero-floating-stars"
       style={{
         position: "absolute",
-        top: "2%",
-        right: "-24%",
+        top: "-8%",
+        right: "-32%",
         zIndex: 8,
         pointerEvents: "none",
         width: 260,
-        height: 210,
+        height: 260,
       }}
     >
-      {CONFIGS.map((cfg, ti) =>
-        cfg.trail.map((s, i) => {
-          const color = cfg.colorFn(i);
-          const delay = `${(i * cfg.interval).toFixed(2)}s`;
-          const offsetY = ti === 0 ? 0 : ti === 1 ? 18 : -12;
-          const offsetX = ti === 0 ? 0 : ti === 1 ? 6 : -8;
-          return (
-            <div
-              key={`${ti}-${i}`}
-              style={{
-                position: "absolute",
-                left: `${s.x + offsetX}px`,
-                top:  `${s.y + offsetY}px`,
-                animation: `starSeq ${cfg.cycle} ease-in-out ${delay} infinite`,
-                filter: `drop-shadow(0 0 ${4 + i * 0.8}px ${color}ee)`,
-              }}
-            >
-              <Star
-                weight={cfg.weight}
-                style={{ width: s.size, height: s.size, color }}
-              />
-            </div>
-          );
-        })
-      )}
+      {STAR_PTS.map((s, i) => (
+        <div
+          key={i}
+          style={{
+            position: "absolute",
+            left: `calc(50% + ${s.x}px)`,
+            top:  `calc(50% + ${s.y}px)`,
+            transform: "translate(-50%, -50%)",
+            opacity: s.opacity,
+            animation: `starFloat${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`,
+            filter: `drop-shadow(0 0 5px ${s.color}bb)`,
+          }}
+        >
+          <Star weight="fill" style={{ width: s.size, height: s.size, color: s.color }} />
+        </div>
+      ))}
     </div>
   );
 }
@@ -169,17 +158,23 @@ function DashedArc() {
 /* ─────────────────────────────────────────────
    HERO
 ───────────────────────────────────────────── */
-export const Hero = () => {
+export const HeroV2 = () => {
   return (
     <>
       <style>{`
-        @keyframes starSeq {
-          0%   { opacity: 0; transform: scale(0) rotate(-20deg); }
-          12%  { opacity: 1; transform: scale(1.25) rotate(10deg); }
-          28%  { opacity: 1; transform: scale(1) rotate(0deg); }
-          55%  { opacity: 0.85; transform: scale(1.05); }
-          80%  { opacity: 0; transform: scale(0.4); }
-          100% { opacity: 0; transform: scale(0); }
+        @keyframes starFloat0 {
+          0%,100% { transform: translateY(0px) rotate(0deg) scale(1); }
+          33%      { transform: translateY(-10px) rotate(15deg) scale(1.12); }
+          66%      { transform: translateY(-4px) rotate(-8deg) scale(0.95); }
+        }
+        @keyframes starFloat1 {
+          0%,100% { transform: translateY(0px) rotate(0deg); }
+          50%      { transform: translateY(-14px) rotate(20deg) scale(1.08); }
+        }
+        @keyframes starFloat2 {
+          0%,100% { transform: translateY(0px) scale(1); }
+          40%      { transform: translateY(-8px) rotate(-12deg) scale(1.15); }
+          80%      { transform: translateY(-3px) rotate(6deg) scale(0.92); }
         }
         @keyframes dashScroll {
           from { stroke-dashoffset: 0; }
@@ -193,8 +188,8 @@ export const Hero = () => {
           100%  { stroke-dashoffset: -533; opacity: 0; }
         }
         @keyframes miniRocketFly {
-          0%,100% { transform: rotate(25deg) translateY(0px) scale(1); }
-          50%      { transform: rotate(25deg) translateY(-6px) scale(1.1); }
+          0%,100% { transform: translateY(0px) scale(1); }
+          50%      { transform: translateY(-6px) scale(1.1); }
         }
         @keyframes badgePulse {
           0%,100% { box-shadow: 0 0 0 0 rgba(0,81,90,0.28); }
@@ -282,7 +277,7 @@ export const Hero = () => {
             animation: "fadeUp 0.7s ease 0.25s both",
           }}>
             <DashedArc />
-            <StarTrail />
+            <StarCluster />
 
             {/* h1 réduit de -20% : clamp(2.6→2.08, 6.2→4.96vw, 5→4rem) */}
             <h1 style={{

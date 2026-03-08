@@ -194,6 +194,7 @@ export default function TrustedBySection() {
       {/* Carrousel */}
       <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
         <div
+          className="trusted-fade-left"
           style={{
             position: "absolute",
             left: 0,
@@ -206,6 +207,7 @@ export default function TrustedBySection() {
           }}
         />
         <div
+          className="trusted-fade-right"
           style={{
             position: "absolute",
             right: 0,

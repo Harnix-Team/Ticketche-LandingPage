@@ -4,12 +4,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const testimonials = [
-  { name: "Stéphane TOGBANOU", rating: 5, quote: "Depuis que j'utilise ticketché, la gestion de mes parkings est devenue un jeu d'enfant. L'application est intuitive et m'a fait gagner un temps précieux!", avatar: "/images/users/user1.png" },
+  { name: "Stéphane TOGBANOU", rating: 5, quote: "Ticketché a digitalisé mon parking en totalité. Entrées, paiements, statistiques — tout dans mon téléphone. Un vrai gain de temps et d'argent !", avatar: "/images/users/user1.png" },
   { name: "Fatoumata DIALLO", rating: 5, quote: "ticketché a complètement transformé ma façon de gérer mes véhicules professionnels. Gain de temps, traçabilité, simplicité - tout ce dont j'avais besoin !", avatar: "/images/users/user2.png" },
-  { name: "Romuald SANNI", rating: 4, quote: "Je ne peux plus me passer de ticketché. Suivre mes entretiens, trouver un parking, programmer un lavage - tout est devenu tellement simple.", avatar: "/images/users/user3.png" },
+  { name: "Romuald SANNI", rating: 4, quote: "Je ne peux plus me passer de Ticketché. Trouver un parking, réserver un lavage, confier ma voiture à un garage — tout est simple et rapide.", avatar: "/images/users/user3.png" },
   { name: "Patrick HOUNDJANTO", rating: 5, quote: "En tant que professionnelle mobile, ticketché est mon assistant indispensable. Je gère mes déplacements avec une efficacité incroyable.", avatar: "/images/users/user4.png" },
-  { name: "Adjoua MENSAH", rating: 5, quote: "Une application vraiment bien pensée. Je recommande à tous les gérants de parking qui veulent moderniser leur activité.", avatar: "/images/users/user1.png" },
-  { name: "Kofi AGBODOSSOU", rating: 4, quote: "Très pratique pour organiser mes événements. La vente de billets en ligne a boosté ma visibilité et mes ventes considérablement.", avatar: "/images/users/user2.png" },
+  { name: "Adjoua MENSAH", rating: 5, quote: "En tant que gérante de centre de lavage, Ticketché m'a donné une vraie visibilité. Mes clients réservent et paient en mobile money. Je recommande !", avatar: "/images/users/user1.png" },
+  { name: "Kofi AGBODOSSOU", rating: 4, quote: "Organiser mes événements avec Ticketché est un vrai plaisir. Je vends mes billets en ligne, scanne les entrées et suis mes revenus en direct.", avatar: "/images/users/user2.png" },
   { name: "Bernadette DOSSOU", rating: 5, quote: "L'assistance 24h/24 est vraiment un plus. J'ai eu un problème un soir, résolu en moins de 10 minutes. Bravo à toute l'équipe !", avatar: "/images/users/user3.png" },
   { name: "Yao HOUETO", rating: 5, quote: "Le portefeuille électronique intégré simplifie tout. Plus besoin de jongler entre plusieurs applications pour gérer mes paiements.", avatar: "/images/users/user4.png" },
 ];

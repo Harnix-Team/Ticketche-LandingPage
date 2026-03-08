@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 
 const images = [
   { src: "/images/mockups/1.png", alt: "Ticketché utilisateur" },
@@ -52,7 +53,7 @@ export default function TicketcheFonction() {
 
           {/* EN-TÊTE */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "clamp(20px, 4vw, 60px)", flexWrap: "wrap", position: "relative", zIndex: 1, marginBottom: "clamp(32px, 4vw, 52px)" }}>
-            <h2 style={{ fontSize: "40px", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.025em", color: "#001e22", maxWidth: "460px", margin: 0 }}>
+            <h2 style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.5rem)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.025em", color: "#001e22", maxWidth: "460px", margin: 0 }}>
               Sécurisé &amp; Pratique{" "}
               <span style={{ color: "#00515a" }}>pour tous</span>
             </h2>
@@ -79,7 +80,6 @@ export default function TicketcheFonction() {
                 background: "#ffffff",
                 border: "1px solid rgba(0,81,90,0.3)",
                 color: "#00515a",
-                fontSize: "1.4rem",
                 cursor: "pointer",
                 zIndex: 12,
                 display: "flex",
@@ -98,7 +98,7 @@ export default function TicketcheFonction() {
               }}
               aria-label="Précédent"
             >
-              ←
+              <ArrowLeft weight="bold" style={{ width: 18, height: 18 }} />
             </button>
 
             {/* Bouton suivant */}
@@ -115,7 +115,6 @@ export default function TicketcheFonction() {
                 background: "#ffffff",
                 border: "1px solid rgba(0,81,90,0.3)",
                 color: "#00515a",
-                fontSize: "1.4rem",
                 cursor: "pointer",
                 zIndex: 12,
                 display: "flex",
@@ -134,7 +133,7 @@ export default function TicketcheFonction() {
               }}
               aria-label="Suivant"
             >
-              →
+              <ArrowRight weight="bold" style={{ width: 18, height: 18 }} />
             </button>
 
             {/* Conteneur scrollable */}

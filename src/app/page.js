@@ -2,6 +2,7 @@ import { About } from "@/components/Home/AboutSection";
 import { CTASection } from "@/components/Home/CTASection";
 import { EstablishmentsSection } from "@/components/Home/EstablishmentsSection";
 import { Hero } from "@/components/Home/HeroSection";
+import { HeroV2 } from "@/components/Home/HeroV2";
 import TrustedBySection from "@/components/Home/TrustedBySection";
 import { TestimonialsSection } from "@/components/Home/TestimonialsSection";
 import { EventsCarousel } from "@/components/Home/EventsCarousel";
@@ -17,6 +18,7 @@ export default function Home() {
   return (
     <div>
       <Hero />
+      <HeroV2 />
       <TrustedBySection />
       <TicketcheFonction />
       <HowItWorks />
