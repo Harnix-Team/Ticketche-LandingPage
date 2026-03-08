@@ -373,10 +373,9 @@ export const HeroV2 = () => {
               fontWeight: 900, color: "#0a0a0a",
               lineHeight: 1.06, letterSpacing: "-0.03em", margin: 0,
             }}>
-              Parking, Lavage &amp; Événements
-              <br />
+              Gérez vos Parkings, Lavages, Garages, 
+               <br /> Événements avec 
               <span style={{ display: "inline-flex", alignItems: "center", gap: "14px", flexWrap: "wrap", justifyContent: "center" }}>
-                Dans Votre Poche avec{" "}
                 <span style={{ color: "#00818f" }}>Ticketché</span>
                 <span style={{ display: "inline-flex", gap: "8px", marginLeft: "2px" }}>
                   <span style={{ width: "clamp(26px,3vw,42px)", height: "clamp(26px,3vw,42px)", borderRadius: "50%", background: "linear-gradient(135deg,#00818f,#00515a)", display: "inline-block", flexShrink: 0, boxShadow: "0 4px 14px rgba(0,81,90,0.45)" }} />
