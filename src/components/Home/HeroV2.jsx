@@ -7,53 +7,69 @@ import { ArrowRight, Star } from "@phosphor-icons/react";
 ───────────────────────────────────────────── */
 const CLUSTERS = [
   // haut gauche
-  { cx: "7%",  cy: "10%", stars: [
-    { x: 0,   y: 0,   size: 14, opacity: 0.80, anim: 0, delay: "0s",   dur: "3.2s", color: "#00818f" },
-    { x: 16,  y: -10, size: 10, opacity: 0.55, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" },
-    { x: -12, y: 14,  size: 8,  opacity: 0.40, anim: 2, delay: "0.6s", dur: "3.6s", color: "#00d4e0" },
-    { x: 20,  y: 12,  size: 6,  opacity: 0.30, anim: 0, delay: "0.9s", dur: "4.0s", color: "#00515a" },
-  ]},
+  {
+    cx: "7%", cy: "10%", stars: [
+      { x: 0, y: 0, size: 14, opacity: 0.80, anim: 0, delay: "0s", dur: "3.2s", color: "#00818f" },
+      { x: 16, y: -10, size: 10, opacity: 0.55, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" },
+      { x: -12, y: 14, size: 8, opacity: 0.40, anim: 2, delay: "0.6s", dur: "3.6s", color: "#00d4e0" },
+      { x: 20, y: 12, size: 6, opacity: 0.30, anim: 0, delay: "0.9s", dur: "4.0s", color: "#00515a" },
+    ]
+  },
   // haut droite
-  { cx: "87%", cy: "7%", stars: [
-    { x: 0,   y: 0,   size: 15, opacity: 0.75, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" },
-    { x: -14, y: 12,  size: 10, opacity: 0.50, anim: 0, delay: "0.5s", dur: "3.4s", color: "#00515a" },
-    { x: 16,  y: -8,  size: 8,  opacity: 0.38, anim: 2, delay: "0.8s", dur: "2.9s", color: "#00d4e0" },
-    { x: -6,  y: -16, size: 6,  opacity: 0.28, anim: 1, delay: "1.1s", dur: "3.8s", color: "#00818f" },
-  ]},
+  {
+    cx: "87%", cy: "7%", stars: [
+      { x: 0, y: 0, size: 15, opacity: 0.75, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" },
+      { x: -14, y: 12, size: 10, opacity: 0.50, anim: 0, delay: "0.5s", dur: "3.4s", color: "#00515a" },
+      { x: 16, y: -8, size: 8, opacity: 0.38, anim: 2, delay: "0.8s", dur: "2.9s", color: "#00d4e0" },
+      { x: -6, y: -16, size: 6, opacity: 0.28, anim: 1, delay: "1.1s", dur: "3.8s", color: "#00818f" },
+    ]
+  },
   // milieu gauche
-  { cx: "3%",  cy: "40%", stars: [
-    { x: 0,   y: 0,   size: 11, opacity: 0.60, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" },
-    { x: 14,  y: -7,  size: 8,  opacity: 0.42, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" },
-    { x: -9,  y: 12,  size: 6,  opacity: 0.32, anim: 1, delay: "0.7s", dur: "4.1s", color: "#00d4e0" },
-  ]},
+  {
+    cx: "3%", cy: "40%", stars: [
+      { x: 0, y: 0, size: 11, opacity: 0.60, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" },
+      { x: 14, y: -7, size: 8, opacity: 0.42, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" },
+      { x: -9, y: 12, size: 6, opacity: 0.32, anim: 1, delay: "0.7s", dur: "4.1s", color: "#00d4e0" },
+    ]
+  },
   // milieu droite
-  { cx: "92%", cy: "36%", stars: [
-    { x: 0,   y: 0,   size: 12, opacity: 0.65, anim: 0, delay: "0.3s", dur: "3.3s", color: "#00818f" },
-    { x: -16, y: 9,   size: 8,  opacity: 0.42, anim: 2, delay: "0.6s", dur: "2.6s", color: "#00515a" },
-    { x: 11,  y: 14,  size: 6,  opacity: 0.30, anim: 1, delay: "0.9s", dur: "3.9s", color: "#00d4e0" },
-  ]},
+  {
+    cx: "92%", cy: "36%", stars: [
+      { x: 0, y: 0, size: 12, opacity: 0.65, anim: 0, delay: "0.3s", dur: "3.3s", color: "#00818f" },
+      { x: -16, y: 9, size: 8, opacity: 0.42, anim: 2, delay: "0.6s", dur: "2.6s", color: "#00515a" },
+      { x: 11, y: 14, size: 6, opacity: 0.30, anim: 1, delay: "0.9s", dur: "3.9s", color: "#00d4e0" },
+    ]
+  },
   // bas gauche
-  { cx: "9%",  cy: "70%", stars: [
-    { x: 0,   y: 0,   size: 10, opacity: 0.50, anim: 1, delay: "0s",   dur: "3.1s", color: "#00d4e0" },
-    { x: 12,  y: -9,  size: 7,  opacity: 0.36, anim: 2, delay: "0.4s", dur: "3.7s", color: "#00818f" },
-    { x: -10, y: 10,  size: 5,  opacity: 0.26, anim: 0, delay: "0.7s", dur: "2.8s", color: "#00515a" },
-  ]},
+  {
+    cx: "9%", cy: "70%", stars: [
+      { x: 0, y: 0, size: 10, opacity: 0.50, anim: 1, delay: "0s", dur: "3.1s", color: "#00d4e0" },
+      { x: 12, y: -9, size: 7, opacity: 0.36, anim: 2, delay: "0.4s", dur: "3.7s", color: "#00818f" },
+      { x: -10, y: 10, size: 5, opacity: 0.26, anim: 0, delay: "0.7s", dur: "2.8s", color: "#00515a" },
+    ]
+  },
   // bas droite
-  { cx: "89%", cy: "66%", stars: [
-    { x: 0,   y: 0,   size: 11, opacity: 0.55, anim: 2, delay: "0.2s", dur: "3.4s", color: "#00515a" },
-    { x: -12, y: -10, size: 8,  opacity: 0.38, anim: 0, delay: "0.5s", dur: "2.9s", color: "#00818f" },
-    { x: 14,  y: 8,   size: 6,  opacity: 0.28, anim: 1, delay: "0.8s", dur: "4.0s", color: "#00d4e0" },
-  ]},
+  {
+    cx: "89%", cy: "66%", stars: [
+      { x: 0, y: 0, size: 11, opacity: 0.55, anim: 2, delay: "0.2s", dur: "3.4s", color: "#00515a" },
+      { x: -12, y: -10, size: 8, opacity: 0.38, anim: 0, delay: "0.5s", dur: "2.9s", color: "#00818f" },
+      { x: 14, y: 8, size: 6, opacity: 0.28, anim: 1, delay: "0.8s", dur: "4.0s", color: "#00d4e0" },
+    ]
+  },
   // haut centre-gauche
-  { cx: "26%", cy: "4%", stars: [
-    { x: 0,   y: 0,   size: 8,  opacity: 0.45, anim: 0, delay: "0.15s",dur: "3.6s", color: "#00818f" },
-    { x: 10,  y: 9,   size: 5,  opacity: 0.28, anim: 1, delay: "0.5s", dur: "2.8s", color: "#00515a" },
-  ]},
+  {
+    cx: "26%", cy: "4%", stars: [
+      { x: 0, y: 0, size: 8, opacity: 0.45, anim: 0, delay: "0.15s", dur: "3.6s", color: "#00818f" },
+      { x: 10, y: 9, size: 5, opacity: 0.28, anim: 1, delay: "0.5s", dur: "2.8s", color: "#00515a" },
+    ]
+  },
   // haut centre-droite
-  { cx: "71%", cy: "5%", stars: [
-    { x: 0,   y: 0,   size: 9,  opacity: 0.50, anim: 1, delay: "0.25s",dur: "3.2s", color: "#00515a" },
-    { x: -9,  y: 11,  size: 6,  opacity: 0.32, anim: 2, delay: "0.6s", dur: "3.8s", color: "#00d4e0" },
-  ]},
+  {
+    cx: "71%", cy: "5%", stars: [
+      { x: 0, y: 0, size: 9, opacity: 0.50, anim: 1, delay: "0.25s", dur: "3.2s", color: "#00515a" },
+      { x: -9, y: 11, size: 6, opacity: 0.32, anim: 2, delay: "0.6s", dur: "3.8s", color: "#00d4e0" },
+    ]
+  },
 ];
 
 function StarClusters() {
@@ -85,66 +101,66 @@ function StarClusters() {
 }
 
 /* Arc inchangé — position et contenu identiques à l'original */
-function DashedArc() {
-  const R = 100;
-  const size = R * 2 + 60;
-  const cx = R + 30;
-  const cy = R + 30;
-  const startAngle = -40  * (Math.PI / 180);
-  const endAngle   = -650 * (Math.PI / 180);
-  const startX = cx + R * Math.cos(startAngle);
-  const startY = cy + R * Math.sin(startAngle);
-  const endX   = cx + R * Math.cos(endAngle);
-  const endY   = cy + R * Math.sin(endAngle);
-  const arcLen = R * (210 * Math.PI / 180);
+// function DashedArc() {
+//   const R = 100;
+//   const size = R * 2 + 60;
+//   const cx = R + 30;
+//   const cy = R + 30;
+//   const startAngle = -40 * (Math.PI / 180);
+//   const endAngle = -650 * (Math.PI / 180);
+//   const startX = cx + R * Math.cos(startAngle);
+//   const startY = cy + R * Math.sin(startAngle);
+//   const endX = cx + R * Math.cos(endAngle);
+//   const endY = cy + R * Math.sin(endAngle);
+//   const arcLen = R * (210 * Math.PI / 180);
 
-  return (
-    <div style={{
-      position: "absolute",
-      top: "30%",
-      transform: "translate(-50%, -50%)",
-      width: size, height: size,
-      pointerEvents: "none", zIndex: 5,
-    }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} fill="none" style={{ overflow: "visible" }}>
-        <path
-          d={`M ${startX} ${startY} A ${R} ${R} 0 1 0 ${endX} ${endY}`}
-          stroke="#367e86" strokeWidth="2.5" strokeDasharray="14 10"
-          strokeLinecap="round" fill="none"
-          style={{ animation: "dashScroll 8s linear infinite" }}
-        />
-        <path
-          d={`M ${startX} ${startY} A ${R} ${R} 0 1 0 ${endX} ${endY}`}
-          stroke="rgba(54,126,134,0.45)" strokeWidth="1.7"
-          strokeLinecap="round" fill="none"
-          strokeDasharray={`${arcLen} ${arcLen}`}
-          style={{ animation: "dashDraw 6s ease-in-out infinite" }}
-        />
-        <g transform={`translate(${endX}, ${endY}) rotate(20)`}>
-          <path d="M 0 0 L -8 -16 M 0 0 L 8 -16" stroke="#367e86" strokeWidth="2.4" strokeLinecap="round" fill="none" />
-        </g>
-      </svg>
+//   return (
+//     <div style={{
+//       position: "absolute",
+//       top: "30%",
+//       transform: "translate(-50%, -50%)",
+//       width: size, height: size,
+//       pointerEvents: "none", zIndex: 5,
+//     }}>
+//       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} fill="none" style={{ overflow: "visible" }}>
+//         <path
+//           d={`M ${startX} ${startY} A ${R} ${R} 0 1 0 ${endX} ${endY}`}
+//           stroke="#367e86" strokeWidth="2.5" strokeDasharray="14 10"
+//           strokeLinecap="round" fill="none"
+//           style={{ animation: "dashScroll 8s linear infinite" }}
+//         />
+//         <path
+//           d={`M ${startX} ${startY} A ${R} ${R} 0 1 0 ${endX} ${endY}`}
+//           stroke="rgba(54,126,134,0.45)" strokeWidth="1.7"
+//           strokeLinecap="round" fill="none"
+//           strokeDasharray={`${arcLen} ${arcLen}`}
+//           style={{ animation: "dashDraw 6s ease-in-out infinite" }}
+//         />
+//         <g transform={`translate(${endX}, ${endY}) rotate(20)`}>
+//           <path d="M 0 0 L -8 -16 M 0 0 L 8 -16" stroke="#367e86" strokeWidth="2.4" strokeLinecap="round" fill="none" />
+//         </g>
+//       </svg>
 
-      {/* 3 étoiles flottantes positionnées à l'extrémité de l'arc */}
-      {[
-        { dx: -2,  dy: -36, size: 26, color: "#00818f", anim: "arcStar0", dur: "2.6s", delay: "0s"   },
-        { dx: 28,  dy: -14, size: 17, color: "#00d4e0", anim: "arcStar1", dur: "3.1s", delay: "0.4s" },
-        { dx: -24, dy:  12, size: 13, color: "#00515a", anim: "arcStar2", dur: "2.3s", delay: "0.7s" },
-      ].map((s, i) => (
-        <div key={i} style={{
-          position: "absolute",
-          left: endX + s.dx,
-          top:  endY + s.dy,
-          transform: "translate(-50%,-50%)",
-          animation: `${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`,
-          filter: `drop-shadow(0 0 6px ${s.color}cc)`,
-        }}>
-          <Star weight="fill" style={{ width: s.size, height: s.size, color: s.color }} />
-        </div>
-      ))}
-    </div>
-  );
-}
+//       {/* 3 étoiles flottantes positionnées à l'extrémité de l'arc */}
+//       {[
+//         { dx: -2, dy: -36, size: 26, color: "#00818f", anim: "arcStar0", dur: "2.6s", delay: "0s" },
+//         { dx: 28, dy: -14, size: 17, color: "#00d4e0", anim: "arcStar1", dur: "3.1s", delay: "0.4s" },
+//         { dx: -24, dy: 12, size: 13, color: "#00515a", anim: "arcStar2", dur: "2.3s", delay: "0.7s" },
+//       ].map((s, i) => (
+//         <div key={i} style={{
+//           position: "absolute",
+//           left: endX + s.dx,
+//           top: endY + s.dy,
+//           transform: "translate(-50%,-50%)",
+//           animation: `${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`,
+//           filter: `drop-shadow(0 0 6px ${s.color}cc)`,
+//         }}>
+//           <Star weight="fill" style={{ width: s.size, height: s.size, color: s.color }} />
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
 
 export const HeroV2 = () => {
 
@@ -307,6 +323,9 @@ export const HeroV2 = () => {
           .hero-orbe-mobile { display: none; }
           .hero-mockup-desktop { display: block; }
         }
+          @media (max-width: 800px) {
+ 
+}
       `}</style>
 
       <section style={{
@@ -333,7 +352,7 @@ export const HeroV2 = () => {
           display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center",
           minHeight: "100vh",
-          padding: "clamp(14px, 14vh, 160px) clamp(0px, 1vw, 8px) 20px",
+          padding: "clamp(14px, 14vh, 160px) clamp(0px, 1vw, 8px) 100px",
           gap: "clamp(16px, 2.4vw, 26px)",
         }}>
 
@@ -365,16 +384,16 @@ export const HeroV2 = () => {
             position: "relative", display: "inline-block",
             textAlign: "center", animation: "fadeUp 0.7s ease 0.25s both",
           }}>
-            <DashedArc />
+           
 
             <h1 style={{
               position: "relative", zIndex: 2,
-              fontSize: "clamp(2.08rem, 4.96vw, 4rem)",
+              fontSize: "clamp(1.6rem, 3.8vw, 3rem)",
               fontWeight: 900, color: "#0a0a0a",
               lineHeight: 1.06, letterSpacing: "-0.03em", margin: 0,
             }}>
-              Gérez vos Parkings, Lavages, Garages, 
-               <br /> Événements avec 
+              Gérez vos Parkings, Lavages, Garages,
+              <br /> Événements avec
               <span style={{ display: "inline-flex", alignItems: "center", gap: "14px", flexWrap: "wrap", justifyContent: "center" }}>
                 <span style={{ color: "#00818f" }}>Ticketché</span>
                 <span style={{ display: "inline-flex", gap: "8px", marginLeft: "2px" }}>
@@ -407,15 +426,15 @@ export const HeroV2 = () => {
             </div>
           </button>
 
-          {/* ══ MOCKUP desktop / ORBE mobile ══ */}
 
           {/* — Mobile : orbe uniquement — */}
           <div className="hero-orbe-mobile" style={{
-            width: "100%", maxWidth: "340px",
+            width: "200vw", maxWidth: "300vw",
             margin: "32px auto 0",
+            marginLeft: "calc(-100vw + 50%)",
             animation: "fadeUp 0.9s ease 0.9s both",
           }}>
-            <img src="/images/Hero/orbe" alt="Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
+            <img src="/images/Hero/orbe.png" alt="Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
           </div>
 
           {/* — Desktop : mockup complet — */}

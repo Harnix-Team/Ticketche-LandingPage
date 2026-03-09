@@ -82,7 +82,7 @@ export default function FAQSection() {
 
             {/* Badge */}
             <div className="faq-badge">
-              <span className="faq-badge-num">5</span>
+              <span className="faq-badge-num">4</span>
               <span className="faq-badge-label">services<br />en 1 app</span>
             </div>
 
@@ -212,7 +212,7 @@ export default function FAQSection() {
           position: relative;
           background: transparent;
           border-radius: clamp(24px, 3vw, 40px);
-          width: 58%;
+          width: 170%;
           aspect-ratio: 3 / 5;
           box-shadow: none;
           overflow: visible;
@@ -222,7 +222,7 @@ export default function FAQSection() {
           position: absolute;
           inset: 0;
           width: 100%;
-          height: 100%;
+          height: 110%;
           object-fit: cover;
           border-radius: clamp(24px, 3vw, 40px);
           pointer-events: none;
@@ -274,8 +274,8 @@ export default function FAQSection() {
         /* ── Image cards ── */
         .faq-img-wrap {
           position: absolute;
-          left: -36%;
-          right: -36%;
+          left: 8%;
+          right: 8%;
           border-radius: clamp(14px, 1.8vw, 22px);
           overflow: hidden;
           border: 4px solid rgba(255,255,255,0.92);
@@ -285,7 +285,7 @@ export default function FAQSection() {
         }
 
         .img-top {
-          top: 22%;
+          top: 35%;
         }
 
         .faq-img {

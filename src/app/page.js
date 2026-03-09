@@ -23,11 +23,12 @@ export default function Home() {
       <FAQSection />
       <ReviewsSection />
       <ActiveUsers />
+      <EstablishmentsSection />
       {/* <CTADownload /> */}
 
       {/* <About />
       <EventsCarousel />
-      <EstablishmentsSection />
+      
       <WhyTicketcheSection />
       <TestimonialsSection />
       <CTASection /> */}
