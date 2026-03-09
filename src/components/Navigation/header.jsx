@@ -35,7 +35,7 @@ export const Header = () => {
     { href: "#events", label: "Événements" },
     { href: "#emplacements", label: "Emplacements" },
     { href: "/a-propos", label: "À propos", isPage: true },
-    { href: "/contact", label: "FAQ & Contact", isPage: true },
+    { href: "/contact", label: " Contact", isPage: true },
   ];
 
   // ─── ScrollSpy

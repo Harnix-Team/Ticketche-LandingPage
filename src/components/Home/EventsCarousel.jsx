@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Ticket, ArrowRight, Users, CaretLeft, CaretRight } from "@phosphor-icons/react";
+import { Calendar, MapPin, Ticket, ArrowRight, Users, Star, MusicNote, FilmSlate, SoccerBall, Confetti, Microphone, DeviceMobile } from "@phosphor-icons/react";
 
 const API_BASE_URL = "https://api.ticketche.com/api/v2";
 
@@ -150,7 +150,6 @@ const S = {
     boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
     transition: "background 0.15s, transform 0.15s",
   },
-  /* section */
   section: {
     padding: "60px 0 80px",
     background: "transparent",
@@ -195,7 +194,6 @@ const S = {
     boxShadow: "0 4px 16px rgba(4,121,126,0.3)",
     whiteSpace: "nowrap",
   },
-  /* carousel */
   carouselWrapper: {
     position: "relative",
   },
@@ -258,7 +256,6 @@ function EventCard({ event }) {
       style={S.card}
       transition={{ duration: 0.22, ease: "easeOut" }}
     >
-      {/* Image full card */}
       <div style={S.imageWrapper}>
         <Image
           src={getEventImage(event)}
@@ -270,20 +267,13 @@ function EventCard({ event }) {
         <div style={S.overlay} />
       </div>
 
-      {/* Badges haut gauche */}
       <div style={S.badgeTopLeft}>
-        {event.is_featured && (
-          <span style={S.badgeFeatured}>✦ À la une</span>
-        )}
-        {event.category && (
-          <span style={S.badge}>{event.category.title}</span>
-        )}
+        {event.is_featured && <span style={S.badgeFeatured}>✦ À la une</span>}
+        {event.category && <span style={S.badge}>{event.category.title}</span>}
       </div>
 
-      {/* Body en bas par-dessus l'image */}
       <div style={S.body}>
         <h3 style={S.title}>{event.title}</h3>
-
         <div style={S.meta}>
           {event.start_date && (
             <span style={S.metaItem}>
@@ -298,7 +288,6 @@ function EventCard({ event }) {
             </span>
           )}
         </div>
-
         <div style={S.footer}>
           <div style={S.stats}>
             <span style={S.statItem}>
@@ -316,8 +305,7 @@ function EventCard({ event }) {
             onMouseEnter={e => { e.currentTarget.style.background = "#e6f7f8"; e.currentTarget.style.transform = "scale(1.04)"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.transform = "scale(1)"; }}
           >
-            Réserver
-            <ArrowRight style={{ width: 12, height: 12 }} />
+            Réserver <ArrowRight style={{ width: 12, height: 12 }} />
           </button>
         </div>
       </div>
@@ -345,9 +333,7 @@ function Carousel({ events }) {
     const el = trackRef.current;
     if (!el) return;
     const cardWidth = getCardWidth();
-    if (cardWidth > 0) {
-      setActiveIndex(Math.min(Math.round(el.scrollLeft / cardWidth), events.length - 1));
-    }
+    if (cardWidth > 0) setActiveIndex(Math.min(Math.round(el.scrollLeft / cardWidth), events.length - 1));
   }, [getCardWidth, events.length]);
 
   useEffect(() => {
@@ -396,12 +382,10 @@ function Carousel({ events }) {
     trackRef.current.style.scrollSnapType = "none";
     pauseAndResume();
   };
-
   const onMouseMove = (e) => {
     if (!isDragging.current) return;
     trackRef.current.scrollTo({ left: scrollLeft.current + (startX.current - e.pageX) * 1.2, behavior: "auto" });
   };
-
   const onMouseUp = () => {
     if (!isDragging.current) return;
     isDragging.current = false;
@@ -412,7 +396,6 @@ function Carousel({ events }) {
     setActiveIndex(newIndex);
     setTimeout(() => startAutoSwipe(), 200);
   };
-
   const onTouchStart = (e) => {
     isDragging.current = true;
     startX.current = e.touches[0].pageX - trackRef.current.offsetLeft;
@@ -420,14 +403,12 @@ function Carousel({ events }) {
     trackRef.current.style.scrollSnapType = "none";
     pauseAndResume();
   };
-
   const onTouchMove = (e) => {
     if (!isDragging.current) return;
     e.preventDefault();
     const x = e.touches[0].pageX - trackRef.current.offsetLeft;
     trackRef.current.scrollLeft = scrollLeft.current - (x - startX.current) * 1.5;
   };
-
   const onTouchEnd = () => {
     if (!isDragging.current) return;
     isDragging.current = false;
@@ -456,22 +437,222 @@ function Carousel({ events }) {
           </div>
         ))}
       </div>
-
       {events.length > 1 && (
         <div style={S.indicators}>
           {events.map((_, i) => (
-            <button
-              key={i}
-              style={i === activeIndex ? S.dotActive : S.dot}
-              onClick={() => goToSlide(i)}
-              aria-label={`Slide ${i + 1}`}
-            />
+            <button key={i} style={i === activeIndex ? S.dotActive : S.dot} onClick={() => goToSlide(i)} aria-label={`Slide ${i + 1}`} />
           ))}
         </div>
       )}
     </div>
   );
 }
+
+/* ─── EventsPromo — section fallback quand aucun événement à la une ── */
+function EventsPromo() {
+  const features = [
+    { icon: MusicNote,  label: "Concerts & Soirées" },
+    { icon: FilmSlate,  label: "Expos & Culture" },
+    { icon: SoccerBall, label: "Sports & Shows" },
+    { icon: Confetti,   label: "Festivals" },
+  ];
+
+  return (
+    <>
+      <style>{`
+        @keyframes floatOrb1 {
+          0%,100% { transform: translate(0,0) scale(1); }
+          50%      { transform: translate(30px,-40px) scale(1.1); }
+        }
+        @keyframes floatOrb2 {
+          0%,100% { transform: translate(0,0) scale(1); }
+          50%      { transform: translate(-25px,35px) scale(0.92); }
+        }
+        @keyframes floatOrb3 {
+          0%,100% { transform: translate(0,0); }
+          60%      { transform: translate(20px,20px) scale(1.05); }
+        }
+        @keyframes shimmerTag {
+          0%   { background-position: -200% center; }
+          100% { background-position: 200% center; }
+        }
+        @keyframes pulseDot {
+          0%,100% { box-shadow: 0 0 0 0 rgba(4,121,126,0.5); }
+          50%      { box-shadow: 0 0 0 8px rgba(4,121,126,0); }
+        }
+        @keyframes btnGlowPromo {
+          0%,100% { box-shadow: 0 8px 28px rgba(4,121,126,0.35); }
+          50%      { box-shadow: 0 12px 40px rgba(4,121,126,0.55), 0 0 0 4px rgba(4,121,126,0.12); }
+        }
+        @keyframes cardFloat {
+          0%,100% { transform: rotate(-2deg) translateY(0px); }
+          50%      { transform: rotate(-2deg) translateY(-10px); }
+        }
+        @keyframes cardFloat2 {
+          0%,100% { transform: rotate(7deg) translateY(0px); }
+          50%      { transform: rotate(7deg) translateY(-7px); }
+        }
+        @keyframes cardFloat3 {
+          0%,100% { transform: rotate(-6deg) translateY(0px); }
+          50%      { transform: rotate(-6deg) translateY(-12px); }
+        }
+        @keyframes sparkleRotate {
+          0%  { transform: rotate(0deg) scale(1); opacity: 0.7; }
+          50% { transform: rotate(180deg) scale(1.3); opacity: 1; }
+          100%{ transform: rotate(360deg) scale(1); opacity: 0.7; }
+        }
+        @keyframes iconBounce {
+          0%,100% { transform: translateY(0); }
+          50%      { transform: translateY(-4px); }
+        }
+        .promo-download-btn:hover {
+          transform: translateY(-3px) scale(1.03) !important;
+        }
+        .promo-download-btn:active { transform: scale(0.97) !important; }
+        .promo-feature-tag:hover {
+          background: rgba(4,121,126,0.1) !important;
+          border-color: rgba(4,121,126,0.35) !important;
+          color: #04797e !important;
+        }
+        .promo-feature-tag:hover svg { color: #04797e !important; }
+      `}</style>
+
+      <div style={{
+        position: "relative",
+        borderRadius: "28px",
+        overflow: "hidden",
+        padding: "clamp(40px, 6vw, 72px) clamp(32px, 5vw, 72px)",
+        background: "linear-gradient(145deg, #f4fbfb 0%, #eaf5f5 50%, #fdfaf6 100%)",
+        border: "1.5px solid rgba(4,121,126,0.1)",
+        display: "flex",
+        alignItems: "center",
+        gap: "clamp(32px, 5vw, 80px)",
+        flexWrap: "wrap",
+        minHeight: "360px",
+        boxShadow: "0 4px 32px rgba(4,121,126,0.06)",
+      }}>
+
+        {/* Orbes décoratifs */}
+        <div style={{ position:"absolute", top:"-80px", right:"8%", width:"360px", height:"360px", borderRadius:"50%", background:"radial-gradient(circle, rgba(4,121,126,0.10) 0%, transparent 70%)", animation:"floatOrb1 8s ease-in-out infinite", pointerEvents:"none" }} />
+        <div style={{ position:"absolute", bottom:"-100px", right:"30%", width:"280px", height:"280px", borderRadius:"50%", background:"radial-gradient(circle, rgba(106,45,2,0.07) 0%, transparent 70%)", animation:"floatOrb2 10s ease-in-out infinite", pointerEvents:"none" }} />
+        <div style={{ position:"absolute", top:"20%", left:"40%", width:"200px", height:"200px", borderRadius:"50%", background:"radial-gradient(circle, rgba(4,121,126,0.06) 0%, transparent 70%)", animation:"floatOrb3 7s ease-in-out infinite", pointerEvents:"none" }} />
+
+        {/* ── Contenu gauche ── */}
+        <div style={{ flex:"1 1 320px", position:"relative", zIndex:2 }}>
+
+          {/* Badge */}
+          <div style={{ display:"inline-flex", alignItems:"center", gap:"8px", background:"rgba(4,121,126,0.08)", border:"1.5px solid rgba(4,121,126,0.2)", borderRadius:"999px", padding:"7px 18px", marginBottom:"22px" }}>
+            <span style={{ width:"7px", height:"7px", borderRadius:"50%", background:"#04797e", animation:"pulseDot 2.5s ease-in-out infinite", flexShrink:0 }} />
+            <Ticket weight="fill" style={{ width:13, height:13, color:"#04797e" }} />
+            <span style={{ fontSize:"11px", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:"#04797e" }}>
+              Billetterie en ligne
+            </span>
+          </div>
+
+          {/* Titre */}
+          <h2 style={{ fontSize:"clamp(1.8rem, 3.4vw, 2.8rem)", fontWeight:900, color:"#0a1a1c", lineHeight:1.08, letterSpacing:"-0.03em", margin:"0 0 16px" }}>
+            Vos événements,<br />
+            <span style={{ background:"linear-gradient(90deg, #04797e, #02b8be, #04797e)", backgroundSize:"200% auto", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text", animation:"shimmerTag 3s linear infinite" }}>
+              à portée de doigt.
+            </span>
+          </h2>
+
+          {/* Sous-titre */}
+          <p style={{ fontSize:"clamp(0.92rem, 1.3vw, 1.05rem)", color:"#4b6367", lineHeight:1.75, margin:"0 0 20px", maxWidth:"420px" }}>
+            Concerts, soirées, expos, festivals — achetez vos billets en quelques secondes et recevez votre QR code instantanément sur Ticketché.
+          </p>
+
+          {/* Accroche */}
+          <div style={{ display:"inline-flex", alignItems:"flex-start", gap:"10px", background:"rgba(4,121,126,0.06)", border:"1px dashed rgba(4,121,126,0.28)", borderRadius:"14px", padding:"12px 18px", marginBottom:"26px", maxWidth:"420px" }}>
+            <Ticket weight="fill" style={{ width:16, height:16, color:"#04797e", flexShrink:0, marginTop:"2px" }} />
+            <span style={{ fontSize:"13px", color:"#2a5a5e", fontWeight:600, lineHeight:1.6 }}>
+              Vous voulez en savoir plus ?{" "}
+              <span style={{ fontWeight:400, color:"#4b6367" }}>Téléchargez l'application pour profiter de ce service.</span>
+            </span>
+          </div>
+          <div style={{ display:"flex", flexWrap:"wrap", gap:"10px", marginBottom:"34px" }}>
+            {features.map((f, i) => {
+              const Icon = f.icon;
+              return (
+                <span key={i} className="promo-feature-tag" style={{ display:"inline-flex", alignItems:"center", gap:"7px", background:"rgba(255,255,255,0.75)", backdropFilter:"blur(8px)", border:"1.5px solid rgba(4,121,126,0.14)", borderRadius:"999px", padding:"8px 16px", fontSize:"12px", fontWeight:600, color:"#1a3a3c", cursor:"default", transition:"all 0.2s" }}>
+                  <Icon weight="fill" style={{ width:14, height:14, color:"#04797e", animation:`iconBounce ${2.2 + i * 0.3}s ease-in-out infinite` }} />
+                  {f.label}
+                </span>
+              );
+            })}
+          </div>
+
+          {/* Bouton download */}
+          <motion.a
+            href="#download"
+            className="promo-download-btn"
+            style={{ display:"inline-flex", alignItems:"center", gap:"12px", background:"linear-gradient(135deg, #04797e 0%, #025f63 100%)", color:"#fff", borderRadius:"999px", padding:"14px 30px", fontSize:"14px", fontWeight:800, textDecoration:"none", letterSpacing:"0.01em", animation:"btnGlowPromo 3s ease-in-out infinite", transition:"transform 0.22s ease, box-shadow 0.22s ease" }}
+            whileHover={{ y:-3, scale:1.03 }}
+            whileTap={{ scale:0.97 }}
+          >
+            <span style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", width:"34px", height:"34px", background:"rgba(255,255,255,0.18)", borderRadius:"50%", flexShrink:0 }}>
+              <DeviceMobile weight="fill" style={{ width:17, height:17 }} />
+            </span>
+            Télécharger Ticketché
+            <ArrowRight weight="bold" style={{ width:16, height:16 }} />
+          </motion.a>
+
+        </div>
+
+        {/* ── Illustration droite — 3 cards glassmorphism flottantes ── */}
+        <div style={{ flex:"0 0 auto", position:"relative", width:"clamp(220px, 26vw, 300px)", height:"clamp(260px, 32vw, 360px)" }}>
+
+          {/* Card fond — concert */}
+          <div style={{ position:"absolute", top:"0", right:"0", width:"72%", background:"rgba(4,121,126,0.07)", backdropFilter:"blur(14px)", border:"1.5px solid rgba(4,121,126,0.18)", borderRadius:"20px", padding:"16px", boxShadow:"0 8px 28px rgba(4,121,126,0.12)", animation:"cardFloat3 5s ease-in-out infinite", zIndex:1 }}>
+            <div style={{ width:"100%", height:"70px", borderRadius:"12px", background:"linear-gradient(135deg, rgba(4,121,126,0.2), rgba(2,168,174,0.3))", display:"flex", alignItems:"center", justifyContent:"center", marginBottom:"10px" }}>
+              <MusicNote weight="fill" style={{ width:28, height:28, color:"#04797e", opacity:0.7 }} />
+            </div>
+            <div style={{ height:"8px", borderRadius:"4px", background:"rgba(4,121,126,0.15)", marginBottom:"6px" }} />
+            <div style={{ height:"6px", borderRadius:"4px", background:"rgba(4,121,126,0.1)", width:"60%" }} />
+          </div>
+
+          {/* Card milieu — festival */}
+          <div style={{ position:"absolute", bottom:"0", left:"0", width:"75%", background:"rgba(106,45,2,0.05)", backdropFilter:"blur(14px)", border:"1.5px solid rgba(106,45,2,0.14)", borderRadius:"20px", padding:"16px", boxShadow:"0 8px 28px rgba(106,45,2,0.1)", animation:"cardFloat2 6s ease-in-out 0.8s infinite", zIndex:2 }}>
+            <div style={{ width:"100%", height:"70px", borderRadius:"12px", background:"linear-gradient(135deg, rgba(106,45,2,0.12), rgba(139,61,5,0.2))", display:"flex", alignItems:"center", justifyContent:"center", marginBottom:"10px" }}>
+              <Confetti weight="fill" style={{ width:28, height:28, color:"#6a2d02", opacity:0.65 }} />
+            </div>
+            <div style={{ height:"8px", borderRadius:"4px", background:"rgba(106,45,2,0.12)", marginBottom:"6px" }} />
+            <div style={{ height:"6px", borderRadius:"4px", background:"rgba(106,45,2,0.08)", width:"70%" }} />
+          </div>
+
+          {/* Card principale — avant-plan */}
+          <div style={{ position:"absolute", top:"18%", left:"12%", right:"12%", background:"rgba(255,255,255,0.82)", backdropFilter:"blur(22px)", border:"2px solid rgba(255,255,255,0.95)", borderRadius:"22px", padding:"18px 16px", boxShadow:"0 16px 48px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.05)", zIndex:3, animation:"cardFloat 4.5s ease-in-out 0.3s infinite" }}>
+
+            {/* Image placeholder avec icone */}
+            <div style={{ width:"100%", height:"90px", borderRadius:"14px", background:"linear-gradient(135deg, rgba(4,121,126,0.12) 0%, rgba(4,121,126,0.22) 100%)", display:"flex", alignItems:"center", justifyContent:"center", marginBottom:"12px" }}>
+              <Microphone weight="fill" style={{ width:32, height:32, color:"#04797e" }} />
+            </div>
+
+            <p style={{ margin:"0 0 5px", fontWeight:800, fontSize:"12px", color:"#0a1a1c", letterSpacing:"-0.01em" }}>
+              Concert à Cotonou
+            </p>
+            <p style={{ margin:"0 0 10px", fontSize:"10px", color:"#6b7280", display:"flex", alignItems:"center", gap:"4px" }}>
+              <Calendar style={{ width:10, height:10 }} /> Bientôt disponible
+            </p>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+              <span style={{ fontSize:"11px", fontWeight:800, color:"#04797e" }}>À venir</span>
+              <span style={{ background:"linear-gradient(135deg, #04797e, #025f63)", color:"#fff", borderRadius:"999px", padding:"4px 10px", fontSize:"9px", fontWeight:700 }}>
+                Bientôt
+              </span>
+            </div>
+          </div>
+
+          {/* Étoiles décoratives */}
+          <Star weight="fill" style={{ position:"absolute", top:"4%", right:"2%", width:14, height:14, color:"#04797e", opacity:0.65, animation:"sparkleRotate 4s ease-in-out infinite" }} />
+          <Star weight="fill" style={{ position:"absolute", bottom:"6%", right:"4%", width:9, height:9, color:"#6a2d02", opacity:0.45, animation:"sparkleRotate 5s ease-in-out 1.2s infinite" }} />
+          <Star weight="fill" style={{ position:"absolute", top:"42%", left:"0%", width:11, height:11, color:"#04797e", opacity:0.35, animation:"sparkleRotate 3.5s ease-in-out 0.6s infinite" }} />
+
+        </div>
+      </div>
+    </>
+  );
+}
+
 
 /* ─── MAIN ─────────────────────────────────────── */
 export const EventsCarousel = () => {
@@ -497,55 +678,58 @@ export const EventsCarousel = () => {
       <div style={S.inner}>
         <div style={{ marginBottom: "48px" }}>
 
-          {/* Header */}
-          <motion.div
-            style={S.headerRow}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div>
-              <h2 style={S.sectionTitle}>Événements à la une</h2>
-              <p style={S.sectionSubtitle}>Les incontournables du moment, sélectionnés pour vous</p>
-            </div>
-            <motion.a
-              href="/events"
-              style={S.viewAllBtn}
-              whileHover={{ scale: 1.04, boxShadow: "0 6px 24px rgba(4,121,126,0.4)" }}
-              whileTap={{ scale: 0.97 }}
+          {/* Header — affiché uniquement quand il y a des événements */}
+          {!loading && featured.length > 0 && (
+            <motion.div
+              style={S.headerRow}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.6 }}
             >
-              Tout voir
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/>
-              </svg>
-            </motion.a>
-          </motion.div>
+              <div>
+                <h2 style={S.sectionTitle}>Événements à la une</h2>
+                <p style={S.sectionSubtitle}>Les incontournables du moment, sélectionnés pour vous</p>
+              </div>
+              <motion.a
+                href="/events"
+                style={S.viewAllBtn}
+                whileHover={{ scale: 1.04, boxShadow: "0 6px 24px rgba(4,121,126,0.4)" }}
+                whileTap={{ scale: 0.97 }}
+              >
+                Tout voir
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/>
+                </svg>
+              </motion.a>
+            </motion.div>
+          )}
 
-          {/* Carousel */}
+          {/* Contenu conditionnel */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, amount: 0.05 }}
             transition={{ duration: 0.7, delay: 0.15 }}
           >
-            {loading
-              ? (
-                <div style={{ display: "flex", justifyContent: "center", gap: "10px", padding: "40px 0" }}>
-                  {[0, 0.2, 0.4].map((delay, i) => (
-                    <motion.div
-                      key={i}
-                      style={{ width: 10, height: 10, borderRadius: "50%", background: i % 2 === 0 ? "#04797e" : "#6a2d02" }}
-                      animate={{ scale: [1, 1.5, 1], opacity: [1, 0.4, 1] }}
-                      transition={{ duration: 1, repeat: Infinity, delay }}
-                    />
-                  ))}
-                </div>
-              )
-              : featured.length === 0
-                ? <p style={{ color: "#9ca3af", fontSize: "14px", paddingLeft: "4px" }}>Aucun événement à la une pour le moment.</p>
-                : <Carousel events={featured} />
-            }
+            {loading ? (
+              <div style={{ display: "flex", justifyContent: "center", gap: "10px", padding: "40px 0" }}>
+                {[0, 0.2, 0.4].map((delay, i) => (
+                  <motion.div
+                    key={i}
+                    style={{ width: 10, height: 10, borderRadius: "50%", background: i % 2 === 0 ? "#04797e" : "#6a2d02" }}
+                    animate={{ scale: [1, 1.5, 1], opacity: [1, 0.4, 1] }}
+                    transition={{ duration: 1, repeat: Infinity, delay }}
+                  />
+                ))}
+              </div>
+            ) : featured.length > 0 ? (
+              /* ✅ Des événements à la une → carousel */
+              <Carousel events={featured} />
+            ) : (
+              /* ✅ Aucun événement → section promo */
+              <EventsPromo />
+            )}
           </motion.div>
 
         </div>
