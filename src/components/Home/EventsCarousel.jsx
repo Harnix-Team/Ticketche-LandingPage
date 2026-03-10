@@ -448,7 +448,7 @@ function Carousel({ events }) {
   );
 }
 
-/* ─── EventsPromo — section fallback quand aucun événement à la une ── */
+/* ─── EventsPromo ─────────────────────────────── */
 function EventsPromo() {
   const features = [
     { icon: MusicNote, label: "Concerts & Soirées" },
@@ -483,23 +483,6 @@ function EventsPromo() {
         @keyframes btnGlowPromo {
           0%,100% { box-shadow: 0 8px 28px rgba(4,121,126,0.35); }
           50%      { box-shadow: 0 12px 40px rgba(4,121,126,0.55), 0 0 0 4px rgba(4,121,126,0.12); }
-        }
-        @keyframes cardFloat {
-          0%,100% { transform: rotate(-2deg) translateY(0px); }
-          50%      { transform: rotate(-2deg) translateY(-10px); }
-        }
-        @keyframes cardFloat2 {
-          0%,100% { transform: rotate(7deg) translateY(0px); }
-          50%      { transform: rotate(7deg) translateY(-7px); }
-        }
-        @keyframes cardFloat3 {
-          0%,100% { transform: rotate(-6deg) translateY(0px); }
-          50%      { transform: rotate(-6deg) translateY(-12px); }
-        }
-        @keyframes sparkleRotate {
-          0%  { transform: rotate(0deg) scale(1); opacity: 0.7; }
-          50% { transform: rotate(180deg) scale(1.3); opacity: 1; }
-          100%{ transform: rotate(360deg) scale(1); opacity: 0.7; }
         }
         @keyframes iconBounce {
           0%,100% { transform: translateY(0); }
@@ -559,18 +542,11 @@ function EventsPromo() {
 
           {/* Sous-titre */}
           <p style={{ fontSize: "clamp(0.92rem, 1.3vw, 1.05rem)", color: "#4b6367", lineHeight: 1.75, margin: "0 0 20px", maxWidth: "420px" }}>
-            Concerts, soirées, expos, festivals — achetez vos billets en quelques secondes et recevez votre QR code instantanément sur Ticketché.
+            Concerts, soirées, expos, festivals - achetez vos billets en quelques secondes et recevez votre QR code instantanément sur Ticketché.
           </p>
 
-          {/* Accroche */}
-          <div style={{ display: "inline-flex", alignItems: "flex-start", gap: "10px", background: "rgba(4,121,126,0.06)", border: "1px dashed rgba(4,121,126,0.28)", borderRadius: "14px", padding: "12px 18px", marginBottom: "26px", maxWidth: "420px" }}>
-            <Ticket weight="fill" style={{ width: 16, height: 16, color: "#04797e", flexShrink: 0, marginTop: "2px" }} />
-            <span style={{ fontSize: "13px", color: "#2a5a5e", fontWeight: 600, lineHeight: 1.6 }}>
-              Vous voulez en savoir plus ?{" "}
-              <span style={{ fontWeight: 400, color: "#4b6367" }}>Téléchargez l'application pour profiter de ce service.</span>
-            </span>
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "34px" }}>
+          {/* Tags features — avant l'accroche */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px" }}>
             {features.map((f, i) => {
               const Icon = f.icon;
               return (
@@ -582,76 +558,94 @@ function EventsPromo() {
             })}
           </div>
 
-          {/* Bouton download */}
-         <motion.a
-  href="/event1"
-  className="promo-download-btn"
-  style={{ display: "inline-flex", alignItems: "center", gap: "12px", background: "linear-gradient(135deg, #04797e 0%, #025f63 100%)", color: "#fff", borderRadius: "999px", padding: "14px 30px", fontSize: "14px", fontWeight: 800, textDecoration: "none", letterSpacing: "0.01em", animation: "btnGlowPromo 3s ease-in-out infinite", transition: "transform 0.22s ease, box-shadow 0.22s ease" }}
-  whileHover={{ y: -3, scale: 1.03 }}
-  whileTap={{ scale: 0.97 }}
->
-  Tout voir
-</motion.a>
+          {/* Accroche */}
+          <div style={{ display: "inline-flex", alignItems: "flex-start", gap: "10px", background: "rgba(4,121,126,0.06)", border: "1px dashed rgba(4,121,126,0.28)", borderRadius: "14px", padding: "12px 18px", marginBottom: "30px", maxWidth: "420px" }}>
+            <Ticket weight="fill" style={{ width: 16, height: 16, color: "#04797e", flexShrink: 0, marginTop: "2px" }} />
+            <span style={{ fontSize: "13px", color: "#2a5a5e", fontWeight: 600, lineHeight: 1.6 }}>
+              Vous voulez en savoir plus ?{" "}
+              <span style={{ fontWeight: 400, color: "#4b6367" }}>Téléchargez l'application pour profiter de ce service.</span>
+            </span>
+          </div>
+
+          {/* Boutons */}
+          <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
+            <motion.a
+              href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="promo-download-btn"
+              style={{ display: "inline-flex", alignItems: "center", gap: "12px", background: "linear-gradient(135deg, #04797e 0%, #025f63 100%)", color: "#fff", borderRadius: "999px", padding: "14px 30px", fontSize: "14px", fontWeight: 800, textDecoration: "none", letterSpacing: "0.01em", animation: "btnGlowPromo 3s ease-in-out infinite", transition: "transform 0.22s ease, box-shadow 0.22s ease" }}
+              whileHover={{ y: -3, scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              Télécharger l'application
+            </motion.a>
+
+            <motion.a
+              href="/events"
+              style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: "transparent", color: "#04797e", borderRadius: "999px", padding: "13px 26px", fontSize: "14px", fontWeight: 700, textDecoration: "none", border: "2px solid rgba(4,121,126,0.35)", transition: "all 0.22s ease" }}
+              whileHover={{ y: -3, scale: 1.03, borderColor: "#04797e", background: "rgba(4,121,126,0.05)" }}
+              whileTap={{ scale: 0.97 }}
+            >
+              En savoir plus
+            </motion.a>
+          </div>
 
         </div>
 
-{/* ── Illustration droite — disposition décalée ── */}
-<div style={{
-  flex: "0 0 auto",
-  position: "relative",
-  zIndex: 2,
-  display: "flex",
-  gap: "8px",
-  alignItems: "center",
-}}>
+        {/* ── Illustration droite ── */}
+        <div style={{
+          flex: "0 0 auto",
+          position: "relative",
+          zIndex: 2,
+          display: "flex",
+          gap: "8px",
+          alignItems: "center",
+        }}>
 
-  {/* Colonne gauche — 2 images empilées */}
-  <div style={{
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px",
-  }}>
+          {/* Colonne gauche — 2 images empilées */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
 
-    {/* Image 1 — petite en haut, déborde en haut */}
-<div style={{
-  width: "clamp(120px, 13vw, 180px)",
-  height: "clamp(110px, 12vw, 160px)",
-  borderRadius: "16px",
-  overflow: "hidden",
-  boxShadow: "0 10px 28px rgba(0,0,0,0.15)",
-  marginTop: "-20px",
-  marginLeft: "auto",
-}}>
-      <img src="/images/Events/1.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-    </div>
+            {/* Image 1 */}
+            <div style={{
+              width: "clamp(140px, 15vw, 210px)",
+              height: "clamp(130px, 14vw, 190px)",
+              borderRadius: "16px",
+              overflow: "hidden",
+              boxShadow: "0 10px 28px rgba(0,0,0,0.15)",
+              marginTop: "-20px",
+              marginLeft: "auto",
+            }}>
+              <img src="/images/Events/1.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            </div>
 
-    {/* Image 2 — plus large et haute en bas, déborde en bas */}
-    <div style={{
-      width: "clamp(170px, 19vw, 260px)",
-      height: "clamp(160px, 18vw, 230px)",
-      borderRadius: "16px",
-      overflow: "hidden",
-      boxShadow: "0 12px 32px rgba(0,0,0,0.18)",
-      marginBottom: "-20px",
-    }}>
-      <img src="/images/Events/2.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-    </div>
+            {/* Image 2 */}
+            <div style={{
+              width: "clamp(200px, 22vw, 300px)",
+              height: "clamp(185px, 21vw, 270px)",
+              borderRadius: "16px",
+              overflow: "hidden",
+              boxShadow: "0 12px 32px rgba(0,0,0,0.18)",
+              marginBottom: "-20px",
+            }}>
+              <img src="/images/Events/2.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            </div>
 
-  </div>
+          </div>
 
-  {/* Image 3 — portrait à droite, centrée, moins haute */}
-  <div style={{
-    width: "clamp(150px, 16vw, 220px)",
-    height: "clamp(240px, 26vw, 330px)",
-    borderRadius: "20px",
-    overflow: "hidden",
-    boxShadow: "0 20px 48px rgba(0,0,0,0.20)",
-    alignSelf: "center",
-  }}>
-    <img src="/images/Events/3.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-  </div>
+          {/* Image 3 — portrait à droite */}
+          <div style={{
+            width: "clamp(175px, 19vw, 260px)",
+            height: "clamp(280px, 30vw, 390px)",
+            borderRadius: "20px",
+            overflow: "hidden",
+            boxShadow: "0 20px 48px rgba(0,0,0,0.20)",
+            alignSelf: "center",
+          }}>
+            <img src="/images/Events/3.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          </div>
 
-</div>
+        </div>
       </div>
     </>
   );

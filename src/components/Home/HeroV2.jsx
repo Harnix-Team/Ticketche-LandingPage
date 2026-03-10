@@ -377,8 +377,7 @@ export const HeroV2 = () => {
             backdropFilter: "blur(18px) saturate(160%)",
             border: "1px solid rgba(0,81,90,0.22)",
             boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
-            marginTop: "clamp(0px, 4vw, 60px)",
-            animation: "badgePulse 3.5s ease-in-out infinite, fadeUp 0.8s ease 0.1s both",
+            marginTop: "clamp(0px, -3vw, 14px)", animation: "badgePulse 3.5s ease-in-out infinite, fadeUp 0.8s ease 0.1s both",
           }}>
             <div style={{
               width: "clamp(8px,1vw,10px)", height: "clamp(8px,1vw,10px)",
@@ -402,15 +401,15 @@ export const HeroV2 = () => {
               position: "relative", zIndex: 2,
               fontSize: "clamp(1.6rem, 3.8vw, 3rem)",
               fontWeight: 900, color: "#0a0a0a",
-              lineHeight: 1.06, letterSpacing: "-0.03em", margin: 0,
+              lineHeight: 1.06, letterSpacing: "0.05em", margin: 0,
             }}>
               Gérez vos Parkings, Lavages, Garages,
               <br /> Événements avec
               <span style={{ display: "inline-flex", alignItems: "center", gap: "14px", flexWrap: "wrap", justifyContent: "center" }}>
                 <span style={{ color: "#00818f" }}>Ticketché</span>
                 <span style={{ display: "inline-flex", gap: "8px", marginLeft: "2px" }}>
-                  <span style={{ width: "clamp(26px,3vw,42px)", height: "clamp(26px,3vw,42px)", borderRadius: "50%", background: "linear-gradient(135deg,#00818f,#00515a)", display: "inline-block", flexShrink: 0, boxShadow: "0 4px 14px rgba(0,81,90,0.45)" }} />
-                  <span style={{ width: "clamp(26px,3vw,42px)", height: "clamp(26px,3vw,42px)", borderRadius: "50%", background: "linear-gradient(135deg,#1a1a1a,#3a3a3a)", display: "inline-block", flexShrink: 0, boxShadow: "0 4px 14px rgba(0,0,0,0.30)" }} />
+                  <span style={{ width: "clamp(16px,2vw,26px)", height: "clamp(16px,2vw,26px)", borderRadius: "50%", background: "linear-gradient(135deg,#00818f,#00515a)", display: "inline-block", flexShrink: 0, boxShadow: "0 4px 14px rgba(0,81,90,0.45)" }} />
+                  <span style={{ width: "clamp(16px,2vw,26px)", height: "clamp(16px,2vw,26px)", borderRadius: "50%", background: "linear-gradient(135deg,#1a1a1a,#3a3a3a)", display: "inline-block", flexShrink: 0, boxShadow: "0 4px 14px rgba(0,0,0,0.30)" }} />
                 </span>
               </span>
             </h1>
@@ -424,29 +423,29 @@ export const HeroV2 = () => {
             fontWeight: 400, margin: 0,
             animation: "fadeUp 0.7s ease 0.45s both",
           }}>
-            Fini les carnets et les appels. <strong style={{ color: "#00515a", fontWeight: 800 }}>Vos clients réservent, paient et vous notent</strong> — vous pilotez tout depuis votre téléphone.
+            Fini les carnets et les appels. <strong style={{ color: "#00515a", fontWeight: 800 }}>Vos clients réservent, paient et vous notent</strong> , vous pilotez tout depuis votre téléphone.
           </p>
 
           {/* ── Bouton animé ── */}
           <a
-  href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="btn-hero"
-  style={{
-    zIndex: 1000,
-    position: "relative",
-    textDecoration: "none",
-  }}
->
-  <div className="btn-ring" style={{ pointerEvents: "none" }} />
-  <span style={{ flex: 1, textAlign: "center", paddingRight: "clamp(8px,1.5vw,12px)", pointerEvents: "none" }}>
-    Télécharger l'Application
-  </span>
-  <div className="btn-circle" style={{ pointerEvents: "none" }}>
-    <ArrowRight weight="bold" className="btn-arrow" style={{ width: "clamp(22px,2.4vw,26px)", height: "clamp(22px,2.4vw,26px)", pointerEvents: "none" }} />
-  </div>
-</a>
+            href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-hero"
+            style={{
+              zIndex: 1000,
+              position: "relative",
+              textDecoration: "none",
+            }}
+          >
+            <div className="btn-ring" style={{ pointerEvents: "none" }} />
+            <span style={{ flex: 1, textAlign: "center", paddingRight: "clamp(8px,1.5vw,12px)", pointerEvents: "none" }}>
+              Télécharger l'Application
+            </span>
+            <div className="btn-circle" style={{ pointerEvents: "none" }}>
+              <ArrowRight weight="bold" className="btn-arrow" style={{ width: "clamp(22px,2.4vw,26px)", height: "clamp(22px,2.4vw,26px)", pointerEvents: "none" }} />
+            </div>
+          </a>
 
 
           {/* — Mobile : orbe uniquement — */}

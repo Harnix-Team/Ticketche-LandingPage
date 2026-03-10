@@ -3,24 +3,23 @@ import { AppDownloadButtons } from "../Appdownloadbuttons";
 
 export const CTASection = () => {
   return (
+    <div className="py-12 md:py-16 lg:py-24">
     <section
       id="download"
-      className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-8 md:pt-12 lg:pt-16 lg:rounded-3xl bg-gradient-to-b from-[#005F69] to-[#004a52] text-white overflow-hidden shadow-lg"
+      className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:rounded-3xl bg-gradient-to-b from-[#005F69] to-[#004a52] text-white overflow-hidden shadow-lg"
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* TEXTE CTA */}
-          <div className="pb-6 md:pb-8 text-center sm:text-left">
-            {/* Titre + description */}
+<div className="pt-10 md:pt-14 pb-3 md:pb-4 text-center sm:text-left">            {/* Titre + description */}
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4">
               <div className="flex-1">
-                <h2 className="title-sub mb-4 md:mb-6">
-                  Parking, lavage, garage, billetterie & événements — tout en une seule app !
+               <h2 className="title-sub mb-4 md:mb-6 !text-white">
+                  Parking, lavage, garage, billetterie & événements tout en une seule app !
                 </h2>
 
-                <p className="text-base sm:text-lg lg:text-xl text-white/80 mb-6 md:mb-8">
-                  Ticketché centralise 5 services en une seule app : parking, lavage auto,
-                  garage & mécanique, billetterie d'événements et gestion d'événements. Réservez, payez et profitez — où que vous soyez.
+                <p className="text-sm sm:text-base lg:text-lg text-white/80 mb-6 md:mb-8">                  Ticketché centralise 4 services en une seule app : parking, lavage auto,
+                  garage & mécanique, billetterie d'événements et gestion d'événements. Réservez, payez et profitez  où que vous soyez.
                 </p>
               </div>
 
@@ -92,18 +91,17 @@ export const CTASection = () => {
           </div>
 
           {/* MOCKUP SECTION */}
-          <div className="flex flex-col items-center justify-end sm:items-end">
-            <div className="relative w-full max-w-xs sm:max-w-sm md:ml-24 lg:ml-48 mx-auto sm:mx-0">
-              <img
-                src="/images/Download/download.png"
-                alt="Ticketché App Mockup"
-                className="rounded-t-2xl object-contain object-bottom w-full"
-              />
-              <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/30 to-transparent pointer-events-none rounded-t-2xl"></div>
-            </div>
+<div className="flex flex-col items-center justify-end sm:items-end overflow-visible pb-0 mb-0">
+ <img
+  src="/images/Download/download3.png"
+  alt="Ticketché App Mockup"
+  className="rounded-t-2xl object-contain object-bottom"
+style={{ width: "120%", maxWidth: "700px", marginLeft: "auto", marginRight: "-40px", marginTop: "90px" }}
+/>
           </div>
         </div>
       </div>
     </section>
+    </div>
   );
 };

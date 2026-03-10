@@ -24,9 +24,7 @@ export default function Home() {
       <EventsCarousel />
       <ReviewsSection />
       <FAQSection />
-
       <ActiveUsers />
-
       <CTASection />
       {/* <CTADownload /> */}
 

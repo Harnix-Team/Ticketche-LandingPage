@@ -44,7 +44,7 @@ const styles = {
     border: "4px solid #ffffff",
     boxShadow: "0 8px 32px rgba(0,0,0,0.22)",
     cursor: "pointer",
-    height: "340px",
+    height: "400px",
     display: "flex",
     flexDirection: "column",
   },
@@ -193,7 +193,7 @@ const styles = {
   },
   /* section */
   section: {
-    padding: "60px 0 80px",
+    padding: "20px 0 80px",
   },
   inner: {
     maxWidth: "75vw",
@@ -210,17 +210,17 @@ const styles = {
   },
   sectionTitle: {
     margin: "0 0 6px",
-    fontSize: "28px",
+    fontSize: "40px",
     fontWeight: 900,
     color: "#0a1628",
     letterSpacing: "-0.02em",
   },
   sectionSubtitle: {
     margin: 0,
-    fontSize: "14px",
+    fontSize: "17px",
     color: "#6b7280",
-    maxWidth: "440px",
-    lineHeight: 1.6,
+    maxWidth: "540px",
+    lineHeight: 1.7,
   },
   ctaBtn: {
     display: "inline-flex",
@@ -239,8 +239,7 @@ const styles = {
   },
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(4, 1fr)",
-    gap: "22px",
+    gap: "28px",
     width: "100%",
   },
   emptyWrapper: {
@@ -276,14 +275,13 @@ function PlaceCard({ place, onItinerary }) {
           src={getPlaceImage(place)}
           alt={place.name}
           fill
-          sizes="(max-width: 430px) 80vw, (max-width: 768px) 65vw, 380px"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           style={{ objectFit: "cover" }}
         />
-        {/* Overlay sombre uniquement en bas pour lisibilité du texte */}
         <div style={styles.imageGradient} />
       </div>
 
-      {/* Badge rating — haut centre, style "Top Creator" */}
+      {/* Badge rating */}
       {rating && (
         <div style={styles.badgeTop}>
           <span>★</span>
@@ -291,7 +289,7 @@ function PlaceCard({ place, onItinerary }) {
         </div>
       )}
 
-      {/* Badge ville — haut droite */}
+      {/* Badge ville */}
       {place.city && (
         <div style={styles.badgeCity}>
           <MapPin weight="fill" style={{ width: 10, height: 10 }} />
@@ -299,7 +297,7 @@ function PlaceCard({ place, onItinerary }) {
         </div>
       )}
 
-      {/* Body positionné en bas par-dessus l'image */}
+      {/* Body */}
       <div style={styles.body}>
         <div style={styles.tags}>
           {getServiceTags(place).map((tag, i) => (
@@ -312,7 +310,7 @@ function PlaceCard({ place, onItinerary }) {
           {rating && (
             <span style={styles.checkIcon}>
               <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
-                <path d="M2 5l2.5 2.5L8 3" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M2 5l2.5 2.5L8 3" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
           )}
@@ -323,14 +321,14 @@ function PlaceCard({ place, onItinerary }) {
             {place.noteUsers?.length > 0 && (
               <span style={styles.statItem}>
                 <svg width="13" height="13" viewBox="0 0 20 20" fill="rgba(255,255,255,0.8)">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
                 {place.noteUsers.length}
               </span>
             )}
             <span style={styles.statItem}>
               <svg width="13" height="13" viewBox="0 0 20 20" fill="rgba(255,255,255,0.8)">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd"/>
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
               </svg>
               {getMinimumPrice(place)}
             </span>
@@ -353,13 +351,13 @@ function PlaceCard({ place, onItinerary }) {
 
 /* ─── variants ─────────────────────────────────── */
 const containerVariants = {
-  hidden:  { opacity: 0 },
+  hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
 };
 const itemVariants = {
-  hidden:  { opacity: 0, y: 32 },
+  hidden: { opacity: 0, y: 32 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
-  exit:    { opacity: 0, y: -16, transition: { duration: 0.2 } },
+  exit: { opacity: 0, y: -16, transition: { duration: 0.2 } },
 };
 
 /* ─── MAIN ─────────────────────────────────────── */
@@ -368,13 +366,26 @@ export const EstablishmentsSection = () => {
   const [loading, setLoading]               = useState(true);
   const [searchQuery, setSearchQuery]       = useState("");
   const [activeFilter, setActiveFilter]     = useState("all");
+  const [gridCols, setGridCols]             = useState(3);
+
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w < 640)       setGridCols(1);
+      else if (w < 1024) setGridCols(2);
+      else               setGridCols(4);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
 
   useEffect(() => {
     const loadPlaces = async () => {
       try {
         const response = await fetchAllPlaces();
         if (response.success) setEstablishments(response.data);
-      } catch (_) {}
+      } catch (_) { }
       finally { setLoading(false); }
     };
     loadPlaces();
@@ -390,7 +401,7 @@ export const EstablishmentsSection = () => {
       result = result.filter((p) =>
         p.services.some(
           (s) => s.pivot.status === "ON" &&
-                 s.name.toLowerCase().includes(activeFilter.toLowerCase())
+            s.name.toLowerCase().includes(activeFilter.toLowerCase())
         )
       );
     if (searchQuery.trim())
@@ -446,7 +457,9 @@ export const EstablishmentsSection = () => {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <h3 style={styles.sectionTitle}>Établissements disponibles</h3>
+            <h3 style={styles.sectionTitle}>
+              Établissements <span style={{ color: "#005f69" }}>disponibles</span>
+            </h3>
             <p style={styles.sectionSubtitle}>
               Découvrez un réseau croissant de partenaires professionnels sélectionnés
               pour leur qualité de service et leur expertise.
@@ -467,7 +480,7 @@ export const EstablishmentsSection = () => {
           >
             Tout voir
             <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/>
+              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>
           </motion.a>
         </div>
@@ -516,7 +529,7 @@ export const EstablishmentsSection = () => {
           ) : (
             <motion.div
               key={`grid-${activeFilter}-${searchQuery}`}
-              style={styles.grid}
+              style={{ ...styles.grid, gridTemplateColumns: `repeat(${gridCols}, 1fr)` }}
               variants={containerVariants}
               initial="hidden"
               animate="visible"

@@ -6,6 +6,7 @@ import {
   Car,
   Wrench,
   Ticket,
+  Star,
 } from "@phosphor-icons/react";
 
 const steps = [
@@ -63,6 +64,74 @@ const services = [
 ];
 
 const STEP_DURATION = 2600;
+const CLUSTERS_HIW = [
+  {
+    cx: "4%", cy: "10%", stars: [
+      { x: 0, y: 0, size: 13, opacity: 0.70, anim: 0, delay: "0s", dur: "3.2s", color: "#00818f" },
+      { x: 15, y: -9, size: 9, opacity: 0.45, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" },
+      { x: -10, y: 13, size: 7, opacity: 0.30, anim: 2, delay: "0.6s", dur: "3.6s", color: "#00d4e0" },
+    ]
+  },
+  {
+    cx: "88%", cy: "8%", stars: [
+      { x: 0, y: 0, size: 14, opacity: 0.65, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" },
+      { x: -13, y: 11, size: 9, opacity: 0.42, anim: 0, delay: "0.5s", dur: "3.4s", color: "#00515a" },
+      { x: 14, y: -7, size: 7, opacity: 0.30, anim: 2, delay: "0.8s", dur: "2.9s", color: "#00d4e0" },
+    ]
+  },
+  {
+    cx: "2%", cy: "50%", stars: [
+      { x: 0, y: 0, size: 10, opacity: 0.55, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" },
+      { x: 13, y: -6, size: 7, opacity: 0.38, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" },
+    ]
+  },
+  {
+    cx: "93%", cy: "45%", stars: [
+      { x: 0, y: 0, size: 11, opacity: 0.60, anim: 0, delay: "0.3s", dur: "3.3s", color: "#00818f" },
+      { x: -14, y: 8, size: 7, opacity: 0.38, anim: 2, delay: "0.6s", dur: "2.6s", color: "#00515a" },
+    ]
+  },
+  {
+    cx: "8%", cy: "82%", stars: [
+      { x: 0, y: 0, size: 10, opacity: 0.48, anim: 1, delay: "0s", dur: "3.1s", color: "#00d4e0" },
+      { x: 11, y: -8, size: 7, opacity: 0.32, anim: 2, delay: "0.4s", dur: "3.7s", color: "#00818f" },
+    ]
+  },
+  {
+    cx: "90%", cy: "78%", stars: [
+      { x: 0, y: 0, size: 11, opacity: 0.50, anim: 2, delay: "0.2s", dur: "3.4s", color: "#00515a" },
+      { x: -11, y: -9, size: 7, opacity: 0.34, anim: 0, delay: "0.5s", dur: "2.9s", color: "#00818f" },
+    ]
+  },
+];
+
+function StarClustersHIW() {
+  return (
+    <>
+      {CLUSTERS_HIW.map((cluster, ci) => (
+        <div key={ci} style={{
+          position: "absolute",
+          left: cluster.cx, top: cluster.cy,
+          width: 0, height: 0,
+          zIndex: 0, pointerEvents: "none",
+        }}>
+          {cluster.stars.map((s, si) => (
+            <div key={si} style={{
+              position: "absolute",
+              left: s.x, top: s.y,
+              transform: "translate(-50%,-50%)",
+              opacity: s.opacity,
+              animation: `starFloat${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`,
+              filter: `drop-shadow(0 0 3px ${s.color}88)`,
+            }}>
+              <Star weight="fill" style={{ width: s.size, height: s.size, color: s.color }} />
+            </div>
+          ))}
+        </div>
+      ))}
+    </>
+  );
+}
 
 export default function HowItWorks() {
   const ring1Ref = useRef(null);
@@ -123,11 +192,24 @@ export default function HowItWorks() {
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap');
-
-        @keyframes phoneFloat {
-          0%,100% { transform: scale(1.2) perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(0px); }
-          50%      { transform: scale(1.2) perspective(900px) rotateX(6deg) rotateY(-6deg) rotateZ(1deg) translateY(-10px); }
-        }
+@keyframes starFloat0 {
+  0%,100% { transform: translateY(0px) rotate(0deg) scale(1); }
+  33%      { transform: translateY(-8px) rotate(15deg) scale(1.10); }
+  66%      { transform: translateY(-3px) rotate(-8deg) scale(0.95); }
+}
+@keyframes starFloat1 {
+  0%,100% { transform: translateY(0px) rotate(0deg); }
+  50%      { transform: translateY(-11px) rotate(20deg) scale(1.07); }
+}
+@keyframes starFloat2 {
+  0%,100% { transform: translateY(0px) scale(1); }
+  40%      { transform: translateY(-7px) rotate(-12deg) scale(1.12); }
+  80%      { transform: translateY(-2px) rotate(6deg) scale(0.92); }
+}
+@keyframes phoneFloat {
+  0%,100% { transform: scale(1.45) translateY(0px); }
+  50%      { transform: scale(1.45) translateY(-10px); }
+}
         @keyframes pulse {
           0%   { box-shadow: 0 0 0 0px rgba(0,201,167,0.5), 0 0 14px rgba(0,201,167,0.4); }
           70%  { box-shadow: 0 0 0 8px rgba(0,201,167,0), 0 0 14px rgba(0,201,167,0.4); }
@@ -374,10 +456,10 @@ export default function HowItWorks() {
         }
       `}</style>
 
-      <section
-       className="bg-[#f8fafb] overflow-visible box-border"
-style={{ fontFamily: "'Archivo', sans-serif", padding: "clamp(50px,7vw,90px) clamp(16px,4vw,80px)", marginBottom: "80px" }}
-     >
+      <section className="bg-[#f8fafb] overflow-visible box-border"
+        style={{ fontFamily: "'Archivo', sans-serif", padding: "clamp(50px,7vw,90px) clamp(16px,4vw,80px)", marginBottom: "80px", position: "relative" }}
+      >
+        <StarClustersHIW />
         <div className="max-w-[1100px] mx-auto grid gap-[clamp(32px,5vw,64px)] items-center overflow-visible box-border grid-cols-1 md:grid-cols-2">
 
           {/* ── LEFT ── */}
@@ -470,7 +552,7 @@ style={{ fontFamily: "'Archivo', sans-serif", padding: "clamp(50px,7vw,90px) cla
                 }} />
                 <div className="absolute z-[7] blur-[10px]" style={{ width: 150, height: 20, borderRadius: "50%", background: "radial-gradient(ellipse, rgba(0,30,34,0.2) 0%, transparent 70%)", bottom: 68 }} />
                 <div className="absolute z-[10] animate-phoneFloat [filter:drop-shadow(0_32px_64px_rgba(0,30,34,0.35))]" style={{ width: "clamp(200px,60vw,800px)" }}>
-                  <img src="/images/Hero/orbe.png" alt="Ticketché app mockup" className="w-full h-auto block" style={{ borderRadius: "clamp(24px,3vw,44px)" }} />
+                  <img src="/images/Hero/etapes.png" alt="Ticketché app mockup" className="w-full h-auto block" style={{ borderRadius: "clamp(24px,3vw,44px)" }} />
                 </div>
               </div>
             )}
