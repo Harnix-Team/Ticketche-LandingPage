@@ -1,29 +1,13 @@
 "use client";
 
 import { useState } from "react";
-
-// ── Icons inline ──────────────────────────────────────────────────────────────
-const MapPinIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-  </svg>
-);
-const CalendarIcon = () => (
-  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-  </svg>
-);
-const ClockIcon = () => (
-  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-  </svg>
-);
+import { MapPin, CalendarBlank, Clock } from "@phosphor-icons/react";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 const COLORS = [
- "/images/Events/1.jpg",
- "/images/Events/2.jpg",
- "/images/Events/3.jpg",
+  "/images/Events/1.jpg",
+  "/images/Events/2.jpg",
+  "/images/Events/3.jpg",
   "/images/Events/1.jpg",
   "/images/Events/2.jpg",
 ];
@@ -43,10 +27,9 @@ const upcomingEvents = [
 ];
 
 let _clipCounter = 0;
-
+let _ticketId = 0;
 
 // ── Image UPCOMING : zigzag bord GAUCHE + encoche concave bord DROIT ─────────
-let _ticketId = 0;
 function UpcomingTicketImage({ src, width = 160, height = 110 }) {
   const [id] = useState(() => `upt-${++_ticketId}`);
   const W = width;
@@ -85,9 +68,7 @@ function UpcomingTicketImage({ src, width = 160, height = 110 }) {
   );
 }
 
-// ── Image HERO : même forme que UpcomingTicketImage mais en plus grand ────────
-// Zigzag bord GAUCHE + encoche concave bord DROIT
-// Cette image est placée À L'INTÉRIEUR de la carte blanche rectangulaire
+// ── Image HERO ────────────────────────────────────────────────────────────────
 function HeroTicketImage({ src, width = 240, height = 210 }) {
   const [id] = useState(() => `hero-img-${++_clipCounter}`);
   const W = width, H = height;
@@ -124,80 +105,153 @@ function HeroTicketImage({ src, width = 240, height = 210 }) {
 }
 
 // ── Hero Ticket Card ──────────────────────────────────────────────────────────
-// Carte blanche RECTANGULAIRE normale.
-// À l'intérieur : [TEXTE à gauche] + [IMAGE avec zigzag à droite]
-// L'image a son propre clipPath SVG (zigzag gauche + encoche droite)
-// Cercle < à cheval sur le bord gauche de la carte
-// Cercle > à cheval sur le bord droit de la carte
 const PERF_R = 22;
 
-function HeroTicketCard({ event, onPrev, onNext, current, setCurrent }) {
+function HeroTicketCard({ event, onPrev, onNext }) {
   const PR = PERF_R;
   const cardH = 210;
   const imgW = 240;
 
   return (
     <div style={{ position: "relative", overflow: "visible" }}>
-
-      {/* Cercle < — bord gauche de la carte */}
-      <div onClick={onPrev} style={{
-        position: "absolute", left: -PR, top: "50%", transform: "translateY(-50%)",
-        width: PR * 2, height: PR * 2, borderRadius: "50%",
-        background: "rgba(10,3,0,0.85)", zIndex: 30,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
-      }}>
-        <span style={{ color: "#fff", fontSize: 15, fontWeight: 900 }}>&lt;</span>
+      {/* Left arrow */}
+      <div
+        onClick={onPrev}
+        style={{
+          position: "absolute",
+          left: -PR,
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: PR * 2,
+          height: PR * 2,
+          borderRadius: "50%",
+          background: "rgba(10,3,0,0.85)",
+          zIndex: 30,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+        }}
+      >
+        <span style={{ color: "#fff", fontSize: 15, fontWeight: 900 }}>‹</span>
       </div>
 
-      {/* Carte blanche rectangulaire */}
-      <div style={{
-        display: "flex",
-        background: "#fff",
-        boxShadow: "0 24px 72px rgba(0,0,0,0.45)",
-        minHeight: cardH,
-        overflow: "hidden",
-      }}>
-        {/* TEXTE à gauche */}
-        <div style={{
-          flex: 1,
-          padding: "20px 28px",
-          display: "flex", flexDirection: "column", justifyContent: "space-between",
-          minWidth: 0,
-        }}>
+      {/* Card */}
+      <div
+        style={{
+          display: "flex",
+          background: "#fff",
+          boxShadow: "0 24px 72px rgba(0,0,0,0.45)",
+          minHeight: cardH,
+          overflow: "hidden",
+        }}
+      >
+        {/* Text */}
+        <div
+          style={{
+            flex: 1,
+            padding: "20px 28px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            minWidth: 0,
+          }}
+        >
           <div>
-            <p style={{ fontSize: "9px", fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", color: "#692c00", marginBottom: "5px" }}>{event.category}</p>
-            <p style={{ fontSize: "13px", fontWeight: 600, color: "#5a3020", marginBottom: "2px", lineHeight: 1.3 }}>{event.title}</p>
-            <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(1rem, 2vw, 1.45rem)", fontWeight: 700, color: "#1a0a00", lineHeight: 1.2, marginBottom: "10px" }}>{event.subtitle}</p>
-            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: "11px", color: "#8a5a44", marginBottom: "14px" }}>
-              <span style={{ color: "#692c00" }}><MapPinIcon /></span>{event.location}
+            <p style={{ fontSize: "9px", fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", color: "#692c00", marginBottom: "5px" }}>
+              {event.category}
+            </p>
+            <p style={{ fontSize: "13px", fontWeight: 600, color: "#5a3020", marginBottom: "2px", lineHeight: 1.3 }}>
+              {event.title}
+            </p>
+            <p
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "clamp(1rem, 2vw, 1.45rem)",
+                fontWeight: 700,
+                color: "#1a0a00",
+                lineHeight: 1.2,
+                marginBottom: "10px",
+              }}
+            >
+              {event.subtitle}
+            </p>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "11px", color: "#8a5a44", marginBottom: "14px" }}>
+              <MapPin size={14} weight="bold" color="#692c00" />
+              {event.location}
             </div>
           </div>
+
           <div>
             <div style={{ display: "flex", gap: 16, marginBottom: "14px", fontSize: "11px", color: "#6b4030" }}>
-              <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ color: "#692c00" }}><CalendarIcon /></span>{event.date}</span>
-              <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ color: "#692c00" }}><ClockIcon /></span>{event.time}</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                <CalendarBlank size={14} weight="bold" color="#692c00" />
+                {event.date}
+              </span>
+              <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                <Clock size={14} weight="bold" color="#692c00" />
+                {event.time}
+              </span>
             </div>
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-              <button style={{ background: "#fff", color: "#1a0a00", border: "1.5px solid #1a0a00", borderRadius: "6px", padding: "9px 20px", fontSize: "12px", fontWeight: 700, cursor: "pointer", boxShadow: "0 3px 12px rgba(0,0,0,0.12)" }}>Get Tickets</button>
-              <button style={{ background: "none", border: "none", color: "#1a0a00", fontSize: "12px", fontWeight: 500, cursor: "pointer", textDecoration: "underline" }}>View Details</button>
+              <button
+                style={{
+                  background: "#fff",
+                  color: "#1a0a00",
+                  border: "1.5px solid #1a0a00",
+                  borderRadius: "6px",
+                  padding: "9px 20px",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  boxShadow: "0 3px 12px rgba(0,0,0,0.12)",
+                }}
+              >
+                Get Tickets
+              </button>
+              <button
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#1a0a00",
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+              >
+                View Details
+              </button>
             </div>
           </div>
         </div>
 
-        {/* IMAGE à droite — SVG avec zigzag gauche + encoche droite */}
+        {/* Image */}
         <HeroTicketImage src={event.image} width={imgW} height={cardH} />
       </div>
 
-      {/* Cercle > — bord droit de la carte */}
-      <div onClick={onNext} style={{
-        position: "absolute", right: -PR, top: "50%", transform: "translateY(-50%)",
-        width: PR * 2, height: PR * 2, borderRadius: "50%",
-        background: "rgba(10,3,0,0.85)", zIndex: 30,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
-      }}>
-        <span style={{ color: "#fff", fontSize: 15, fontWeight: 900 }}>&gt;</span>
+      {/* Right arrow */}
+      <div
+        onClick={onNext}
+        style={{
+          position: "absolute",
+          right: -PR,
+          top: "50%",
+          transform: "translateY(-50%)",
+          width: PR * 2,
+          height: PR * 2,
+          borderRadius: "50%",
+          background: "rgba(10,3,0,0.85)",
+          zIndex: 30,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+        }}
+      >
+        <span style={{ color: "#fff", fontSize: 15, fontWeight: 900 }}>›</span>
       </div>
     </div>
   );
@@ -206,28 +260,76 @@ function HeroTicketCard({ event, onPrev, onNext, current, setCurrent }) {
 // ── Upcoming Event Row ────────────────────────────────────────────────────────
 function UpcomingRow({ event, isFirst }) {
   return (
-    <div style={{
-      display: "flex", alignItems: "center",
-      borderTop: isFirst ? "1px solid rgba(105,44,0,0.10)" : "none",
-      borderBottom: "1px solid rgba(105,44,0,0.10)",
-      padding: "18px 0",
-    }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        borderTop: isFirst ? "1px solid rgba(105,44,0,0.10)" : "none",
+        borderBottom: "1px solid rgba(105,44,0,0.10)",
+        padding: "18px 0",
+      }}
+    >
       <div style={{ flexShrink: 0, width: "58px", textAlign: "center", marginRight: "18px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <div style={{ fontSize: "10px", fontWeight: 700, color: "#692c00", letterSpacing: "0.06em", textTransform: "uppercase" }}>{event.month}</div>
+        <div style={{ fontSize: "10px", fontWeight: 700, color: "#692c00", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          {event.month}
+        </div>
         <div style={{ fontSize: "28px", fontWeight: 900, color: "#1a0a00", lineHeight: 1, margin: "1px 0" }}>{event.day}</div>
         <div style={{ fontSize: "9px", color: "#aaa" }}>{event.year}</div>
-        <div style={{ marginTop: "7px", background: "#692c00", color: "#fff", borderRadius: "4px", padding: "2px 7px", fontSize: "8px", fontWeight: 700, letterSpacing: "0.04em" }}>{event.time}</div>
-      </div>
-      <div style={{ width: "1px", alignSelf: "stretch", background: "rgba(105,44,0,0.12)", marginRight: "18px", flexShrink: 0 }} />
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontSize: "9px", fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", color: "#692c00", marginBottom: "3px" }}>{event.category}</p>
-        <p style={{ fontSize: "clamp(0.9rem, 1.3vw, 1.05rem)", fontWeight: 700, color: "#1a0a00", lineHeight: 1.3, marginBottom: "2px" }}>{event.title}</p>
-        <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(0.82rem, 1.1vw, 0.95rem)", color: "#6b4030", marginBottom: "12px" }}>{event.subtitle}</p>
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button style={{ background: "#692c00", color: "#fff", border: "none", borderRadius: "6px", padding: "8px 18px", fontSize: "11px", fontWeight: 700, cursor: "pointer" }}>Get Tickets</button>
-          <button style={{ background: "none", border: "none", color: "#444", fontSize: "11px", fontWeight: 500, cursor: "pointer", textDecoration: "underline" }}>View Details</button>
+        <div style={{ marginTop: "7px", background: "#692c00", color: "#fff", borderRadius: "4px", padding: "2px 7px", fontSize: "8px", fontWeight: 700, letterSpacing: "0.04em" }}>
+          {event.time}
         </div>
       </div>
+
+      <div style={{ width: "1px", alignSelf: "stretch", background: "rgba(105,44,0,0.12)", marginRight: "18px", flexShrink: 0 }} />
+
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontSize: "9px", fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase", color: "#692c00", marginBottom: "3px" }}>
+          {event.category}
+        </p>
+        <p style={{ fontSize: "clamp(0.9rem, 1.3vw, 1.05rem)", fontWeight: 700, color: "#1a0a00", lineHeight: 1.3, marginBottom: "2px" }}>
+          {event.title}
+        </p>
+        <p
+          style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: "clamp(0.82rem, 1.1vw, 0.95rem)",
+            color: "#6b4030",
+            marginBottom: "12px",
+          }}
+        >
+          {event.subtitle}
+        </p>
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <button
+            style={{
+              background: "#692c00",
+              color: "#fff",
+              border: "none",
+              borderRadius: "6px",
+              padding: "8px 18px",
+              fontSize: "11px",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            Get Tickets
+          </button>
+          <button
+            style={{
+              background: "none",
+              border: "none",
+              color: "#444",
+              fontSize: "11px",
+              fontWeight: 500,
+              cursor: "pointer",
+              textDecoration: "underline",
+            }}
+          >
+            View Details
+          </button>
+        </div>
+      </div>
+
       <div style={{ flexShrink: 0, marginLeft: "18px" }}>
         <UpcomingTicketImage src={event.image} width={160} height={110} />
       </div>
@@ -238,90 +340,156 @@ function UpcomingRow({ event, isFirst }) {
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function EventPage() {
   const [current, setCurrent] = useState(0);
-  const prev = () => setCurrent(i => (i === 0 ? heroEvents.length - 1 : i - 1));
-  const next = () => setCurrent(i => (i === heroEvents.length - 1 ? 0 : i + 1));
+  const prev = () => setCurrent((i) => (i === 0 ? heroEvents.length - 1 : i - 1));
+  const next = () => setCurrent((i) => (i === heroEvents.length - 1 ? 0 : i + 1));
 
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Archivo:wght@400;500;600;700;800;900&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Archivo', sans-serif; background: #fff; }
-        .view-all-btn:hover { background: #692c00 !important; color: #fff !important; }
+        body {
+          font-family: 'Archivo', system-ui, sans-serif;
+          background: #fff;
+        }
+        .view-all-btn:hover {
+          background: #692c00 !important;
+          color: #fff !important;
+        }
       `}</style>
 
       <div style={{ fontFamily: "'Archivo', sans-serif", background: "#fff", minHeight: "100vh" }}>
-
-        {/* ── HERO ── */}
-        <section style={{ position: "relative", minHeight: "clamp(460px, 55vw, 640px)", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+        {/* HERO */}
+        <section
+          style={{
+            position: "relative",
+            minHeight: "clamp(460px, 55vw, 640px)",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           {heroEvents.map((e, i) => (
-            <div key={i} style={{
-              position: "absolute", inset: 0,
-              backgroundImage: `url(${e.image})`,
-              backgroundSize: "cover", backgroundPosition: "center top",
-              opacity: i === current ? 1 : 0,
-              transition: "opacity 0.8s ease",
-            }} />
+            <div
+              key={i}
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: `url(${e.image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center top",
+                opacity: i === current ? 1 : 0,
+                transition: "opacity 0.8s ease",
+              }}
+            />
           ))}
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(40,12,0,0.62) 0%, rgba(12,3,0,0.85) 100%)" }} />
 
-          <div style={{
-            position: "relative", zIndex: 3, flex: 1,
-            display: "flex", flexDirection: "column", alignItems: "center",
-            padding: "clamp(40px,6vw,72px) clamp(48px,8vw,120px) clamp(48px,6vw,72px)",
-            textAlign: "center",
-          }}>
-            <p style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(255,255,255,0.65)", marginBottom: "10px" }}>
+          <div
+            style={{
+              position: "relative",
+              zIndex: 3,
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              padding: "clamp(40px,6vw,72px) clamp(48px,8vw,120px) clamp(48px,6vw,72px)",
+              textAlign: "center",
+            }}
+          >
+            <p
+              style={{
+                fontSize: "11px",
+                fontWeight: 600,
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.65)",
+                marginBottom: "10px",
+              }}
+            >
               • Les Événements Ticketché •
             </p>
-            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.9rem, 5vw, 4rem)", fontWeight: 900, color: "#fff", lineHeight: 1.08, marginBottom: "clamp(28px,4vw,48px)", textShadow: "0 2px 32px rgba(0,0,0,0.5)" }}>
+            <h1
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "clamp(1.9rem, 5vw, 4rem)",
+                fontWeight: 900,
+                color: "#fff",
+                lineHeight: 1.08,
+                marginBottom: "clamp(28px,4vw,48px)",
+                textShadow: "0 2px 32px rgba(0,0,0,0.5)",
+              }}
+            >
               June 27th – July 4th
             </h1>
 
             <div style={{ width: "100%", maxWidth: "clamp(480px, 72vw, 840px)", margin: "0 auto" }}>
-              <HeroTicketCard
-                event={heroEvents[current]}
-                onPrev={prev}
-                onNext={next}
-                current={current}
-                setCurrent={setCurrent}
-              />
+              <HeroTicketCard event={heroEvents[current]} onPrev={prev} onNext={next} />
               {/* Dots */}
               <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 36 }}>
                 {heroEvents.map((_, i) => (
-                  <button key={i} onClick={() => setCurrent(i)} style={{
-                    width: i === current ? 20 : 6, height: 6, borderRadius: 999,
-                    background: i === current ? "#fff" : "rgba(255,255,255,0.35)",
-                    border: "none", cursor: "pointer", padding: 0, transition: "all 0.3s",
-                  }} />
+                  <button
+                    key={i}
+                    onClick={() => setCurrent(i)}
+                    style={{
+                      width: i === current ? 20 : 6,
+                      height: 6,
+                      borderRadius: 999,
+                      background: i === current ? "#fff" : "rgba(255,255,255,0.35)",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      transition: "all 0.3s",
+                    }}
+                  />
                 ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── UPCOMING EVENTS ── */}
+        {/* UPCOMING EVENTS */}
         <section style={{ maxWidth: "860px", margin: "0 auto", padding: "clamp(48px,7vw,88px) clamp(20px,4vw,40px)" }}>
           <div style={{ textAlign: "center", marginBottom: "clamp(32px,4vw,52px)" }}>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.5rem, 3vw, 2.2rem)", fontWeight: 900, color: "#1a0a00", marginBottom: "10px" }}>
+            <h2
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "clamp(1.5rem, 3vw, 2.2rem)",
+                fontWeight: 900,
+                color: "#1a0a00",
+                marginBottom: "10px",
+              }}
+            >
               Featured Upcoming Events
             </h2>
             <p style={{ fontSize: "13px", color: "#8a6a5a", lineHeight: 1.6, maxWidth: "380px", margin: "0 auto" }}>
               Keep coming back to our website to stay informed about the activities in our theater and reserve your preferred seats in advance.
             </p>
           </div>
+
           <div>
             {upcomingEvents.map((ev, i) => (
               <UpcomingRow key={ev.id} event={ev} isFirst={i === 0} />
             ))}
           </div>
+
           <div style={{ textAlign: "center", marginTop: "44px" }}>
-            <button className="view-all-btn" style={{
-              border: "2px solid #692c00", color: "#692c00",
-              background: "transparent", borderRadius: "999px", padding: "12px 36px",
-              fontSize: "13px", fontWeight: 700, cursor: "pointer",
-              transition: "background 0.2s, color 0.2s",
-            }}>View All Events</button>
+            <button
+              className="view-all-btn"
+              style={{
+                border: "2px solid #692c00",
+                color: "#692c00",
+                background: "transparent",
+                borderRadius: "999px",
+                padding: "12px 36px",
+                fontSize: "13px",
+                fontWeight: 700,
+                cursor: "pointer",
+                transition: "background 0.2s, color 0.2s",
+              }}
+            >
+              View All Events
+            </button>
           </div>
         </section>
       </div>

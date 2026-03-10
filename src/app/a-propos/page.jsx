@@ -7,10 +7,12 @@ export default function AboutPage() {
     <main className="bg-[#f6f7f8] font-archivo">
 
       {/* HERO */}
-      <section className="relative bg-[#016b73] text-white pt-40 pb-56 rounded-t-[140px]">
+      <section className="relative bg-[#016b73] pt-40 pb-56 rounded-t-[140px]">
         <div className="max-w-6xl mx-auto px-6 text-center">
-          <h1 className="text-5xl font-semibold mb-4">À propos de Ticketché</h1>
-          <p className="max-w-xl mx-auto text-white/80">
+          <h1 className="text-6xl font-bold !text-white mb-4">
+            À propos de Ticketché
+          </h1>
+          <p className="max-w-xl mx-auto !text-white font-bold text-xl">
             Ticketché simplifie la gestion de vos événements, billets et services pour une expérience complète et fluide.
           </p>
         </div>
