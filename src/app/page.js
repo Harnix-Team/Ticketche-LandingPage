@@ -12,12 +12,14 @@ import FAQSection from "@/components/Home/FaqSection";
 import CTADownload from "@/components/Home/Ctadownload";
 import ActiveUsers from "@/components/Home/Activeusers";
 import ReviewsSection from "@/components/Home/ReviewsSection";
+import WhyChooseUs from "@/components/Home/WhyChooseUs";
 
 export default function Home() {
   return (
     <div>
       <HeroV2 />
       <TrustedBySection />
+      <WhyChooseUs />
       <TicketcheFonction />
       <HowItWorks />
       <EstablishmentsSection />

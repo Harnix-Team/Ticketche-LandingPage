@@ -100,20 +100,13 @@ function StepCard({ step }) {
       </div>
 
       <div>
-        <h3 style={{ margin: "0 0 7px", fontSize: "16px", fontWeight: 800, color: "#0a1a1c", letterSpacing: "-0.01em", lineHeight: 1.2 }}>
+        <h3 style={{ margin: "0 0 7px", fontSize: "19px", fontWeight: 800, color: "#0a1a1c", letterSpacing: "-0.01em", lineHeight: 1.2 }}>
           {title}
         </h3>
-        <p style={{ margin: 0, fontSize: "13px", color: "#6b7280", lineHeight: 1.75 }}>
-          {description}
+        <p style={{ margin: 0, fontSize: "15px", color: "#6b7280", lineHeight: 1.75 }}>          {description}
         </p>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "12px", fontWeight: 700, color, cursor: "pointer" }}>
-        En savoir plus
-        <svg width="11" height="11" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-        </svg>
-      </div>
     </div>
   );
 }
@@ -188,9 +181,9 @@ export default function HowItWorks() {
           </div>
 
           {/* CENTER */}
-          <div className="hiw-center-col" 
-     style={{ position: "relative", width: "clamp(300px,28vw,400px)", height: "clamp(300px,28vw,400px)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "visible" }}
->
+          <div className="hiw-center-col"
+            style={{ position: "relative", width: "clamp(300px,28vw,400px)", height: "clamp(300px,28vw,400px)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "visible" }}
+          >
 
             {/* Solid circle */}
             <div style={{
@@ -225,19 +218,19 @@ export default function HowItWorks() {
             }} />
 
             {/* Phone mockup */}
-    <div style={{ position: "absolute", zIndex: 2, width: "900px" }}>
-  <img
-    src="/images/Hero/etapes.png"
-    alt="Ticketché app mockup"
-    style={{
-      width: "100%",
-      height: "auto",
-      display: "block",
-      borderRadius: "clamp(20px,2vw,34px)",
-      filter: "drop-shadow(0 24px 40px rgba(0,20,24,0.35))",
-    }}
-  />
-</div>
+            <div style={{ position: "absolute", zIndex: 2, width: "900px" }}>
+              <img
+                src="/images/Hero/etapes.png"
+                alt="Ticketché app mockup"
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  display: "block",
+                  borderRadius: "clamp(20px,2vw,34px)",
+                  filter: "drop-shadow(0 24px 40px rgba(0,20,24,0.35))",
+                }}
+              />
+            </div>
           </div>
 
           {/* RIGHT: steps 2 & 4 */}
@@ -246,21 +239,6 @@ export default function HowItWorks() {
             <StepCard step={steps[3]} />
           </div>
 
-        </div>
-
-        {/* Stats */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "clamp(24px,5vw,72px)", marginTop: "clamp(40px,5vw,64px)", position: "relative", zIndex: 2, flexWrap: "wrap" }}>
-          {[
-            { value: "4", label: "Services disponibles" },
-            { value: "100%", label: "Entièrement digital" },
-            { value: "24/7", label: "Disponible" },
-            { value: "30+", label: "Utilisateurs actifs" },
-          ].map((stat, i) => (
-            <div key={i} style={{ textAlign: "center" }}>
-              <div style={{ fontSize: "clamp(1.4rem,2.2vw,1.9rem)", fontWeight: 900, color: "#005f69", lineHeight: 1, letterSpacing: "-0.02em" }}>{stat.value}</div>
-              <div style={{ fontSize: "11px", color: "#9ca3af", fontWeight: 500, marginTop: "5px", letterSpacing: "0.03em" }}>{stat.label}</div>
-            </div>
-          ))}
         </div>
 
       </section>
