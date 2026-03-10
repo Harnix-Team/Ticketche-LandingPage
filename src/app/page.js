@@ -6,7 +6,7 @@ import TrustedBySection from "@/components/Home/TrustedBySection";
 import { TestimonialsSection } from "@/components/Home/TestimonialsSection";
 import { EventsCarousel } from "@/components/Home/EventsCarousel";
 import { WhyTicketcheSection } from "@/components/Home/WhyTicketcheSection";
-import  TicketcheFonction  from "@/components/Home/TicketcheFonction";
+import TicketcheFonction from "@/components/Home/TicketcheFonction";
 import HowItWorks from "@/components/Home/HowItWorks";
 import FAQSection from "@/components/Home/FaqSection";
 import CTADownload from "@/components/Home/Ctadownload";
@@ -25,6 +25,7 @@ export default function Home() {
       <ActiveUsers />
       <EstablishmentsSection />
       <EventsCarousel />
+      <CTASection />
       {/* <CTADownload /> */}
 
       {/* <About />
@@ -32,7 +33,7 @@ export default function Home() {
       
       <WhyTicketcheSection />
       <TestimonialsSection />
-      <CTASection /> */}
+       */}
     </div>
   );
 }

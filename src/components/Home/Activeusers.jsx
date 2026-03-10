@@ -123,10 +123,9 @@ export default function ActiveUsers() {
   ] : [];
 
   const globalStats = [
-    { val: `${totalUsers.toLocaleString("fr-FR")}+`, label: "Utilisateurs actifs", icon: <Users weight="bold"       style={{ width: 22, height: 22, color: "#005f69" }} /> },
-    { val: "8",   label: "Pays couverts",  icon: <Globe       weight="bold"       style={{ width: 22, height: 22, color: "#005f69" }} /> },
-    { val: "3",   label: "Continents",     icon: <MapTrifold  weight="bold"       style={{ width: 22, height: 22, color: "#005f69" }} /> },
-    { val: "62%", label: "Croissance max", icon: <Rocket      weight="bold"       style={{ width: 22, height: 22, color: "#005f69" }} /> },
+    { val: `${totalUsers.toLocaleString("fr-FR")}+`, label: "Utilisateurs actifs", icon: <Users weight="bold"      style={{ width: 26, height: 26, color: "#005f69" }} /> },
+    { val: "8",   label: "Pays couverts",  icon: <Globe      weight="bold"       style={{ width: 26, height: 26, color: "#005f69" }} /> },
+    { val: "3",   label: "Continents",     icon: <MapTrifold weight="bold"       style={{ width: 26, height: 26, color: "#005f69" }} /> },
   ];
 
   return (
@@ -418,7 +417,7 @@ export default function ActiveUsers() {
 
         {/* Stats globales */}
         <div style={{
-          display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",
+          display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",
           gap:"12px", marginTop:"16px",
           animation:"fadeInUp 0.8s ease 0.2s both",
         }}>

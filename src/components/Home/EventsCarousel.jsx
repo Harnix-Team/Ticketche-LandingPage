@@ -155,9 +155,9 @@ const S = {
     background: "transparent",
   },
   inner: {
-    maxWidth: "75vw",
+    maxWidth: "1400px",
     margin: "0 auto",
-    padding: "0 24px",
+    padding: "0 clamp(20px, 5vw, 72px)",
   },
   headerRow: {
     display: "flex",
@@ -451,10 +451,10 @@ function Carousel({ events }) {
 /* ─── EventsPromo — section fallback quand aucun événement à la une ── */
 function EventsPromo() {
   const features = [
-    { icon: MusicNote,  label: "Concerts & Soirées" },
-    { icon: FilmSlate,  label: "Expos & Culture" },
+    { icon: MusicNote, label: "Concerts & Soirées" },
+    { icon: FilmSlate, label: "Expos & Culture" },
     { icon: SoccerBall, label: "Sports & Shows" },
-    { icon: Confetti,   label: "Festivals" },
+    { icon: Confetti, label: "Festivals" },
   ];
 
   return (
@@ -533,49 +533,49 @@ function EventsPromo() {
       }}>
 
         {/* Orbes décoratifs */}
-        <div style={{ position:"absolute", top:"-80px", right:"8%", width:"360px", height:"360px", borderRadius:"50%", background:"radial-gradient(circle, rgba(4,121,126,0.10) 0%, transparent 70%)", animation:"floatOrb1 8s ease-in-out infinite", pointerEvents:"none" }} />
-        <div style={{ position:"absolute", bottom:"-100px", right:"30%", width:"280px", height:"280px", borderRadius:"50%", background:"radial-gradient(circle, rgba(106,45,2,0.07) 0%, transparent 70%)", animation:"floatOrb2 10s ease-in-out infinite", pointerEvents:"none" }} />
-        <div style={{ position:"absolute", top:"20%", left:"40%", width:"200px", height:"200px", borderRadius:"50%", background:"radial-gradient(circle, rgba(4,121,126,0.06) 0%, transparent 70%)", animation:"floatOrb3 7s ease-in-out infinite", pointerEvents:"none" }} />
+        <div style={{ position: "absolute", top: "-80px", right: "8%", width: "360px", height: "360px", borderRadius: "50%", background: "radial-gradient(circle, rgba(4,121,126,0.10) 0%, transparent 70%)", animation: "floatOrb1 8s ease-in-out infinite", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: "-100px", right: "30%", width: "280px", height: "280px", borderRadius: "50%", background: "radial-gradient(circle, rgba(106,45,2,0.07) 0%, transparent 70%)", animation: "floatOrb2 10s ease-in-out infinite", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: "20%", left: "40%", width: "200px", height: "200px", borderRadius: "50%", background: "radial-gradient(circle, rgba(4,121,126,0.06) 0%, transparent 70%)", animation: "floatOrb3 7s ease-in-out infinite", pointerEvents: "none" }} />
 
         {/* ── Contenu gauche ── */}
-        <div style={{ flex:"1 1 320px", position:"relative", zIndex:2 }}>
+        <div style={{ flex: "1 1 320px", position: "relative", zIndex: 2 }}>
 
           {/* Badge */}
-          <div style={{ display:"inline-flex", alignItems:"center", gap:"8px", background:"rgba(4,121,126,0.08)", border:"1.5px solid rgba(4,121,126,0.2)", borderRadius:"999px", padding:"7px 18px", marginBottom:"22px" }}>
-            <span style={{ width:"7px", height:"7px", borderRadius:"50%", background:"#04797e", animation:"pulseDot 2.5s ease-in-out infinite", flexShrink:0 }} />
-            <Ticket weight="fill" style={{ width:13, height:13, color:"#04797e" }} />
-            <span style={{ fontSize:"11px", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:"#04797e" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: "rgba(4,121,126,0.08)", border: "1.5px solid rgba(4,121,126,0.2)", borderRadius: "999px", padding: "7px 18px", marginBottom: "22px" }}>
+            <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#04797e", animation: "pulseDot 2.5s ease-in-out infinite", flexShrink: 0 }} />
+            <Ticket weight="fill" style={{ width: 13, height: 13, color: "#04797e" }} />
+            <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#04797e" }}>
               Billetterie en ligne
             </span>
           </div>
 
           {/* Titre */}
-          <h2 style={{ fontSize:"clamp(1.8rem, 3.4vw, 2.8rem)", fontWeight:900, color:"#0a1a1c", lineHeight:1.08, letterSpacing:"-0.03em", margin:"0 0 16px" }}>
+          <h2 style={{ fontSize: "clamp(1.8rem, 3.4vw, 2.8rem)", fontWeight: 900, color: "#0a1a1c", lineHeight: 1.08, letterSpacing: "-0.03em", margin: "0 0 16px" }}>
             Vos événements,<br />
-            <span style={{ background:"linear-gradient(90deg, #04797e, #02b8be, #04797e)", backgroundSize:"200% auto", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text", animation:"shimmerTag 3s linear infinite" }}>
+            <span style={{ background: "linear-gradient(90deg, #04797e, #02b8be, #04797e)", backgroundSize: "200% auto", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", animation: "shimmerTag 3s linear infinite" }}>
               à portée de doigt.
             </span>
           </h2>
 
           {/* Sous-titre */}
-          <p style={{ fontSize:"clamp(0.92rem, 1.3vw, 1.05rem)", color:"#4b6367", lineHeight:1.75, margin:"0 0 20px", maxWidth:"420px" }}>
+          <p style={{ fontSize: "clamp(0.92rem, 1.3vw, 1.05rem)", color: "#4b6367", lineHeight: 1.75, margin: "0 0 20px", maxWidth: "420px" }}>
             Concerts, soirées, expos, festivals — achetez vos billets en quelques secondes et recevez votre QR code instantanément sur Ticketché.
           </p>
 
           {/* Accroche */}
-          <div style={{ display:"inline-flex", alignItems:"flex-start", gap:"10px", background:"rgba(4,121,126,0.06)", border:"1px dashed rgba(4,121,126,0.28)", borderRadius:"14px", padding:"12px 18px", marginBottom:"26px", maxWidth:"420px" }}>
-            <Ticket weight="fill" style={{ width:16, height:16, color:"#04797e", flexShrink:0, marginTop:"2px" }} />
-            <span style={{ fontSize:"13px", color:"#2a5a5e", fontWeight:600, lineHeight:1.6 }}>
+          <div style={{ display: "inline-flex", alignItems: "flex-start", gap: "10px", background: "rgba(4,121,126,0.06)", border: "1px dashed rgba(4,121,126,0.28)", borderRadius: "14px", padding: "12px 18px", marginBottom: "26px", maxWidth: "420px" }}>
+            <Ticket weight="fill" style={{ width: 16, height: 16, color: "#04797e", flexShrink: 0, marginTop: "2px" }} />
+            <span style={{ fontSize: "13px", color: "#2a5a5e", fontWeight: 600, lineHeight: 1.6 }}>
               Vous voulez en savoir plus ?{" "}
-              <span style={{ fontWeight:400, color:"#4b6367" }}>Téléchargez l'application pour profiter de ce service.</span>
+              <span style={{ fontWeight: 400, color: "#4b6367" }}>Téléchargez l'application pour profiter de ce service.</span>
             </span>
           </div>
-          <div style={{ display:"flex", flexWrap:"wrap", gap:"10px", marginBottom:"34px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "34px" }}>
             {features.map((f, i) => {
               const Icon = f.icon;
               return (
-                <span key={i} className="promo-feature-tag" style={{ display:"inline-flex", alignItems:"center", gap:"7px", background:"rgba(255,255,255,0.75)", backdropFilter:"blur(8px)", border:"1.5px solid rgba(4,121,126,0.14)", borderRadius:"999px", padding:"8px 16px", fontSize:"12px", fontWeight:600, color:"#1a3a3c", cursor:"default", transition:"all 0.2s" }}>
-                  <Icon weight="fill" style={{ width:14, height:14, color:"#04797e", animation:`iconBounce ${2.2 + i * 0.3}s ease-in-out infinite` }} />
+                <span key={i} className="promo-feature-tag" style={{ display: "inline-flex", alignItems: "center", gap: "7px", background: "rgba(255,255,255,0.75)", backdropFilter: "blur(8px)", border: "1.5px solid rgba(4,121,126,0.14)", borderRadius: "999px", padding: "8px 16px", fontSize: "12px", fontWeight: 600, color: "#1a3a3c", cursor: "default", transition: "all 0.2s" }}>
+                  <Icon weight="fill" style={{ width: 14, height: 14, color: "#04797e", animation: `iconBounce ${2.2 + i * 0.3}s ease-in-out infinite` }} />
                   {f.label}
                 </span>
               );
@@ -583,71 +583,75 @@ function EventsPromo() {
           </div>
 
           {/* Bouton download */}
-          <motion.a
-            href="#download"
-            className="promo-download-btn"
-            style={{ display:"inline-flex", alignItems:"center", gap:"12px", background:"linear-gradient(135deg, #04797e 0%, #025f63 100%)", color:"#fff", borderRadius:"999px", padding:"14px 30px", fontSize:"14px", fontWeight:800, textDecoration:"none", letterSpacing:"0.01em", animation:"btnGlowPromo 3s ease-in-out infinite", transition:"transform 0.22s ease, box-shadow 0.22s ease" }}
-            whileHover={{ y:-3, scale:1.03 }}
-            whileTap={{ scale:0.97 }}
-          >
-            <span style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", width:"34px", height:"34px", background:"rgba(255,255,255,0.18)", borderRadius:"50%", flexShrink:0 }}>
-              <DeviceMobile weight="fill" style={{ width:17, height:17 }} />
-            </span>
-            Télécharger Ticketché
-            <ArrowRight weight="bold" style={{ width:16, height:16 }} />
-          </motion.a>
+         <motion.a
+  href="/event1"
+  className="promo-download-btn"
+  style={{ display: "inline-flex", alignItems: "center", gap: "12px", background: "linear-gradient(135deg, #04797e 0%, #025f63 100%)", color: "#fff", borderRadius: "999px", padding: "14px 30px", fontSize: "14px", fontWeight: 800, textDecoration: "none", letterSpacing: "0.01em", animation: "btnGlowPromo 3s ease-in-out infinite", transition: "transform 0.22s ease, box-shadow 0.22s ease" }}
+  whileHover={{ y: -3, scale: 1.03 }}
+  whileTap={{ scale: 0.97 }}
+>
+  Tout voir
+</motion.a>
 
         </div>
 
-        {/* ── Illustration droite — 3 cards glassmorphism flottantes ── */}
-        <div style={{ flex:"0 0 auto", position:"relative", width:"clamp(220px, 26vw, 300px)", height:"clamp(260px, 32vw, 360px)" }}>
+{/* ── Illustration droite — disposition décalée ── */}
+<div style={{
+  flex: "0 0 auto",
+  position: "relative",
+  zIndex: 2,
+  display: "flex",
+  gap: "8px",
+  alignItems: "center",
+}}>
 
-          {/* Card fond — concert */}
-          <div style={{ position:"absolute", top:"0", right:"0", width:"72%", background:"rgba(4,121,126,0.07)", backdropFilter:"blur(14px)", border:"1.5px solid rgba(4,121,126,0.18)", borderRadius:"20px", padding:"16px", boxShadow:"0 8px 28px rgba(4,121,126,0.12)", animation:"cardFloat3 5s ease-in-out infinite", zIndex:1 }}>
-            <div style={{ width:"100%", height:"70px", borderRadius:"12px", background:"linear-gradient(135deg, rgba(4,121,126,0.2), rgba(2,168,174,0.3))", display:"flex", alignItems:"center", justifyContent:"center", marginBottom:"10px" }}>
-              <MusicNote weight="fill" style={{ width:28, height:28, color:"#04797e", opacity:0.7 }} />
-            </div>
-            <div style={{ height:"8px", borderRadius:"4px", background:"rgba(4,121,126,0.15)", marginBottom:"6px" }} />
-            <div style={{ height:"6px", borderRadius:"4px", background:"rgba(4,121,126,0.1)", width:"60%" }} />
-          </div>
+  {/* Colonne gauche — 2 images empilées */}
+  <div style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+  }}>
 
-          {/* Card milieu — festival */}
-          <div style={{ position:"absolute", bottom:"0", left:"0", width:"75%", background:"rgba(106,45,2,0.05)", backdropFilter:"blur(14px)", border:"1.5px solid rgba(106,45,2,0.14)", borderRadius:"20px", padding:"16px", boxShadow:"0 8px 28px rgba(106,45,2,0.1)", animation:"cardFloat2 6s ease-in-out 0.8s infinite", zIndex:2 }}>
-            <div style={{ width:"100%", height:"70px", borderRadius:"12px", background:"linear-gradient(135deg, rgba(106,45,2,0.12), rgba(139,61,5,0.2))", display:"flex", alignItems:"center", justifyContent:"center", marginBottom:"10px" }}>
-              <Confetti weight="fill" style={{ width:28, height:28, color:"#6a2d02", opacity:0.65 }} />
-            </div>
-            <div style={{ height:"8px", borderRadius:"4px", background:"rgba(106,45,2,0.12)", marginBottom:"6px" }} />
-            <div style={{ height:"6px", borderRadius:"4px", background:"rgba(106,45,2,0.08)", width:"70%" }} />
-          </div>
+    {/* Image 1 — petite en haut, déborde en haut */}
+<div style={{
+  width: "clamp(120px, 13vw, 180px)",
+  height: "clamp(110px, 12vw, 160px)",
+  borderRadius: "16px",
+  overflow: "hidden",
+  boxShadow: "0 10px 28px rgba(0,0,0,0.15)",
+  marginTop: "-20px",
+  marginLeft: "auto",
+}}>
+      <img src="/images/Events/1.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+    </div>
 
-          {/* Card principale — avant-plan */}
-          <div style={{ position:"absolute", top:"18%", left:"12%", right:"12%", background:"rgba(255,255,255,0.82)", backdropFilter:"blur(22px)", border:"2px solid rgba(255,255,255,0.95)", borderRadius:"22px", padding:"18px 16px", boxShadow:"0 16px 48px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.05)", zIndex:3, animation:"cardFloat 4.5s ease-in-out 0.3s infinite" }}>
+    {/* Image 2 — plus large et haute en bas, déborde en bas */}
+    <div style={{
+      width: "clamp(170px, 19vw, 260px)",
+      height: "clamp(160px, 18vw, 230px)",
+      borderRadius: "16px",
+      overflow: "hidden",
+      boxShadow: "0 12px 32px rgba(0,0,0,0.18)",
+      marginBottom: "-20px",
+    }}>
+      <img src="/images/Events/2.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+    </div>
 
-            {/* Image placeholder avec icone */}
-            <div style={{ width:"100%", height:"90px", borderRadius:"14px", background:"linear-gradient(135deg, rgba(4,121,126,0.12) 0%, rgba(4,121,126,0.22) 100%)", display:"flex", alignItems:"center", justifyContent:"center", marginBottom:"12px" }}>
-              <Microphone weight="fill" style={{ width:32, height:32, color:"#04797e" }} />
-            </div>
+  </div>
 
-            <p style={{ margin:"0 0 5px", fontWeight:800, fontSize:"12px", color:"#0a1a1c", letterSpacing:"-0.01em" }}>
-              Concert à Cotonou
-            </p>
-            <p style={{ margin:"0 0 10px", fontSize:"10px", color:"#6b7280", display:"flex", alignItems:"center", gap:"4px" }}>
-              <Calendar style={{ width:10, height:10 }} /> Bientôt disponible
-            </p>
-            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-              <span style={{ fontSize:"11px", fontWeight:800, color:"#04797e" }}>À venir</span>
-              <span style={{ background:"linear-gradient(135deg, #04797e, #025f63)", color:"#fff", borderRadius:"999px", padding:"4px 10px", fontSize:"9px", fontWeight:700 }}>
-                Bientôt
-              </span>
-            </div>
-          </div>
+  {/* Image 3 — portrait à droite, centrée, moins haute */}
+  <div style={{
+    width: "clamp(150px, 16vw, 220px)",
+    height: "clamp(240px, 26vw, 330px)",
+    borderRadius: "20px",
+    overflow: "hidden",
+    boxShadow: "0 20px 48px rgba(0,0,0,0.20)",
+    alignSelf: "center",
+  }}>
+    <img src="/images/Events/3.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+  </div>
 
-          {/* Étoiles décoratives */}
-          <Star weight="fill" style={{ position:"absolute", top:"4%", right:"2%", width:14, height:14, color:"#04797e", opacity:0.65, animation:"sparkleRotate 4s ease-in-out infinite" }} />
-          <Star weight="fill" style={{ position:"absolute", bottom:"6%", right:"4%", width:9, height:9, color:"#6a2d02", opacity:0.45, animation:"sparkleRotate 5s ease-in-out 1.2s infinite" }} />
-          <Star weight="fill" style={{ position:"absolute", top:"42%", left:"0%", width:11, height:11, color:"#04797e", opacity:0.35, animation:"sparkleRotate 3.5s ease-in-out 0.6s infinite" }} />
-
-        </div>
+</div>
       </div>
     </>
   );
@@ -699,7 +703,7 @@ export const EventsCarousel = () => {
               >
                 Tout voir
                 <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/>
+                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
               </motion.a>
             </motion.div>

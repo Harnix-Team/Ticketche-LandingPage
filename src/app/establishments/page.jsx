@@ -7,23 +7,40 @@ import { fetchAllPlaces } from "@/app/services/api";
 import {
   NavigationArrow, MagnifyingGlass, X, Car, Drop, Wrench,
   SlidersHorizontal, Star, MapPin, CaretRight, ArrowUpRight,
-  Funnel, Buildings,
+  Funnel, Buildings, List, SquaresFour,
 } from "@phosphor-icons/react";
 
-/* ── helpers ── */
+/* ══════════════════════════════════════════════
+   HELPERS — structure exacte de l'API
+══════════════════════════════════════════════ */
 const formatImage = (img) =>
   img ? img.replace("/storage/app/public", "/storage") : "/images/logo.png";
 
 const getPlaceImage = (place) =>
-  place.images?.length > 0 ? formatImage(place.images[0].link) : "/images/Space/recom1.png";
+  place.images?.length > 0
+    ? formatImage(place.images[0].link)
+    : "/images/Space/recom1.png";
+
+const getSecondImage = (place) =>
+  place.images?.length > 1
+    ? formatImage(place.images[1].link)
+    : getPlaceImage(place);
 
 const getServiceTags = (place) =>
-  [...new Set(place.services.filter((s) => s.pivot.status === "ON").map((s) => s.name))].slice(0, 3);
+  [...new Set(
+    place.services.filter((s) => s.pivot.status === "ON").map((s) => s.name)
+  )].slice(0, 3);
 
 const getMinPrice = (place) => {
-  if (place.minimum_price) return `${place.minimum_price} FCFA`;
-  const prices = place.services.filter((s) => s.pivot.status === "ON").map((s) => s.pivot.price).filter(Boolean);
-  return prices.length > 0 ? `${Math.min(...prices).toLocaleString()} FCFA` : "Sur demande";
+  if (place.minimum_price)
+    return `${Number(place.minimum_price).toLocaleString()} FCFA`;
+  const prices = place.services
+    .filter((s) => s.pivot.status === "ON")
+    .map((s) => s.pivot.price)
+    .filter(Boolean);
+  return prices.length > 0
+    ? `${Math.min(...prices).toLocaleString()} FCFA`
+    : "Sur demande";
 };
 
 const getRating = (place) => {
@@ -32,139 +49,243 @@ const getRating = (place) => {
   return (total / place.noteUsers.length).toFixed(1);
 };
 
+const ServiceIcon = ({ tag = "", ...props }) => {
+  const t = tag.toLowerCase();
+  if (t.includes("parking")) return <Car {...props} />;
+  if (t.includes("lavage"))  return <Drop {...props} />;
+  return <Wrench {...props} />;
+};
+
 const FILTERS = [
-  { key: "all",     label: "Tous",    icon: SlidersHorizontal },
-  { key: "parking", label: "Parking", icon: Car               },
-  { key: "lavage",  label: "Lavage",  icon: Drop              },
-  { key: "garage",  label: "Garage",  icon: Wrench            },
+  { key: "all",     label: "Tous",    Icon: SlidersHorizontal },
+  { key: "parking", label: "Parking", Icon: Car               },
+  { key: "lavage",  label: "Lavage",  Icon: Drop              },
+  { key: "garage",  label: "Garage",  Icon: Wrench            },
 ];
 
-/* ── Featured hero card ── */
+/* ══════════════════════════════════════════════
+   HERO CARD — 2 photos côte à côte + overlay
+   Reproduit exactement le layout de la maquette
+══════════════════════════════════════════════ */
 function HeroCard({ place, onClick, onItinerary }) {
   const rating = getRating(place);
+  const tags   = getServiceTags(place);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       onClick={() => onClick(place)}
-      className="group relative w-full cursor-pointer overflow-hidden rounded-3xl"
-      style={{ height: "420px" }}
+      style={{
+        borderRadius: 24, overflow: "hidden", cursor: "pointer",
+        background: "white", border: "1px solid #e5e7eb",
+        boxShadow: "0 2px 20px rgba(0,95,105,.09)", marginBottom: 16,
+        fontFamily: "'Archivo', sans-serif",
+      }}
     >
-      <Image src={getPlaceImage(place)} alt={place.name} fill
-        className="object-cover transition-transform duration-700 group-hover:scale-105" priority />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/5" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
+      {/* Grille 2 photos — même proportion que la maquette */}
+      <div style={{ display: "grid", gridTemplateColumns: "1.45fr 1fr", gap: 6, padding: "8px 8px 0 8px", height: 272 }}>
 
-      {/* tags top */}
-      <div className="absolute top-5 left-5 flex gap-2 flex-wrap">
-        {getServiceTags(place).map((tag, i) => (
-          <span key={i} className="bg-white/15 backdrop-blur-md border border-white/20 text-white text-[11px] font-bold px-3 py-1.5 rounded-full">
-            {tag}
-          </span>
-        ))}
+        {/* Photo principale */}
+        <div style={{ position: "relative", borderRadius: 18, overflow: "hidden" }}>
+          <Image src={getPlaceImage(place)} alt={place.name} fill style={{ objectFit: "cover" }} priority />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.75) 0%, rgba(0,0,0,.15) 55%, transparent 100%)" }} />
+
+          {/* Tags haut gauche */}
+          <div style={{ position: "absolute", top: 12, left: 12, display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {tags.map((tag, i) => (
+              <span key={i} style={{
+                background: "rgba(255,255,255,.18)", backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255,255,255,.3)", color: "white",
+                fontSize: 10, fontWeight: 800, padding: "4px 11px", borderRadius: 20,
+                letterSpacing: .5, textTransform: "uppercase",
+              }}>{tag}</span>
+            ))}
+          </div>
+
+          {/* Note haut droite */}
+          {rating && (
+            <div style={{
+              position: "absolute", top: 12, right: 12,
+              display: "flex", alignItems: "center", gap: 5,
+              background: "rgba(255,255,255,.18)", backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255,255,255,.3)", color: "white",
+              padding: "5px 11px", borderRadius: 20,
+            }}>
+              <Star weight="fill" style={{ width: 12, height: 12, color: "#fbbf24" }} />
+              <span style={{ fontWeight: 900, fontSize: 13 }}>{rating}</span>
+            </div>
+          )}
+
+          {/* Ville + Nom + Actions — bas gauche */}
+          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 16px 18px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 5 }}>
+              <MapPin weight="fill" style={{ width: 12, height: 12, color: "#2dd4bf" }} />
+              <span style={{ color: "rgba(255,255,255,.7)", fontSize: 11, fontWeight: 700, letterSpacing: .3 }}>
+                {place.city}
+              </span>
+            </div>
+            <h2 style={{ color: "white", fontSize: 21, fontWeight: 900, lineHeight: 1.2, marginBottom: 12, letterSpacing: -.3 }}>
+              {place.name}
+            </h2>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              <span style={{ color: "white", fontWeight: 900, fontSize: 16 }}>{getMinPrice(place)}</span>
+              <button
+                onClick={(e) => onItinerary(e, place.id)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  background: "white", color: "#005f69",
+                  fontWeight: 800, fontSize: 12, padding: "7px 16px",
+                  borderRadius: 20, border: "none", cursor: "pointer",
+                  fontFamily: "'Archivo', sans-serif",
+                }}
+              >
+                <NavigationArrow style={{ width: 13, height: 13 }} /> Itinéraire
+              </button>
+              <span style={{
+                display: "flex", alignItems: "center", gap: 5,
+                background: "rgba(255,255,255,.15)", backdropFilter: "blur(8px)",
+                border: "1px solid rgba(255,255,255,.25)",
+                color: "white", fontWeight: 700, fontSize: 12,
+                padding: "7px 14px", borderRadius: 20,
+              }}>
+                Voir le détail <ArrowUpRight style={{ width: 13, height: 13 }} />
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Photo secondaire */}
+        <div style={{ borderRadius: 18, overflow: "hidden", position: "relative" }}>
+          <Image src={getSecondImage(place)} alt={place.name} fill style={{ objectFit: "cover" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.38) 0%, transparent 55%)" }} />
+          <div style={{ position: "absolute", bottom: 12, right: 12 }}>
+            <span style={{
+              background: "rgba(255,255,255,.9)", backdropFilter: "blur(8px)",
+              fontSize: 11, fontWeight: 700, padding: "5px 12px", borderRadius: 20,
+              color: "#374151", display: "flex", alignItems: "center", gap: 5,
+            }}>
+              📷 Voir toutes les photos
+            </span>
+          </div>
+        </div>
       </div>
-      {rating && (
-        <div className="absolute top-5 right-5 flex items-center gap-1.5 bg-white/15 backdrop-blur-md border border-white/20 text-white px-3 py-1.5 rounded-full">
-          <Star className="w-3.5 h-3.5 text-amber-400" weight="fill" />
-          <span className="font-black text-sm">{rating}</span>
-        </div>
-      )}
 
-      {/* content bottom */}
-      <div className="absolute bottom-0 left-0 right-0 p-7">
-        <p className="text-white/60 text-xs font-black uppercase tracking-[0.15em] mb-1 flex items-center gap-1.5">
-          <MapPin className="w-3.5 h-3.5 text-[#00949f]" /> {place.city}
-        </p>
-        <h2 className="text-white text-2xl sm:text-3xl font-black leading-tight mb-4 max-w-xl">
-          {place.name}
-        </h2>
-        <div className="flex items-center gap-4">
-          <span className="text-white font-black text-lg">{getMinPrice(place)}</span>
-          <button
-            onClick={(e) => onItinerary(e, place.id)}
-            className="flex items-center gap-2 bg-white text-[#005f69] font-black text-sm px-5 py-2.5 rounded-full hover:bg-[#005f69] hover:text-white transition-colors duration-300"
-          >
-            <NavigationArrow className="w-4 h-4" /> Itinéraire
-          </button>
-          <span className="flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 text-white font-bold text-sm px-5 py-2.5 rounded-full group-hover:bg-white/25 transition-colors duration-300">
-            Voir le détail <ArrowUpRight className="w-4 h-4" />
-          </span>
+      {/* Bande info sous les photos */}
+      <div style={{
+        padding: "12px 20px 14px", display: "flex",
+        alignItems: "center", justifyContent: "space-between",
+        borderTop: "1px solid #f3f4f6", marginTop: 6,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          {tags.map((tag, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#4b5563", fontWeight: 600 }}>
+              <ServiceIcon tag={tag} style={{ width: 15, height: 15, color: "#005f69" }} />
+              {tag}
+            </div>
+          ))}
+          {place.details && (
+            <span style={{ fontSize: 12, color: "#9ca3af", fontWeight: 500, maxWidth: 240, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {place.details}
+            </span>
+          )}
         </div>
+        {rating && (
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {[1,2,3,4,5].map(s => (
+              <Star key={s}
+                weight={s <= Math.round(parseFloat(rating)) ? "fill" : "regular"}
+                style={{ width: 12, height: 12, color: s <= Math.round(parseFloat(rating)) ? "#fbbf24" : "#e5e7eb" }}
+              />
+            ))}
+            <span style={{ fontSize: 12, fontWeight: 800, color: "#374151", marginLeft: 4 }}>{rating}</span>
+            <span style={{ fontSize: 11, color: "#9ca3af", marginLeft: 2 }}>({place.noteUsers?.length} avis)</span>
+          </div>
+        )}
       </div>
     </motion.div>
   );
 }
 
-/* ── Horizontal list row ── */
+/* ══════════════════════════════════════════════
+   LIST CARD — même style propre que la maquette
+══════════════════════════════════════════════ */
 function ListCard({ place, index, onClick, onItinerary }) {
   const rating = getRating(place);
   const tags   = getServiceTags(place);
+
   return (
     <motion.div
-      initial={{ opacity: 0, x: -16 }}
+      initial={{ opacity: 0, x: -14 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.055, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.38, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
       onClick={() => onClick(place)}
-      className="group flex items-stretch gap-0 cursor-pointer bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg hover:shadow-[#005f69]/8 hover:border-[#005f69]/20 transition-all duration-300"
+      style={{
+        display: "flex", alignItems: "stretch", cursor: "pointer",
+        background: "white", borderRadius: 20, border: "1px solid #e5e7eb",
+        overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,.04)",
+        transition: "all .2s ease",
+      }}
+      whileHover={{ y: -2, boxShadow: "0 8px 24px rgba(0,95,105,.11)", borderColor: "rgba(0,95,105,.22)" }}
     >
-      {/* Color accent left — service type */}
-      <div className="flex-shrink-0 w-14 sm:w-16 flex flex-col items-center justify-center py-4 gap-1"
-        style={{ background: "linear-gradient(to bottom, #005f69, #004a52)" }}>
-        {tags[0]?.toLowerCase().includes("parking") ? (
-          <Car className="w-5 h-5 text-white" />
-        ) : tags[0]?.toLowerCase().includes("lavage") ? (
-          <Drop className="w-5 h-5 text-white" />
-        ) : (
-          <Wrench className="w-5 h-5 text-white" />
-        )}
-        <span className="text-white/60 text-[8px] font-black uppercase tracking-widest text-center leading-tight mt-1 px-1">
+      {/* Accent gauche */}
+      <div style={{
+        flexShrink: 0, width: 58,
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        gap: 5, background: "linear-gradient(160deg, #005f69, #004a52)",
+      }}>
+        <ServiceIcon tag={tags[0] ?? ""} style={{ width: 20, height: 20, color: "white" }} />
+        <span style={{ color: "rgba(255,255,255,.55)", fontSize: 8, fontWeight: 900, textTransform: "uppercase", letterSpacing: 1, textAlign: "center", lineHeight: 1.3, padding: "0 5px" }}>
           {tags[0] ?? "Service"}
         </span>
       </div>
 
-      {/* Image */}
-      <div className="relative flex-shrink-0 w-28 sm:w-40 overflow-hidden">
-        <Image src={getPlaceImage(place)} alt={place.name} fill
-          className="object-cover transition-transform duration-500 group-hover:scale-110" />
+      {/* Photo */}
+      <div style={{ flexShrink: 0, width: 138, position: "relative", overflow: "hidden" }}>
+        <Image src={getPlaceImage(place)} alt={place.name} fill style={{ objectFit: "cover" }} />
         {rating && (
-          <div className="absolute top-2 left-2 flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-full px-2 py-0.5 shadow">
-            <Star className="w-2.5 h-2.5 text-amber-400" weight="fill" />
-            <span className="text-[10px] font-black text-gray-800">{rating}</span>
+          <div style={{ position: "absolute", top: 8, left: 8, display: "flex", alignItems: "center", gap: 4, background: "rgba(255,255,255,.92)", backdropFilter: "blur(6px)", borderRadius: 20, padding: "3px 8px" }}>
+            <Star weight="fill" style={{ width: 10, height: 10, color: "#fbbf24" }} />
+            <span style={{ fontSize: 10, fontWeight: 900, color: "#111827" }}>{rating}</span>
           </div>
         )}
       </div>
 
-      {/* Content */}
-      <div className="flex-1 flex flex-col justify-between p-4 min-w-0">
+      {/* Texte */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "14px 18px", minWidth: 0 }}>
         <div>
-          <div className="flex gap-1.5 flex-wrap mb-2">
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 7 }}>
             {tags.map((tag, i) => (
-              <span key={i} className="text-[10px] font-black text-[#692C00] uppercase tracking-widest border border-[#692C00]/30 px-2 py-0.5 rounded-full">
+              <span key={i} style={{ fontSize: 10, fontWeight: 800, color: "#692C00", textTransform: "uppercase", letterSpacing: .5, border: "1px solid rgba(105,44,0,.22)", padding: "2px 9px", borderRadius: 20 }}>
                 {tag}
               </span>
             ))}
           </div>
-          <h3 className="font-black text-gray-900 text-sm sm:text-base leading-snug mb-1 group-hover:text-[#005f69] transition-colors duration-200 line-clamp-2">
+          <h3 style={{ fontWeight: 900, color: "#111827", fontSize: 15, lineHeight: 1.35, marginBottom: 5 }}>
             {place.name}
           </h3>
-          <p className="flex items-center gap-1 text-xs text-gray-400">
-            <MapPin className="w-3 h-3 text-[#005f69] flex-shrink-0" />
+          <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: "#9ca3af" }}>
+            <MapPin weight="fill" style={{ width: 11, height: 11, color: "#005f69", flexShrink: 0 }} />
             {place.city}
-          </p>
+          </div>
+          {place.details && (
+            <p style={{ fontSize: 12, color: "#6b7280", marginTop: 5, display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+              {place.details}
+            </p>
+          )}
         </div>
-
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
-          <span className="font-black text-[#005f69] text-sm">{getMinPrice(place)}</span>
-          <div className="flex gap-2">
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 10, paddingTop: 10, borderTop: "1px solid #f3f4f6" }}>
+          <span style={{ fontWeight: 900, color: "#005f69", fontSize: 14 }}>{getMinPrice(place)}</span>
+          <div style={{ display: "flex", gap: 8 }}>
             <button
               onClick={(e) => onItinerary(e, place.id)}
-              className="flex items-center gap-1 text-[11px] font-black text-[#005f69] bg-[#005f69]/8 hover:bg-[#005f69] hover:text-white px-3 py-1.5 rounded-xl transition-all duration-200"
+              style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 800, color: "#005f69", background: "rgba(0,95,105,.07)", border: "none", padding: "6px 13px", borderRadius: 10, cursor: "pointer", fontFamily: "'Archivo', sans-serif" }}
             >
-              <NavigationArrow className="w-3 h-3" /> Itinéraire
+              <NavigationArrow style={{ width: 12, height: 12 }} /> Itinéraire
             </button>
-            <span className="flex items-center gap-1 text-[11px] text-gray-400 font-black opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              Voir <CaretRight className="w-3 h-3" />
+            <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#9ca3af", fontWeight: 700 }}>
+              Voir <CaretRight style={{ width: 11, height: 11 }} />
             </span>
           </div>
         </div>
@@ -173,52 +294,60 @@ function ListCard({ place, index, onClick, onItinerary }) {
   );
 }
 
-/* ── Compact grid card ── */
+/* ══════════════════════════════════════════════
+   GRID CARD
+══════════════════════════════════════════════ */
 function GridCard({ place, index, onClick, onItinerary }) {
   const rating = getRating(place);
   const tags   = getServiceTags(place);
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.35, delay: index * 0.05 }}
+      transition={{ duration: 0.32, delay: index * 0.05 }}
       onClick={() => onClick(place)}
-      className="group cursor-pointer bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-[#005f69]/10 hover:border-[#005f69]/20 transition-all duration-300"
+      style={{ background: "white", borderRadius: 20, overflow: "hidden", cursor: "pointer", border: "1px solid #e5e7eb", boxShadow: "0 1px 4px rgba(0,0,0,.04)", transition: "all .2s ease" }}
+      whileHover={{ y: -3, boxShadow: "0 12px 28px rgba(0,95,105,.12)", borderColor: "rgba(0,95,105,.22)" }}
     >
-      <div className="relative w-full overflow-hidden" style={{ aspectRatio: "16/9" }}>
-        <Image src={getPlaceImage(place)} alt={place.name} fill
-          className="object-cover transition-transform duration-500 group-hover:scale-108" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+      <div style={{ position: "relative", width: "100%", aspectRatio: "16/9", overflow: "hidden" }}>
+        <Image src={getPlaceImage(place)} alt={place.name} fill style={{ objectFit: "cover" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.5) 0%, transparent 60%)" }} />
         {rating && (
-          <div className="absolute top-3 left-3 flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-full px-2.5 py-1 shadow">
-            <Star className="w-3 h-3 text-amber-400" weight="fill" />
-            <span className="text-xs font-black text-gray-800">{rating}</span>
+          <div style={{ position: "absolute", top: 10, left: 10, display: "flex", alignItems: "center", gap: 4, background: "rgba(255,255,255,.92)", backdropFilter: "blur(6px)", borderRadius: 20, padding: "4px 9px" }}>
+            <Star weight="fill" style={{ width: 11, height: 11, color: "#fbbf24" }} />
+            <span style={{ fontSize: 11, fontWeight: 900, color: "#111827" }}>{rating}</span>
           </div>
         )}
-        <div className="absolute bottom-3 right-3">
-          <span className="bg-black/40 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
+        <div style={{ position: "absolute", bottom: 10, right: 10 }}>
+          <span style={{ background: "rgba(0,0,0,.42)", backdropFilter: "blur(6px)", color: "white", fontSize: 10, fontWeight: 700, padding: "4px 9px", borderRadius: 20 }}>
             {place.city}
           </span>
         </div>
       </div>
-      <div className="p-4">
-        <div className="flex gap-1.5 flex-wrap mb-2">
+      <div style={{ padding: "14px 16px 16px" }}>
+        <div style={{ display: "flex", gap: 6, marginBottom: 7 }}>
           {tags.map((tag, i) => (
-            <span key={i} className="text-[10px] font-black text-[#692C00] uppercase tracking-wide">
-              {i > 0 && <span className="text-gray-200 mr-1.5">·</span>}{tag}
+            <span key={i} style={{ fontSize: 10, fontWeight: 900, color: "#692C00", textTransform: "uppercase", letterSpacing: .4 }}>
+              {i > 0 && <span style={{ color: "#e5e7eb", marginRight: 6 }}>·</span>}{tag}
             </span>
           ))}
         </div>
-        <h3 className="font-black text-gray-900 text-sm leading-snug mb-3 line-clamp-2 group-hover:text-[#005f69] transition-colors">
+        <h3 style={{ fontWeight: 900, color: "#111827", fontSize: 14, lineHeight: 1.35, marginBottom: 4, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
           {place.name}
         </h3>
-        <div className="flex items-center justify-between pt-3 border-t border-gray-50">
-          <span className="font-black text-[#005f69] text-sm">{getMinPrice(place)}</span>
+        {place.details && (
+          <p style={{ fontSize: 12, color: "#9ca3af", marginBottom: 10, display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+            {place.details}
+          </p>
+        )}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 12, borderTop: "1px solid #f3f4f6" }}>
+          <span style={{ fontWeight: 900, color: "#005f69", fontSize: 14 }}>{getMinPrice(place)}</span>
           <button
             onClick={(e) => onItinerary(e, place.id)}
-            className="flex items-center gap-1 text-[11px] font-black text-[#005f69] bg-[#005f69]/8 hover:bg-[#005f69] hover:text-white px-3 py-1.5 rounded-xl transition-all duration-200"
+            style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 800, color: "#005f69", background: "rgba(0,95,105,.07)", border: "none", padding: "6px 12px", borderRadius: 10, cursor: "pointer", fontFamily: "'Archivo', sans-serif" }}
           >
-            <NavigationArrow className="w-3 h-3" />
+            <NavigationArrow style={{ width: 12, height: 12 }} />
           </button>
         </div>
       </div>
@@ -226,14 +355,16 @@ function GridCard({ place, index, onClick, onItinerary }) {
   );
 }
 
-/* ══ MAIN PAGE ══ */
+/* ══════════════════════════════════════════════
+   PAGE PRINCIPALE
+══════════════════════════════════════════════ */
 export default function EstablishmentsPage() {
-  const [all, setAll]               = useState([]);
-  const [loading, setLoading]       = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [all, setAll]                   = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const [searchQuery, setSearchQuery]   = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
-  const [sortBy, setSortBy]         = useState("default");
-  const [viewMode, setViewMode]     = useState("list");
+  const [sortBy, setSortBy]             = useState("default");
+  const [viewMode, setViewMode]         = useState("list");
 
   useEffect(() => {
     fetchAllPlaces()
@@ -242,7 +373,7 @@ export default function EstablishmentsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleClick     = useCallback((place) => {
+  const handleClick = useCallback((place) => {
     localStorage.setItem("selectedPlace", JSON.stringify(place));
     window.open(`/places/${place.id}`, "_blank");
   }, []);
@@ -254,12 +385,10 @@ export default function EstablishmentsPage() {
 
   const filtered = useMemo(() => {
     let res = [...all];
-
     if (activeFilter !== "all")
       res = res.filter((p) =>
         p.services.some((s) => s.pivot.status === "ON" && s.name.toLowerCase().includes(activeFilter))
       );
-
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       res = res.filter((p) =>
@@ -268,169 +397,184 @@ export default function EstablishmentsPage() {
         p.services.some((s) => s.name.toLowerCase().includes(q))
       );
     }
-
     return res.sort((a, b) => {
-      if (sortBy === "rating") {
+      if (sortBy === "rating")
         return (parseFloat(getRating(b)) || 0) - (parseFloat(getRating(a)) || 0);
-      }
-      if (sortBy === "price") {
-        const pa = parseFloat(a.minimum_price) || Infinity;
-        const pb = parseFloat(b.minimum_price) || Infinity;
-        return pa - pb;
-      }
+      if (sortBy === "price")
+        return (parseFloat(a.minimum_price) || Infinity) - (parseFloat(b.minimum_price) || Infinity);
       return 0;
     });
   }, [all, activeFilter, searchQuery, sortBy]);
 
-  const topPlace   = filtered[0];
-  const restPlaces = filtered.slice(1);
+  const topPlace  = filtered[0];
+  const listItems = searchQuery || activeFilter !== "all" ? filtered : filtered.slice(1);
 
   if (loading) return (
-    <div className="min-h-screen bg-[#f8f7f5] flex items-center justify-center">
-      <div className="flex items-center gap-3">
+    <div style={{ minHeight: "100vh", background: "#f8f7f5", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ display: "flex", gap: 8 }}>
         {[0, 0.15, 0.3].map((d, i) => (
-          <motion.div key={i} className="w-2.5 h-2.5 rounded-full bg-[#005f69]"
-            animate={{ scale: [1, 1.6, 1], opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 0.9, repeat: Infinity, delay: d }} />
+          <motion.div key={i}
+            style={{ width: 10, height: 10, borderRadius: "50%", background: "#005f69" }}
+            animate={{ scale: [1, 1.6, 1], opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 0.9, repeat: Infinity, delay: d }}
+          />
         ))}
       </div>
     </div>
   );
 
-  return (
-    <main className="min-h-screen bg-[#f8f7f5] pt-24 pb-20">
+  const sideCard = {
+    background: "white", borderRadius: 20, border: "1px solid #e5e7eb",
+    padding: "18px", boxShadow: "0 1px 4px rgba(0,0,0,.04)", marginBottom: 12,
+  };
+  const sideLabel = {
+    fontSize: 10, fontWeight: 900, textTransform: "uppercase",
+    letterSpacing: .8, color: "#9ca3af", marginBottom: 12,
+    display: "flex", alignItems: "center", gap: 6,
+  };
 
-      {/* ── PAGE HEADER ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-10">
+  return (
+    <main style={{ minHeight: "100vh", background: "#f8f7f5", paddingTop: 32, paddingBottom: 60, fontFamily: "'Archivo', sans-serif" }}>
+      <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 20px" }}>
+
+        {/* ── EN-TÊTE ── */}
         <motion.div
-          initial={{ opacity: 0, y: -16 }}
+          initial={{ opacity: 0, y: -14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col sm:flex-row sm:items-end justify-between gap-4"
+          transition={{ duration: 0.45 }}
+          style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 28 }}
         >
           <div>
-            <div className="flex items-center gap-2 text-xs text-gray-400 font-black uppercase tracking-widest mb-3">
-              <Link href="/" className="hover:text-[#005f69] transition-colors">Accueil</Link>
-              <CaretRight className="w-3 h-3" />
-              <span className="text-[#005f69]">Établissements</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#9ca3af", fontWeight: 800, textTransform: "uppercase", letterSpacing: .8, marginBottom: 8 }}>
+              <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>Accueil</Link>
+              <CaretRight style={{ width: 10, height: 10 }} />
+              <span style={{ color: "#005f69" }}>Établissements</span>
             </div>
-            <h1 className="title-hero text-gray-900">
-              Nos <span className="title-accent">établissements</span>
+            <h1 style={{ fontSize: 28, fontWeight: 900, color: "#111827", letterSpacing: -.4, lineHeight: 1.15 }}>
+              Nos <span style={{ color: "#005f69" }}>établissements</span>
             </h1>
-            <p className="text-gray-500 mt-2 text-base">
+            <p style={{ color: "#9ca3af", marginTop: 5, fontSize: 14, fontWeight: 500 }}>
               {filtered.length} établissement{filtered.length !== 1 ? "s" : ""} partenaire{filtered.length !== 1 ? "s" : ""}
             </p>
           </div>
 
-          {/* View toggle */}
-          <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl p-1 self-start sm:self-auto">
-            <button onClick={() => setViewMode("list")}
-              className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${
-                viewMode === "list" ? "bg-[#005f69] text-white shadow-sm" : "text-gray-500 hover:text-gray-700"
-              }`}>
-              Liste
-            </button>
-            <button onClick={() => setViewMode("grid")}
-              className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${
-                viewMode === "grid" ? "bg-[#005f69] text-white shadow-sm" : "text-gray-500 hover:text-gray-700"
-              }`}>
-              Grille
-            </button>
+          {/* Toggle vue */}
+          <div style={{ display: "flex", background: "white", border: "1.5px solid #e5e7eb", borderRadius: 14, padding: 4, gap: 3 }}>
+            {[{ mode: "list", Icon: List }, { mode: "grid", Icon: SquaresFour }].map(({ mode, Icon }) => (
+              <button key={mode} onClick={() => setViewMode(mode)} style={{
+                display: "flex", alignItems: "center", justifyContent: "center",
+                width: 36, height: 36, borderRadius: 10, border: "none", cursor: "pointer",
+                background: viewMode === mode ? "#005f69" : "transparent",
+                color: viewMode === mode ? "white" : "#6b7280",
+                transition: "all .15s",
+              }}>
+                <Icon style={{ width: 17, height: 17 }} />
+              </button>
+            ))}
           </div>
         </motion.div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex flex-col lg:flex-row gap-8">
+        {/* ── SIDEBAR + CONTENU ── */}
+        <div style={{ display: "flex", gap: 22, alignItems: "flex-start" }}>
 
-          {/* ════ SIDEBAR ════ */}
+          {/* SIDEBAR */}
           <motion.aside
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -18 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="w-full lg:w-64 flex-shrink-0 space-y-4"
+            transition={{ duration: 0.45, delay: 0.1 }}
+            style={{ width: 240, flexShrink: 0 }}
           >
-            {/* Search */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
-              <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Recherche</p>
-              <div className="relative">
-                <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 pointer-events-none" />
+            {/* Recherche */}
+            <div style={sideCard}>
+              <p style={sideLabel}><MagnifyingGlass style={{ width: 13, height: 13 }} /> Recherche</p>
+              <div style={{ position: "relative" }}>
+                <MagnifyingGlass style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", width: 14, height: 14, color: "#d1d5db", pointerEvents: "none" }} />
                 <input
-                  type="text"
-                  value={searchQuery}
+                  type="text" value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Nom, ville..."
-                  className="w-full pl-9 pr-9 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#005f69]/25 focus:border-[#005f69] text-sm transition-all"
+                  placeholder="Nom, ville…"
+                  style={{
+                    width: "100%", padding: "9px 32px 9px 34px",
+                    border: "1.5px solid #e5e7eb", borderRadius: 12,
+                    background: "#f9fafb", fontSize: 13, fontWeight: 500,
+                    color: "#374151", outline: "none",
+                    fontFamily: "'Archivo', sans-serif", transition: "border .15s",
+                    boxSizing: "border-box",
+                  }}
+                  onFocus={e => e.target.style.borderColor = "#005f69"}
+                  onBlur={e  => e.target.style.borderColor = "#e5e7eb"}
                 />
                 {searchQuery && (
-                  <button onClick={() => setSearchQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500">
-                    <X className="w-3.5 h-3.5" />
+                  <button onClick={() => setSearchQuery("")} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#d1d5db" }}>
+                    <X style={{ width: 13, height: 13 }} />
                   </button>
                 )}
               </div>
             </div>
 
-            {/* Sort */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
-              <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 flex items-center gap-1.5">
-                <SlidersHorizontal className="w-3.5 h-3.5" /> Trier par
-              </p>
-              <div className="flex flex-col gap-1">
+            {/* Trier */}
+            <div style={sideCard}>
+              <p style={sideLabel}><SlidersHorizontal style={{ width: 13, height: 13 }} /> Trier par</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                 {[
                   { key: "default", label: "Par défaut"       },
                   { key: "rating",  label: "Meilleure note"   },
                   { key: "price",   label: "Prix (croissant)" },
                 ].map(({ key, label }) => (
-                  <button key={key} onClick={() => setSortBy(key)}
-                    className={`text-left px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                      sortBy === key
-                        ? "bg-[#005f69]/10 text-[#005f69]"
-                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                    }`}>
-                    {sortBy === key && <span className="mr-1.5 text-[#005f69]">›</span>}
-                    {label}
+                  <button key={key} onClick={() => setSortBy(key)} style={{
+                    textAlign: "left", padding: "9px 12px", borderRadius: 10, border: "none", cursor: "pointer",
+                    fontSize: 13, fontWeight: sortBy === key ? 800 : 600,
+                    fontFamily: "'Archivo', sans-serif",
+                    background: sortBy === key ? "rgba(0,95,105,.07)" : "transparent",
+                    color: sortBy === key ? "#005f69" : "#6b7280",
+                    transition: "all .14s",
+                  }}>
+                    {sortBy === key && <span style={{ marginRight: 5 }}>›</span>}{label}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Type filter */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
-              <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 flex items-center gap-1.5">
-                <Funnel className="w-3.5 h-3.5" /> Type de service
-              </p>
-              <div className="flex flex-col gap-1">
-                {FILTERS.map(({ key, label, icon: Icon }) => (
-                  <button key={key} onClick={() => setActiveFilter(key)}
-                    className={`text-left px-3 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2.5 ${
-                      activeFilter === key
-                        ? "bg-[#005f69] text-white shadow-sm"
-                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                    }`}>
-                    <Icon className="w-4 h-4 flex-shrink-0" />
-                    {label}
+            {/* Type de service */}
+            <div style={sideCard}>
+              <p style={sideLabel}><Funnel style={{ width: 13, height: 13 }} /> Type de service</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {FILTERS.map(({ key, label, Icon }) => (
+                  <button key={key} onClick={() => setActiveFilter(key)} style={{
+                    display: "flex", alignItems: "center", gap: 10,
+                    textAlign: "left", padding: "9px 12px", borderRadius: 10,
+                    border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
+                    fontFamily: "'Archivo', sans-serif",
+                    background: activeFilter === key ? "#005f69" : "transparent",
+                    color: activeFilter === key ? "white" : "#6b7280",
+                    transition: "all .14s",
+                  }}>
+                    <Icon style={{ width: 15, height: 15, flexShrink: 0 }} /> {label}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Stats bloc */}
-            <div className="bg-gradient-to-br from-[#005f69] to-[#004a52] rounded-2xl p-5 text-white shadow-lg shadow-[#005f69]/20">
-              <Buildings className="w-6 h-6 text-white/60 mb-3" />
-              <p className="text-3xl font-black">{all.length}</p>
-              <p className="text-white/70 text-sm font-bold mt-0.5">établissements partenaires</p>
-              <div className="mt-4 pt-4 border-t border-white/10 flex flex-col gap-1.5">
-                {FILTERS.slice(1).map(({ key, label, icon: Icon }) => {
+            {/* Bloc stats gradient */}
+            <div style={{
+              background: "linear-gradient(145deg, #005f69 0%, #004a52 100%)",
+              borderRadius: 20, padding: "20px 18px", color: "white",
+              boxShadow: "0 4px 16px rgba(0,95,105,.28)",
+            }}>
+              <Buildings style={{ width: 22, height: 22, color: "rgba(255,255,255,.5)", marginBottom: 10 }} />
+              <p style={{ fontSize: 34, fontWeight: 900, lineHeight: 1, letterSpacing: -1 }}>{all.length}</p>
+              <p style={{ color: "rgba(255,255,255,.6)", fontSize: 13, fontWeight: 600, marginTop: 2 }}>établissements partenaires</p>
+              <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,.12)" }}>
+                {FILTERS.slice(1).map(({ key, label, Icon }) => {
                   const count = all.filter((p) =>
                     p.services.some((s) => s.pivot.status === "ON" && s.name.toLowerCase().includes(key))
                   ).length;
                   return (
-                    <div key={key} className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2 text-white/70 font-bold">
-                        <Icon className="w-3.5 h-3.5" /> {label}
+                    <div key={key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13, marginBottom: 9 }}>
+                      <span style={{ display: "flex", alignItems: "center", gap: 7, color: "rgba(255,255,255,.6)", fontWeight: 600 }}>
+                        <Icon style={{ width: 13, height: 13 }} /> {label}
                       </span>
-                      <span className="font-black text-white">{count}</span>
+                      <span style={{ fontWeight: 900 }}>{count}</span>
                     </div>
                   );
                 })}
@@ -438,62 +582,59 @@ export default function EstablishmentsPage() {
             </div>
           </motion.aside>
 
-          {/* ════ MAIN CONTENT ════ */}
-          <div className="flex-1 min-w-0">
+          {/* CONTENU */}
+          <div style={{ flex: 1, minWidth: 0 }}>
             <AnimatePresence mode="wait">
 
-              {filtered.length === 0 ? (
+              {filtered.length === 0 && (
                 <motion.div key="empty"
-                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-                  className="text-center py-24 bg-white rounded-3xl border border-gray-100">
-                  <div className="text-5xl mb-4">🏢</div>
-                  <p className="text-gray-700 font-black text-lg mb-1">Aucun établissement trouvé</p>
-                  <p className="text-gray-400 text-sm mb-6">Essayez d'autres filtres ou mots-clés</p>
-                  <button
-                    onClick={() => { setSearchQuery(""); setActiveFilter("all"); }}
-                    className="bg-[#005f69] text-white font-bold text-sm px-5 py-2.5 rounded-full hover:bg-[#004a52] transition-colors">
+                  initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+                  style={{ textAlign: "center", padding: "60px 20px", background: "white", borderRadius: 24, border: "1px solid #e5e7eb" }}
+                >
+                  <div style={{ fontSize: 44, marginBottom: 12 }}>🏢</div>
+                  <p style={{ fontSize: 16, fontWeight: 900, color: "#374151", marginBottom: 6 }}>Aucun établissement trouvé</p>
+                  <p style={{ fontSize: 13, color: "#9ca3af", marginBottom: 20 }}>Essayez d'autres filtres ou mots-clés</p>
+                  <button onClick={() => { setSearchQuery(""); setActiveFilter("all"); }}
+                    style={{ background: "#005f69", color: "white", fontWeight: 800, fontSize: 13, padding: "10px 24px", borderRadius: 20, border: "none", cursor: "pointer", fontFamily: "'Archivo', sans-serif" }}>
                     Tout afficher
                   </button>
                 </motion.div>
+              )}
 
-              ) : viewMode === "list" ? (
+              {filtered.length > 0 && viewMode === "list" && (
                 <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  {/* Hero top */}
                   {topPlace && !searchQuery && activeFilter === "all" && (
-                    <div className="mb-6">
-                      <HeroCard place={topPlace} onClick={handleClick} onItinerary={handleItinerary} />
-                    </div>
+                    <HeroCard place={topPlace} onClick={handleClick} onItinerary={handleItinerary} />
                   )}
-                  <p className="text-xs text-gray-400 font-black uppercase tracking-widest mb-4">
-                    {(searchQuery || activeFilter !== "all" ? filtered : restPlaces).length} établissement{(searchQuery || activeFilter !== "all" ? filtered : restPlaces).length !== 1 ? "s" : ""}
+                  <p style={{ fontSize: 10, color: "#9ca3af", fontWeight: 900, textTransform: "uppercase", letterSpacing: .8, marginBottom: 12 }}>
+                    {listItems.length} établissement{listItems.length !== 1 ? "s" : ""}
                   </p>
-                  <div className="space-y-3">
-                    {(searchQuery || activeFilter !== "all" ? filtered : restPlaces).map((place, i) => (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {listItems.map((place, i) => (
                       <ListCard key={place.id} place={place} index={i} onClick={handleClick} onItinerary={handleItinerary} />
                     ))}
                   </div>
                 </motion.div>
+              )}
 
-              ) : (
+              {filtered.length > 0 && viewMode === "grid" && (
                 <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   {topPlace && !searchQuery && activeFilter === "all" && (
-                    <div className="mb-6">
-                      <HeroCard place={topPlace} onClick={handleClick} onItinerary={handleItinerary} />
-                    </div>
+                    <HeroCard place={topPlace} onClick={handleClick} onItinerary={handleItinerary} />
                   )}
-                  <p className="text-xs text-gray-400 font-black uppercase tracking-widest mb-4">
-                    {(searchQuery || activeFilter !== "all" ? filtered : restPlaces).length} établissements
+                  <p style={{ fontSize: 10, color: "#9ca3af", fontWeight: 900, textTransform: "uppercase", letterSpacing: .8, marginBottom: 12 }}>
+                    {listItems.length} établissement{listItems.length !== 1 ? "s" : ""}
                   </p>
-                  <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {(searchQuery || activeFilter !== "all" ? filtered : restPlaces).map((place, i) => (
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))", gap: 14 }}>
+                    {listItems.map((place, i) => (
                       <GridCard key={place.id} place={place} index={i} onClick={handleClick} onItinerary={handleItinerary} />
                     ))}
                   </div>
                 </motion.div>
               )}
+
             </AnimatePresence>
           </div>
-
         </div>
       </div>
     </main>

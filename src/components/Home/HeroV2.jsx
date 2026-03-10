@@ -326,6 +326,18 @@ export const HeroV2 = () => {
           @media (max-width: 800px) {
  
 }
+          .hero-stars,
+.hero-mockup-desktop,
+.hero-orbe-mobile,
+.hero-mockup-desktop img,
+.hero-orbe-mobile img {
+  pointer-events: none !important;
+}
+
+.btn-hero {
+  z-index: 1000 !important;
+  position: relative !important;
+}
       `}</style>
 
       <section style={{
@@ -352,7 +364,7 @@ export const HeroV2 = () => {
           display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center",
           minHeight: "100vh",
-          padding: "clamp(14px, 14vh, 160px) clamp(0px, 1vw, 8px) 100px",
+          padding: "clamp(14px, 14vh, 160px) clamp(0px, 1vw, 8px) 20px",
           gap: "clamp(16px, 2.4vw, 26px)",
         }}>
 
@@ -384,7 +396,7 @@ export const HeroV2 = () => {
             position: "relative", display: "inline-block",
             textAlign: "center", animation: "fadeUp 0.7s ease 0.25s both",
           }}>
-           
+
 
             <h1 style={{
               position: "relative", zIndex: 2,
@@ -416,15 +428,25 @@ export const HeroV2 = () => {
           </p>
 
           {/* ── Bouton animé ── */}
-          <button className="btn-hero">
-            <div className="btn-ring" />
-            <span style={{ flex: 1, textAlign: "center", paddingRight: "clamp(8px,1.5vw,12px)" }}>
-              Télécharger l'Application
-            </span>
-            <div className="btn-circle">
-              <ArrowRight weight="bold" className="btn-arrow" style={{ width: "clamp(22px,2.4vw,26px)", height: "clamp(22px,2.4vw,26px)" }} />
-            </div>
-          </button>
+          <a
+  href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="btn-hero"
+  style={{
+    zIndex: 1000,
+    position: "relative",
+    textDecoration: "none",
+  }}
+>
+  <div className="btn-ring" style={{ pointerEvents: "none" }} />
+  <span style={{ flex: 1, textAlign: "center", paddingRight: "clamp(8px,1.5vw,12px)", pointerEvents: "none" }}>
+    Télécharger l'Application
+  </span>
+  <div className="btn-circle" style={{ pointerEvents: "none" }}>
+    <ArrowRight weight="bold" className="btn-arrow" style={{ width: "clamp(22px,2.4vw,26px)", height: "clamp(22px,2.4vw,26px)", pointerEvents: "none" }} />
+  </div>
+</a>
 
 
           {/* — Mobile : orbe uniquement — */}
@@ -465,7 +487,7 @@ export const HeroV2 = () => {
           </div>
 
         </div>
-      </section>
+      </section >
     </>
   );
 };

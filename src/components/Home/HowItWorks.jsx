@@ -375,9 +375,9 @@ export default function HowItWorks() {
       `}</style>
 
       <section
-        className="bg-[#f8fafb] overflow-visible box-border"
-        style={{ fontFamily: "'Archivo', sans-serif", padding: "clamp(50px,7vw,90px) clamp(16px,4vw,80px)" }}
-      >
+       className="bg-[#f8fafb] overflow-visible box-border"
+style={{ fontFamily: "'Archivo', sans-serif", padding: "clamp(50px,7vw,90px) clamp(16px,4vw,80px)", marginBottom: "80px" }}
+     >
         <div className="max-w-[1100px] mx-auto grid gap-[clamp(32px,5vw,64px)] items-center overflow-visible box-border grid-cols-1 md:grid-cols-2">
 
           {/* ── LEFT ── */}

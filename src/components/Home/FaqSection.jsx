@@ -104,8 +104,9 @@ export default function FAQSection() {
 
         .faq-root {
           background: #ecf5f6;
-          padding: clamp(60px, 8vw, 110px) clamp(20px, 6vw, 88px);
-          overflow: visible;
+margin-top: -160px;
+padding: 0 clamp(20px, 6vw, 88px) 5px ;
+overflow: visible;
         }
 
         .faq-inner {

@@ -95,7 +95,7 @@ export const CTASection = () => {
           <div className="flex flex-col items-center justify-end sm:items-end">
             <div className="relative w-full max-w-xs sm:max-w-sm md:ml-24 lg:ml-48 mx-auto sm:mx-0">
               <img
-                src="/images/Download/download1.png"
+                src="/images/Download/download.png"
                 alt="Ticketché App Mockup"
                 className="rounded-t-2xl object-contain object-bottom w-full"
               />
