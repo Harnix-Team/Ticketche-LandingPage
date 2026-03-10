@@ -574,11 +574,11 @@ function EventsPromo() {
               target="_blank"
               rel="noopener noreferrer"
               className="promo-download-btn"
-              style={{ display: "inline-flex", alignItems: "center", gap: "12px", background: "linear-gradient(135deg, #04797e 0%, #025f63 100%)", color: "#fff", borderRadius: "999px", padding: "14px 30px", fontSize: "14px", fontWeight: 800, textDecoration: "none", letterSpacing: "0.01em", animation: "btnGlowPromo 3s ease-in-out infinite", transition: "transform 0.22s ease, box-shadow 0.22s ease" }}
-              whileHover={{ y: -3, scale: 1.03 }}
+              style={{ display: "inline-flex", alignItems: "center", gap: "12px", background: "linear-gradient(135deg, #04797e 0%, #025f63 100%)", color: "#fff", borderRadius: "999px", padding: "14px 30px", fontSize: "14px", fontWeight: 800, textDecoration: "none", letterSpacing: "0.01em", animation: "btnGlowPromo 3s ease-in-out infinite", transition: "transform 0.22s ease, box-shadow 0.22s ease" }} whileHover={{ y: -3, scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
               Télécharger l'application
+              <DeviceMobile weight="fill" style={{ width: 18, height: 18, flexShrink: 0 }} />
             </motion.a>
 
             <motion.a
@@ -608,8 +608,8 @@ function EventsPromo() {
 
             {/* Image 1 */}
             <div style={{
-              width: "clamp(140px, 15vw, 210px)",
-              height: "clamp(130px, 14vw, 190px)",
+              width: "clamp(160px, 17vw, 240px)",
+              height: "clamp(150px, 16vw, 220px)",
               borderRadius: "16px",
               overflow: "hidden",
               boxShadow: "0 10px 28px rgba(0,0,0,0.15)",

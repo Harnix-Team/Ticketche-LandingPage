@@ -44,7 +44,7 @@ const styles = {
     border: "4px solid #ffffff",
     boxShadow: "0 8px 32px rgba(0,0,0,0.22)",
     cursor: "pointer",
-    height: "400px",
+    height: "320px",
     display: "flex",
     flexDirection: "column",
   },
@@ -195,11 +195,11 @@ const styles = {
   section: {
     padding: "20px 0 80px",
   },
-  inner: {
-    maxWidth: "75vw",
-    margin: "0 auto",
-    padding: "0 24px",
-  },
+ inner: {
+  maxWidth: "90vw",
+  margin: "0 auto",
+  padding: "0 24px",
+},
   headerRow: {
     display: "flex",
     alignItems: "center",

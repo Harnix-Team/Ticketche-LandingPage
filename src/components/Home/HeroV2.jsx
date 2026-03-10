@@ -377,7 +377,8 @@ export const HeroV2 = () => {
             backdropFilter: "blur(18px) saturate(160%)",
             border: "1px solid rgba(0,81,90,0.22)",
             boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
-            marginTop: "clamp(0px, -3vw, 14px)", animation: "badgePulse 3.5s ease-in-out infinite, fadeUp 0.8s ease 0.1s both",
+marginTop: "clamp(0px, 1vw, 16px)",
+            animation: "badgePulse 3.5s ease-in-out infinite, fadeUp 0.8s ease 0.1s both",
           }}>
             <div style={{
               width: "clamp(8px,1vw,10px)", height: "clamp(8px,1vw,10px)",
