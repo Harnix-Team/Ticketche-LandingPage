@@ -5,8 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   FacebookLogo,
-  YoutubeLogo,
-  LinkedinLogo,
+  TiktokLogo,
+  InstagramLogo,
 } from "@phosphor-icons/react";
 
 export const Footer = () => {
@@ -45,9 +45,9 @@ export const Footer = () => {
   ];
 
  const socialLinks = [
-  { icon: FacebookLogo, href: "https://www.facebook.com/harnixsas", label: "Facebook" },
-  { icon: YoutubeLogo, href: "https://www.youtube.com/@harnixprod8479", label: "YouTube" },
-  { icon: LinkedinLogo, href: "https://www.linkedin.com/company/harnix/?originalSubdomain=bj", label: "LinkedIn" },
+  { icon: FacebookLogo, href: "https://www.facebook.com/share/1AaDERj83T/?mibextid=wwXIfr", label: "Facebook" },
+  { icon: TiktokLogo, href: "https://www.tiktok.com/@ticketch?_r=1&_t=ZS-94YYeuvBujN", label: "TikTok" },
+  { icon: InstagramLogo, href: "https://www.instagram.com/ticketche?igsh=eXl0MjZmeHByaDg5", label: "Instagram" },
 ];
 
   const appStoreLinks = [
