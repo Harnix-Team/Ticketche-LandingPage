@@ -727,12 +727,11 @@ export const EventsCarousel = () => {
                   />
                 ))}
               </div>
-            ) : featured.length > 0 ? (
-              /* ✅ Des événements à la une → carousel */
-              <Carousel events={featured} />
             ) : (
-              /* ✅ Aucun événement → section promo */
-              <EventsPromo />
+              <div style={{ display: "flex", flexDirection: "column", gap: "48px" }}>
+                <EventsPromo />
+                {featured.length > 0 && <Carousel events={featured} />}
+              </div>
             )}
           </motion.div>
 

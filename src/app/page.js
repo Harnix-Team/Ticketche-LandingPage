@@ -20,11 +20,13 @@ export default function Home() {
       <TrustedBySection />
       <TicketcheFonction />
       <HowItWorks />
-      <FAQSection />
-      <ReviewsSection />
-      <ActiveUsers />
       <EstablishmentsSection />
       <EventsCarousel />
+      <ReviewsSection />
+      <FAQSection />
+
+      <ActiveUsers />
+
       <CTASection />
       {/* <CTADownload /> */}
 
