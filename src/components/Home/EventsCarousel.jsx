@@ -155,10 +155,10 @@ const S = {
     background: "transparent",
   },
   inner: {
-    maxWidth: "1400px",
-    margin: "0 auto",
-    padding: "0 clamp(20px, 5vw, 72px)",
-  },
+  maxWidth: "90vw",
+  margin: "0 auto",
+  padding: "0 24px",
+},
   headerRow: {
     display: "flex",
     alignItems: "center",
