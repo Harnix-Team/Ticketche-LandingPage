@@ -174,7 +174,7 @@ export default function TrustedBySection() {
         overflow: "hidden",
         width: "100%",
       }}
-      className="pt-20 pb-5"
+      className="pt-15 pb-15"
     >
       {/* Titre */}
       <p
