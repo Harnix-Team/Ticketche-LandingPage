@@ -164,26 +164,15 @@ export default function ContactPage() {
       <div style={{ fontFamily: "'Archivo', sans-serif", background: "#ecf5f5", position: "relative", overflow: "hidden" }}>
         <StarClusters />
 
-        {/* ══ HERO ══ */}
-        <section style={{ padding: "100px 20px 90px", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            background: "rgba(0,95,105,0.10)", border: "1px solid rgba(0,95,105,0.2)",
-            borderRadius: 999, padding: "6px 18px", marginBottom: 20, marginTop: 60,
-          }}>
-            <Star weight="fill" style={{ width: 11, height: 11, color: "#005f69" }} />
-            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#005f69" }}>Nous contacter</span>
-            <Star weight="fill" style={{ width: 11, height: 11, color: "#005f69" }} />
-          </div>
-
-          <h1 style={{ fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 900, color: "#0a1a1c", letterSpacing: -1, marginBottom: 14, lineHeight: 1.05 }}>
-            Contact
-          </h1>
-          <p style={{ color: "#6b7280", fontSize: 18, fontWeight: 500, maxWidth: "100%", margin: "0 auto", whiteSpace: "nowrap" }}>
-            Notre équipe est disponible pour répondre à toutes vos questions.
-          </p>
-        </section>
-
+      {/* ══ HERO ══ */}
+<section style={{ padding: "100px 20px 90px", textAlign: "center", position: "relative", zIndex: 2 }}>
+  <h1 style={{ fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 900, color: "#0a1a1c", letterSpacing: -1, marginBottom: 14, lineHeight: 1.05, marginTop: 60 }}>
+    Besoin <span style={{ color: "#005f69" }}>d'aide ?</span>
+  </h1>
+  <p style={{ color: "#6b7280", fontSize: 18, fontWeight: 500, margin: "0 auto" }}>
+    Contactez-nous et un représentant vous répondra dans les plus brefs délais.
+  </p>
+</section>
         {/* ══ MIDDLE ══ */}
         <section style={{ padding: "0 20px 70px", position: "relative", zIndex: 2 }}>
           <div style={{
@@ -195,12 +184,7 @@ export default function ContactPage() {
 
             {/* Colonne gauche — hauteur calée sur la droite */}
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <h2 style={{ fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 900, color: "#0a1a1c", lineHeight: 1.15, marginBottom: 18, letterSpacing: -.4 }}>
-                Besoin <span style={{ color: "#005f69" }}>d'aide ?</span>
-              </h2>
-              <p style={{ color: "#6b7280", fontSize: 16, lineHeight: 1.75, marginBottom: 24 }}>
-                Contactez-nous et un représentant vous répondra dans les plus brefs délais.
-              </p>
+  
   {/* Carrousel — flex: 1 pour occuper l'espace restant */}
               <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative" }}>
                 <div style={{ flex: 1, borderRadius: 16, overflow: "hidden", background: "#f0fafa", position: "relative", boxShadow: "0 4px 18px rgba(0,95,105,.15)" }}>
@@ -222,8 +206,7 @@ export default function ContactPage() {
                 </div>
 
                 {/* Dots */}
-                <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10 }}>
-                  {images.map((_, i) => (
+<div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10, marginBottom: 46 }}>                  {images.map((_, i) => (
                     <div key={i} onClick={() => setCurrentImg(i)} style={{ width: i === currentImg ? 20 : 7, height: 7, borderRadius: 999, background: i === currentImg ? "#005f69" : "rgba(0,95,105,.25)", cursor: "pointer", transition: "all 0.3s ease" }} />
                   ))}
                 </div>
@@ -267,10 +250,11 @@ export default function ContactPage() {
             {/* Formulaire */}
             <div style={{
               background: "linear-gradient(145deg, #005f69 0%, #004a52 100%)",
-              borderRadius: 20, padding: "122px 28px",
+              borderRadius: 20, padding: "70px 28px",
               boxShadow: "0 20px 60px rgba(0,95,105,.3)",
               boxSizing: "border-box",
               display: "flex", flexDirection: "column",
+            //  margin: "40px ", 
             }}>
               <h3 style={{ fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 900, color: "white", lineHeight: 1.2, marginBottom: 6, letterSpacing: -.3 }}>
                 Réservez votre<br />prestation
