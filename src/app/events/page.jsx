@@ -322,7 +322,7 @@ export default function EventsPage() {
               <CaretRight className="w-3 h-3" />
               <span className="text-[#005f69]">Événements</span>
             </div>
-            <h1 className="title-hero text-gray-900">
+<h1 className="title-hero text-gray-900" style={{ fontSize: "40px" }}>
               Tous les{" "}
               <span className="title-accent">événements</span>
             </h1>
