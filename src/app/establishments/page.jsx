@@ -434,7 +434,7 @@ export default function EstablishmentsPage() {
   };
 
   return (
-    <main style={{ minHeight: "100vh", background: "#f8f7f5", paddingTop: 32, paddingBottom: 60, fontFamily: "'Archivo', sans-serif" }}>
+    <main style={{ minHeight: "100vh", background: "#f8f7f5", paddingTop: 150, paddingBottom: 60, fontFamily: "'Archivo', sans-serif" }}>
       <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 20px" }}>
 
         {/* ── EN-TÊTE ── */}

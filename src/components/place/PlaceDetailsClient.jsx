@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { fetchAllPlaces } from "@/app/services/api";
+import { EstablishmentsSection } from "@/components/Home/EstablishmentsSection"; // adapte le chemin
 import {
   MapPin, Clock, Star, Wrench, ArrowLeft, NavigationArrow,
   CheckCircle, Car, Drop, CurrencyDollar, Shield, ArrowRight,
@@ -49,7 +50,7 @@ const DAYS_SHORT = {
 function StarRow({ value }) {
   return (
     <div style={{ display: "flex", gap: 2 }}>
-      {[1,2,3,4,5].map(n => (
+      {[1, 2, 3, 4, 5].map(n => (
         <Star key={n} weight={n <= Math.round(Number(value)) ? "fill" : "regular"}
           style={{ width: 12, height: 12, color: n <= Math.round(Number(value)) ? "#fbbf24" : "#e5e7eb" }} />
       ))}
@@ -124,11 +125,11 @@ function ReviewCard({ note, index }) {
 ══════════════════════════════════════════════ */
 export default function PlaceDetailsClient() {
   const { id } = useParams();
-  const [place, setPlace]           = useState(null);
-  const [allPlaces, setAllPlaces]   = useState([]);
-  const [loading, setLoading]       = useState(true);
+  const [place, setPlace] = useState(null);
+  const [allPlaces, setAllPlaces] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
-  const [activeTab, setActiveTab]   = useState("services");
+  const [activeTab, setActiveTab] = useState("services");
   const [wishlisted, setWishlisted] = useState(false);
 
   useEffect(() => {
@@ -155,10 +156,10 @@ export default function PlaceDetailsClient() {
     </div>
   );
 
-  const rating             = getPlaceRating(place);
+  const rating = getPlaceRating(place);
   const servicesByCategory = getServicesByCategory(place.services);
-  const activeServices     = place.services.filter((s) => s.pivot.status === "ON");
-  const heroImages         = place.images?.length > 0
+  const activeServices = place.services.filter((s) => s.pivot.status === "ON");
+  const heroImages = place.images?.length > 0
     ? place.images.map((img) => formatImage(img.link))
     : ["/images/Space/recom1.png", "/images/Space/recom1.png"];
   const img1 = heroImages[activeImage] ?? heroImages[0];
@@ -175,7 +176,7 @@ export default function PlaceDetailsClient() {
 
   return (
     <main style={{ minHeight: "100vh", background: "#eeeee9", fontFamily: "'Archivo', sans-serif" }}>
-      <div style={{ maxWidth: 960, margin: "0 auto", padding: "28px 20px 60px" }}>
+      <div style={{ width: "90vw", maxWidth: "100%", margin: "0 auto", padding: "28px 20px 60px" }}>
 
         {/* ══ TOP BAR ══════════════════════════════════════ */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22 }}>
@@ -188,19 +189,7 @@ export default function PlaceDetailsClient() {
           }}>
             <ArrowLeft style={{ width: 13, height: 13 }} /> Retour
           </button>
-          <div style={{ display: "flex", gap: 8 }}>
-            {[Heart, ShareNetwork, DotsThree].map((Icon, i) => (
-              <button key={i} style={{
-                width: 38, height: 38, borderRadius: "50%",
-                background: "white", border: "1px solid #e5e7eb",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer", color: "#6b7280",
-                boxShadow: "0 1px 3px rgba(0,0,0,.06)",
-              }}>
-                <Icon style={{ width: 16, height: 16 }} />
-              </button>
-            ))}
-          </div>
+
         </div>
 
         {/* ══ PHOTO GRID ═══════════════════════════════════ */}
@@ -232,15 +221,7 @@ export default function PlaceDetailsClient() {
                 <span style={{ fontWeight: 900, fontSize: 12 }}>{rating}</span>
               </div>
             )}
-            {/* Boutons bas */}
-            <div style={{ position: "absolute", bottom: 12, right: 12, display: "flex", gap: 6 }}>
-              <button style={{ display: "flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,.9)", backdropFilter: "blur(8px)", border: "none", borderRadius: 999, padding: "6px 12px", fontSize: 11, fontWeight: 700, cursor: "pointer", color: "#374151", fontFamily: "'Archivo', sans-serif" }}>
-                <Gauge style={{ width: 12, height: 12 }} /> Visite 360°
-              </button>
-              <button style={{ display: "flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,.9)", backdropFilter: "blur(8px)", border: "none", borderRadius: 999, padding: "6px 12px", fontSize: 11, fontWeight: 700, cursor: "pointer", color: "#374151", fontFamily: "'Archivo', sans-serif" }}>
-                <Camera style={{ width: 12, height: 12 }} /> Toutes les photos
-              </button>
-            </div>
+
           </div>
           {/* Photo secondaire */}
           <div style={{ borderRadius: 18, overflow: "hidden", position: "relative" }}>
@@ -307,8 +288,8 @@ export default function PlaceDetailsClient() {
                   marginBottom: -1.5,
                 }}>
                   {tab === "services" ? "Services & Tarifs"
-                   : tab === "horaires" ? "Horaires"
-                   : `Avis (${place.noteUsers?.length ?? 0})`}
+                    : tab === "horaires" ? "Horaires"
+                      : `Avis (${place.noteUsers?.length ?? 0})`}
                 </button>
               ))}
             </div>
@@ -359,20 +340,20 @@ export default function PlaceDetailsClient() {
 
             {/* ── TAB : Horaires ── */}
             {activeTab === "horaires" && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 30 }}>
                 {place.availabilities?.length > 0
                   ? place.availabilities.map((a, i) => {
-                      const short = DAYS_SHORT[a.day?.toLowerCase()] ?? a.day?.slice(0, 3) ?? "?";
-                      return (
-                        <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, background: "#f9f9f6", border: "1px solid #efefea", borderRadius: 14, padding: "12px 14px", minWidth: 62 }}>
-                          <span style={{ fontSize: 10, fontWeight: 900, color: "#005f69", textTransform: "uppercase", letterSpacing: .6 }}>{short}</span>
-                          <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#34d399" }} />
-                          <span style={{ fontSize: 9.5, color: "#9ca3af", fontWeight: 600, textAlign: "center", lineHeight: 1.5 }}>
-                            {a.open_hour}<br />—<br />{a.close_hour}
-                          </span>
-                        </div>
-                      );
-                    })
+                    const short = DAYS_SHORT[a.day?.toLowerCase()] ?? a.day?.slice(0, 3) ?? "?";
+                    return (
+                      <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, background: "#f9f9f6", border: "1px solid #efefea", borderRadius: 14, padding: "12px 14px", minWidth: 62 }}>
+                        <span style={{ fontSize: 10, fontWeight: 900, color: "#005f69", textTransform: "uppercase", letterSpacing: .6 }}>{short}</span>
+                        <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#34d399" }} />
+                        <span style={{ fontSize: 9.5, color: "#9ca3af", fontWeight: 600, textAlign: "center", lineHeight: 1.5 }}>
+                          {a.open_hour}<br />—<br />{a.close_hour}
+                        </span>
+                      </div>
+                    );
+                  })
                   : <p style={{ color: "#9ca3af", fontSize: 13 }}>Horaires non renseignés.</p>
                 }
               </div>
@@ -391,118 +372,17 @@ export default function PlaceDetailsClient() {
             {/* ══ AUTRES EMPLACEMENTS ══════════════════════ */}
             {allPlaces.filter(p => String(p.id) !== String(id)).length > 0 && (
               <div style={{ marginTop: 32, paddingTop: 28, borderTop: "1.5px solid #f0f0eb" }}>
-                {/* En-tête section */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <div style={{ width: 28, height: 28, borderRadius: 9, background: "rgba(0,95,105,.08)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <MapPin style={{ width: 14, height: 14, color: "#005f69" }} />
-                    </div>
-                    <span style={{ fontSize: 11, fontWeight: 900, color: "#005f69", textTransform: "uppercase", letterSpacing: .8 }}>
-                      Autres emplacements
-                    </span>
-                  </div>
-                  <span style={{ fontSize: 11, color: "#9ca3af", fontWeight: 600 }}>
-                    {allPlaces.filter(p => String(p.id) !== String(id)).length} disponibles
-                  </span>
-                </div>
-
-                {/* Liste */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {allPlaces
-                    .filter(p => String(p.id) !== String(id))
-                    .map((p, i) => {
-                      const r = getPlaceRating(p);
-                      const tags = p.services
-                        .filter(s => s.pivot.status === "ON")
-                        .slice(0, 2)
-                        .map(s => s.name);
-                      const thumb = p.images?.length > 0
-                        ? formatImage(p.images[0].link)
-                        : "/images/Space/recom1.png";
-                      const TagIcon = tags[0]?.toLowerCase().includes("parking") ? Car
-                                    : tags[0]?.toLowerCase().includes("lavage")  ? Drop
-                                    : Wrench;
-
-                      return (
-                        <motion.div
-                          key={p.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: i * 0.05 }}
-                          onClick={() => {
-                            localStorage.setItem("selectedPlace", JSON.stringify(p));
-                            window.open(`/places/${p.id}`, "_blank");
-                          }}
-                          style={{
-                            display: "flex", alignItems: "center", gap: 0,
-                            background: "#f9f9f6", border: "1px solid #efefea",
-                            borderRadius: 16, overflow: "hidden", cursor: "pointer",
-                            transition: "all .18s ease",
-                          }}
-                          whileHover={{ y: -2, boxShadow: "0 6px 18px rgba(0,95,105,.1)", borderColor: "rgba(0,95,105,.25)" }}
-                        >
-                          {/* Accent latéral */}
-                          <div style={{
-                            flexShrink: 0, width: 48,
-                            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-                            padding: "12px 0", gap: 4,
-                            background: "linear-gradient(160deg, #005f69, #003d45)",
-                            alignSelf: "stretch",
-                          }}>
-                            <TagIcon style={{ width: 17, height: 17, color: "white" }} />
-                            <span style={{ color: "rgba(255,255,255,.5)", fontSize: 7.5, fontWeight: 900, textTransform: "uppercase", letterSpacing: .8, textAlign: "center", lineHeight: 1.2, padding: "0 4px" }}>
-                              {tags[0] ?? "Service"}
-                            </span>
-                          </div>
-
-                          {/* Miniature */}
-                          <div style={{ flexShrink: 0, width: 80, height: 72, position: "relative", overflow: "hidden" }}>
-                            <Image src={thumb} alt={p.name} fill style={{ objectFit: "cover" }} />
-                            {r && (
-                              <div style={{ position: "absolute", bottom: 5, left: 5, display: "flex", alignItems: "center", gap: 3, background: "rgba(255,255,255,.9)", borderRadius: 999, padding: "2px 7px" }}>
-                                <Star weight="fill" style={{ width: 9, height: 9, color: "#fbbf24" }} />
-                                <span style={{ fontSize: 9.5, fontWeight: 900, color: "#111" }}>{r}</span>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Infos */}
-                          <div style={{ flex: 1, padding: "12px 14px", minWidth: 0 }}>
-                            <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 4 }}>
-                              {tags.map((tag, ti) => (
-                                <span key={ti} style={{ fontSize: 9, fontWeight: 800, color: "#692C00", textTransform: "uppercase", letterSpacing: .4, border: "1px solid rgba(105,44,0,.2)", padding: "1px 7px", borderRadius: 999 }}>
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
-                            <p style={{ fontWeight: 800, color: "#111827", fontSize: 13.5, lineHeight: 1.3, marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                              {p.name}
-                            </p>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                              <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11.5, color: "#9ca3af", fontWeight: 500 }}>
-                                <MapPin weight="fill" style={{ width: 10, height: 10, color: "#005f69" }} />
-                                {p.city}
-                              </span>
-                              <span style={{ fontSize: 12, fontWeight: 900, color: "#005f69" }}>
-                                {p.minimum_price ? `${Number(p.minimum_price).toLocaleString()} FCFA` : "Sur demande"}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Flèche */}
-                          <div style={{ flexShrink: 0, padding: "0 12px 0 4px" }}>
-                            <ArrowRight style={{ width: 14, height: 14, color: "#d1d5db" }} />
-                          </div>
-                        </motion.div>
-                      );
-                    })
-                  }
-                </div>
+                <div style={{ marginTop: 32, paddingTop: 28, borderTop: "1.5px solid #f0f0eb" }}>
+                  <EstablishmentsSection
+                    title={<>Autres <span style={{ color: "#005f69" }}>emplacements</span></>}
+                    showSubtitle={false}
+                    showButton={false}
+                  />                </div>
               </div>
             )}
 
           </div>{/* fin colonne gauche */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+<div style={{ display: "flex", flexDirection: "column", gap: 14, justifyContent: "space-between", alignSelf: "stretch" }}>
 
             {/* ── Carte prix + actions ── */}
             <div style={{ background: "white", borderRadius: 20, padding: "22px 22px 20px", border: "1px solid #e9e9e4", boxShadow: "0 1px 3px rgba(0,0,0,.05)" }}>
@@ -594,11 +474,6 @@ export default function PlaceDetailsClient() {
                   </div>
                 )}
               </div>
-
-              {/* Signaler */}
-              <button style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 14, background: "none", border: "none", fontSize: 11, color: "#d1d5db", cursor: "pointer", fontFamily: "'Archivo', sans-serif", padding: 0 }}>
-                <Flag style={{ width: 11, height: 11 }} /> Signaler cet emplacement
-              </button>
             </div>
 
             {/* ── CTA Réserver ── */}
@@ -643,10 +518,10 @@ export default function PlaceDetailsClient() {
               </p>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 {[
-                  { label: "Places totales",  val: place.total_place ?? "—",       icon: Car,         color: "#005f69" },
-                  { label: "Places libres",   val: place.available_places ?? "—",  icon: CheckCircle, color: "#059669" },
-                  { label: "Note",            val: rating ?? "—",                  icon: Star,        color: "#d97706" },
-                  { label: "Sécurité",        val: "Certifié",                     icon: Shield,      color: "#1d4ed8" },
+                  { label: "Places totales", val: place.total_place ?? "—", icon: Car, color: "#005f69" },
+                  { label: "Places libres", val: place.available_places ?? "—", icon: CheckCircle, color: "#059669" },
+                  { label: "Note", val: rating ?? "—", icon: Star, color: "#d97706" },
+                  { label: "Sécurité", val: "Certifié", icon: Shield, color: "#1d4ed8" },
                 ].map((item, i) => {
                   const Icon = item.icon;
                   return (

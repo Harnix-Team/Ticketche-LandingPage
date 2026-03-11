@@ -857,7 +857,7 @@ export default function AboutPage() {
                 <span>quotidien au Bénin ?</span>
               </h2>
               <p className="cta-sub">
-                Téléchargez l'application et accédez à des centaines de services autour de vous — parking, car wash, garages et événements.
+                Téléchargez l'application et accédez à des centaines de services autour de vous - parking, car wash, garages et événements.
               </p>
             </div>
             <div className="cta-actions">
@@ -869,7 +869,7 @@ export default function AboutPage() {
               >
                 Télécharger l'app <ArrowRight weight="bold" size={16} />
               </a>
-              <a href="#contact" className="cta-btn-sec">Nous contacter →</a>
+              <a href="/contact" className="cta-btn-sec">Nous contacter →</a>
             </div>
           </div>
         </div>

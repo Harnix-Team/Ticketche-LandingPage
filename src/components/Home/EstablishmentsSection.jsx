@@ -195,11 +195,11 @@ const styles = {
   section: {
     padding: "20px 0 80px",
   },
- inner: {
-  maxWidth: "90vw",
-  margin: "0 auto",
-  padding: "0 24px",
-},
+  inner: {
+    maxWidth: "90vw",
+    margin: "0 auto",
+    padding: "0 24px",
+  },
   headerRow: {
     display: "flex",
     alignItems: "center",
@@ -361,19 +361,19 @@ const itemVariants = {
 };
 
 /* ─── MAIN ─────────────────────────────────────── */
-export const EstablishmentsSection = () => {
+export const EstablishmentsSection = ({ title, showSubtitle = true, showButton = true }) => {
   const [establishments, setEstablishments] = useState([]);
-  const [loading, setLoading]               = useState(true);
-  const [searchQuery, setSearchQuery]       = useState("");
-  const [activeFilter, setActiveFilter]     = useState("all");
-  const [gridCols, setGridCols]             = useState(3);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [gridCols, setGridCols] = useState(3);
 
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth;
-      if (w < 640)       setGridCols(1);
+      if (w < 640) setGridCols(1);
       else if (w < 1024) setGridCols(2);
-      else               setGridCols(4);
+      else setGridCols(4);
     };
     update();
     window.addEventListener("resize", update);
@@ -458,31 +458,29 @@ export const EstablishmentsSection = () => {
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <h3 style={styles.sectionTitle}>
-              Établissements <span style={{ color: "#005f69" }}>disponibles</span>
+              {title ?? <>Établissements <span style={{ color: "#005f69" }}>disponibles</span></>}
             </h3>
-            <p style={styles.sectionSubtitle}>
-              Découvrez un réseau croissant de partenaires professionnels sélectionnés
-              pour leur qualité de service et leur expertise.
-            </p>
+            {showSubtitle && <p style={styles.sectionSubtitle}>Découvrez un réseau croissant de partenaires professionnels sélectionnés pour leur qualité de service et leur expertise.</p>}
           </motion.div>
-
-          <motion.a
-            href="/establishments"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={styles.ctaBtn}
-            whileHover={{ scale: 1.04, boxShadow: "0 6px 24px rgba(0,95,105,0.4)" }}
-            whileTap={{ scale: 0.97 }}
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-          >
-            Tout voir
-            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-          </motion.a>
+          {showButton &&
+            <motion.a
+              href="/establishments"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={styles.ctaBtn}
+              whileHover={{ scale: 1.04, boxShadow: "0 6px 24px rgba(0,95,105,0.4)" }}
+              whileTap={{ scale: 0.97 }}
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
+              Tout voir
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </motion.a>
+          }
         </div>
 
         {/* ── Compteur résultats ── */}
