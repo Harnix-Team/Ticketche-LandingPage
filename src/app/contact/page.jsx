@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import Link from "next/link";
 import {
   Phone, EnvelopeSimple, Ticket, Headset, Newspaper,
@@ -46,6 +46,13 @@ export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", service: "", date: "", message: "" });
   const [sent, setSent] = useState(false);
   const [currentImg, setCurrentImg] = useState(0);
+
+  useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentImg((prev) => (prev + 1) % images.length);
+  }, 3000); // change toutes les 3 secondes
+  return () => clearInterval(interval);
+}, [currentImg]);
 
   const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
