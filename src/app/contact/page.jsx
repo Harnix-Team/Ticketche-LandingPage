@@ -173,6 +173,45 @@ export default function ContactPage() {
     Contactez-nous et un représentant vous répondra dans les plus brefs délais.
   </p>
 </section>
+  {/* ══ CARDS BOTTOM ══ */}
+        <section style={{ padding: "0 20px 80px", position: "relative", zIndex: 2 }}>
+          <div style={{ maxWidth: "90vw", margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+
+            <div className="ct-card-teal">
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(0,0,0,.18)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
+                <Ticket weight="fill" style={{ width: 22, height: 22, color: "white" }} />
+              </div>
+              <h4 style={{ color: "white", fontWeight: 900, fontSize: 18, marginBottom: 12 }}>Ticket Support</h4>
+              <p style={{ color: "rgba(255,255,255,.75)", fontSize: 13, lineHeight: 1.75, marginBottom: 10 }}>
+                Soumettez un ticket d'assistance et notre équipe vous prendra en charge rapidement pour résoudre votre problème.
+              </p>
+              <Link href="/support" className="ct-link-white" style={{ marginTop: "12px" }}>Nous contacter</Link>
+            </div>
+
+            <div className="ct-card-light">
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(0,95,105,.10)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
+                <Headset weight="fill" style={{ width: 22, height: 22, color: "#005f69" }} />
+              </div>
+              <h4 style={{ color: "#0a1a1c", fontWeight: 900, fontSize: 18, marginBottom: 12 }}>Appel Gratuit</h4>
+              <p style={{ color: "#6b7280", fontSize: 13, lineHeight: 1.75, marginBottom: 10 }}>
+                Appelez notre centre d'assistance disponible 7j/7 pour toute question sur nos établissements partenaires.
+              </p>
+              <Link href="tel:+22997000000" className="ct-link-dark" style={{ marginTop: "12px" }}>Nous contacter</Link>
+            </div>
+
+            <div className="ct-card-light">
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(0,95,105,.10)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
+                <Newspaper weight="fill" style={{ width: 22, height: 22, color: "#005f69" }} />
+              </div>
+              <h4 style={{ color: "#0a1a1c", fontWeight: 900, fontSize: 18, marginBottom: 12 }}>Actualités</h4>
+              <p style={{ color: "#6b7280", fontSize: 13, lineHeight: 1.75, marginBottom: 10 }}>
+                Restez informé des dernières nouveautés, offres exclusives et nouveaux établissements disponibles sur Ticketche.
+              </p>
+              <Link href="/news" className="ct-link-dark" style={{ marginTop: "12px" }}>Nous contacter</Link>
+            </div>
+
+          </div>
+        </section>
         {/* ══ MIDDLE ══ */}
         <section style={{ padding: "0 20px 70px", position: "relative", zIndex: 2 }}>
           <div style={{
@@ -257,7 +296,7 @@ export default function ContactPage() {
             //  margin: "40px ", 
             }}>
               <h3 style={{ fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 900, color: "white", lineHeight: 1.2, marginBottom: 6, letterSpacing: -.3 }}>
-                Réservez votre<br />prestation
+                Prendre rendez-vous
               </h3>
               <p style={{ color: "rgba(255,255,255,.65)", fontSize: 15, marginBottom: 18, lineHeight: 1.6 }}>
                 Un représentant vous contactera pour confirmer votre rendez-vous.
@@ -297,7 +336,7 @@ export default function ContactPage() {
                         <option value="parking" style={{ background: "#004a52" }}>Parking</option>
                         <option value="lavage"  style={{ background: "#004a52" }}>Lavage</option>
                         <option value="garage"  style={{ background: "#004a52" }}>Garage</option>
-                        <option value="autre"   style={{ background: "#004a52" }}>Autre</option>
+                        <option value="event"   style={{ background: "#004a52" }}>Evenement</option>
                       </select>
                     </div>
                     <div>
@@ -337,45 +376,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* ══ CARDS BOTTOM ══ */}
-        <section style={{ padding: "0 20px 80px", position: "relative", zIndex: 2 }}>
-          <div style={{ maxWidth: "90vw", margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
-
-            <div className="ct-card-teal">
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(0,0,0,.18)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
-                <Ticket weight="fill" style={{ width: 22, height: 22, color: "white" }} />
-              </div>
-              <h4 style={{ color: "white", fontWeight: 900, fontSize: 18, marginBottom: 12 }}>Ticket Support</h4>
-              <p style={{ color: "rgba(255,255,255,.75)", fontSize: 13, lineHeight: 1.75, marginBottom: 10 }}>
-                Soumettez un ticket d'assistance et notre équipe vous prendra en charge rapidement pour résoudre votre problème.
-              </p>
-              <Link href="/support" className="ct-link-white" style={{ marginTop: "12px" }}>Nous contacter</Link>
-            </div>
-
-            <div className="ct-card-light">
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(0,95,105,.10)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
-                <Headset weight="fill" style={{ width: 22, height: 22, color: "#005f69" }} />
-              </div>
-              <h4 style={{ color: "#0a1a1c", fontWeight: 900, fontSize: 18, marginBottom: 12 }}>Appel Gratuit</h4>
-              <p style={{ color: "#6b7280", fontSize: 13, lineHeight: 1.75, marginBottom: 10 }}>
-                Appelez notre centre d'assistance disponible 7j/7 pour toute question sur nos établissements partenaires.
-              </p>
-              <Link href="tel:+22997000000" className="ct-link-dark" style={{ marginTop: "12px" }}>Nous contacter</Link>
-            </div>
-
-            <div className="ct-card-light">
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(0,95,105,.10)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
-                <Newspaper weight="fill" style={{ width: 22, height: 22, color: "#005f69" }} />
-              </div>
-              <h4 style={{ color: "#0a1a1c", fontWeight: 900, fontSize: 18, marginBottom: 12 }}>Actualités</h4>
-              <p style={{ color: "#6b7280", fontSize: 13, lineHeight: 1.75, marginBottom: 10 }}>
-                Restez informé des dernières nouveautés, offres exclusives et nouveaux établissements disponibles sur Ticketche.
-              </p>
-              <Link href="/news" className="ct-link-dark" style={{ marginTop: "12px" }}>Nous contacter</Link>
-            </div>
-
-          </div>
-        </section>
+      
 
       </div>
     </>
