@@ -1,25 +1,25 @@
 "use client";
 
-import { Headset, ShieldCheck, Lightning, Star } from "@phosphor-icons/react";
+import { DeviceMobile, ChartLineUp, QrCode, Star } from "@phosphor-icons/react";
 
 const reasons = [
   {
-    Icon: Headset,
-    title: "Support 24/7",
-    description: "Notre équipe est disponible à toute heure pour répondre à vos questions et résoudre vos problèmes rapidement.",
-    href: "#contact",
+    Icon: DeviceMobile,
+    title: "Gestion 100% Mobile",
+    description: "Gérez votre parking, lavage ou garage directement depuis votre smartphone. Créez vos services, suivez vos clients et pilotez votre activité où que vous soyez.",
+    href: "#download",
   },
   {
-    Icon: ShieldCheck,
-    title: "Paiements Sécurisés",
-    description: "Toutes vos transactions sont protégées. Payez via Mobile Money ou carte bancaire en toute confiance.",
+    Icon: QrCode,
+    title: "Encaissement Simplifié",
+    description: "Acceptez les paiements via Mobile Money en quelques secondes. Chaque transaction génère automatiquement un QR code et une facture numérique pour vos clients.",
     href: "#services",
   },
   {
-    Icon: Lightning,
-    title: "Accès Instantané",
-    description: "Recevez votre QR code en quelques secondes et accédez à tous vos services sans attente ni paperasse.",
-    href: "#download",
+    Icon: ChartLineUp,
+    title: "Suivi en Temps Réel",
+    description: "Visualisez vos recettes, entrées, sorties et performances en direct. Prenez de meilleures décisions grâce à des statistiques claires et accessibles à tout moment.",
+    href: "#contact",
   },
 ];
 
@@ -74,7 +74,7 @@ export default function WhyChooseUs() {
         .wcu-section {
           font-family: 'Archivo', sans-serif;
           padding: clamp(60px, 8vw, 100px) clamp(16px, 4vw, 60px);
-background: #ecf5f5;
+          background: #ecf5f5;
           text-align: center;
           position: relative;
           overflow: hidden;
@@ -204,18 +204,17 @@ background: #ecf5f5;
         <StarClusters />
 
         <div className="wcu-title-wrap">
-          <h2 className="wcu-title">
-            3 Raisons de choisir{" "}
-            <span>
-              ticketché&nbsp;
+          <div className="wcu-title-wrap">
+            <h2 className="wcu-title">
+              <span>Ticketché</span>, c'est quoi ?&nbsp;
               <span className="wcu-title-star wcu-title-star-1">
                 <Star weight="fill" style={{ width: 20, height: 20, color: "#005f69" }} />
               </span>
               <span className="wcu-title-star wcu-title-star-2" style={{ marginLeft: "4px" }}>
                 <Star weight="fill" style={{ width: 14, height: 14, color: "#00818f" }} />
               </span>
-            </span>
-          </h2>
+            </h2>
+          </div>
         </div>
 
         <div className="wcu-grid">
