@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { X, DeviceMobile, DownloadSimple, CursorClick } from '@phosphor-icons/react';
+import { X, DeviceMobile } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getDeviceOS } from '@/utils/deviceDetection';
 
@@ -20,7 +20,7 @@ export default function AppNotificationCompact() {
         return (
           <a href="https://apps.apple.com/fr/app/ticketch%C3%A9/id6758046811"
             target="_blank" rel="noopener noreferrer"
-            className="text-white/90 text-sm font-semibold underline decoration-white/40 hover:text-white transition-colors">
+            style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, fontWeight: 600, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)" }}>
             Accéder à la version iOS →
           </a>
         );
@@ -28,21 +28,21 @@ export default function AppNotificationCompact() {
         return (
           <a href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
             target="_blank" rel="noopener noreferrer"
-            className="text-white/90 text-sm font-semibold underline decoration-white/40 hover:text-white transition-colors">
+            style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, fontWeight: 600, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)" }}>
             Accéder à la version Android →
           </a>
         );
       default:
         return (
-          <p className="text-white/90 text-sm leading-snug">
+          <p style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, margin: 0 }}>
             Télécharger pour{' '}
             <a href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
               target="_blank" rel="noopener noreferrer"
-              className="font-bold underline decoration-white/40 hover:text-white transition-colors">Android</a>
+              style={{ fontWeight: 700, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", color: "white" }}>Android</a>
             {' '}ou{' '}
             <a href="https://apps.apple.com/fr/app/ticketch%C3%A9/id6758046811"
               target="_blank" rel="noopener noreferrer"
-              className="font-bold underline decoration-white/40 hover:text-white transition-colors">iOS</a>
+              style={{ fontWeight: 700, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", color: "white" }}>iOS</a>
           </p>
         );
     }
@@ -56,48 +56,36 @@ export default function AppNotificationCompact() {
           animate={{ y: 0, opacity: 1, scale: 1 }}
           exit={{ y: 40, opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-6 right-6 z-50 w-[320px]"
-        >
+style={{ position: "fixed", bottom: 24, right: 24, zIndex: 50, width: 300 }}        >
           {/* Glow */}
           <div style={{
-            position: "absolute", inset: -1,
-            borderRadius: 20,
+            position: "absolute", inset: -1, borderRadius: 16,
             background: "linear-gradient(135deg, rgba(0,129,143,0.6), rgba(0,81,90,0.3))",
-            filter: "blur(12px)",
-            zIndex: -1,
+            filter: "blur(10px)", zIndex: -1,
           }} />
 
           <div style={{
-            background: "rgba(0, 20, 25, 0.75)",
+            background: "rgba(0, 20, 25, 0.80)",
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
             border: "1px solid rgba(255,255,255,0.12)",
-            borderRadius: 20,
-            padding: "16px 18px",
-            boxShadow: "0 24px 48px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)",
+            borderRadius: 16, padding: "12px 14px",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)",
           }}>
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
 
               {/* Icône */}
               <div style={{
-                width: 38, height: 38, borderRadius: 12, flexShrink: 0,
+                width: 32, height: 32, borderRadius: 10, flexShrink: 0,
                 background: "linear-gradient(135deg, #00818f, #00515a)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                boxShadow: "0 4px 12px rgba(0,129,143,0.4)",
+                boxShadow: "0 4px 10px rgba(0,129,143,0.4)",
               }}>
-                <DeviceMobile weight="fill" style={{ width: 18, height: 18, color: "white" }} />
+                <DeviceMobile weight="fill" style={{ width: 16, height: 16, color: "white" }} />
               </div>
 
               {/* Texte */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ color: "white", fontWeight: 800, fontSize: 13, marginBottom: 4, letterSpacing: "0.01em", display: "flex", alignItems: "center", gap: 6 }}>
-                  <DownloadSimple weight="bold" style={{ width: 14, height: 14, color: "#00818f", flexShrink: 0 }} />
-                  Téléchargez l'app gratuitement
-                </p>
-                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, marginBottom: 6, display: "flex", alignItems: "center", gap: 5 }}>
-                  <CursorClick weight="bold" style={{ width: 12, height: 12, flexShrink: 0 }} />
-                  Cliquez ici pour accéder à l'application
-                </p>
                 {getNotificationContent()}
               </div>
 
@@ -105,7 +93,7 @@ export default function AppNotificationCompact() {
               <button
                 onClick={() => setIsVisible(false)}
                 style={{
-                  flexShrink: 0, width: 26, height: 26, borderRadius: 8,
+                  flexShrink: 0, width: 22, height: 22, borderRadius: 7,
                   background: "rgba(255,255,255,0.08)",
                   border: "1px solid rgba(255,255,255,0.12)",
                   display: "flex", alignItems: "center", justifyContent: "center",
@@ -115,15 +103,15 @@ export default function AppNotificationCompact() {
                 onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.08)"}
                 aria-label="Fermer"
               >
-                <X style={{ width: 13, height: 13, color: "rgba(255,255,255,0.7)" }} />
+                <X style={{ width: 11, height: 11, color: "rgba(255,255,255,0.7)" }} />
               </button>
             </div>
 
             {/* Barre décorative */}
             <div style={{
-              marginTop: 14, height: 2, borderRadius: 999,
+              marginTop: 10, height: 2, borderRadius: 999,
               background: "linear-gradient(to right, #00818f, transparent)",
-              opacity: 0.5,
+              opacity: 0.4,
             }} />
           </div>
         </motion.div>

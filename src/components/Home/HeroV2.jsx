@@ -400,7 +400,7 @@ export const HeroV2 = () => {
 
             <h1 style={{
               position: "relative", zIndex: 2,
-              fontSize: "clamp(1.6rem, 3.8vw, 3rem)",
+fontSize: "clamp(2rem, 4.5vw, 3.8rem)",
               fontWeight: 900, color: "#0a0a0a",
               lineHeight: 1.06, letterSpacing: "0.05em", margin: 0,
             }}>
@@ -417,7 +417,7 @@ export const HeroV2 = () => {
           {/* Sous-titre — identique à l'original */}
           <p style={{
             fontSize: "clamp(1.1rem, 2vw, 1.3rem)",
-            color: "#4b5563", maxWidth: "500px",
+            color: "#4b5563", maxWidth: "880px",
             textAlign: "center", lineHeight: 1.8,
             fontWeight: 400, margin: 0,
             animation: "fadeUp 0.7s ease 0.45s both",
