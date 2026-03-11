@@ -103,7 +103,7 @@ export default function FAQSection() {
         }
 
         .faq-root {
-          background: #ecf5f6;
+background: #ecf5f5;
 margin-top: -160px;
 padding: 0 clamp(20px, 6vw, 88px) 5px ;
 overflow: visible;

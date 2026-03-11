@@ -28,21 +28,21 @@ export default function AppNotificationCompact() {
         return (
           <a href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
             target="_blank" rel="noopener noreferrer"
-            style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, fontWeight: 600, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)" }}>
+            style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, fontWeight: 600, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", wordSpacing: "4px" }}>
             Accéder à la version Android →
           </a>
         );
       default:
         return (
-          <p style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, margin: 0 }}>
+<p style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, margin: 0, letterSpacing: "0.03em", wordSpacing: "3px" }}>
             Télécharger pour{' '}
             <a href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
               target="_blank" rel="noopener noreferrer"
-              style={{ fontWeight: 700, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", color: "white" }}>Android</a>
+              style={{ fontWeight: 700, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", color: "white",wordSpacing: "4px" }}>Android</a>
             {' '}ou{' '}
             <a href="https://apps.apple.com/fr/app/ticketch%C3%A9/id6758046811"
               target="_blank" rel="noopener noreferrer"
-              style={{ fontWeight: 700, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", color: "white" }}>iOS</a>
+              style={{ fontWeight: 700, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", color: "white", wordSpacing: "4px" }}>iOS</a>
           </p>
         );
     }
@@ -56,7 +56,7 @@ export default function AppNotificationCompact() {
           animate={{ y: 0, opacity: 1, scale: 1 }}
           exit={{ y: 40, opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-style={{ position: "fixed", bottom: 24, right: 24, zIndex: 50, width: 300 }}        >
+style={{ position: "fixed", bottom: 24, right: 24, zIndex: 50, width: 420 }}        >
           {/* Glow */}
           <div style={{
             position: "absolute", inset: -1, borderRadius: 16,
@@ -69,8 +69,7 @@ style={{ position: "fixed", bottom: 24, right: 24, zIndex: 50, width: 300 }}    
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
             border: "1px solid rgba(255,255,255,0.12)",
-            borderRadius: 16, padding: "12px 14px",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)",
+borderRadius: 16, padding: "16px 20px",            boxShadow: "0 20px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
 

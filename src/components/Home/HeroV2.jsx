@@ -398,13 +398,13 @@ export const HeroV2 = () => {
           }}>
 
 
-   <h1 style={{
-  position: "relative", zIndex: 2,
-  fontSize: "clamp(2rem, 4.5vw, 3.8rem)",
-  fontWeight: 900, color: "#0a0a0a",
-  lineHeight: 1.06, letterSpacing: "0.05em", margin: 0,
-  maxWidth: "64rem",
-}}>
+            <h1 style={{
+              position: "relative", zIndex: 2,
+              fontSize: "clamp(2rem, 4.5vw, 3.8rem)",
+              fontWeight: 900, color: "#0a0a0a",
+              lineHeight: 1.06, letterSpacing: "0.05em", margin: 0,
+              maxWidth: "64rem",
+            }}>
               Votre business mérite mieux qu'un carnet. <br /> Passez à{" "}             <span style={{ display: "inline-flex", alignItems: "center", gap: "14px", flexWrap: "wrap", justifyContent: "center" }}>
                 <span style={{ color: "#00818f" }}>Ticketché</span>
                 <span style={{ display: "inline-flex", gap: "8px", marginLeft: "2px" }}>
@@ -440,7 +440,7 @@ export const HeroV2 = () => {
           >
             <div className="btn-ring" style={{ pointerEvents: "none" }} />
             <span style={{ flex: 1, textAlign: "center", paddingRight: "clamp(8px,1.5vw,12px)", pointerEvents: "none" }}>
-             Installer Ticketché
+              Installer Ticketché
             </span>
             <div className="btn-circle" style={{ pointerEvents: "none" }}>
               <ArrowRight weight="bold" className="btn-arrow" style={{ width: "clamp(22px,2.4vw,26px)", height: "clamp(22px,2.4vw,26px)", pointerEvents: "none" }} />

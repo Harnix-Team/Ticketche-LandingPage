@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchAllPlaces } from "@/app/services/api";
-import { NavigationArrow, MagnifyingGlass, MapPin } from "@phosphor-icons/react";
+import { NavigationArrow, MagnifyingGlass, MapPin, Star } from "@phosphor-icons/react";
 
 /* ─── helpers ─────────────────────────────────── */
 const formatTicketcheImage = (img) =>
@@ -34,6 +34,36 @@ const getPlaceRating = (place) => {
   const total = place.noteUsers.reduce((s, n) => s + parseFloat(n.star), 0);
   return (total / place.noteUsers.length).toFixed(1);
 };
+
+/* ─── Star Clusters ─────────────────────────────── */
+const CLUSTERS = [
+  { cx: "3%",  cy: "10%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.50, anim: 0, delay: "0s",   dur: "3.2s", color: "#00818f" }, { x: 16, y: -10, size: 9, opacity: 0.30, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" }] },
+  { cx: "92%", cy: "8%",  stars: [{ x: 0, y: 0, size: 14, opacity: 0.45, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" }, { x: -13, y: 12, size: 9, opacity: 0.30, anim: 2, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
+  { cx: "1%",  cy: "50%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.35, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" }, { x: 14, y: -8, size: 7, opacity: 0.25, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" }] },
+  { cx: "95%", cy: "45%", stars: [{ x: 0, y: 0, size: 11, opacity: 0.40, anim: 0, delay: "0.3s", dur: "3.3s", color: "#00818f" }, { x: -12, y: 10, size: 7, opacity: 0.25, anim: 1, delay: "0.6s", dur: "2.9s", color: "#00515a" }] },
+  { cx: "48%", cy: "3%",  stars: [{ x: 0, y: 0, size: 8,  opacity: 0.28, anim: 0, delay: "0.1s", dur: "3.0s", color: "#00818f" }] },
+  { cx: "50%", cy: "92%", stars: [{ x: 0, y: 0, size: 8,  opacity: 0.25, anim: 1, delay: "0.3s", dur: "3.2s", color: "#00515a" }] },
+  { cx: "20%", cy: "6%",  stars: [{ x: 0, y: 0, size: 7,  opacity: 0.22, anim: 2, delay: "0.2s", dur: "2.8s", color: "#00818f" }] },
+  { cx: "75%", cy: "90%", stars: [{ x: 0, y: 0, size: 7,  opacity: 0.22, anim: 0, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
+  { cx: "5%",  cy: "82%", stars: [{ x: 0, y: 0, size: 9,  opacity: 0.30, anim: 1, delay: "0.2s", dur: "2.9s", color: "#00818f" }] },
+  { cx: "88%", cy: "78%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.35, anim: 2, delay: "0.4s", dur: "3.1s", color: "#00515a" }] },
+];
+
+function StarClusters() {
+  return (
+    <>
+      {CLUSTERS.map((cluster, ci) => (
+        <div key={ci} style={{ position: "absolute", left: cluster.cx, top: cluster.cy, width: 0, height: 0, zIndex: 0, pointerEvents: "none" }}>
+          {cluster.stars.map((s, si) => (
+            <div key={si} style={{ position: "absolute", left: s.x, top: s.y, transform: "translate(-50%,-50%)", opacity: s.opacity, animation: `esStar${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`, filter: `drop-shadow(0 0 3px ${s.color}88)` }}>
+              <Star weight="fill" style={{ width: s.size, height: s.size, color: s.color }} />
+            </div>
+          ))}
+        </div>
+      ))}
+    </>
+  );
+}
 
 /* ─── styles inline ────────────────────────────── */
 const styles = {
@@ -191,14 +221,18 @@ const styles = {
     transition: "background 0.15s, transform 0.15s",
     boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
   },
-  /* section */
   section: {
     padding: "20px 0 80px",
+    background: "#ffffff",
+    position: "relative",
+    overflow: "hidden",
   },
   inner: {
     maxWidth: "90vw",
     margin: "0 auto",
     padding: "0 24px",
+    position: "relative",
+    zIndex: 2,
   },
   headerRow: {
     display: "flex",
@@ -269,7 +303,6 @@ function PlaceCard({ place, onItinerary }) {
       style={styles.card}
       transition={{ duration: 0.22, ease: "easeOut" }}
     >
-      {/* Image full card */}
       <div style={styles.imageWrapper}>
         <Image
           src={getPlaceImage(place)}
@@ -281,7 +314,6 @@ function PlaceCard({ place, onItinerary }) {
         <div style={styles.imageGradient} />
       </div>
 
-      {/* Badge rating */}
       {rating && (
         <div style={styles.badgeTop}>
           <span>★</span>
@@ -289,7 +321,6 @@ function PlaceCard({ place, onItinerary }) {
         </div>
       )}
 
-      {/* Badge ville */}
       {place.city && (
         <div style={styles.badgeCity}>
           <MapPin weight="fill" style={{ width: 10, height: 10 }} />
@@ -297,7 +328,6 @@ function PlaceCard({ place, onItinerary }) {
         </div>
       )}
 
-      {/* Body */}
       <div style={styles.body}>
         <div style={styles.tags}>
           {getServiceTags(place).map((tag, i) => (
@@ -418,7 +448,6 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
 
   const displayedEstablishments = filteredEstablishments.slice(-4).reverse();
 
-  /* ── Loading ── */
   if (loading)
     return (
       <section style={styles.section}>
@@ -427,10 +456,7 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
             {[0, 0.2, 0.4].map((delay, i) => (
               <motion.div
                 key={i}
-                style={{
-                  width: 10, height: 10, borderRadius: "50%",
-                  background: i % 2 === 0 ? "#005f69" : "#6a2d02",
-                }}
+                style={{ width: 10, height: 10, borderRadius: "50%", background: i % 2 === 0 ? "#005f69" : "#6a2d02" }}
                 animate={{ scale: [1, 1.5, 1], opacity: [1, 0.4, 1] }}
                 transition={{ duration: 1, repeat: Infinity, delay }}
               />
@@ -447,9 +473,26 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
 
   return (
     <section id="emplacements" style={styles.section}>
-      <div style={styles.inner}>
+      <style>{`
+        @keyframes esStar0 {
+          0%,100% { transform: translateY(0px) rotate(0deg) scale(1); }
+          33%      { transform: translateY(-8px) rotate(15deg) scale(1.10); }
+          66%      { transform: translateY(-3px) rotate(-8deg) scale(0.95); }
+        }
+        @keyframes esStar1 {
+          0%,100% { transform: translateY(0px) rotate(0deg); }
+          50%      { transform: translateY(-11px) rotate(20deg) scale(1.07); }
+        }
+        @keyframes esStar2 {
+          0%,100% { transform: translateY(0px) scale(1); }
+          40%      { transform: translateY(-7px) rotate(-12deg) scale(1.12); }
+          80%      { transform: translateY(-2px) rotate(6deg) scale(0.92); }
+        }
+      `}</style>
 
-        {/* ── Header ── */}
+      <StarClusters />
+
+      <div style={styles.inner}>
         <div style={styles.headerRow}>
           <motion.div
             initial={{ opacity: 0, y: -24 }}
@@ -483,7 +526,6 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
           }
         </div>
 
-        {/* ── Compteur résultats ── */}
         <AnimatePresence mode="wait">
           {(searchQuery || activeFilter !== "all") && (
             <motion.p
@@ -500,7 +542,6 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
           )}
         </AnimatePresence>
 
-        {/* ── Grid ── */}
         <AnimatePresence mode="wait">
           {displayedEstablishments.length === 0 ? (
             <motion.div
@@ -515,11 +556,7 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
               <p style={{ fontSize: "13px", marginBottom: 16 }}>Essayez d'autres mots-clés ou retirez les filtres</p>
               <button
                 onClick={() => { setSearchQuery(""); setActiveFilter("all"); }}
-                style={{
-                  background: "#005f69", color: "#fff", border: "none",
-                  borderRadius: "999px", padding: "8px 20px", fontSize: "13px",
-                  fontWeight: 700, cursor: "pointer",
-                }}
+                style={{ background: "#005f69", color: "#fff", border: "none", borderRadius: "999px", padding: "8px 20px", fontSize: "13px", fontWeight: 700, cursor: "pointer" }}
               >
                 Réinitialiser la recherche
               </button>
@@ -540,7 +577,6 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
             </motion.div>
           )}
         </AnimatePresence>
-
       </div>
     </section>
   );

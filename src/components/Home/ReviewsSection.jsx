@@ -47,6 +47,37 @@ const reviews = [
   },
 ];
 
+/* ─── Star Clusters ─────────────────────────────── */
+const CLUSTERS = [
+  { cx: "3%",  cy: "10%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.50, anim: 0, delay: "0s",   dur: "3.2s", color: "#00818f" }, { x: 16, y: -10, size: 9, opacity: 0.30, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" }] },
+  { cx: "92%", cy: "8%",  stars: [{ x: 0, y: 0, size: 14, opacity: 0.45, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" }, { x: -13, y: 12, size: 9, opacity: 0.30, anim: 2, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
+  { cx: "1%",  cy: "50%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.35, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" }, { x: 14, y: -8, size: 7, opacity: 0.25, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" }] },
+  { cx: "95%", cy: "45%", stars: [{ x: 0, y: 0, size: 11, opacity: 0.40, anim: 0, delay: "0.3s", dur: "3.3s", color: "#00818f" }, { x: -12, y: 10, size: 7, opacity: 0.25, anim: 1, delay: "0.6s", dur: "2.9s", color: "#00515a" }] },
+  { cx: "5%",  cy: "82%", stars: [{ x: 0, y: 0, size: 9,  opacity: 0.30, anim: 1, delay: "0.2s", dur: "2.9s", color: "#00818f" }, { x: 11, y: -7, size: 6, opacity: 0.22, anim: 2, delay: "0.5s", dur: "3.6s", color: "#00515a" }] },
+  { cx: "88%", cy: "78%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.35, anim: 2, delay: "0.4s", dur: "3.1s", color: "#00515a" }, { x: -10, y: -9, size: 7, opacity: 0.22, anim: 0, delay: "0.7s", dur: "2.8s", color: "#00818f" }] },
+  { cx: "48%", cy: "3%",  stars: [{ x: 0, y: 0, size: 8,  opacity: 0.28, anim: 0, delay: "0.1s", dur: "3.0s", color: "#00818f" }] },
+  { cx: "50%", cy: "95%", stars: [{ x: 0, y: 0, size: 8,  opacity: 0.25, anim: 1, delay: "0.3s", dur: "3.2s", color: "#00515a" }] },
+  { cx: "20%", cy: "6%",  stars: [{ x: 0, y: 0, size: 7,  opacity: 0.22, anim: 2, delay: "0.2s", dur: "2.8s", color: "#00818f" }] },
+  { cx: "75%", cy: "90%", stars: [{ x: 0, y: 0, size: 7,  opacity: 0.22, anim: 0, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
+];
+
+function StarClusters() {
+  return (
+    <>
+      {CLUSTERS.map((cluster, ci) => (
+        <div key={ci} style={{ position: "absolute", left: cluster.cx, top: cluster.cy, width: 0, height: 0, zIndex: 0, pointerEvents: "none" }}>
+          {cluster.stars.map((s, si) => (
+            <div key={si} style={{ position: "absolute", left: s.x, top: s.y, transform: "translate(-50%,-50%)", opacity: s.opacity, animation: `rvStar${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`, filter: `drop-shadow(0 0 3px ${s.color}88)` }}>
+              <Star weight="fill" style={{ width: s.size, height: s.size, color: s.color }} />
+            </div>
+          ))}
+        </div>
+      ))}
+    </>
+  );
+}
+
+/* ─── Stars rating ──────────────────────────────── */
 function Stars({ count }) {
   return (
     <div style={{ display: "flex", gap: "4px", justifyContent: "center", marginBottom: "16px" }}>
@@ -58,10 +89,8 @@ function Stars({ count }) {
 }
 
 function ReviewCard({ review, position, total }) {
-  // position: 0 = center, -1 = left, 1 = right, -2/2 = far sides
   const isCenter = position === 0;
   const isAdjacent = Math.abs(position) === 1;
-  const isFar = Math.abs(position) >= 2;
 
   const scale = isCenter ? 1 : isAdjacent ? 0.88 : 0.76;
   const opacity = isCenter ? 1 : isAdjacent ? 0.7 : 0;
@@ -186,16 +215,35 @@ export default function ReviewsSection() {
       style={{
         fontFamily: "'Archivo', sans-serif",
         overflow: "hidden",
-      background: "#f8fafb",
-
+        background: "#ffffff",
+        position: "relative",
       }}
       className="py-20"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
+      <style>{`
+        @keyframes rvStar0 {
+          0%,100% { transform: translateY(0px) rotate(0deg) scale(1); }
+          33%      { transform: translateY(-8px) rotate(15deg) scale(1.10); }
+          66%      { transform: translateY(-3px) rotate(-8deg) scale(0.95); }
+        }
+        @keyframes rvStar1 {
+          0%,100% { transform: translateY(0px) rotate(0deg); }
+          50%      { transform: translateY(-11px) rotate(20deg) scale(1.07); }
+        }
+        @keyframes rvStar2 {
+          0%,100% { transform: translateY(0px) scale(1); }
+          40%      { transform: translateY(-7px) rotate(-12deg) scale(1.12); }
+          80%      { transform: translateY(-2px) rotate(6deg) scale(0.92); }
+        }
+      `}</style>
+
       <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
 
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      <StarClusters />
+
+      <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 2 }}>
 
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "clamp(50px, 7vw, 90px)" }}>
@@ -221,8 +269,7 @@ export default function ReviewsSection() {
         </div>
 
         {/* Carousel */}
-        <div className="reviews-carousel-container" style={{ position: "relative", height: "clamp(380px, 50vw, 480px)" }}>
-
+        <div style={{ position: "relative", height: "clamp(380px, 50vw, 480px)" }}>
           {reviews.map((review, i) => (
             <ReviewCard
               key={i}
@@ -264,10 +311,7 @@ export default function ReviewsSection() {
         </div>
 
         {/* Dots */}
-        <div style={{
-          display: "flex", justifyContent: "center",
-          gap: "8px",
-        }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
           {reviews.map((_, i) => (
             <button key={i} onClick={() => setCurrent(i)} style={{
               width: current === i ? "28px" : "8px",

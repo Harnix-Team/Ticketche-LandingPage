@@ -74,7 +74,7 @@ export default function WhyChooseUs() {
         .wcu-section {
           font-family: 'Archivo', sans-serif;
           padding: clamp(60px, 8vw, 100px) clamp(16px, 4vw, 60px);
-          background: #ffffff;
+background: #ecf5f5;
           text-align: center;
           position: relative;
           overflow: hidden;
@@ -123,7 +123,7 @@ export default function WhyChooseUs() {
 
         .wcu-card {
           position: relative;
-          background: #ffffff;
+          background: #ecf5f5;
           border-radius: 20px;
           border: 1.5px solid rgba(0,0,0,0.08);
           padding: 36px 28px 32px;

@@ -34,8 +34,7 @@ export default function TicketcheFonction() {
       padding: "clamp(48px, 7vw, 90px) clamp(20px, 5vw, 72px)",
       paddingBottom: "clamp(80px, 10vw, 120px)",
       position: "relative",
-      background: "#ecf5f6",
-    }}>
+background: "#ffffff",    }}>
       <div style={{ maxWidth: "1280px", margin: "0 auto", position: "relative" }}>
 
         {/* ── GRANDE CARTE SOMBRE ── */}

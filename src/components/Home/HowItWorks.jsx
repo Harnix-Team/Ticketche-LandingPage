@@ -154,7 +154,7 @@ export default function HowItWorks() {
       <section style={{
         fontFamily: "'Archivo', sans-serif",
         padding: "clamp(60px,8vw,100px) clamp(16px,4vw,60px)",
-        background: "#f8fafb",
+background: "#ecf5f5",
         position: "relative",
         overflow: "hidden",
         marginBottom: "80px",

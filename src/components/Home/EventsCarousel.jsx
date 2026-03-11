@@ -152,8 +152,7 @@ const S = {
   },
   section: {
     padding: "60px 0 80px",
-    background: "transparent",
-  },
+ background: "#ecf5f5",  },
   inner: {
   maxWidth: "90vw",
   margin: "0 auto",

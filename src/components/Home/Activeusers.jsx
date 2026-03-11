@@ -1,25 +1,55 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Users, Globe, MapTrifold, Rocket, TrendUp, CalendarBlank, Trophy } from "@phosphor-icons/react";
+import { Users, Globe, MapTrifold, Rocket, TrendUp, CalendarBlank, Trophy, Star } from "@phosphor-icons/react";
 
 const COUNTRIES = [
-  { name: "France",        code: "fr", lat: 46.23,  lng:  2.21,  users: "24 000", growth: "+18%", since: "2023", color: "#005f69", desc: "Hub européen principal"       },
-  { name: "Sénégal",       code: "sn", lat: 14.50,  lng:-14.45,  users: "8 000",  growth: "+34%", since: "2024", color: "#00818f", desc: "Expansion Afrique de l'Ouest" },
-  { name: "Mali",          code: "ml", lat: 17.57,  lng: -1.98,  users: "4 800",  growth: "+22%", since: "2024", color: "#692C00", desc: "Marché émergent"              },
-  { name: "Côte d'Ivoire", code: "ci", lat:  6.80,  lng: -5.54,  users: "18 000", growth: "+41%", since: "2023", color: "#005f69", desc: "Croissance rapide"            },
-  { name: "Ghana",         code: "gh", lat:  7.95,  lng: -1.02,  users: "9 500",  growth: "+29%", since: "2024", color: "#00515a", desc: "Nouveau marché"               },
-  { name: "Bénin",         code: "bj", lat:  9.30,  lng:  2.35,  users: "12 000", growth: "+55%", since: "2022", color: "#005f69", desc: "Marché fondateur"             },
-  { name: "Cameroun",      code: "cm", lat:  4.86,  lng: 12.35,  users: "7 200",  growth: "+27%", since: "2024", color: "#00818f", desc: "Afrique centrale"             },
-  { name: "Nigeria",       code: "ng", lat: 10.00,  lng:  8.00,  users: "30 000", growth: "+62%", since: "2023", color: "#692C00", desc: "Plus grand marché"            },
+  { name: "France", code: "fr", lat: 46.23, lng: 2.21, users: "24 000", growth: "+18%", since: "2023", color: "#005f69", desc: "Hub européen principal" },
+  { name: "Sénégal", code: "sn", lat: 14.50, lng: -14.45, users: "8 000", growth: "+34%", since: "2024", color: "#00818f", desc: "Expansion Afrique de l'Ouest" },
+  { name: "Mali", code: "ml", lat: 17.57, lng: -1.98, users: "4 800", growth: "+22%", since: "2024", color: "#692C00", desc: "Marché émergent" },
+  { name: "Côte d'Ivoire", code: "ci", lat: 6.80, lng: -5.54, users: "18 000", growth: "+41%", since: "2023", color: "#005f69", desc: "Croissance rapide" },
+  { name: "Ghana", code: "gh", lat: 7.95, lng: -1.02, users: "9 500", growth: "+29%", since: "2024", color: "#00515a", desc: "Nouveau marché" },
+  { name: "Bénin", code: "bj", lat: 9.30, lng: 2.35, users: "12 000", growth: "+55%", since: "2022", color: "#005f69", desc: "Marché fondateur" },
+  { name: "Cameroun", code: "cm", lat: 4.86, lng: 12.35, users: "7 200", growth: "+27%", since: "2024", color: "#00818f", desc: "Afrique centrale" },
+  { name: "Nigeria", code: "ng", lat: 10.00, lng: 8.00, users: "30 000", growth: "+62%", since: "2023", color: "#692C00", desc: "Plus grand marché" },
 ];
 
+/* ─── Star Clusters ─────────────────────────────── */
+const CLUSTERS = [
+  { cx: "3%",  cy: "10%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.50, anim: 0, delay: "0s",   dur: "3.2s", color: "#00818f" }, { x: 16, y: -10, size: 9, opacity: 0.30, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" }] },
+  { cx: "92%", cy: "8%",  stars: [{ x: 0, y: 0, size: 14, opacity: 0.45, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" }, { x: -13, y: 12, size: 9, opacity: 0.30, anim: 2, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
+  { cx: "1%",  cy: "50%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.35, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" }, { x: 14, y: -8, size: 7, opacity: 0.25, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" }] },
+  { cx: "95%", cy: "45%", stars: [{ x: 0, y: 0, size: 11, opacity: 0.40, anim: 0, delay: "0.3s", dur: "3.3s", color: "#00818f" }, { x: -12, y: 10, size: 7, opacity: 0.25, anim: 1, delay: "0.6s", dur: "2.9s", color: "#00515a" }] },
+  { cx: "5%",  cy: "82%", stars: [{ x: 0, y: 0, size: 9,  opacity: 0.30, anim: 1, delay: "0.2s", dur: "2.9s", color: "#00818f" }, { x: 11, y: -7, size: 6, opacity: 0.22, anim: 2, delay: "0.5s", dur: "3.6s", color: "#00515a" }] },
+  { cx: "88%", cy: "78%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.35, anim: 2, delay: "0.4s", dur: "3.1s", color: "#00515a" }, { x: -10, y: -9, size: 7, opacity: 0.22, anim: 0, delay: "0.7s", dur: "2.8s", color: "#00818f" }] },
+  { cx: "48%", cy: "3%",  stars: [{ x: 0, y: 0, size: 8,  opacity: 0.28, anim: 0, delay: "0.1s", dur: "3.0s", color: "#00818f" }] },
+  { cx: "50%", cy: "95%", stars: [{ x: 0, y: 0, size: 8,  opacity: 0.25, anim: 1, delay: "0.3s", dur: "3.2s", color: "#00515a" }] },
+  { cx: "20%", cy: "6%",  stars: [{ x: 0, y: 0, size: 7,  opacity: 0.22, anim: 2, delay: "0.2s", dur: "2.8s", color: "#00818f" }] },
+  { cx: "75%", cy: "90%", stars: [{ x: 0, y: 0, size: 7,  opacity: 0.22, anim: 0, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
+];
+
+function StarClusters() {
+  return (
+    <>
+      {CLUSTERS.map((cluster, ci) => (
+        <div key={ci} style={{ position: "absolute", left: cluster.cx, top: cluster.cy, width: 0, height: 0, zIndex: 0, pointerEvents: "none" }}>
+          {cluster.stars.map((s, si) => (
+            <div key={si} style={{ position: "absolute", left: s.x, top: s.y, transform: "translate(-50%,-50%)", opacity: s.opacity, animation: `auStar${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`, filter: `drop-shadow(0 0 3px ${s.color}88)` }}>
+              <Star weight="fill" style={{ width: s.size, height: s.size, color: s.color }} />
+            </div>
+          ))}
+        </div>
+      ))}
+    </>
+  );
+}
+
 export default function ActiveUsers() {
-  const mapRef     = useRef(null);
-  const mapInst    = useRef(null);
+  const mapRef = useRef(null);
+  const mapInst = useRef(null);
   const markersRef = useRef({});
-  const [active, setActive]   = useState(null);
-  const [loaded, setLoaded]   = useState(false);
+  const [active, setActive] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
   const totalUsers = COUNTRIES.reduce((s, c) => s + parseInt(c.users.replace(/\s/g, "")), 0);
 
@@ -117,41 +147,41 @@ export default function ActiveUsers() {
   };
 
   const detailRows = active ? [
-    { label: "Croissance",     val: active.growth, icon: <TrendUp weight="bold" style={{ width: 15, height: 15, color: "#00818f" }} /> },
-    { label: "Présent depuis", val: active.since,  icon: <CalendarBlank weight="bold" style={{ width: 15, height: 15, color: "#00818f" }} /> },
-    { label: "Rang",           val: `#${[...COUNTRIES].sort((a,b)=>parseInt(b.users.replace(/\s/g,""))-parseInt(a.users.replace(/\s/g,""))).findIndex(c=>c.code===active.code)+1} / ${COUNTRIES.length}`, icon: <Trophy weight="bold" style={{ width: 15, height: 15, color: "#00818f" }} /> },
+    { label: "Croissance", val: active.growth, icon: <TrendUp weight="bold" style={{ width: 15, height: 15, color: "#00818f" }} /> },
+    { label: "Présent depuis", val: active.since, icon: <CalendarBlank weight="bold" style={{ width: 15, height: 15, color: "#00818f" }} /> },
+    { label: "Rang", val: `#${[...COUNTRIES].sort((a, b) => parseInt(b.users.replace(/\s/g, "")) - parseInt(a.users.replace(/\s/g, ""))).findIndex(c => c.code === active.code) + 1} / ${COUNTRIES.length}`, icon: <Trophy weight="bold" style={{ width: 15, height: 15, color: "#00818f" }} /> },
   ] : [];
 
   const globalStats = [
-    { val: `${totalUsers.toLocaleString("fr-FR")}+`, label: "Utilisateurs actifs", icon: <Users weight="bold"      style={{ width: 26, height: 26, color: "#005f69" }} /> },
-    { val: "8",   label: "Pays couverts",  icon: <Globe      weight="bold"       style={{ width: 26, height: 26, color: "#005f69" }} /> },
-    { val: "3",   label: "Continents",     icon: <MapTrifold weight="bold"       style={{ width: 26, height: 26, color: "#005f69" }} /> },
+    { val: `${totalUsers.toLocaleString("fr-FR")}+`, label: "Utilisateurs actifs", icon: <Users weight="bold" style={{ width: 26, height: 26, color: "#005f69" }} /> },
+    { val: "8", label: "Pays couverts", icon: <Globe weight="bold" style={{ width: 26, height: 26, color: "#005f69" }} /> },
+    { val: "3", label: "Continents", icon: <MapTrifold weight="bold" style={{ width: 26, height: 26, color: "#005f69" }} /> },
   ];
 
   return (
     <section style={{
       fontFamily: "'Archivo',sans-serif",
       padding: "clamp(60px,8vw,100px) 0",
-      background: "linear-gradient(160deg, #ffffff 0%, #f0fafa 40%, #e0f4f5 75%, #cceef0 100%)",
+      background: "#ffffff",
       overflow: "hidden",
       position: "relative",
     }}>
 
-      {/* Blob déco fond */}
-      <div style={{
-        position:"absolute", top:"-10%", right:"-8%", width:"500px", height:"500px",
-        borderRadius:"50%",
-        background:"radial-gradient(circle, rgba(0,95,105,0.08) 0%, transparent 70%)",
-        pointerEvents:"none",
-      }} />
-      <div style={{
-        position:"absolute", bottom:"-5%", left:"-5%", width:"400px", height:"400px",
-        borderRadius:"50%",
-        background:"radial-gradient(circle, rgba(0,129,143,0.07) 0%, transparent 70%)",
-        pointerEvents:"none",
-      }} />
-
       <style>{`
+        @keyframes auStar0 {
+          0%,100% { transform: translateY(0px) rotate(0deg) scale(1); }
+          33%      { transform: translateY(-8px) rotate(15deg) scale(1.10); }
+          66%      { transform: translateY(-3px) rotate(-8deg) scale(0.95); }
+        }
+        @keyframes auStar1 {
+          0%,100% { transform: translateY(0px) rotate(0deg); }
+          50%      { transform: translateY(-11px) rotate(20deg) scale(1.07); }
+        }
+        @keyframes auStar2 {
+          0%,100% { transform: translateY(0px) scale(1); }
+          40%      { transform: translateY(-7px) rotate(-12deg) scale(1.12); }
+          80%      { transform: translateY(-2px) rotate(6deg) scale(0.92); }
+        }
         .tc-marker {
           display: flex; flex-direction: column; align-items: center;
           cursor: pointer;
@@ -240,175 +270,188 @@ export default function ActiveUsers() {
         .leaflet-control-attribution a { color: rgba(0,95,105,0.6) !important; }
       `}</style>
 
-      <div style={{ maxWidth:"1300px", margin:"0 auto", padding:"0 clamp(20px,4vw,60px)", position:"relative" }}>
+      {/* Blob déco fond */}
+      <div style={{
+        position: "absolute", top: "-10%", right: "-8%", width: "500px", height: "500px",
+        borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(0,95,105,0.08) 0%, transparent 70%)",
+        pointerEvents: "none",
+      }} />
+      <div style={{
+        position: "absolute", bottom: "-5%", left: "-5%", width: "400px", height: "400px",
+        borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(0,129,143,0.07) 0%, transparent 70%)",
+        pointerEvents: "none",
+      }} />
+
+      <StarClusters />
+
+      <div style={{ maxWidth: "1300px", margin: "0 auto", padding: "0 clamp(20px,4vw,60px)", position: "relative", zIndex: 2 }}>
 
         {/* Header */}
-        <div style={{ textAlign:"center", marginBottom:"clamp(32px,4vw,48px)", animation:"fadeInUp 0.6s ease both" }}>
+        <div style={{ textAlign: "center", marginBottom: "clamp(32px,4vw,48px)", animation: "fadeInUp 0.6s ease both" }}>
           <span style={{
-            display:"inline-flex", alignItems:"center", gap:"6px",
-            marginBottom:"14px",
-            background:"rgba(0,95,105,0.10)", color:"#005f69",
-            fontSize:"0.76rem", fontWeight:700, letterSpacing:"0.09em",
-            textTransform:"uppercase", padding:"5px 18px", borderRadius:"999px",
-            border:"1px solid rgba(0,95,105,0.18)",
+            display: "inline-flex", alignItems: "center", gap: "6px",
+            marginBottom: "14px",
+            background: "rgba(0,95,105,0.10)", color: "#005f69",
+            fontSize: "0.76rem", fontWeight: 700, letterSpacing: "0.09em",
+            textTransform: "uppercase", padding: "5px 18px", borderRadius: "999px",
+            border: "1px solid rgba(0,95,105,0.18)",
           }}>
             <Globe weight="bold" style={{ width: 14, height: 14 }} />
             Présence mondiale
           </span>
 
           <h2 style={{
-            fontSize:"clamp(1.7rem,3vw,2.5rem)", fontWeight:900,
-            lineHeight:1.1, letterSpacing:"-0.03em",
-            color:"#0a1a1c", margin:"0 auto", maxWidth:"600px",
+            fontSize: "clamp(1.7rem,3vw,2.5rem)", fontWeight: 900,
+            lineHeight: 1.1, letterSpacing: "-0.03em",
+            color: "#0a1a1c", margin: "0 auto", maxWidth: "600px",
           }}>
             Ticketché grandit partout,{" "}
             <span style={{
-              background:"linear-gradient(135deg, #005f69 0%, #00818f 50%, #00c8d4 100%)",
-              WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent",
+              background: "linear-gradient(135deg, #005f69 0%, #00818f 50%, #00c8d4 100%)",
+              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
             }}>8 pays nous font confiance</span>
           </h2>
         </div>
 
         {/* Layout */}
         <div style={{
-          display:"grid",
+          display: "grid",
           gridTemplateColumns: active ? "1fr 300px" : "1fr",
-          gap:"16px", alignItems:"start",
-          transition:"grid-template-columns 0.4s ease",
+          gap: "16px", alignItems: "start",
+          transition: "grid-template-columns 0.4s ease",
         }}>
 
           {/* Map card */}
           <div style={{
-            borderRadius:"20px", overflow:"hidden",
-            background:"rgba(255,255,255,0.6)",
-            backdropFilter:"blur(12px)",
-            boxShadow:"0 8px 40px rgba(0,81,90,0.14), 0 1px 4px rgba(0,81,90,0.08), 0 0 0 1px rgba(0,95,105,0.08)",
-            animation:"fadeInUp 0.7s ease 0.1s both",
+            borderRadius: "20px", overflow: "hidden",
+            background: "rgba(255,255,255,0.6)",
+            backdropFilter: "blur(12px)",
+            boxShadow: "0 8px 40px rgba(0,81,90,0.14), 0 1px 4px rgba(0,81,90,0.08), 0 0 0 1px rgba(0,95,105,0.08)",
+            animation: "fadeInUp 0.7s ease 0.1s both",
           }}>
             {/* Toolbar */}
             <div style={{
-              display:"flex", alignItems:"center", justifyContent:"space-between",
-              padding:"12px 18px",
-              background:"rgba(255,255,255,0.85)",
-              borderBottom:"1px solid rgba(0,95,105,0.10)",
-              flexWrap:"wrap", gap:"10px",
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              padding: "12px 18px",
+              background: "rgba(255,255,255,0.85)",
+              borderBottom: "1px solid rgba(0,95,105,0.10)",
+              flexWrap: "wrap", gap: "10px",
             }}>
-              <div style={{ display:"flex", alignItems:"center", gap:"10px" }}>
-                <div style={{ display:"flex", gap:"5px" }}>
-                  {["#692C00","#00818f","#005f69"].map((c,i)=>(
-                    <div key={i} style={{ width:10, height:10, borderRadius:"50%", background:c }} />
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{ display: "flex", gap: "5px" }}>
+                  {["#692C00", "#00818f", "#005f69"].map((c, i) => (
+                    <div key={i} style={{ width: 10, height: 10, borderRadius: "50%", background: c }} />
                   ))}
                 </div>
-                <span style={{ fontSize:"0.78rem", fontWeight:600, color:"rgba(10,26,28,0.45)", letterSpacing:"0.05em" }}>
+                <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "rgba(10,26,28,0.45)", letterSpacing: "0.05em" }}>
                   ticketché — carte interactive
                 </span>
               </div>
-              <div style={{ display:"flex", gap:"8px", alignItems:"center" }}>
+              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                 {active && (
                   <button onClick={resetView} style={{
-                    background:"rgba(0,95,105,0.10)", border:"1px solid rgba(0,95,105,0.22)",
-                    color:"#005f69", fontSize:"0.72rem", fontWeight:700,
-                    padding:"4px 14px", borderRadius:"999px", cursor:"pointer",
-                    transition:"all 0.2s",
+                    background: "rgba(0,95,105,0.10)", border: "1px solid rgba(0,95,105,0.22)",
+                    color: "#005f69", fontSize: "0.72rem", fontWeight: 700,
+                    padding: "4px 14px", borderRadius: "999px", cursor: "pointer",
+                    transition: "all 0.2s",
                   }}
-                  onMouseEnter={e=>{e.currentTarget.style.background="rgba(0,95,105,0.18)"}}
-                  onMouseLeave={e=>{e.currentTarget.style.background="rgba(0,95,105,0.10)"}}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(0,95,105,0.18)" }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(0,95,105,0.10)" }}
                   >← Vue globale</button>
                 )}
-                <span style={{ fontSize:"0.7rem", color: loaded ? "#00818f" : "rgba(10,26,28,0.25)", fontWeight:600 }}>
+                <span style={{ fontSize: "0.7rem", color: loaded ? "#00818f" : "rgba(10,26,28,0.25)", fontWeight: 600 }}>
                   {loaded ? "● Live" : "○ Chargement..."}
                 </span>
               </div>
             </div>
 
-            <div ref={mapRef} style={{ width:"100%", height:"clamp(380px,50vw,520px)" }} />
+            <div ref={mapRef} style={{ width: "100%", height: "clamp(380px,50vw,520px)" }} />
           </div>
 
           {/* Panneau détail */}
           {active && (
             <div style={{
-              borderRadius:"20px", overflow:"hidden",
-              background:"rgba(255,255,255,0.88)",
-              backdropFilter:"blur(16px)",
-              border:"1px solid rgba(0,95,105,0.12)",
-              boxShadow:"0 8px 40px rgba(0,81,90,0.12)",
-              animation:"slideIn 0.35s cubic-bezier(.34,1.56,.64,1) both",
+              borderRadius: "20px", overflow: "hidden",
+              background: "rgba(255,255,255,0.88)",
+              backdropFilter: "blur(16px)",
+              border: "1px solid rgba(0,95,105,0.12)",
+              boxShadow: "0 8px 40px rgba(0,81,90,0.12)",
+              animation: "slideIn 0.35s cubic-bezier(.34,1.56,.64,1) both",
             }}>
-              {/* Header pays */}
               <div style={{
-                padding:"22px",
-                background:`linear-gradient(135deg, color-mix(in srgb, ${active.color} 10%, white) 0%, rgba(255,255,255,0.5) 100%)`,
-                borderBottom:"1px solid rgba(0,95,105,0.09)",
+                padding: "22px",
+                background: `linear-gradient(135deg, color-mix(in srgb, ${active.color} 10%, white) 0%, rgba(255,255,255,0.5) 100%)`,
+                borderBottom: "1px solid rgba(0,95,105,0.09)",
               }}>
-                <div style={{ display:"flex", alignItems:"center", gap:"12px", marginBottom:"14px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "14px" }}>
                   <img
                     src={`https://flagcdn.com/w80/${active.code}.png`}
                     alt={active.name}
                     style={{
-                      width:"48px", height:"48px", borderRadius:"50%",
-                      objectFit:"cover",
-                      border:`3px solid ${active.color}`,
-                      boxShadow:`0 4px 16px ${active.color}44`,
+                      width: "48px", height: "48px", borderRadius: "50%",
+                      objectFit: "cover",
+                      border: `3px solid ${active.color}`,
+                      boxShadow: `0 4px 16px ${active.color}44`,
                     }}
                   />
                   <div>
-                    <div style={{ fontSize:"1.1rem", fontWeight:900, color:"#0a1a1c", letterSpacing:"-0.02em" }}>
+                    <div style={{ fontSize: "1.1rem", fontWeight: 900, color: "#0a1a1c", letterSpacing: "-0.02em" }}>
                       {active.name}
                     </div>
-                    <div style={{ fontSize:"0.70rem", color:"rgba(10,26,28,0.45)", marginTop:"2px" }}>
+                    <div style={{ fontSize: "0.70rem", color: "rgba(10,26,28,0.45)", marginTop: "2px" }}>
                       {active.desc}
                     </div>
                   </div>
                 </div>
 
                 <div style={{
-                  background:"rgba(255,255,255,0.7)", borderRadius:"12px",
-                  padding:"14px 16px", border:`1px solid ${active.color}22`,
+                  background: "rgba(255,255,255,0.7)", borderRadius: "12px",
+                  padding: "14px 16px", border: `1px solid ${active.color}22`,
                 }}>
-                  <div style={{ fontSize:"1.9rem", fontWeight:900, color:active.color, letterSpacing:"-0.04em", lineHeight:1 }}>
+                  <div style={{ fontSize: "1.9rem", fontWeight: 900, color: active.color, letterSpacing: "-0.04em", lineHeight: 1 }}>
                     {active.users}
                   </div>
-                  <div style={{ fontSize:"0.70rem", color:"rgba(10,26,28,0.45)", marginTop:"3px", fontWeight:600 }}>
+                  <div style={{ fontSize: "0.70rem", color: "rgba(10,26,28,0.45)", marginTop: "3px", fontWeight: 600 }}>
                     utilisateurs actifs
                   </div>
                 </div>
               </div>
 
-              {/* Rows stats */}
-              <div style={{ padding:"16px", display:"flex", flexDirection:"column", gap:"8px" }}>
-                {detailRows.map((s,i)=>(
+              <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                {detailRows.map((s, i) => (
                   <div key={i} style={{
-                    display:"flex", alignItems:"center", justifyContent:"space-between",
-                    padding:"10px 12px",
-                    background:"rgba(0,95,105,0.04)",
-                    borderRadius:"10px",
-                    border:"1px solid rgba(0,95,105,0.08)",
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                    padding: "10px 12px",
+                    background: "rgba(0,95,105,0.04)",
+                    borderRadius: "10px",
+                    border: "1px solid rgba(0,95,105,0.08)",
                   }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                       {s.icon}
-                      <span style={{ fontSize:"0.74rem", color:"rgba(10,26,28,0.50)", fontWeight:600 }}>{s.label}</span>
+                      <span style={{ fontSize: "0.74rem", color: "rgba(10,26,28,0.50)", fontWeight: 600 }}>{s.label}</span>
                     </div>
-                    <span style={{ fontSize:"0.80rem", fontWeight:800, color:"#0a1a1c" }}>{s.val}</span>
+                    <span style={{ fontSize: "0.80rem", fontWeight: 800, color: "#0a1a1c" }}>{s.val}</span>
                   </div>
                 ))}
               </div>
 
-              {/* Progress bar */}
-              <div style={{ padding:"0 16px 18px" }}>
-                <div style={{ fontSize:"0.68rem", color:"rgba(10,26,28,0.38)", fontWeight:700, marginBottom:"8px", letterSpacing:"0.07em", textTransform:"uppercase" }}>
+              <div style={{ padding: "0 16px 18px" }}>
+                <div style={{ fontSize: "0.68rem", color: "rgba(10,26,28,0.38)", fontWeight: 700, marginBottom: "8px", letterSpacing: "0.07em", textTransform: "uppercase" }}>
                   Part du total
                 </div>
-                <div style={{ background:"rgba(0,95,105,0.10)", borderRadius:"999px", height:"7px", overflow:"hidden" }}>
+                <div style={{ background: "rgba(0,95,105,0.10)", borderRadius: "999px", height: "7px", overflow: "hidden" }}>
                   <div style={{
-                    height:"100%", borderRadius:"999px",
-                    background:`linear-gradient(90deg, ${active.color}, color-mix(in srgb, ${active.color} 55%, #00c8d4))`,
-                    width:`${(parseInt(active.users.replace(/\s/g,"")) / totalUsers * 100).toFixed(1)}%`,
-                    transition:"width 0.8s ease",
-                    boxShadow:`0 0 10px ${active.color}66`,
+                    height: "100%", borderRadius: "999px",
+                    background: `linear-gradient(90deg, ${active.color}, color-mix(in srgb, ${active.color} 55%, #00c8d4))`,
+                    width: `${(parseInt(active.users.replace(/\s/g, "")) / totalUsers * 100).toFixed(1)}%`,
+                    transition: "width 0.8s ease",
+                    boxShadow: `0 0 10px ${active.color}66`,
                   }} />
                 </div>
-                <div style={{ fontSize:"0.68rem", color:"rgba(10,26,28,0.40)", marginTop:"5px", textAlign:"right" }}>
-                  {(parseInt(active.users.replace(/\s/g,"")) / totalUsers * 100).toFixed(1)}% des utilisateurs
+                <div style={{ fontSize: "0.68rem", color: "rgba(10,26,28,0.40)", marginTop: "5px", textAlign: "right" }}>
+                  {(parseInt(active.users.replace(/\s/g, "")) / totalUsers * 100).toFixed(1)}% des utilisateurs
                 </div>
               </div>
             </div>
@@ -417,24 +460,24 @@ export default function ActiveUsers() {
 
         {/* Stats globales */}
         <div style={{
-          display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",
-          gap:"12px", marginTop:"16px",
-          animation:"fadeInUp 0.8s ease 0.2s both",
+          display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
+          gap: "12px", marginTop: "16px",
+          animation: "fadeInUp 0.8s ease 0.2s both",
         }}>
-          {globalStats.map((s,i)=>(
+          {globalStats.map((s, i) => (
             <div key={i} style={{
-              textAlign:"center", padding:"16px 12px",
-              background:"rgba(255,255,255,0.70)",
-              backdropFilter:"blur(8px)",
-              borderRadius:"14px",
-              border:"1px solid rgba(0,95,105,0.12)",
-              boxShadow:"0 2px 12px rgba(0,81,90,0.07)",
+              textAlign: "center", padding: "16px 12px",
+              background: "rgba(255,255,255,0.70)",
+              backdropFilter: "blur(8px)",
+              borderRadius: "14px",
+              border: "1px solid rgba(0,95,105,0.12)",
+              boxShadow: "0 2px 12px rgba(0,81,90,0.07)",
             }}>
-              <div style={{ display:"flex", justifyContent:"center", marginBottom:"6px" }}>{s.icon}</div>
-              <div style={{ fontSize:"clamp(1.1rem,1.8vw,1.5rem)", fontWeight:900, color:"#005f69", letterSpacing:"-0.03em", lineHeight:1 }}>
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: "6px" }}>{s.icon}</div>
+              <div style={{ fontSize: "clamp(1.1rem,1.8vw,1.5rem)", fontWeight: 900, color: "#005f69", letterSpacing: "-0.03em", lineHeight: 1 }}>
                 {s.val}
               </div>
-              <div style={{ fontSize:"0.68rem", color:"rgba(10,26,28,0.45)", fontWeight:500, marginTop:"4px" }}>
+              <div style={{ fontSize: "0.68rem", color: "rgba(10,26,28,0.45)", fontWeight: 500, marginTop: "4px" }}>
                 {s.label}
               </div>
             </div>
