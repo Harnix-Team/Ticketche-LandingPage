@@ -52,7 +52,7 @@ export const Footer = () => {
 
   const appStoreLinks = [
     {
-      href: "https://apps.apple.com/app/ticketche/id6743762073",
+      href: "https://apps.apple.com/fr/app/ticketch%C3%A9/id6758046811?",
       src: "https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg",
       alt: "Download on the App Store",
     },

@@ -377,7 +377,7 @@ export const HeroV2 = () => {
             backdropFilter: "blur(18px) saturate(160%)",
             border: "1px solid rgba(0,81,90,0.22)",
             boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
-marginTop: "clamp(0px, 1vw, 16px)",
+            marginTop: "clamp(0px, 1vw, 16px)",
             animation: "badgePulse 3.5s ease-in-out infinite, fadeUp 0.8s ease 0.1s both",
           }}>
             <div style={{
@@ -404,9 +404,7 @@ marginTop: "clamp(0px, 1vw, 16px)",
               fontWeight: 900, color: "#0a0a0a",
               lineHeight: 1.06, letterSpacing: "0.05em", margin: 0,
             }}>
-              Gérez vos Parkings, Lavages, Garages,
-              <br /> Événements avec
-              <span style={{ display: "inline-flex", alignItems: "center", gap: "14px", flexWrap: "wrap", justifyContent: "center" }}>
+              Votre business mérite mieux qu'un carnet. <br /> Passez à{" "}             <span style={{ display: "inline-flex", alignItems: "center", gap: "14px", flexWrap: "wrap", justifyContent: "center" }}>
                 <span style={{ color: "#00818f" }}>Ticketché</span>
                 <span style={{ display: "inline-flex", gap: "8px", marginLeft: "2px" }}>
                   <span style={{ width: "clamp(16px,2vw,26px)", height: "clamp(16px,2vw,26px)", borderRadius: "50%", background: "linear-gradient(135deg,#00818f,#00515a)", display: "inline-block", flexShrink: 0, boxShadow: "0 4px 14px rgba(0,81,90,0.45)" }} />
@@ -424,8 +422,8 @@ marginTop: "clamp(0px, 1vw, 16px)",
             fontWeight: 400, margin: 0,
             animation: "fadeUp 0.7s ease 0.45s both",
           }}>
-            Fini les carnets et les appels. <strong style={{ color: "#00515a", fontWeight: 800 }}>Vos clients réservent, paient et vous notent</strong> , vous pilotez tout depuis votre téléphone.
-          </p>
+            Ticketché aide les <strong style={{ color: "#00515a", fontWeight: 800 }}>gérants</strong> de parkings, lavages, garages et événements
+            à gérer leurs activités, <strong style={{ color: "#00515a", fontWeight: 800 }}>encaisser</strong> les paiements et <strong style={{ color: "#00515a", fontWeight: 800 }}>suivre</strong> leurs performances simplement depuis leur smartphone.          </p>
 
           {/* ── Bouton animé ── */}
           <a
@@ -441,7 +439,7 @@ marginTop: "clamp(0px, 1vw, 16px)",
           >
             <div className="btn-ring" style={{ pointerEvents: "none" }} />
             <span style={{ flex: 1, textAlign: "center", paddingRight: "clamp(8px,1.5vw,12px)", pointerEvents: "none" }}>
-              Télécharger l'Application
+             Installer Ticketché
             </span>
             <div className="btn-circle" style={{ pointerEvents: "none" }}>
               <ArrowRight weight="bold" className="btn-arrow" style={{ width: "clamp(22px,2.4vw,26px)", height: "clamp(22px,2.4vw,26px)", pointerEvents: "none" }} />
