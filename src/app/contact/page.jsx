@@ -201,7 +201,33 @@ export default function ContactPage() {
               <p style={{ color: "#6b7280", fontSize: 16, lineHeight: 1.75, marginBottom: 24 }}>
                 Contactez-nous et un représentant vous répondra dans les plus brefs délais.
               </p>
+  {/* Carrousel — flex: 1 pour occuper l'espace restant */}
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative" }}>
+                <div style={{ flex: 1, borderRadius: 16, overflow: "hidden", background: "#f0fafa", position: "relative", boxShadow: "0 4px 18px rgba(0,95,105,.15)" }}>
+                  <img
+                    src={images[currentImg]}
+                    alt={`photo ${currentImg + 1}`}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "opacity 0.4s ease" }}
+                  />
 
+                  {/* Flèches */}
+                  <button onClick={() => setCurrentImg((prev) => (prev - 1 + images.length) % images.length)}
+                    style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.88)", border: "none", borderRadius: "50%", width: 32, height: 32, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,.15)" }}>
+                    <CaretLeft weight="bold" style={{ width: 16, height: 16, color: "#005f69" }} />
+                  </button>
+                  <button onClick={() => setCurrentImg((prev) => (prev + 1) % images.length)}
+                    style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.88)", border: "none", borderRadius: "50%", width: 32, height: 32, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,.15)" }}>
+                    <CaretRight weight="bold" style={{ width: 16, height: 16, color: "#005f69" }} />
+                  </button>
+                </div>
+
+                {/* Dots */}
+                <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10 }}>
+                  {images.map((_, i) => (
+                    <div key={i} onClick={() => setCurrentImg(i)} style={{ width: i === currentImg ? 20 : 7, height: 7, borderRadius: 999, background: i === currentImg ? "#005f69" : "rgba(0,95,105,.25)", cursor: "pointer", transition: "all 0.3s ease" }} />
+                  ))}
+                </div>
+              </div>
               {/* Localisation */}
               <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
                 <div style={{ width: 44, height: 44, borderRadius: "50%", background: "#005f69", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 4px 14px rgba(0,95,105,.3)" }}>
@@ -235,39 +261,13 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Carrousel — flex: 1 pour occuper l'espace restant */}
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative" }}>
-                <div style={{ flex: 1, borderRadius: 16, overflow: "hidden", background: "#f0fafa", position: "relative", boxShadow: "0 4px 18px rgba(0,95,105,.15)" }}>
-                  <img
-                    src={images[currentImg]}
-                    alt={`photo ${currentImg + 1}`}
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "opacity 0.4s ease" }}
-                  />
-
-                  {/* Flèches */}
-                  <button onClick={() => setCurrentImg((prev) => (prev - 1 + images.length) % images.length)}
-                    style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.88)", border: "none", borderRadius: "50%", width: 32, height: 32, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,.15)" }}>
-                    <CaretLeft weight="bold" style={{ width: 16, height: 16, color: "#005f69" }} />
-                  </button>
-                  <button onClick={() => setCurrentImg((prev) => (prev + 1) % images.length)}
-                    style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.88)", border: "none", borderRadius: "50%", width: 32, height: 32, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,.15)" }}>
-                    <CaretRight weight="bold" style={{ width: 16, height: 16, color: "#005f69" }} />
-                  </button>
-                </div>
-
-                {/* Dots */}
-                <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10 }}>
-                  {images.map((_, i) => (
-                    <div key={i} onClick={() => setCurrentImg(i)} style={{ width: i === currentImg ? 20 : 7, height: 7, borderRadius: 999, background: i === currentImg ? "#005f69" : "rgba(0,95,105,.25)", cursor: "pointer", transition: "all 0.3s ease" }} />
-                  ))}
-                </div>
-              </div>
+            
             </div>
 
             {/* Formulaire */}
             <div style={{
               background: "linear-gradient(145deg, #005f69 0%, #004a52 100%)",
-              borderRadius: 20, padding: "24px 28px",
+              borderRadius: 20, padding: "122px 28px",
               boxShadow: "0 20px 60px rgba(0,95,105,.3)",
               boxSizing: "border-box",
               display: "flex", flexDirection: "column",
