@@ -13,21 +13,21 @@ const STATIC_IMAGES = [
 ];
 
 const CLUSTERS = [
-  { cx: "2%",  cy: "6%",  stars: [{ x: 0, y: 0, size: 13, opacity: 0.45, anim: 0, delay: "0s",   dur: "3.2s", color: "#00818f" }, { x: 16, y: -10, size: 8, opacity: 0.28, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" }] },
-  { cx: "91%", cy: "5%",  stars: [{ x: 0, y: 0, size: 13, opacity: 0.40, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" }, { x: -12, y: 11, size: 8, opacity: 0.25, anim: 2, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
-  { cx: "1%",  cy: "40%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.32, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" }, { x: 13, y: -7, size: 6, opacity: 0.20, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" }] },
+  { cx: "2%", cy: "6%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.45, anim: 0, delay: "0s", dur: "3.2s", color: "#00818f" }, { x: 16, y: -10, size: 8, opacity: 0.28, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" }] },
+  { cx: "91%", cy: "5%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.40, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" }, { x: -12, y: 11, size: 8, opacity: 0.25, anim: 2, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
+  { cx: "1%", cy: "40%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.32, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" }, { x: 13, y: -7, size: 6, opacity: 0.20, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" }] },
   { cx: "94%", cy: "38%", stars: [{ x: 0, y: 0, size: 11, opacity: 0.35, anim: 0, delay: "0.3s", dur: "3.3s", color: "#00818f" }, { x: -11, y: 9, size: 6, opacity: 0.20, anim: 1, delay: "0.6s", dur: "2.9s", color: "#00515a" }] },
-  { cx: "44%", cy: "1%",  stars: [{ x: 0, y: 0, size: 7,  opacity: 0.22, anim: 0, delay: "0.1s", dur: "3.0s", color: "#00818f" }] },
-  { cx: "74%", cy: "92%", stars: [{ x: 0, y: 0, size: 6,  opacity: 0.18, anim: 0, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
+  { cx: "44%", cy: "1%", stars: [{ x: 0, y: 0, size: 7, opacity: 0.22, anim: 0, delay: "0.1s", dur: "3.0s", color: "#00818f" }] },
+  { cx: "74%", cy: "92%", stars: [{ x: 0, y: 0, size: 6, opacity: 0.18, anim: 0, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
 ];
 
 const SERVICES = [
-  { icon: <Car weight="bold" />,      title: "Parking intelligent",   desc: "Trouvez et réservez une place de parking en temps réel. Fini le stress de chercher.", num: "01" },
-  { icon: <Swatches weight="bold" />, title: "Car wash express",       desc: "Réservez votre lavage auto où que vous soyez. Votre véhicule brille, vous souriez.", num: "02", highlight: true },
-  { icon: <Wrench weight="bold" />,   title: "Garage & réparation",    desc: "Accédez aux meilleurs garages du Bénin et prenez rendez-vous en quelques secondes.", num: "03" },
-  { icon: <Ticket weight="bold" />,   title: "Billetterie événements", desc: "Concerts, festivals, soirées — achetez vos billets directement depuis l'appli.", num: "04" },
-  { icon: <MapPin weight="bold" />,   title: "Géolocalisation live",   desc: "Repérez les services autour de vous en temps réel, où que vous soyez au Bénin.", num: "05" },
-  { icon: <Bell weight="bold" />,     title: "Actualités & alertes",   desc: "Restez informé des dernières nouveautés, offres exclusives et nouveaux établissements.", num: "06" },
+  { icon: <Car weight="bold" />, title: "Parking intelligent", desc: "Trouvez et réservez une place de parking en temps réel. Fini le stress de chercher.", num: "01" },
+  { icon: <Swatches weight="bold" />, title: "Car wash express", desc: "Réservez votre lavage auto où que vous soyez. Votre véhicule brille, vous souriez.", num: "02", highlight: true },
+  { icon: <Wrench weight="bold" />, title: "Garage & réparation", desc: "Accédez aux meilleurs garages du Bénin et prenez rendez-vous en quelques secondes.", num: "03" },
+  { icon: <Ticket weight="bold" />, title: "Billetterie événements", desc: "Concerts, festivals, soirées — achetez vos billets directement depuis l'appli.", num: "04" },
+  { icon: <MapPin weight="bold" />, title: "Géolocalisation live", desc: "Repérez les services autour de vous en temps réel, où que vous soyez au Bénin.", num: "05" },
+  { icon: <Bell weight="bold" />, title: "Actualités & alertes", desc: "Restez informé des dernières nouveautés, offres exclusives et nouveaux établissements.", num: "06" },
 ];
 
 const TEAM_AVATARS = [
@@ -69,11 +69,11 @@ export default function AboutPage() {
           : [];
         const placeImages = placesRes.status === "fulfilled" && placesRes.value?.success
           ? (placesRes.value.data ?? []).filter(p => p.images?.length > 0).map(p => {
-              const link = p.images[0].link;
-              if (!link) return null;
-              const cleaned = link.replace("/storage/app/public", "/storage");
-              return cleaned.startsWith("http") ? cleaned : `https://api.ticketche.com${cleaned}`;
-            }).filter(Boolean).slice(0, 4)
+            const link = p.images[0].link;
+            if (!link) return null;
+            const cleaned = link.replace("/storage/app/public", "/storage");
+            return cleaned.startsWith("http") ? cleaned : `https://api.ticketche.com${cleaned}`;
+          }).filter(Boolean).slice(0, 4)
           : [];
         const allImages = [...STATIC_IMAGES, ...eventImages, ...placeImages];
         if (allImages.length > 0) setCarouselImages(allImages);
@@ -223,8 +223,7 @@ export default function AboutPage() {
 
         /* ─── SERVICES ─── */
         .sv-root { padding: 32px 0 100px; }
-        .sv-header { text-align: center; margin-bottom: 56px; }
-        .sv-badge {
+.sv-header { text-align: left; margin-bottom: 56px; padding-left: 32px; max-width: 1160px; margin-left: auto; margin-right: auto; }        .sv-badge {
           display: inline-block;
           background: rgba(0,95,105,0.10); color: #005f69;
           font-size: 11px; font-weight: 800;
@@ -232,10 +231,10 @@ export default function AboutPage() {
           padding: 6px 16px; border-radius: 999px; margin-bottom: 20px;
         }
         .sv-title {
-          font-size: clamp(28px, 3.5vw, 46px); font-weight: 900;
-          color: #0a1a1c; line-height: 1.15; letter-spacing: -1px;
-          max-width: 560px; margin: 0 auto;
-        }
+  font-size: clamp(28px, 3.5vw, 46px); font-weight: 900;
+  color: #0a1a1c; line-height: 1.15; letter-spacing: 0.04em;
+  max-width: 560px; margin: 0;
+}
         .sv-title span { color: #005f69; }
         .sv-grid {
           max-width: 1160px; margin: 0 auto; padding: 0 32px;
@@ -319,12 +318,21 @@ export default function AboutPage() {
         .cta-title span { color: #7dd3d8; }
         .cta-sub { margin-top: 14px; font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.7; max-width: 420px; }
         .cta-actions { display: flex; flex-direction: column; gap: 14px; position: relative; z-index: 2; flex-shrink: 0; }
-        .cta-btn-main {
-          display: inline-flex; align-items: center; gap: 10px;
-          background: white; color: #005f69; font-weight: 800; font-size: 14px;
-          padding: 16px 28px; border-radius: 999px; text-decoration: none;
-          transition: all .2s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.18); white-space: nowrap;
-        }
+       .cta-btn-main {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: white; color: #005f69; font-weight: 800; font-size: 14px;
+  padding: 16px 28px; border-radius: 999px; text-decoration: none;
+  transition: all .2s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.18); white-space: nowrap;
+  animation: ctaBtnPulse 2s ease-in-out infinite;
+}
+  .cta-btn-main svg { animation: ctaArrow 1.2s ease-in-out infinite; }
+.cta-btn-main:hover {
+  animation: none;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.25);
+  background: #f0fafa;
+}
+.cta-btn-main:hover svg { animation: none; transform: translateX(4px); }
         .cta-btn-main:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(0,0,0,0.25); }
         .cta-btn-sec {
           display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -350,6 +358,14 @@ export default function AboutPage() {
           .cta-inner { padding: 40px 28px; border-radius: 20px; }
           .cta-root { padding: 0 20px 60px; }
         }
+          @keyframes ctaBtnPulse {
+  0%,100% { box-shadow: 0 8px 24px rgba(0,0,0,0.18), 0 0 0 0 rgba(255,255,255,0.4); }
+  50%      { box-shadow: 0 12px 28px rgba(0,0,0,0.22), 0 0 0 10px rgba(255,255,255,0); }
+}
+@keyframes ctaArrow {
+  0%,100% { transform: translateX(0px); }
+  50%      { transform: translateX(5px); }
+}
       `}</style>
 
       <div className="about-page">
@@ -369,10 +385,10 @@ export default function AboutPage() {
                 <span className="ap-badge-text">+15 ans d'expériences</span>
               </div>
 
-              <h1 className="ap-title">
-                Parking, lavage, garage.<br />
-                Tout ça, <span>en un clic.</span>
-              </h1>
+              <h2 className="sv-title">
+                Tout ce dont vous avez besoin,<br />
+                <span>en un seul endroit.</span>
+              </h2>
 
               <p className="ap-sub">
                 Plus besoin de chercher - trouvez, réservez et profitez. Partout au Bénin.
@@ -410,8 +426,8 @@ export default function AboutPage() {
           <div className="sv-header">
             <div className="sv-badge">Nos services</div>
             <h2 className="sv-title">
-              Tout ce dont vous avez besoin,<br />
-              <span>en un seul endroit.</span>
+               Réservez, gérez, profitez.
+              <span>en un clic.</span>
             </h2>
           </div>
 
@@ -444,7 +460,7 @@ export default function AboutPage() {
                 <span>quotidien au Bénin ?</span>
               </h2>
               <p className="cta-sub">
-                Téléchargez l'application et accédez à des centaines de services autour de vous — parking, car wash, garages et événements.
+                Téléchargez l'application et accédez à des centaines de services autour de vous - parking, car wash, garages et événements.
               </p>
             </div>
 
