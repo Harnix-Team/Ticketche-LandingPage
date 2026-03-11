@@ -32,9 +32,9 @@ export const Header = () => {
   const getLinkHref = (anchor) => (isHomePage ? anchor : `/${anchor}`);
 
   const navLinks = [
+    { href: "/a-propos", label: "À propos", isPage: true },
     { href: "#events", label: "Événements" },
     { href: "#emplacements", label: "Emplacements" },
-    { href: "/a-propos", label: "À propos", isPage: true },
     { href: "/contact", label: " Contact", isPage: true },
   ];
 
