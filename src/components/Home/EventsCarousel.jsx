@@ -673,7 +673,7 @@ export const EventsCarousel = () => {
   return (
     <section id="events" style={S.section}>
       <div style={S.inner}>
-        <div style={{ marginBottom: "48px" }}>
+        <div style={{ marginBottom: "35px" }}>
 
           {/* Header — affiché uniquement quand il y a des événements */}
           {!loading && featured.length > 0 && (

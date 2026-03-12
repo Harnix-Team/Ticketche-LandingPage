@@ -20,7 +20,8 @@ export default function AppNotificationCompact() {
         return (
           <a href="https://apps.apple.com/fr/app/ticketch%C3%A9/id6758046811"
             target="_blank" rel="noopener noreferrer"
-            style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, fontWeight: 600, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)" }}>
+            style={{ color: "rgba(255,255,255,0.85)", fontSize: 15
+            , fontWeight: 600, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)" }}>
             Accéder à la version iOS →
           </a>
         );
@@ -28,13 +29,13 @@ export default function AppNotificationCompact() {
         return (
           <a href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
             target="_blank" rel="noopener noreferrer"
-            style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, fontWeight: 600, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", wordSpacing: "4px" }}>
+            style={{ color: "rgba(255,255,255,0.85)", fontSize: 15, fontWeight: 600, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", wordSpacing: "4px" }}>
             Accéder à la version Android →
           </a>
         );
       default:
         return (
-<p style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, margin: 0, letterSpacing: "0.03em", wordSpacing: "3px" }}>
+<p style={{ color: "rgba(255,255,255,0.85)", fontSize: 15, margin: 0, letterSpacing: "0.03em", wordSpacing: "3px" }}>
             Télécharger pour{' '}
             <a href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
               target="_blank" rel="noopener noreferrer"

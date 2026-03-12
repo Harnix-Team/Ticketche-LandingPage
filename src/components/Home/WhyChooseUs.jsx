@@ -1,24 +1,24 @@
 "use client";
 
-import { DeviceMobile, ChartLineUp, QrCode, Star } from "@phosphor-icons/react";
+import { DeviceMobileCamera, Money, ChartBar, Star } from "@phosphor-icons/react";
 
 const reasons = [
   {
-    Icon: DeviceMobile,
-    title: "Gestion 100% Mobile",
-    description: "Gérez votre parking, lavage ou garage directement depuis votre smartphone. Créez vos services, suivez vos clients et pilotez votre activité où que vous soyez.",
+    Icon: DeviceMobileCamera,
+    title: "Gestion simple depuis votre téléphone",
+    description: "Avec Ticketché, gérez facilement vos parkings, lavages, garages ou événements directement depuis votre smartphone. Suivez vos activités, vos clients et gardez le contrôle sur votre business à tout moment.",
     href: "#download",
   },
   {
-    Icon: QrCode,
-    title: "Encaissement Simplifié",
-    description: "Acceptez les paiements via Mobile Money en quelques secondes. Chaque transaction génère automatiquement un QR code et une facture numérique pour vos clients.",
+    Icon: Money,
+    title: "Paiements rapides et sans stress",
+    description: "Recevez les paiements en quelques secondes via Mobile Money. Chaque paiement génère automatiquement un ticket numérique avec QR code, pour un suivi simple et professionnel.",
     href: "#services",
   },
   {
-    Icon: ChartLineUp,
-    title: "Suivi en Temps Réel",
-    description: "Visualisez vos recettes, entrées, sorties et performances en direct. Prenez de meilleures décisions grâce à des statistiques claires et accessibles à tout moment.",
+    Icon: ChartBar,
+    title: "Une vue claire de votre activité",
+    description: "Consultez vos entrées, vos transactions et vos performances en temps réel. Tout est centralisé pour vous permettre de mieux gérer et développer votre activité.",
     href: "#contact",
   },
 ];
@@ -172,49 +172,35 @@ export default function WhyChooseUs() {
         .wcu-card:hover .wcu-icon-box { transform: scale(1.08); }
 
         .wcu-card-title {
-          font-size: 20px;
+          font-size: 18px;
           font-weight: 800;
           color: #0a1a1c;
           margin: 0 0 10px;
           letter-spacing: -0.01em;
-          line-height: 1.2;
+          line-height: 1.3;
         }
 
         .wcu-card-desc {
           font-size: 14px;
           color: #6b7280;
           line-height: 1.75;
-          margin: 0 0 24px;
+          margin: 0;
         }
-
-        .wcu-link {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 13px;
-          font-weight: 700;
-          color: #005f69;
-          text-decoration: none;
-          transition: gap 0.2s ease;
-        }
-        .wcu-link:hover { gap: 10px; }
       `}</style>
 
       <section className="wcu-section">
         <StarClusters />
 
         <div className="wcu-title-wrap">
-          <div className="wcu-title-wrap">
-            <h2 className="wcu-title">
-              <span>Ticketché</span>, c'est quoi ?&nbsp;
-              <span className="wcu-title-star wcu-title-star-1">
-                <Star weight="fill" style={{ width: 20, height: 20, color: "#005f69" }} />
-              </span>
-              <span className="wcu-title-star wcu-title-star-2" style={{ marginLeft: "4px" }}>
-                <Star weight="fill" style={{ width: 14, height: 14, color: "#00818f" }} />
-              </span>
-            </h2>
-          </div>
+          <h2 className="wcu-title">
+            <span>ticketché</span>, c'est quoi ?&nbsp;
+            <span className="wcu-title-star wcu-title-star-1">
+              <Star weight="fill" style={{ width: 20, height: 20, color: "#005f69" }} />
+            </span>
+            <span className="wcu-title-star wcu-title-star-2" style={{ marginLeft: "4px" }}>
+              <Star weight="fill" style={{ width: 14, height: 14, color: "#00818f" }} />
+            </span>
+          </h2>
         </div>
 
         <div className="wcu-grid">

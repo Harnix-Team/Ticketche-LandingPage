@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 import {
   Calendar, MapPin, Tag, Users, Ticket,
   MagnifyingGlass, X, Funnel, ArrowUpRight,
@@ -68,7 +69,7 @@ function HeroCard({ event, onClick }) {
         <p className="text-white/60 text-xs font-bold uppercase tracking-[0.15em] mb-2">
           {formatDate(event.start_date)}
         </p>
-        <h2 className="text-white text-2xl sm:text-3xl font-black leading-tight mb-3 max-w-xl">
+<h2 className="text-white text-2xl sm:text-3xl font-black leading-tight mb-3 max-w-xl" style={{ color: "#ffffff" }}>
           {event.title}
         </h2>
         <div className="flex flex-wrap items-center gap-4 text-white/70 text-sm mb-5">
@@ -160,7 +161,8 @@ function ListCard({ event, index, onClick }) {
             <Ticket className="w-3.5 h-3.5 text-[#692C00]" />
             <span className="font-black text-[#692C00] text-sm">{getMinPrice(event.tickets)}</span>
           </div>
-          <span className="flex items-center gap-1 text-[#005f69] text-xs font-black opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <span className="flex items-center gap-1 text-[#005f69] text-xs font-black">
+
             Voir <CaretRight className="w-3 h-3" />
           </span>
         </div>
@@ -228,7 +230,7 @@ export default function EventsPage() {
   const [viewMode, setViewMode]           = useState("list"); // "list" | "grid"
   const [sortBy, setSortBy]               = useState("featured"); // "featured" | "date" | "price"
   const searchTimeout = useRef(null);
-
+const router = useRouter();
   useEffect(() => {
     fetch(`${API_BASE_URL}/events`)
       .then((r) => r.json())
@@ -259,10 +261,9 @@ export default function EventsPage() {
     }, 400);
   }, []);
 
-  const handleEventClick = (event) => {
-    localStorage.setItem("selectedEvent", JSON.stringify(event));
-    window.open(`/events/${event.id}`, "_blank");
-  };
+ const handleEventClick = (event) => {
+  router.push(`/events/${event.id}`);
+};
 
   const filteredEvents = useMemo(() => {
     const base = searchResults ?? allEvents;
@@ -322,13 +323,13 @@ export default function EventsPage() {
               <CaretRight className="w-3 h-3" />
               <span className="text-[#005f69]">Événements</span>
             </div>
-<h1 className="title-hero text-gray-900" style={{ fontSize: "40px" }}>
+<h1 className="title-hero text-gray-900" style={{ fontSize: "32px" }}>
               Tous les{" "}
               <span className="title-accent">événements</span>
             </h1>
-            <p className="text-gray-500 mt-2 text-base">
-              {filteredEvents.length} événement{filteredEvents.length !== 1 ? "s" : ""} disponible{filteredEvents.length !== 1 ? "s" : ""}
-            </p>
+<p className="text-gray-500 mt-2 text-base">
+  {loading ? "..." : `${allEvents.length} événement${allEvents.length !== 1 ? "s" : ""} disponible${allEvents.length !== 1 ? "s" : ""}`}
+</p>
           </div>
 
           {/* View toggle */}
@@ -483,7 +484,7 @@ export default function EventsPage() {
                   {/* Count */}
                   <div className="flex items-center justify-between mb-4">
                     <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">
-                      {(searchQuery || activeCategory ? filteredEvents : listEvents).length} événement{(searchQuery || activeCategory ? filteredEvents : listEvents).length !== 1 ? "s" : ""}
+                      {filteredEvents.length} événement{(searchQuery || activeCategory ? filteredEvents : listEvents).length !== 1 ? "s" : ""}
                     </p>
                   </div>
 

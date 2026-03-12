@@ -181,7 +181,7 @@ export default function ContactPage() {
   </p>
 </section>
   {/* ══ CARDS BOTTOM ══ */}
-        <section style={{ padding: "0 20px 80px", position: "relative", zIndex: 2 }}>
+        {/* <section style={{ padding: "0 20px 80px", position: "relative", zIndex: 2 }}>
           <div style={{ maxWidth: "90vw", margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
 
             <div className="ct-card-teal">
@@ -218,7 +218,7 @@ export default function ContactPage() {
             </div>
 
           </div>
-        </section>
+        </section> */}
         {/* ══ MIDDLE ══ */}
         <section style={{ padding: "0 20px 70px", position: "relative", zIndex: 2 }}>
           <div style={{

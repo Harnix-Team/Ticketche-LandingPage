@@ -307,7 +307,7 @@ export default function ActiveUsers() {
             lineHeight: 1.1, letterSpacing: "-0.03em",
             color: "#0a1a1c", margin: "0 auto", maxWidth: "600px",
           }}>
-            Ticketché grandit partout,{" "}
+            ticketché grandit partout,{" "}
             <span style={{
               background: "linear-gradient(135deg, #005f69 0%, #00818f 50%, #00c8d4 100%)",
               WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",

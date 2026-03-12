@@ -53,12 +53,11 @@ background: "#ffffff",    }}>
           {/* EN-TÊTE */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "clamp(20px, 4vw, 60px)", flexWrap: "wrap", position: "relative", zIndex: 1, marginBottom: "clamp(32px, 4vw, 52px)" }}>
             <h2 style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.5rem)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.025em", color: "#001e22", maxWidth: "460px", margin: 0 }}>
-              Sécurisé &amp; Pratique{" "}
-              <span style={{ color: "#00515a" }}>pour tous</span>
+              Trouvez facilement un service proche
             </h2>
             <p style={{ fontSize: "clamp(0.88rem, 1.2vw, 1rem)", color: "#001e22", lineHeight: 1.75, maxWidth: "360px", margin: 0, paddingTop: "6px" }}>
-              Payez et encaissez en toute confiance grâce à notre plateforme.
-              Transactions instantanées, sans commission cachée et sans mauvaise surprise.
+              Ne perdez plus de temps à chercher.
+Avec Ticketché, localisez rapidement un parking, garage, lavage ou évènements, disponible près de vous et accédez au service en quelques secondes. 
             </p>
           </div>
 

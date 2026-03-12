@@ -222,7 +222,7 @@ const styles = {
     boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
   },
   section: {
-    padding: "20px 0 80px",
+    padding: "40px 0 80px",
     background: "#ffffff",
     position: "relative",
     overflow: "hidden",
@@ -501,7 +501,7 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <h3 style={styles.sectionTitle}>
-              {title ?? <>Établissements <span style={{ color: "#005f69" }}>disponibles</span></>}
+              {title ?? <>Emplacements <span style={{ color: "#005f69" }}>disponibles</span></>}
             </h3>
             {showSubtitle && <p style={styles.sectionSubtitle}>Découvrez un réseau croissant de partenaires professionnels sélectionnés pour leur qualité de service et leur expertise.</p>}
           </motion.div>

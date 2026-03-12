@@ -170,7 +170,7 @@ export default function TrustedBySection() {
   return (
     <section
       style={{
-background: "#ffffff",
+background: "#ecf5f5",
         overflow: "hidden",
         width: "100%",
       }}
@@ -201,7 +201,7 @@ background: "#ffffff",
             top: 0,
             bottom: 0,
             width: "120px",
-background: "linear-gradient(to right, #ffffff, transparent)",
+background: "linear-gradient(to right, #ecf5f5, transparent)",
             zIndex: 2,
             pointerEvents: "none",
           }}
@@ -214,7 +214,7 @@ background: "linear-gradient(to right, #ffffff, transparent)",
             top: 0,
             bottom: 0,
             width: "120px",
-background: "linear-gradient(to left, #ffffff, transparent)",
+background: "linear-gradient(to left, #ecf5f5, transparent)",
             zIndex: 2,
             pointerEvents: "none",
           }}

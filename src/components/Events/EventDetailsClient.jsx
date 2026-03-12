@@ -85,7 +85,7 @@ export default function EventDetailsPage() {
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const res = await fetch(`/api/events/${id}`);
+const res = await fetch(`https://api.ticketche.com/api/v2/events/${id}`);
         const data = await res.json();
         if (data.success) setEvent(data.data);
       } catch (err) { console.error(err); }
@@ -156,9 +156,10 @@ export default function EventDetailsPage() {
             </motion.div>
           )}
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-5xl font-black leading-tight text-white mb-3 [text-shadow:0_2px_16px_rgba(0,0,0,0.5)]">
-            {event.title}
-          </motion.h1>
+  className="text-3xl sm:text-5xl font-black leading-tight text-white mb-3 [text-shadow:0_2px_16px_rgba(0,0,0,0.5)]"
+  style={{ color: "#ffffff" }}>
+  {event.title}
+</motion.h1>
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="flex flex-wrap gap-4 text-sm text-white/80">
             <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4 text-white/60" />{formatDate(event.start_date)}</span>

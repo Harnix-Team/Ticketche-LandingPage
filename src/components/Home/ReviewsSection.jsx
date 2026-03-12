@@ -218,7 +218,7 @@ export default function ReviewsSection() {
         background: "#ffffff",
         position: "relative",
       }}
-      className="py-20"
+      className="py-10"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -269,7 +269,7 @@ export default function ReviewsSection() {
         </div>
 
         {/* Carousel */}
-        <div style={{ position: "relative", height: "clamp(380px, 50vw, 480px)" }}>
+<div style={{ position: "relative", height: "clamp(340px, 44vw, 420px)" }}>
           {reviews.map((review, i) => (
             <ReviewCard
               key={i}

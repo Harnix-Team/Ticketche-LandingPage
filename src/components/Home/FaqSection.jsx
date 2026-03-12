@@ -7,12 +7,12 @@ const faqs = [
   {
     question: "Qu'est-ce que Ticketché ?",
     answer:
-      "Ticketché est une super-application qui centralise 5 services du quotidien : parking, lavage auto, garage & mécanique, billetterie d'événements et gestion d'événements. Utilisateurs et gérants y trouvent chacun les outils adaptés à leurs besoins, en temps réel.",
+      "Ticketché est une super-application qui centralise 4 services du quotidien : parking, lavage auto, garage & mécanique, billetterie d'événements et gestion d'événements. Utilisateurs et gérants y trouvent chacun les outils adaptés à leurs besoins, en temps réel.",
   },
   {
     question: "Quels services sont disponibles sur Ticketché ?",
     answer:
-      "Ticketché couvre 5 domaines : (1) Parking — localisez et réservez une place en temps réel ; (2) Lavage auto — repérez les centres notés près de chez vous ; (3) Garage & mécanique — confiez votre véhicule à des garages certifiés ; (4) Billetterie — achetez vos billets de concerts, soirées ou expos en ligne ; (5) Événements — créez et gérez vos événements avec vente de tickets intégrée.",
+      "Ticketché couvre 4 domaines : (1) Parking - localisez et réservez une place en temps réel ; (2) Lavage auto - repérez les centres notés près de chez vous ; (3) Garage & mécanique — confiez votre véhicule à des garages certifiés ; Billetterie - achetez vos billets de concerts, soirées ou expos en ligne ; (4) Événements - créez et gérez vos événements avec vente de tickets intégrée.",
   },
   {
     question: "Comment réserver un service sur Ticketché ?",
