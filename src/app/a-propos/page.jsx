@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import {
   ArrowRight, ArrowUpRight, Star, Car, Wrench, Swatches, Ticket, Bell, MapPin,
   CheckCircle, Users, Wallet, Tag, QrCode, Handshake, DeviceMobile, CreditCard,
-  ChartBar, Money, Pulse, ShieldCheck, ClipboardText, TrendUp
+  ChartBar, Money, Pulse, ShieldCheck, ClipboardText, TrendUp, NavigationArrow
 } from "@phosphor-icons/react";
 import { fetchAllPlaces } from "@/app/services/api";
 import FAQSection from "@/components/Home/FaqSection";
@@ -42,14 +42,13 @@ const CLUSTERS = [
 ];
 
 const SERVICES = [
-  { icon: <Car weight="bold" />,      title: "Parking intelligent",   desc: "Trouvez et réservez une place de parking en temps réel. Fini le stress de chercher.", num: "01" },
-  { icon: <Swatches weight="bold" />, title: "Car wash express",       desc: "Réservez votre lavage auto où que vous soyez. Votre véhicule brille, vous souriez.", num: "02", highlight: true },
-  { icon: <Wrench weight="bold" />,   title: "Garage & réparation",    desc: "Accédez aux meilleurs garages du Bénin et prenez rendez-vous en quelques secondes.", num: "03" },
-  { icon: <Ticket weight="bold" />,   title: "Billetterie événements", desc: "Concerts, festivals, soirées — achetez vos billets directement depuis l'appli.", num: "04" },
-  { icon: <MapPin weight="bold" />,   title: "Géolocalisation live",   desc: "Repérez les services autour de vous en temps réel, où que vous soyez au Bénin.", num: "05" },
-  { icon: <Bell weight="bold" />,     title: "Actualités & alertes",   desc: "Restez informé des dernières nouveautés, offres exclusives et nouveaux établissements.", num: "06" },
+  { icon: <MapPin weight="bold" />,          title: "Trouvez des services autour de vous", desc: "Découvrez facilement des parkings, lavages et garages disponibles près de vous, directement depuis l'application.", num: "01" },
+  { icon: <CreditCard weight="bold" />,      title: "Payez simplement",                    desc: "Effectuez vos paiements rapidement et en toute sécurité grâce aux solutions de paiement intégrées.", num: "02", highlight: true },
+  { icon: <Wrench weight="bold" />,          title: "Accédez aux meilleurs garages",       desc: "Trouvez des garages fiables pour l'entretien et la réparation de votre véhicule.", num: "03" },
+  { icon: <Ticket weight="bold" />,          title: "Découvrez les événements",            desc: "Concerts, festivals, soirées... accédez aux événements autour de vous et obtenez vos billets facilement.", num: "04" },
+  { icon: <NavigationArrow weight="bold" />, title: "Localisation en temps réel",          desc: "Repérez instantanément les services disponibles autour de vous, où que vous soyez.", num: "05" },
+  { icon: <ClipboardText weight="bold" />,   title: "Tous vos tickets au même endroit",    desc: "Gardez une trace de vos tickets et transactions. Plus besoin de conserver des papiers.", num: "06" },
 ];
-
 const FEATURES = [
   { icon: MapPin,    title: "Parking · Lavage · Garage",  desc: "Localisez, réservez et payez en temps réel. Centres de lavage notés, garages certifiés, parkings disponibles près de vous.", accent: "#005F69" },
   { icon: Ticket,    title: "Billetterie & Événements",    desc: "Achetez vos billets de concerts, festivals et conférences. Gérez vos propres événements avec vente de tickets intégrée.", accent: "#692C00" },
@@ -335,7 +334,7 @@ export default function AboutPage() {
         }
         .sv-title {
           font-size: clamp(28px, 3.5vw, 46px); font-weight: 900; color: #0a1a1c;
-          line-height: 1.15; letter-spacing: 0.04em; max-width: 560px; margin: 0;
+          line-height: 1.15; max-width: 560px; margin: 0;
         }
         .sv-title span { color: #005f69; }
         .sv-grid {
@@ -584,13 +583,14 @@ export default function AboutPage() {
                 </div>
                 <span className="ap-badge-text">+15 ans d'expériences</span>
               </div>
-              <h1 className="ap-title">
-                Parking, lavage, garage.<br />
-                Tout ça, <span>en un clic.</span>
-              </h1>
-              <p className="ap-sub">
-                Plus besoin de chercher - trouvez, réservez et profitez. Partout au Bénin.
-              </p>
+              <h1 className="ap-title" style={{ fontSize: "clamp(26px, 3.2vw, 42px)" }}>
+  Parking, lavage, garage,<br />
+  événements. Une nouvelle<br />
+  <span>façon de tout gérer.</span>
+</h1>
+<p className="ap-sub">
+  Ticketché connecte les utilisateurs aux services et événements qui les entourent, en quelques clics. Pour les gestionnaires, c'est une solution simple pour organiser leurs activités, encaisser rapidement et offrir une meilleure expérience à leurs clients.
+</p>
               <div className="ap-btns">
                 <a
                   href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
@@ -634,7 +634,7 @@ export default function AboutPage() {
                   <path id="circlePath" d="M 54,54 m -34,0 a 34,34 0 1,1 68,0 a 34,34 0 1,1 -68,0" />
                 </defs>
                 <text fill="rgba(255,255,255,0.85)" fontSize="10.5" fontWeight="700" letterSpacing="2.8" fontFamily="Archivo, sans-serif">
-                  <textPath href="#circlePath">TICKETCHÉ • AU BÉNIN • </textPath>
+                  <textPath href="#circlePath">TICKETCHÉ • AU QUOTIDIEN • </textPath>
                 </text>
               </svg>
               <ArrowUpRight size={22} weight="bold" className="ab-badge-arrow" />
@@ -643,20 +643,22 @@ export default function AboutPage() {
           <div>
             <div className="ab-tag">À propos de Ticketché</div>
             <h2 className="ab-title">
-              La plateforme urbaine<br />
-              <span>pensée pour le Bénin.</span>
+              La plateforme qui simplifie la vie urbaine<br />
+              <span>au  Bénin.</span>
             </h2>
             <p className="ab-desc">
-              Ticketché connecte les Béninois aux services du quotidien — parking, car wash, garages et événements. Une seule appli, des centaines de prestataires vérifiés, disponibles en temps réel partout au Bénin.
-            </p>
+Ticketché réunit dans une seule application les services dont vous avez besoin au quotidien : parkings, lavages, garages et événements.
+Trouvez rapidement un service autour de vous, accédez à des prestataires fiables et profitez d’une expérience simple, rapide et moderne.
+
+Que vous soyez utilisateur ou gestionnaire de service, Ticketché vous aide à gagner du temps, mieux organiser vos activités et profiter pleinement de la ville.            </p>
             <div className="ab-pills">
               <div className="ab-pill">
                 <div className="ab-pill-icon"><CheckCircle size={18} weight="bold" /></div>
-                Services vérifiés
+                Services vérifiés <br /> Des prestataires sélectionnés pour garantir <br /> des services fiables et de qualité.
               </div>
               <div className="ab-pill">
                 <div className="ab-pill-icon"><Users size={18} weight="bold" /></div>
-                +5 000 utilisateurs
+                +5 000 utilisateurs <br />  Une communauté grandissante qui utilise déjà.
               </div>
             </div>
             <a
@@ -674,10 +676,10 @@ export default function AboutPage() {
         <div className="sv-root">
           <div className="sv-header">
             <div className="sv-badge">Nos services</div>
-            <h2 className="sv-title">
-              Réservez, gérez, profitez.<br />
-              <span>en un clic.</span>
-            </h2>
+            <h2 className="sv-title" style={{ fontSize: "clamp(22px, 2.8vw, 36px)", letterSpacing: "-0.01em" }}>
+  Réservez, gérez, profitez.<br />
+  <span>en un clic.</span>
+</h2>
           </div>
           <div className="sv-grid">
             {SERVICES.map((s, i) => (
