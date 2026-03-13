@@ -39,11 +39,11 @@ useEffect(() => {
   const getLinkHref = (anchor) => (isHomePage ? anchor : `/${anchor}`);
 
   const navLinks = [
-    { href: "/a-propos", label: "À propos", isPage: true },
-    { href: "#events", label: "Événements", sectionId: "events" },
-    { href: "#emplacements", label: "Emplacements", sectionId: "emplacements" },
-    { href: "/contact", label: "Contact", isPage: true },
-  ];
+  { href: "/a-propos", label: "À propos", isPage: true },
+  { href: "/events", label: "Événements", isPage: true },
+  { href: "/establishments", label: "Emplacements", isPage: true },
+  { href: "/contact", label: "Contact", isPage: true },
+];
 
   // ScrollSpy — uniquement sur la home
   useEffect(() => {

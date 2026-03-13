@@ -5,10 +5,11 @@ import {
   CheckCircle, Users, Wallet, Tag, QrCode, Handshake, DeviceMobile, CreditCard,
   ChartBar, Money, Pulse, ShieldCheck, ClipboardText, TrendUp, NavigationArrow
 } from "@phosphor-icons/react";
-import { fetchAllPlaces } from "@/app/services/api";
+import { fetchAllPlaces, fetchAllEvents } from "@/app/services/api";
 import FAQSection from "@/components/Home/FaqSection";
+import { getDownloadLink } from "@/utils/deviceDetection";
 
-const API_BASE_URL = "https://api.ticketche.com/api/v2";
+
 
 const STATIC_IMAGES = [
   "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=600&q=80",
@@ -102,19 +103,21 @@ function StarClusters() {
 }
 
 export default function AboutPage() {
-  const [current, setCurrent] = useState(0);
-  const [carouselImages, setCarouselImages] = useState(STATIC_IMAGES);
+  const [heroImages, setHeroImages] = useState(STATIC_IMAGES);
   const [hoveredFeature, setHoveredFeature] = useState(null);
+  const [downloadLink, setDownloadLink] = useState("");
+
+  useEffect(() => { setDownloadLink(getDownloadLink()); }, []);
 
   useEffect(() => {
     const fetchImages = async () => {
       try {
         const [eventsRes, placesRes] = await Promise.allSettled([
-          fetch(`${API_BASE_URL}/events`).then(r => r.json()),
+          fetchAllEvents(),
           fetchAllPlaces(),
         ]);
         const eventImages = eventsRes.status === "fulfilled" && eventsRes.value?.success
-          ? (eventsRes.value.data ?? []).filter(e => e.images?.length > 0).map(e => e.images[0].url).filter(Boolean).slice(0, 4)
+          ? (eventsRes.value.data ?? []).filter(e => e.images?.length > 0).map(e => e.images[0].url).filter(Boolean)
           : [];
         const placeImages = placesRes.status === "fulfilled" && placesRes.value?.success
           ? (placesRes.value.data ?? []).filter(p => p.images?.length > 0).map(p => {
@@ -122,23 +125,17 @@ export default function AboutPage() {
               if (!link) return null;
               const cleaned = link.replace("/storage/app/public", "/storage");
               return cleaned.startsWith("http") ? cleaned : `https://api.ticketche.com${cleaned}`;
-            }).filter(Boolean).slice(0, 4)
+            }).filter(Boolean)
           : [];
-        const allImages = [...STATIC_IMAGES, ...eventImages, ...placeImages];
-        if (allImages.length > 0) setCarouselImages(allImages);
+        const all = [...eventImages, ...placeImages, ...STATIC_IMAGES];
+        if (all.length >= 3) setHeroImages(all.slice(0, 4));
       } catch (err) {
-        console.error("Erreur fetch images:", err);
+        console.error("Erreur fetch images hero:", err);
       }
     };
     fetchImages();
   }, []);
 
-  useEffect(() => {
-    const t = setInterval(() => setCurrent(p => (p + 1) % carouselImages.length), 3000);
-    return () => clearInterval(t);
-  }, [current, carouselImages.length]);
-
-  const next = (current + 1) % carouselImages.length;
 
   return (
     <>
@@ -213,8 +210,11 @@ export default function AboutPage() {
           position: relative; z-index: 2;
           padding: 100px 48px 80px;
           display: grid; grid-template-columns: 1fr 1fr;
-          gap: 60px; align-items: center;
+          gap: 64px; align-items: center;
+          max-width: 1140px; margin: 0 auto; box-sizing: border-box;
         }
+
+        /* ── gauche ── */
         .ap-badge {
           display: inline-flex; align-items: center; gap: 10px;
           background: white; border: 1.5px solid rgba(0,95,105,0.15);
@@ -229,38 +229,85 @@ export default function AboutPage() {
         .ap-badge-avatar:first-child { margin-left: 0; }
         .ap-badge-text { font-size: 12px; font-weight: 700; color: #0a1a1c; letter-spacing: 0.02em; }
         .ap-title {
-          font-size: clamp(32px, 4vw, 52px); font-weight: 900; color: #0a1a1c;
-          line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 20px;
+          font-size: clamp(26px, 2.2vw, 34px); font-weight: 900; color: #0a1a1c;
+          line-height: 1.13; letter-spacing: -0.8px; margin-bottom: 20px;
         }
         .ap-title span { color: #005f69; }
-        .ap-sub { color: #6b7280; font-size: 19px; line-height: 1.75; max-width: 440px; margin-bottom: 36px; }
-        .ap-btns { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-        .ap-right { position: relative; display: flex; align-items: center; justify-content: center; height: 480px; }
-        .ap-circle-big {
-          position: absolute; left: 50%; top: 50%;
-          transform: translate(-62%, -52%);
-          width: 340px; height: 340px; border-radius: 50%; overflow: hidden;
-          border: 5px solid white; box-shadow: 0 16px 48px rgba(0,95,105,0.22); z-index: 2;
+        .ap-sub { color: #6b7280; font-size: 17px; line-height: 1.8; max-width: 460px; margin-bottom: 28px; }
+        .ap-stats {
+          display: flex; align-items: center;
+          margin-bottom: 36px;
         }
-        .ap-circle-big img { width: 100%; height: 100%; object-fit: cover; }
-        .ap-circle-small {
-          position: absolute; right: 24%; bottom: 12%;
-          width: 180px; height: 180px; border-radius: 50%; overflow: hidden;
-          border: 4px solid white; box-shadow: 0 10px 32px rgba(0,95,105,0.2); z-index: 3;
+        .ap-stat {
+          display: flex; flex-direction: column;
+          padding-right: 28px; margin-right: 28px;
+          border-right: 1.5px solid rgba(0,95,105,0.15);
         }
-        .ap-circle-small img { width: 100%; height: 100%; object-fit: cover; }
-        .ap-dots-sm {
-          position: absolute; bottom: 8%; right: 18%;
-          display: grid; grid-template-columns: repeat(4, 6px); gap: 5px;
-          z-index: 4; pointer-events: none;
+        .ap-stat:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+        .ap-stat-num { font-size: 26px; font-weight: 900; color: #0a1a1c; letter-spacing: -0.5px; line-height: 1; }
+        .ap-stat-label { font-size: 12px; color: #6b7280; font-weight: 600; margin-top: 4px; }
+        .ap-btns { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .ap-btn-sec {
+          display: inline-flex; align-items: center; gap: 8px;
+          background: white; border: 1.5px solid rgba(0,95,105,0.2);
+          color: #0a1a1c; font-weight: 700; font-size: 14px;
+          padding: 14px 24px; border-radius: 999px; text-decoration: none;
+          transition: all .2s ease; font-family: 'Archivo', sans-serif;
         }
-        .ap-dot-sm { width: 6px; height: 6px; border-radius: 50%; background: #005f69; opacity: 0.25; }
+        .ap-btn-sec:hover { border-color: #005f69; color: #005f69; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,95,105,0.12); }
 
+        /* ── droite : 3 images position absolute ──
+           - img haut  : décalée à droite, bord droit = bord droit img bas
+           - img bas   : part du bord gauche, plus large
+           - img droite: flotte dans le gap, centrée verticalement entre img-haut et img-bas
+        ── */
+        .ap-right {
+          position: relative;
+          width: 100%;
+          height: 452px;
+        }
+        .ap-img-card {
+          border-radius: 20px; overflow: hidden; position: absolute;
+          box-shadow: 0 10px 30px rgba(0,95,105,0.13);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .ap-img-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* Haut gauche : décalée à droite, bord droit = bord droit de --bl */
+        .ap-img-card--tl {
+          top: 0; left: 18%; right: 38%;
+          height: 210px;
+        }
+        .ap-img-card--tl:hover { transform: translateY(-3px); }
+
+        /* Bas gauche : part du bord gauche, plus large */
+        .ap-img-card--bl {
+          bottom: 0; left: 0; right: 38%;
+          height: 235px;
+        }
+        .ap-img-card--bl:hover { transform: translateY(3px); }
+
+        /* Droite : centrée dans le gap entre --tl (bas à 220px) et --bl (haut à 240px depuis bas = 480-240=240px)
+           gap va de top:220px à top:240px => centre = top:230px
+           hauteur 200px => top: 230 - 100 = 130px
+           ne touche ni --tl ni --bl */
+        .ap-img-card--rc {
+          right: 0; width: 36%;
+          top: 117px;
+          height: 200px;
+        }
+        .ap-img-card--rc:hover { transform: translateY(-3px); }
+
+        /* pastilles déco */
+        .ap-deco-dot {
+          position: absolute; border-radius: 50%; pointer-events: none; z-index: 0;
+        }
         /* ─── À PROPOS ─── */
         .ab-section {
           padding: 20px 48px 90px;
           display: grid; grid-template-columns: 1fr 1fr;
           gap: 80px; align-items: center;
+          max-width: 1200px; margin: 0 auto; box-sizing: border-box;
         }
         .ab-left {
           position: relative; height: 460px;
@@ -305,11 +352,11 @@ export default function AboutPage() {
           padding: 6px 16px; border-radius: 999px; margin-bottom: 20px;
         }
         .ab-title {
-          font-size: clamp(26px, 3vw, 42px); font-weight: 900; color: #0a1a1c;
+          font-size: clamp(30px, 3.5vw, 46px); font-weight: 900; color: #0a1a1c;
           line-height: 1.12; letter-spacing: -0.8px; margin-bottom: 18px;
         }
         .ab-title span { color: #005f69; }
-        .ab-desc { font-size: 15px; color: #6b7280; line-height: 1.8; margin-bottom: 32px; max-width: 430px; }
+        .ab-desc { font-size: 17px; color: #6b7280; line-height: 1.85; margin-bottom: 32px; max-width: 430px; }
         .ab-pills { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 36px; }
         .ab-pill {
           display: inline-flex; align-items: center; gap: 10px;
@@ -404,11 +451,11 @@ export default function AboutPage() {
           border: 1px solid rgba(0,95,105,0.15);
         }
         .ft-title {
-          font-size: clamp(28px, 3.5vw, 44px); font-weight: 900; color: #0a1a1c;
+          font-size: clamp(32px, 3.8vw, 48px); font-weight: 900; color: #0a1a1c;
           line-height: 1.12; letter-spacing: -1px; margin-bottom: 14px;
         }
         .ft-title span { color: #005f69; }
-        .ft-sub { font-size: 16px; color: #6b7280; max-width: 540px; margin: 0 auto; line-height: 1.75; }
+        .ft-sub { font-size: 17px; color: #6b7280; max-width: 540px; margin: 0 auto; line-height: 1.75; }
         .ft-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
         .ft-card {
           background: white; border-radius: 20px; padding: 28px 24px;
@@ -429,8 +476,8 @@ export default function AboutPage() {
           display: flex; align-items: center; justify-content: center;
           margin-bottom: 18px; transition: all 0.3s ease;
         }
-        .ft-card-title { font-size: 15px; font-weight: 800; color: #0a1a1c; margin-bottom: 8px; line-height: 1.3; transition: color 0.3s; }
-        .ft-card-desc { font-size: 13px; color: #6b7280; line-height: 1.65; }
+        .ft-card-title { font-size: 16px; font-weight: 800; color: #0a1a1c; margin-bottom: 8px; line-height: 1.3; transition: color 0.3s; }
+        .ft-card-desc { font-size: 14px; color: #6b7280; line-height: 1.65; }
         .ft-pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .ft-pillar {
           display: flex; align-items: center; gap: 14px;
@@ -444,21 +491,21 @@ export default function AboutPage() {
           display: flex; align-items: center; justify-content: center;
           color: #005f69; flex-shrink: 0;
         }
-        .ft-pillar-label { font-size: 14px; font-weight: 800; color: #0a1a1c; }
-        .ft-pillar-sub { font-size: 12px; color: #6b7280; margin-top: 2px; }
+        .ft-pillar-label { font-size: 15px; font-weight: 800; color: #0a1a1c; }
+        .ft-pillar-sub { font-size: 13px; color: #6b7280; margin-top: 2px; }
 
         /* ─── USERS ─── */
-        .us-root { padding: 80px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-        .us-img-wrap { border-radius: 24px; overflow: hidden; box-shadow: 0 20px 56px rgba(0,95,105,0.18); border: 4px solid white; }
-        .us-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .us-root { padding: 80px 48px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 64px; align-items: center; }
+        .us-img-wrap { border-radius: 24px; overflow: hidden; box-shadow: 0 20px 56px rgba(0,95,105,0.18); border: 4px solid white; min-height: 560px; }
+        .us-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; min-height: 560px; }
         .us-tag {
           display: inline-block; background: rgba(0,95,105,0.10); color: #005f69;
           font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
           padding: 6px 16px; border-radius: 999px; margin-bottom: 20px;
         }
-        .us-title { font-size: clamp(26px, 3vw, 42px); font-weight: 900; color: #0a1a1c; line-height: 1.12; letter-spacing: -0.8px; margin-bottom: 14px; }
+        .us-title { font-size: clamp(30px, 3.5vw, 48px); font-weight: 900; color: #0a1a1c; line-height: 1.12; letter-spacing: -0.8px; margin-bottom: 14px; }
         .us-title span { color: #005f69; }
-        .us-desc { font-size: 15px; color: #6b7280; line-height: 1.8; margin-bottom: 28px; max-width: 440px; }
+        .us-desc { font-size: 16px; color: #6b7280; line-height: 1.8; margin-bottom: 28px; max-width: 440px; }
         .us-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
         .us-item {
           display: flex; align-items: flex-start; gap: 14px;
@@ -469,19 +516,19 @@ export default function AboutPage() {
         }
         .us-item:hover { border-color: rgba(0,95,105,0.3); box-shadow: 0 8px 24px rgba(0,95,105,0.12); transform: translateX(4px); }
         .us-item-icon { width: 44px; height: 44px; border-radius: 12px; background: #005f69; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; }
-        .us-item-title { font-size: 14px; font-weight: 800; color: #0a1a1c; margin-bottom: 4px; }
-        .us-item-desc { font-size: 13px; color: #6b7280; line-height: 1.6; }
+        .us-item-title { font-size: 15px; font-weight: 800; color: #0a1a1c; margin-bottom: 4px; }
+        .us-item-desc { font-size: 14px; color: #6b7280; line-height: 1.6; }
 
         /* ─── MANAGERS ─── */
-        .mg-root { padding: 80px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        .mg-root { padding: 80px 48px; display: grid; grid-template-columns: 1fr 1.3fr; gap: 64px; align-items: center; }
         .mg-tag {
           display: inline-block; background: rgba(105,44,0,0.10); color: #692C00;
           font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
           padding: 6px 16px; border-radius: 999px; margin-bottom: 20px;
         }
-        .mg-title { font-size: clamp(26px, 3vw, 42px); font-weight: 900; color: #0a1a1c; line-height: 1.12; letter-spacing: -0.8px; margin-bottom: 14px; }
+        .mg-title { font-size: clamp(30px, 3.5vw, 48px); font-weight: 900; color: #0a1a1c; line-height: 1.12; letter-spacing: -0.8px; margin-bottom: 14px; }
         .mg-title span { color: #692C00; }
-        .mg-desc { font-size: 15px; color: #6b7280; line-height: 1.8; margin-bottom: 28px; max-width: 440px; }
+        .mg-desc { font-size: 16px; color: #6b7280; line-height: 1.8; margin-bottom: 28px; max-width: 440px; }
         .mg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 32px; }
         .mg-item {
           display: flex; align-items: flex-start; gap: 12px;
@@ -492,49 +539,113 @@ export default function AboutPage() {
         }
         .mg-item:hover { border-color: rgba(105,44,0,0.25); box-shadow: 0 8px 24px rgba(105,44,0,0.10); transform: translateY(-2px); }
         .mg-item-icon { width: 36px; height: 36px; border-radius: 10px; background: #005f69; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; }
-        .mg-item-title { font-size: 13px; font-weight: 800; color: #0a1a1c; margin-bottom: 3px; }
-        .mg-item-desc { font-size: 12px; color: #6b7280; line-height: 1.55; }
-        .mg-img-wrap { border-radius: 24px; overflow: hidden; box-shadow: 0 20px 56px rgba(0,95,105,0.18); border: 4px solid white; }
-        .mg-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .mg-item-title { font-size: 14px; font-weight: 800; color: #0a1a1c; margin-bottom: 3px; }
+        .mg-item-desc { font-size: 13px; color: #6b7280; line-height: 1.55; }
+        .mg-img-wrap { border-radius: 24px; overflow: hidden; box-shadow: 0 20px 56px rgba(0,95,105,0.18); border: 4px solid white; min-height: 560px; }
+        .mg-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; min-height: 560px; }
 
         /* ─── CTA ─── */
         .cta-root { padding: 0 32px 100px; }
         .cta-inner {
-          background: #005f69; border-radius: 28px; padding: 72px 64px;
-          display: flex; align-items: center; justify-content: space-between; gap: 40px;
+          background: linear-gradient(135deg, #0a1f22 0%, #003d45 50%, #005f69 100%);
+          border-radius: 28px; padding: 80px 64px 72px;
+          display: flex; flex-direction: column; align-items: center;
+          text-align: center; gap: 0;
           position: relative; overflow: hidden;
         }
+        /* grille de points décorative */
         .cta-inner::before {
-          content: ''; position: absolute; top: -80px; right: -80px;
-          width: 320px; height: 320px; border-radius: 50%; background: rgba(255,255,255,0.05);
+          content: ''; position: absolute; inset: 0;
+          background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+          background-size: 28px 28px; pointer-events: none;
         }
+        /* lueur centrale */
         .cta-inner::after {
-          content: ''; position: absolute; bottom: -60px; left: 30%;
-          width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.04);
+          content: ''; position: absolute; top: -60px; left: 50%;
+          transform: translateX(-50%);
+          width: 500px; height: 260px; border-radius: 50%;
+          background: radial-gradient(ellipse, rgba(0,148,159,0.18) 0%, transparent 70%);
+          pointer-events: none;
         }
-        .cta-left { position: relative; z-index: 2; }
-        .cta-tag { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 16px; }
-        .cta-title { font-size: clamp(24px, 3vw, 40px); font-weight: 900; color: white; line-height: 1.15; letter-spacing: -0.8px; max-width: 480px; }
-        .cta-title span { color: #7dd3d8; }
-        .cta-sub { margin-top: 14px; font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.7; max-width: 420px; }
-        .cta-actions { display: flex; flex-direction: column; gap: 14px; position: relative; z-index: 2; flex-shrink: 0; }
-        .cta-btn-main {
+        .cta-tag {
+          font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+          color: rgba(255,255,255,0.45); margin-bottom: 22px; position: relative; z-index: 2;
+        }
+        .cta-title {
+          font-size: clamp(26px, 3.5vw, 46px); font-weight: 900; color: white;
+          line-height: 1.12; letter-spacing: -1px; margin-bottom: 16px;
+          position: relative; z-index: 2;
+        }
+        .cta-title span { color: #ffffff; }
+        .cta-sub {
+          font-size: 16px; color: rgba(255,255,255,0.55); line-height: 1.75;
+          max-width: 500px; margin-bottom: 40px; position: relative; z-index: 2;
+        }
+        /* boutons côte à côte */
+        .cta-actions {
+          display: flex; align-items: center; gap: 16px;
+          flex-wrap: wrap; justify-content: center;
+          position: relative; z-index: 2; margin-bottom: 44px;
+        }
+        .cta-btn-primary {
           display: inline-flex; align-items: center; gap: 10px;
-          background: white; color: #005f69; font-weight: 800; font-size: 14px;
-          padding: 16px 28px; border-radius: 999px; text-decoration: none;
-          transition: all .2s ease; white-space: nowrap;
-          animation: ctaBtnPulse 2s ease-in-out infinite;
-          font-family: 'Archivo', sans-serif;
+          background: #005f69; color: white;
+          font-weight: 800; font-size: 14px; font-family: 'Archivo', sans-serif;
+          padding: 15px 30px; border-radius: 14px; text-decoration: none;
+          border: 1.5px solid rgba(255,255,255,0.15);
+          box-shadow: 0 0 0 0 rgba(0,148,159,0.5);
+          animation: ctaBtnPulse 2.2s ease-in-out infinite;
+          transition: all .2s ease;
         }
-        .cta-btn-main svg { animation: ctaArrow 1.2s ease-in-out infinite; }
-        .cta-btn-main:hover { animation: none; transform: translateY(-2px); box-shadow: 0 14px 32px rgba(0,0,0,0.25); background: #f0fafa; }
-        .cta-btn-main:hover svg { animation: none; transform: translateX(4px); }
-        .cta-btn-sec {
-          display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-          color: rgba(255,255,255,0.75); font-size: 13px; font-weight: 600;
-          text-decoration: none; transition: color .2s; text-align: center;
+        .cta-btn-primary:hover {
+          animation: none; background: #007a8a;
+          transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,95,105,0.6);
         }
-        .cta-btn-sec:hover { color: white; }
+        .cta-btn-secondary {
+          display: inline-flex; align-items: center; gap: 10px;
+          background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85);
+          font-weight: 800; font-size: 14px; font-family: 'Archivo', sans-serif;
+          padding: 15px 30px; border-radius: 14px; text-decoration: none;
+          border: 1.5px solid rgba(255,255,255,0.15);
+          transition: all .2s ease;
+        }
+        .cta-btn-secondary:hover {
+          background: rgba(255,255,255,0.14); color: white;
+          transform: translateY(-2px);
+        }
+        /* social proof */
+        .cta-proof {
+          display: flex; flex-direction: column; align-items: center; gap: 10px;
+          position: relative; z-index: 2;
+        }
+        .cta-proof-row {
+          display: flex; flex-direction: column; align-items: stretch; gap: 6px;
+        }
+        .cta-avatars-stars {
+          display: flex; align-items: center; gap: 10px;
+        }
+        .cta-stars {
+          display: flex; justify-content: space-between; width: 100%;
+        }
+        .cta-avatars { display: flex; }
+        .cta-avatar {
+          width: 36px; height: 36px; border-radius: 50%;
+          border: 2.5px solid rgba(255,255,255,0.25);
+          object-fit: cover; margin-left: -10px; background: #004a52;
+        }
+        .cta-avatar:first-child { margin-left: 0; }
+        .cta-stars { display: flex; gap: 3px; }
+        .cta-star { color: #fbbf24; font-size: 16px; }
+        .cta-proof-label {
+          font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.65);
+        }
+        .cta-proof-label strong { color: white; }
+        .cta-trust {
+          display: flex; align-items: center; gap: 20px;
+          font-size: 12px; color: rgba(255,255,255,0.40); font-weight: 600;
+        }
+        .cta-trust-item { display: flex; align-items: center; gap: 6px; }
+        .cta-trust-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.2); }
 
         /* ─── RESPONSIVE ─── */
         @media (max-width: 1024px) {
@@ -544,18 +655,21 @@ export default function AboutPage() {
           .about-page { width: 100vw; }
           .ap-hero { grid-template-columns: 1fr; padding: 80px 24px 60px; text-align: center; }
           .ap-sub  { max-width: 100%; }
+          .ap-stats { justify-content: center; }
           .ap-btns { justify-content: center; }
-          .ap-right { height: 340px; }
-          .ap-circle-big   { width: 240px; height: 240px; }
-          .ap-circle-small { width: 130px; height: 130px; }
+          .ap-right { height: 360px; }
+          .ap-img-card--tl { height: 160px; }
+          .ap-img-card--bl { height: 180px; }
           .ab-section { grid-template-columns: 1fr; padding: 40px 24px 60px; gap: 48px; }
           .ab-left { height: 380px; }
           .sv-grid { grid-template-columns: 1fr 1fr; }
           .ft-pillars { grid-template-columns: 1fr; }
           .us-root { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; }
           .mg-root { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; }
-          .cta-inner { flex-direction: column; padding: 48px 36px; text-align: center; }
-          .cta-actions { align-items: center; }
+          .cta-inner { padding: 56px 28px; }
+          .cta-actions { flex-direction: column; align-items: center; }
+          .cta-trust { flex-direction: column; gap: 8px; }
+          .cta-trust-dot { display: none; }
         }
         @media (max-width: 640px) {
           .ab-left { height: 300px; }
@@ -571,9 +685,13 @@ export default function AboutPage() {
       <div className="about-page">
         <StarClusters />
 
+
+
         {/* ══════════ HERO ══════════ */}
         <div className="ap-hero-wrap">
           <div className="ap-hero">
+
+            {/* ── GAUCHE ── */}
             <div>
               <div className="ap-badge">
                 <div className="ap-badge-avatars">
@@ -581,38 +699,72 @@ export default function AboutPage() {
                     <img key={i} src={src} alt="" className="ap-badge-avatar" />
                   ))}
                 </div>
-                <span className="ap-badge-text">+15 ans d'expériences</span>
+                <span className="ap-badge-text">+5 000 utilisateurs satisfaits</span>
               </div>
-              <h1 className="ap-title" style={{ fontSize: "clamp(26px, 3.2vw, 42px)" }}>
-  Parking, lavage, garage,<br />
-  événements. Une nouvelle<br />
-  <span>façon de tout gérer.</span>
-</h1>
-<p className="ap-sub">
-  Ticketché connecte les utilisateurs aux services et événements qui les entourent, en quelques clics. Pour les gestionnaires, c'est une solution simple pour organiser leurs activités, encaisser rapidement et offrir une meilleure expérience à leurs clients.
-</p>
+
+              <h1 className="ap-title">
+                Parking, lavage, garage,<br />
+                événements. Une nouvelle<br />
+                <span>façon de tout gérer.</span>
+              </h1>
+
+              <p className="ap-sub">
+                Ticketché connecte les Béninois aux services et événements qui les entourent.
+                Trouvez, réservez et payez en quelques clics — que vous soyez conducteur,
+                amateur de sorties ou gestionnaire d'un établissement.
+              </p>
+
+              <div className="ap-stats">
+                <div className="ap-stat">
+                  <span className="ap-stat-num">+5 000</span>
+                  <span className="ap-stat-label">Utilisateurs actifs</span>
+                </div>
+                <div className="ap-stat">
+                  <span className="ap-stat-num">4</span>
+                  <span className="ap-stat-label">Services disponibles</span>
+                </div>
+                <div className="ap-stat">
+                  <span className="ap-stat-num">100%</span>
+                  <span className="ap-stat-label">Paiement sécurisé</span>
+                </div>
+              </div>
+
               <div className="ap-btns">
                 <a
                   href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target="_blank" rel="noopener noreferrer"
                   className="tc-btn"
                 >
-                  Découvrir Ticketché <ArrowRight weight="bold" size={16} />
+                  Télécharger l'app <ArrowRight weight="bold" size={16} />
+                </a>
+                <a href="/contact" className="ap-btn-sec">
+                  Nous contacter <ArrowRight weight="bold" size={14} />
                 </a>
               </div>
             </div>
+
+            {/* ── DROITE : 3 images disposition EduFlex ── */}
             <div className="ap-right">
-              <div className="ap-circle-big">
-                <img key={current} src={carouselImages[current]} alt="service" />
+              {/* pastilles déco */}
+              <div className="ap-deco-dot" style={{ width: 16, height: 16, background: "#005f69", opacity: 0.22, top: -8, right: 40 }} />
+              <div className="ap-deco-dot" style={{ width: 10, height: 10, background: "#00818f", opacity: 0.30, bottom: 16, left: -6 }} />
+
+              {/* Col gauche — haut : petite/carrée */}
+              <div className="ap-img-card ap-img-card--tl">
+                <img src={heroImages[0] ?? "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=600&q=80"} alt="Parking" />
               </div>
-              <div className="ap-circle-small">
-                <img key={next} src={carouselImages[next]} alt="service suivant" />
+
+              {/* Col gauche — bas : plus large et haute */}
+              <div className="ap-img-card ap-img-card--bl">
+                <img src={heroImages[1] ?? "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80"} alt="Lavage" />
               </div>
-              <div className="ap-dots-sm">
-                {Array.from({ length: 16 }).map((_, i) => <div key={i} className="ap-dot-sm" />)}
+
+              {/* Col droite — centrée, pleine hauteur */}
+              <div className="ap-img-card ap-img-card--rc">
+                <img src={heroImages[2] ?? "https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=600&q=80"} alt="Événement" />
               </div>
             </div>
+
           </div>
         </div>
 
@@ -643,24 +795,14 @@ export default function AboutPage() {
           <div>
             <div className="ab-tag">À propos de Ticketché</div>
             <h2 className="ab-title">
-              La plateforme qui simplifie la vie urbaine<br />
-              <span>au  Bénin.</span>
+              La plateforme qui simplifie<br />
+              la vie urbaine <span>au Bénin.</span>
             </h2>
             <p className="ab-desc">
-Ticketché réunit dans une seule application les services dont vous avez besoin au quotidien : parkings, lavages, garages et événements.
-Trouvez rapidement un service autour de vous, accédez à des prestataires fiables et profitez d’une expérience simple, rapide et moderne.
-
-Que vous soyez utilisateur ou gestionnaire de service, Ticketché vous aide à gagner du temps, mieux organiser vos activités et profiter pleinement de la ville.            </p>
-            <div className="ab-pills">
-              <div className="ab-pill">
-                <div className="ab-pill-icon"><CheckCircle size={18} weight="bold" /></div>
-                Services vérifiés <br /> Des prestataires sélectionnés pour garantir <br /> des services fiables et de qualité.
-              </div>
-              <div className="ab-pill">
-                <div className="ab-pill-icon"><Users size={18} weight="bold" /></div>
-                +5 000 utilisateurs <br />  Une communauté grandissante qui utilise déjà.
-              </div>
-            </div>
+              Ticketché réunit dans une seule application les services dont vous avez besoin au quotidien : parkings, lavages, garages et événements.
+              Trouvez rapidement un service autour de vous, accédez à des prestataires fiables et profitez d’une expérience simple, rapide et moderne.
+              Que vous soyez utilisateur ou gestionnaire de service, Ticketché vous aide à gagner du temps, mieux organiser vos activités et profiter pleinement de la ville.
+            </p>
             <a
               href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
               target="_blank"
@@ -750,7 +892,7 @@ Que vous soyez utilisateur ou gestionnaire de service, Ticketché vous aide à g
             {[
               { icon: DeviceMobile, label: "App mobile",   sub: "iOS & Android" },
               { icon: CreditCard,   label: "Mobile Money", sub: "Paiement sécurisé" },
-              { icon: Users,        label: "Communauté",   sub: "Avis & entraide" },
+              { icon: Users,        label: "Communauté",   sub: "Avis fiables" },
             ].map(({ icon: Icon, label, sub }, i) => (
               <div key={i} className="ft-pillar">
                 <div className="ft-pillar-icon">
@@ -795,13 +937,13 @@ Que vous soyez utilisateur ou gestionnaire de service, Ticketché vous aide à g
               })}
             </div>
             <a
-              href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="tc-btn"
-            >
-              Télécharger l'app <ArrowRight weight="bold" size={16} />
-            </a>
+              href={downloadLink}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="tc-btn"
+>
+  Télécharger l'app <ArrowRight weight="bold" size={16} />
+</a>
           </div>
         </div>
 
@@ -852,26 +994,64 @@ Que vous soyez utilisateur ou gestionnaire de service, Ticketché vous aide à g
         {/* ══════════ CTA ══════════ */}
         <div className="cta-root">
           <div className="cta-inner">
-            <div className="cta-left">
-              <div className="cta-tag">Rejoignez Ticketché</div>
-              <h2 className="cta-title">
-                Prêt à simplifier votre<br />
-                <span>quotidien au Bénin ?</span>
-              </h2>
-              <p className="cta-sub">
-                Téléchargez l'application et accédez à des centaines de services autour de vous - parking, car wash, garages et événements.
-              </p>
-            </div>
+            <div className="cta-tag">Rejoignez Ticketché</div>
+            <h2 className="cta-title">
+              Prêt à simplifier votre<br />
+              <span>quotidien au Bénin ?</span>
+            </h2>
+            <p className="cta-sub">
+              Téléchargez l'application et accédez à des centaines de services autour de vous — parking, car wash, garages et événements.
+            </p>
+
+            {/* Boutons côte à côte */}
             <div className="cta-actions">
-              <a
-                href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="cta-btn-main"
-              >
+              <a href={downloadLink} target="_blank" rel="noopener noreferrer" className="cta-btn-primary">
                 Télécharger l'app <ArrowRight weight="bold" size={16} />
               </a>
-              <a href="/contact" className="cta-btn-sec">Nous contacter →</a>
+              <a href="/contact" className="cta-btn-secondary">
+                Nous contacter
+              </a>
+            </div>
+
+            {/* Social proof */}
+            <div className="cta-proof">
+              <div className="cta-proof-row">
+                {/* Avatars + étoiles + label — tout aligné */}
+                <div className="cta-avatars-stars">
+                  <div className="cta-avatars">
+                    {TEAM_AVATARS.map((src, i) => (
+                      <img key={i} src={src} alt="" className="cta-avatar" />
+                    ))}
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                    {/* Étoiles sur la largeur exacte du label */}
+                    <div className="cta-stars">
+                      {[1,2,3,4,5,6,7].map(i => (
+                        <span key={i} className="cta-star">★</span>
+                      ))}
+                    </div>
+                    <span className="cta-proof-label">
+                      <strong>5/5</strong> · +5 000 utilisateurs
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="cta-trust">
+                <div className="cta-trust-item">
+                  <CheckCircle size={13} weight="fill" style={{ color: "#2dd4bf" }} />
+                  Téléchargement gratuit
+                </div>
+                <div className="cta-trust-dot" />
+                <div className="cta-trust-item">
+                  <ShieldCheck size={13} weight="fill" style={{ color: "#2dd4bf" }} />
+                  Paiement sécurisé
+                </div>
+                <div className="cta-trust-dot" />
+                <div className="cta-trust-item">
+                  <DeviceMobile size={13} weight="fill" style={{ color: "#2dd4bf" }} />
+                  iOS & Android
+                </div>
+              </div>
             </div>
           </div>
         </div>

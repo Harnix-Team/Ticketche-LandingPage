@@ -57,12 +57,38 @@ export default function ContactPage() {
   const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
-    setForm({ name: "", email: "", service: "", date: "", message: "" });
-  };
+  e.preventDefault();
 
+  if (!form.name || !form.email || !form.message) {
+    alert("Veuillez remplir tous les champs obligatoires.");
+    return;
+  }
+
+  const whatsappMessage = `Bonjour ! 👋
+
+Je vous contacte via le site Ticketché.
+
+*Informations de contact :*
+- Nom : ${form.name}
+- Email : ${form.email}
+- Service : ${form.service}
+- Date souhaitée : ${form.date}
+
+*Message :*
+${form.message}
+
+Merci de me recontacter dès que possible.
+
+Cordialement,
+${form.name}`;
+
+  const encodedMessage = encodeURIComponent(whatsappMessage);
+  window.open(`https://wa.me/2290140512133?text=${encodedMessage}`, "_blank");
+
+  setSent(true);
+  setTimeout(() => setSent(false), 4000);
+  setForm({ name: "", email: "", service: "", date: "", message: "" });
+};
   const inputStyle = {
     width: "100%", padding: "11px 14px",
     background: "rgba(255,255,255,.07)",
@@ -274,7 +300,7 @@ export default function ContactPage() {
                   <Phone weight="fill" style={{ width: 20, height: 20, color: "white" }} />
                 </div>
                 <div>
-                  <p style={{ color: "#005f69", fontWeight: 900, fontSize: 17, letterSpacing: .3 }}>+229 01 99 98 43 45</p>
+                  <p style={{ color: "#005f69", fontWeight: 900, fontSize: 17, letterSpacing: .3 }}>+229 01 40 51 21 33</p>
                   <p style={{ color: "#9ca3af", fontSize: 14, fontWeight: 500 }}>Appelez-nous</p>
                 </div>
               </div>
@@ -285,7 +311,7 @@ export default function ContactPage() {
                   <EnvelopeSimple weight="fill" style={{ width: 20, height: 20, color: "white" }} />
                 </div>
                 <div>
-                  <p style={{ color: "#005f69", fontWeight: 900, fontSize: 15 }}>contact@ticketche.com</p>
+                  <p style={{ color: "#005f69", fontWeight: 900, fontSize: 15 }}>support@ticketche.com</p>
                   <p style={{ color: "#9ca3af", fontSize: 14, fontWeight: 500 }}>Envoyez un email</p>
                 </div>
               </div>

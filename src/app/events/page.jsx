@@ -9,8 +9,7 @@ import {
   MagnifyingGlass, X, Funnel, ArrowUpRight,
   SlidersHorizontal, CaretRight
 } from "@phosphor-icons/react";
-
-const API_BASE_URL = "https://api.ticketche.com/api/v2";
+import { fetchAllEvents, fetchEventCategories, searchEvents } from "@/app/services/api";
 
 /* ── helpers ── */
 const formatDate = (d) => {
@@ -27,6 +26,41 @@ const getMinPrice = (tickets) => {
 };
 const getEventImage = (event) =>
   event.images?.length > 0 ? event.images[0].url : "/images/logo.png";
+
+/* ── Logique hero event ── */
+function isWeekendEvent(dateStr) {
+  if (!dateStr) return false;
+  const d = new Date(dateStr);
+  const day = d.getDay(); // 0=dim, 5=ven, 6=sam
+  const hour = d.getHours();
+  return day === 0 || day === 6 || (day === 5 && hour >= 18);
+}
+
+function isUpcoming(dateStr) {
+  if (!dateStr) return false;
+  const now = new Date();
+  const diffDays = (new Date(dateStr) - now) / (1000 * 60 * 60 * 24);
+  return diffDays >= 0 && diffDays <= 7;
+}
+
+function selectHeroEvent(events) {
+  if (!events.length) return null;
+
+  // 1. Event weekend proche (dans les 7 jours)
+  const weekendEvents = events
+    .filter(e => isWeekendEvent(e.start_date) && isUpcoming(e.start_date))
+    .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+  if (weekendEvents.length > 0) return { event: weekendEvents[0], label: "weekend" };
+
+  // 2. Bon plan (is_featured)
+  const featured = events
+    .filter(e => e.is_featured)
+    .sort((a, b) => (a.featured_order ?? 99) - (b.featured_order ?? 99));
+  if (featured.length > 0) return { event: featured[0], label: "featured" };
+
+  // 3. Premier event sans filtre
+  return { event: events[0], label: null };
+}
 
 /* ── Featured hero card ── */
 function HeroCard({ event, onClick }) {
@@ -232,16 +266,14 @@ export default function EventsPage() {
   const searchTimeout = useRef(null);
 const router = useRouter();
   useEffect(() => {
-    fetch(`${API_BASE_URL}/events`)
-      .then((r) => r.json())
+    fetchAllEvents()
       .then((data) => { if (data.success) setAllEvents(data.data ?? []); })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/event_categories`)
-      .then((r) => r.json())
+    fetchEventCategories()
       .then((data) => { if (data.success) setCategories(data.data ?? []); })
       .catch(console.error);
   }, []);
@@ -253,8 +285,7 @@ const router = useRouter();
     searchTimeout.current = setTimeout(async () => {
       setSearching(true);
       try {
-        const res = await fetch(`${API_BASE_URL}/events/search?${new URLSearchParams({ query: query.trim() })}`);
-        const data = await res.json();
+        const data = await searchEvents(query.trim());
         if (data.success) setSearchResults(data.data ?? []);
       } catch (err) { console.error(err); }
       finally { setSearching(false); }
@@ -289,8 +320,10 @@ const router = useRouter();
     });
   }, [allEvents, searchResults, activeCategory, sortBy]);
 
-  const featuredEvent = filteredEvents.find((e) => e.is_featured) ?? filteredEvents[0];
-  const listEvents    = filteredEvents.filter((e) => e.id !== featuredEvent?.id);
+  const heroResult  = searchQuery || activeCategory ? null : selectHeroEvent(filteredEvents);
+  const heroEvent   = heroResult?.event ?? null;
+  const heroLabel   = heroResult?.label ?? null;
+  const listEvents  = filteredEvents.filter((e) => e.id !== heroEvent?.id);
 
   /* ── Loading ── */
   if (loading) return (
@@ -474,10 +507,20 @@ const router = useRouter();
 
               ) : viewMode === "list" ? (
                 <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  {/* Hero featured */}
-                  {featuredEvent && !searchQuery && !activeCategory && (
+                  {/* Hero event */}
+                  {heroEvent && (
                     <div className="mb-6">
-                      <HeroCard event={featuredEvent} onClick={handleEventClick} />
+                      {heroLabel === "weekend" && (
+                        <p className="text-xs font-black uppercase tracking-widest text-[#005f69] mb-3 flex items-center gap-2">
+                          🎉 Bons plans du weekend
+                        </p>
+                      )}
+                      {heroLabel === "featured" && (
+                        <p className="text-xs font-black uppercase tracking-widest text-[#692C00] mb-3 flex items-center gap-2">
+                          ✦ Bon plan
+                        </p>
+                      )}
+                      <HeroCard event={heroEvent} onClick={handleEventClick} />
                     </div>
                   )}
 
@@ -498,10 +541,20 @@ const router = useRouter();
 
               ) : (
                 <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  {/* Hero featured */}
-                  {featuredEvent && !searchQuery && !activeCategory && (
+                  {/* Hero event */}
+                  {heroEvent && (
                     <div className="mb-6">
-                      <HeroCard event={featuredEvent} onClick={handleEventClick} />
+                      {heroLabel === "weekend" && (
+                        <p className="text-xs font-black uppercase tracking-widest text-[#005f69] mb-3 flex items-center gap-2">
+                          🎉 Bons plans du weekend
+                        </p>
+                      )}
+                      {heroLabel === "featured" && (
+                        <p className="text-xs font-black uppercase tracking-widest text-[#692C00] mb-3 flex items-center gap-2">
+                          ✦ Bon plan
+                        </p>
+                      )}
+                      <HeroCard event={heroEvent} onClick={handleEventClick} />
                     </div>
                   )}
 

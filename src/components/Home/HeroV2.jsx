@@ -428,8 +428,7 @@ export const HeroV2 = () => {
 
           {/* ── Bouton animé ── */}
           <a
-            href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
-            target="_blank"
+            href="https://app.ticketche.com/" target="_blank"
             rel="noopener noreferrer"
             className="btn-hero"
             style={{

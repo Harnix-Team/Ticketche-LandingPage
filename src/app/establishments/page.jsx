@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,11 +7,11 @@ import { fetchAllPlaces } from "@/app/services/api";
 import {
   NavigationArrow, MagnifyingGlass, X, Car, Drop, Wrench,
   SlidersHorizontal, Star, MapPin, CaretRight, ArrowUpRight,
-  Funnel, Buildings, List, SquaresFour,
+  Funnel, Buildings, List, SquaresFour, Warning, Camera,
 } from "@phosphor-icons/react";
 
 /* ══════════════════════════════════════════════
-   HELPERS — structure exacte de l'API
+   HELPERS
 ══════════════════════════════════════════════ */
 const formatImage = (img) =>
   img ? img.replace("/storage/app/public", "/storage") : "/images/logo.png";
@@ -49,6 +49,27 @@ const getRating = (place) => {
   return (total / place.noteUsers.length).toFixed(1);
 };
 
+/* ── Distance Haversine en mètres ── */
+function getDistanceMeters(lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+  const toRad = (x) => (x * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+/* ── Meilleur emplacement noté ── */
+function getBestRatedPlace(places) {
+  return [...places].sort((a, b) => {
+    const ra = parseFloat(getRating(a)) || 0;
+    const rb = parseFloat(getRating(b)) || 0;
+    return rb - ra;
+  })[0] ?? null;
+}
+
 const ServiceIcon = ({ tag = "", ...props }) => {
   const t = tag.toLowerCase();
   if (t.includes("parking")) return <Car {...props} />;
@@ -63,11 +84,12 @@ const FILTERS = [
   { key: "garage",  label: "Garage",  Icon: Wrench            },
 ];
 
+const RADIUS_M = 5000; // rayon de recherche en mètres (5 km)
+
 /* ══════════════════════════════════════════════
-   HERO CARD — 2 photos côte à côte + overlay
-   Reproduit exactement le layout de la maquette
+   HERO CARD
 ══════════════════════════════════════════════ */
-function HeroCard({ place, onClick, onItinerary }) {
+function HeroCard({ place, onClick, onItinerary, isNearby, distanceM }) {
   const rating = getRating(place);
   const tags   = getServiceTags(place);
 
@@ -84,7 +106,6 @@ function HeroCard({ place, onClick, onItinerary }) {
         fontFamily: "'Archivo', sans-serif",
       }}
     >
-      {/* Grille 2 photos — même proportion que la maquette */}
       <div style={{ display: "grid", gridTemplateColumns: "1.45fr 1fr", gap: 6, padding: "8px 8px 0 8px", height: 272 }}>
 
         {/* Photo principale */}
@@ -92,8 +113,29 @@ function HeroCard({ place, onClick, onItinerary }) {
           <Image src={getPlaceImage(place)} alt={place.name} fill style={{ objectFit: "cover" }} priority />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.75) 0%, rgba(0,0,0,.15) 55%, transparent 100%)" }} />
 
-          {/* Tags haut gauche */}
-          <div style={{ position: "absolute", top: 12, left: 12, display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {/* Badge "Près de vous" ou "Mieux noté" */}
+          <div style={{ position: "absolute", top: 12, left: 12, display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+            {isNearby ? (
+              <span style={{
+                background: "#005f69", color: "white",
+                fontSize: 10, fontWeight: 800, padding: "4px 11px", borderRadius: 20,
+                letterSpacing: .5, textTransform: "uppercase",
+                display: "flex", alignItems: "center", gap: 5,
+              }}>
+                <MapPin weight="fill" style={{ width: 10, height: 10 }} />
+                À {Math.round(distanceM)} m de vous
+              </span>
+            ) : (
+              <span style={{
+                background: "#d97706", color: "white",
+                fontSize: 10, fontWeight: 800, padding: "4px 11px", borderRadius: 20,
+                letterSpacing: .5, textTransform: "uppercase",
+                display: "flex", alignItems: "center", gap: 5,
+              }}>
+                <Star weight="fill" style={{ width: 10, height: 10 }} />
+                Mieux noté
+              </span>
+            )}
             {tags.map((tag, i) => (
               <span key={i} style={{
                 background: "rgba(255,255,255,.18)", backdropFilter: "blur(10px)",
@@ -104,7 +146,7 @@ function HeroCard({ place, onClick, onItinerary }) {
             ))}
           </div>
 
-          {/* Note haut droite */}
+          {/* Note */}
           {rating && (
             <div style={{
               position: "absolute", top: 12, right: 12,
@@ -118,7 +160,7 @@ function HeroCard({ place, onClick, onItinerary }) {
             </div>
           )}
 
-          {/* Ville + Nom + Actions — bas gauche */}
+          {/* Nom + ville + actions */}
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 16px 18px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 5 }}>
               <MapPin weight="fill" style={{ width: 12, height: 12, color: "#2dd4bf" }} />
@@ -166,13 +208,13 @@ function HeroCard({ place, onClick, onItinerary }) {
               fontSize: 11, fontWeight: 700, padding: "5px 12px", borderRadius: 20,
               color: "#374151", display: "flex", alignItems: "center", gap: 5,
             }}>
-              📷 Voir toutes les photos
+              <Camera style={{ width: 11, height: 11 }} /> Voir toutes les photos
             </span>
           </div>
         </div>
       </div>
 
-      {/* Bande info sous les photos */}
+      {/* Bande info */}
       <div style={{
         padding: "12px 20px 14px", display: "flex",
         alignItems: "center", justifyContent: "space-between",
@@ -209,7 +251,7 @@ function HeroCard({ place, onClick, onItinerary }) {
 }
 
 /* ══════════════════════════════════════════════
-   LIST CARD — même style propre que la maquette
+   LIST CARD
 ══════════════════════════════════════════════ */
 function ListCard({ place, index, onClick, onItinerary }) {
   const rating = getRating(place);
@@ -229,7 +271,6 @@ function ListCard({ place, index, onClick, onItinerary }) {
       }}
       whileHover={{ y: -2, boxShadow: "0 8px 24px rgba(0,95,105,.11)", borderColor: "rgba(0,95,105,.22)" }}
     >
-      {/* Accent gauche */}
       <div style={{
         flexShrink: 0, width: 58,
         display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
@@ -240,8 +281,6 @@ function ListCard({ place, index, onClick, onItinerary }) {
           {tags[0] ?? "Service"}
         </span>
       </div>
-
-      {/* Photo */}
       <div style={{ flexShrink: 0, width: 138, position: "relative", overflow: "hidden" }}>
         <Image src={getPlaceImage(place)} alt={place.name} fill style={{ objectFit: "cover" }} />
         {rating && (
@@ -251,8 +290,6 @@ function ListCard({ place, index, onClick, onItinerary }) {
           </div>
         )}
       </div>
-
-      {/* Texte */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "14px 18px", minWidth: 0 }}>
         <div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 7 }}>
@@ -356,22 +393,133 @@ function GridCard({ place, index, onClick, onItinerary }) {
 }
 
 /* ══════════════════════════════════════════════
+   TOAST — "aucun emplacement autour de vous"
+══════════════════════════════════════════════ */
+function NearbyToast({ visible }) {
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, y: -16, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -12, scale: 0.96 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            position: "fixed", top: 90, left: "50%", transform: "translateX(-50%)",
+            zIndex: 999,
+            background: "#1c1c1e",
+            color: "#fff",
+            borderRadius: 16,
+            padding: "13px 20px",
+            display: "flex", alignItems: "center", gap: 10,
+            boxShadow: "0 8px 32px rgba(0,0,0,.22)",
+            fontFamily: "'Archivo', sans-serif",
+            fontSize: 13, fontWeight: 600,
+            whiteSpace: "nowrap",
+          }}
+        >
+          <Warning weight="fill" style={{ width: 16, height: 16, color: "#fbbf24", flexShrink: 0 }} />
+          Aucun emplacement disponible actuellement autour de vous
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ══════════════════════════════════════════════
    PAGE PRINCIPALE
 ══════════════════════════════════════════════ */
 export default function EstablishmentsPage() {
-  const [all, setAll]                   = useState([]);
-  const [loading, setLoading]           = useState(true);
-  const [searchQuery, setSearchQuery]   = useState("");
-  const [activeFilter, setActiveFilter] = useState("all");
-  const [sortBy, setSortBy]             = useState("default");
-  const [viewMode, setViewMode]         = useState("list");
+  const [all, setAll]                     = useState([]);
+  const [loading, setLoading]             = useState(true);
+  const [searchQuery, setSearchQuery]     = useState("");
+  const [activeFilter, setActiveFilter]   = useState("all");
+  const [sortBy, setSortBy]               = useState("default");
+  const [viewMode, setViewMode]           = useState("list");
 
+  /* ── géolocalisation ── */
+  const [userCoords, setUserCoords]       = useState(null); // { lat, lon }
+  const [geoReady, setGeoReady]           = useState(false); // true dès que la géoloc a répondu (succès ou échec)
+  const [nearbyPlace, setNearbyPlace]     = useState(null);
+  const [nearbyDist, setNearbyDist]       = useState(null);
+  const [showNoNearbyToast, setShowNoNearbyToast] = useState(false);
+  const toastTimerRef = useRef(null);
+
+  /* 1️⃣ Charger les places */
   useEffect(() => {
     fetchAllPlaces()
       .then((r) => { if (r.success) setAll(r.data); })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
+
+  /* 2️⃣ Demander la géolocalisation dès le montage */
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setGeoReady(true); // pas de géoloc dispo → on passe au fallback
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+        setGeoReady(true);
+      },
+      () => {
+        setUserCoords(null);
+        setGeoReady(true); // refus ou erreur → fallback meilleure note
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  }, []);
+
+  /* 3️⃣ Dès que la géoloc a répondu ET les places sont chargées → chercher dans le rayon */
+  useEffect(() => {
+    if (!geoReady || all.length === 0) return;
+
+    // Pas de coordonnées (géoloc refusée) → toast + fallback
+    if (!userCoords) {
+      setNearbyPlace(null);
+      setNearbyDist(null);
+      setShowNoNearbyToast(true);
+      clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => setShowNoNearbyToast(false), 4000);
+      return;
+    }
+
+    // Filtrer les places qui ont lat/lon renseignés
+    const withCoords = all.filter(
+      (p) => p.latitude != null && p.longitude != null
+    );
+
+    // Trouver le plus proche dans le rayon
+    let closest = null;
+    let closestDist = Infinity;
+
+    for (const place of withCoords) {
+      const d = getDistanceMeters(
+        userCoords.lat, userCoords.lon,
+        parseFloat(place.latitude), parseFloat(place.longitude)
+      );
+      if (d <= RADIUS_M && d < closestDist) {
+        closest = place;
+        closestDist = d;
+      }
+    }
+
+    if (closest) {
+      setNearbyPlace(closest);
+      setNearbyDist(closestDist);
+    } else {
+      // Aucun emplacement dans le rayon → toast 4s puis fallback meilleure note
+      setNearbyPlace(null);
+      setNearbyDist(null);
+      setShowNoNearbyToast(true);
+      clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => setShowNoNearbyToast(false), 4000);
+    }
+
+    return () => clearTimeout(toastTimerRef.current);
+  }, [geoReady, userCoords, all]);
 
   const handleClick = useCallback((place) => {
     localStorage.setItem("selectedPlace", JSON.stringify(place));
@@ -383,6 +531,7 @@ export default function EstablishmentsPage() {
     window.open(`https://app.ticketche.com/places/itinerary?placeId=${id}`, "_blank");
   }, []);
 
+  /* ── Filtrage / tri ── */
   const filtered = useMemo(() => {
     let res = [...all];
     if (activeFilter !== "all")
@@ -406,9 +555,23 @@ export default function EstablishmentsPage() {
     });
   }, [all, activeFilter, searchQuery, sortBy]);
 
-  const topPlace  = filtered[0];
-  const listItems = searchQuery || activeFilter !== "all" ? filtered : filtered.slice(1);
+  /* ── Hero card : emplacement nearby OU meilleur noté ── */
+  const heroPlace = useMemo(() => {
+    if (!searchQuery && activeFilter === "all") {
+      if (nearbyPlace) return { place: nearbyPlace, isNearby: true, dist: nearbyDist };
+      if (all.length > 0) return { place: getBestRatedPlace(all), isNearby: false, dist: null };
+    }
+    if (filtered.length > 0) return { place: filtered[0], isNearby: false, dist: null };
+    return null;
+  }, [nearbyPlace, nearbyDist, all, filtered, searchQuery, activeFilter]);
 
+  /* listItems = tous sauf le hero */
+  const listItems = useMemo(() => {
+    if (!heroPlace) return filtered;
+    return filtered.filter((p) => p.id !== heroPlace.place.id);
+  }, [filtered, heroPlace]);
+
+  /* ── Loader ── */
   if (loading) return (
     <div style={{ minHeight: "100vh", background: "#f8f7f5", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ display: "flex", gap: 8 }}>
@@ -435,6 +598,10 @@ export default function EstablishmentsPage() {
 
   return (
     <main style={{ minHeight: "100vh", background: "#f8f7f5", paddingTop: 150, paddingBottom: 60, fontFamily: "'Archivo', sans-serif" }}>
+
+      {/* Toast "aucun emplacement autour de vous" */}
+      <NearbyToast visible={showNoNearbyToast} />
+
       <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 20px" }}>
 
         {/* ── EN-TÊTE ── */}
@@ -555,13 +722,13 @@ export default function EstablishmentsPage() {
               </div>
             </div>
 
-            {/* Bloc stats gradient */}
+            {/* Stats */}
             <div style={{
               background: "linear-gradient(145deg, #005f69 0%, #004a52 100%)",
               borderRadius: 20, padding: "20px 18px", color: "white",
               boxShadow: "0 4px 16px rgba(0,95,105,.28)",
             }}>
-              <Buildings style={{ width: 22, height: 22, color: "rgba(255,255,255,.5)", marginBottom: 10 }} />
+              <Buildings style={{ width: 22, height: 22, color: "rgba(255,255,255,.5)", marginBottom: 10}} />
               <p style={{ fontSize: 34, fontWeight: 900, lineHeight: 1, letterSpacing: -1 }}>{all.length}</p>
               <p style={{ color: "rgba(255,255,255,.6)", fontSize: 13, fontWeight: 600, marginTop: 2 }}>établissements partenaires</p>
               <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,.12)" }}>
@@ -591,7 +758,7 @@ export default function EstablishmentsPage() {
                   initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
                   style={{ textAlign: "center", padding: "60px 20px", background: "white", borderRadius: 24, border: "1px solid #e5e7eb" }}
                 >
-                  <div style={{ fontSize: 44, marginBottom: 12 }}>🏢</div>
+                  <Buildings size={44} color="#e5e7eb" style={{ marginBottom: 12 }} />
                   <p style={{ fontSize: 16, fontWeight: 900, color: "#374151", marginBottom: 6 }}>Aucun établissement trouvé</p>
                   <p style={{ fontSize: 13, color: "#9ca3af", marginBottom: 20 }}>Essayez d'autres filtres ou mots-clés</p>
                   <button onClick={() => { setSearchQuery(""); setActiveFilter("all"); }}
@@ -603,8 +770,14 @@ export default function EstablishmentsPage() {
 
               {filtered.length > 0 && viewMode === "list" && (
                 <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  {topPlace && !searchQuery && activeFilter === "all" && (
-                    <HeroCard place={topPlace} onClick={handleClick} onItinerary={handleItinerary} />
+                  {heroPlace && (
+                    <HeroCard
+                      place={heroPlace.place}
+                      onClick={handleClick}
+                      onItinerary={handleItinerary}
+                      isNearby={heroPlace.isNearby}
+                      distanceM={heroPlace.dist}
+                    />
                   )}
                   <p style={{ fontSize: 10, color: "#9ca3af", fontWeight: 900, textTransform: "uppercase", letterSpacing: .8, marginBottom: 12 }}>
                     {listItems.length} établissement{listItems.length !== 1 ? "s" : ""}
@@ -619,8 +792,14 @@ export default function EstablishmentsPage() {
 
               {filtered.length > 0 && viewMode === "grid" && (
                 <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  {topPlace && !searchQuery && activeFilter === "all" && (
-                    <HeroCard place={topPlace} onClick={handleClick} onItinerary={handleItinerary} />
+                  {heroPlace && (
+                    <HeroCard
+                      place={heroPlace.place}
+                      onClick={handleClick}
+                      onItinerary={handleItinerary}
+                      isNearby={heroPlace.isNearby}
+                      distanceM={heroPlace.dist}
+                    />
                   )}
                   <p style={{ fontSize: 10, color: "#9ca3af", fontWeight: 900, textTransform: "uppercase", letterSpacing: .8, marginBottom: 12 }}>
                     {listItems.length} établissement{listItems.length !== 1 ? "s" : ""}

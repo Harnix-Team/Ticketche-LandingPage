@@ -3,8 +3,9 @@ import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, MapPin, Tag, Users, Ticket, MagnifyingGlass, X, SlidersHorizontal, Sparkle, ArrowRight } from "@phosphor-icons/react";
+import { fetchAllEvents, fetchEventCategories, searchEvents } from "@/app/services/api";
 
-const API_BASE_URL = "https://api.ticketche.com/api/v2";
+
 
 /* ── Confetti particles floating up ── */
 function ConfettiDot({ x, color, delay, dur, size }) {
@@ -41,16 +42,14 @@ export const EventsSection = () => {
   const [activeCategory, setActiveCategory] = useState(null);
   const searchTimeout = useRef(null);
   useEffect(() => {
-    fetch(`${API_BASE_URL}/events`)
-      .then((r) => r.json())
+    fetchAllEvents()
       .then((data) => { if (data.success) setAllEvents(data.data ?? []); })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/event_categories`)
-      .then((r) => r.json())
+    fetchEventCategories()
       .then((data) => { if (data.success) setCategories(data.data ?? []); })
       .catch(console.error);
   }, []);
@@ -77,8 +76,7 @@ export const EventsSection = () => {
     searchTimeout.current = setTimeout(async () => {
       setSearching(true);
       try {
-        const res = await fetch(`${API_BASE_URL}/events/search?${new URLSearchParams({ query: query.trim() })}`);
-        const data = await res.json();
+        const data = await searchEvents(query.trim());
         if (data.success) setSearchResults(data.data ?? []);
       } catch (err) { console.error(err); }
       finally { setSearching(false); }

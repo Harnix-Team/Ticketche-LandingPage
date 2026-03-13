@@ -1,8 +1,9 @@
 import EventDetailsClient from "@/components/Events/EventDetailsClient";
+import { fetchAllEvents } from "@/app/services/api";
+
 export async function generateStaticParams() {
   try {
-    const response = await fetch("https://api.ticketche.com/api/v2/events");
-    const data = await response.json();
+    const data = await fetchAllEvents();
     if (data.success) {
       return data.data.map((event) => ({ id: event.id }));
     }

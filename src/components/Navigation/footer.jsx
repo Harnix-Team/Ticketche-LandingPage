@@ -31,19 +31,18 @@ export const Footer = () => {
   ];
 
   const contactLinks = [
-    { label: "(+229) 99 98 43 45", href: "tel:+22999984345" },
+    { label: "(+229) 01 40 51 21 33", href: "tel:+2290140512133" },
     { label: "support@ticketche.com", href: "mailto:support@ticketche.com" },
   ];
 
-  const policyLinks = [
-    {
-      label: "Politique de confidentialité",
-      href: "/politique-confidentialite",
-    },
-    { label: "Conditions d'utilisation", href: "/conditions-utilisation" },
-    { label: "Mentions légales", href: "/mentions-legales" },
-  ];
-
+ const policyLinks = [
+  {
+    label: "Politique de confidentialité",
+    href: "/politiques/confidentialite",
+  },
+  { label: "Conditions d'utilisation", href: "/politiques/conditions" },
+  { label: "Mentions légales", href: "/politiques/mentions" },
+];
  const socialLinks = [
   { icon: FacebookLogo, href: "https://www.facebook.com/share/1AaDERj83T/?mibextid=wwXIfr", label: "Facebook" },
   { icon: TiktokLogo, href: "https://www.tiktok.com/@ticketch?_r=1&_t=ZS-94YYeuvBujN", label: "TikTok" },

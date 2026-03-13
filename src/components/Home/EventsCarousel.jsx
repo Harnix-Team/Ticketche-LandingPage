@@ -4,8 +4,10 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Calendar, MapPin, Ticket, ArrowRight, Users, Star, MusicNote, FilmSlate, SoccerBall, Confetti, Microphone, DeviceMobile } from "@phosphor-icons/react";
+import { getDownloadLink } from "@/utils/deviceDetection";
+import { fetchAllEvents } from "@/app/services/api";
 
-const API_BASE_URL = "https://api.ticketche.com/api/v2";
+
 
 /* ─── helpers ─────────────────────────────────── */
 const getEventImage = (e) =>
@@ -152,12 +154,13 @@ const S = {
   },
   section: {
     padding: "60px 0 80px",
- background: "#ecf5f5",  },
+    background: "#ecf5f5",
+  },
   inner: {
-  maxWidth: "90vw",
-  margin: "0 auto",
-  padding: "0 24px",
-},
+    maxWidth: "90vw",
+    margin: "0 auto",
+    padding: "0 24px",
+  },
   headerRow: {
     display: "flex",
     alignItems: "center",
@@ -449,6 +452,8 @@ function Carousel({ events }) {
 
 /* ─── EventsPromo ─────────────────────────────── */
 function EventsPromo() {
+  const [downloadLink, setDownloadLink] = useState("");
+  useEffect(() => { setDownloadLink(getDownloadLink()); }, []);
   const features = [
     { icon: MusicNote, label: "Concerts & Soirées" },
     { icon: FilmSlate, label: "Expos & Culture" },
@@ -569,7 +574,7 @@ function EventsPromo() {
           {/* Boutons */}
           <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
             <motion.a
-              href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
+              href={downloadLink}
               target="_blank"
               rel="noopener noreferrer"
               className="promo-download-btn"
@@ -657,8 +662,7 @@ export const EventsCarousel = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/events`)
-      .then((r) => r.json())
+    fetchAllEvents()
       .then(({ success, data }) => {
         if (!success) return;
         const feat = (data ?? [])

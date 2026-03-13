@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { fetchEventById } from "@/app/services/api";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
@@ -85,8 +86,7 @@ export default function EventDetailsPage() {
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-const res = await fetch(`https://api.ticketche.com/api/v2/events/${id}`);
-        const data = await res.json();
+        const data = await fetchEventById(id);
         if (data.success) setEvent(data.data);
       } catch (err) { console.error(err); }
       finally { setLoading(false); }
