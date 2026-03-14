@@ -61,7 +61,7 @@ function StarClustersHIW() {
   );
 }
 
-function StepCard({ step }) {
+function StepCard({ step, index }) {
   const [hovered, setHovered] = useState(false);
   const { Icon, title, description, color, bg, border } = step;
 
@@ -69,6 +69,7 @@ function StepCard({ step }) {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className="hiw-step-card"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -83,30 +84,44 @@ function StepCard({ step }) {
         cursor: "default",
       }}
     >
-      <div style={{
-        width: "54px",
-        height: "54px",
-        borderRadius: "16px",
-        background: bg,
-        border: `1.5px solid ${border}`,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexShrink: 0,
-        boxShadow: hovered ? `0 8px 24px ${color}33` : "none",
-        transition: "box-shadow 0.3s ease",
-      }}>
-        <Icon weight="fill" style={{ width: 28, height: 28, color }} />
+      {/* Step number badge + icon row */}
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div style={{
+          width: "54px",
+          height: "54px",
+          borderRadius: "16px",
+          background: bg,
+          border: `1.5px solid ${border}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          boxShadow: hovered ? `0 8px 24px ${color}33` : "none",
+          transition: "box-shadow 0.3s ease",
+        }}>
+          <Icon weight="fill" style={{ width: 28, height: 28, color }} />
+        </div>
+        {/* Step number — visible only on mobile via CSS */}
+        <span className="hiw-step-number" style={{
+          fontSize: "13px",
+          fontWeight: 700,
+          color: color,
+          opacity: 0.7,
+          letterSpacing: "0.04em",
+          textTransform: "uppercase",
+        }}>
+          Étape {index + 1}
+        </span>
       </div>
 
       <div>
         <h3 style={{ margin: "0 0 7px", fontSize: "19px", fontWeight: 800, color: "#0a1a1c", letterSpacing: "-0.01em", lineHeight: 1.2 }}>
           {title}
         </h3>
-        <p style={{ margin: 0, fontSize: "15px", color: "#6b7280", lineHeight: 1.75 }}>          {description}
+        <p style={{ margin: 0, fontSize: "15px", color: "#6b7280", lineHeight: 1.75 }}>
+          {description}
         </p>
       </div>
-
     </div>
   );
 }
@@ -144,17 +159,62 @@ export default function HowItWorks() {
           40%      { transform: translateY(-7px) rotate(-12deg) scale(1.12); }
           80%      { transform: translateY(-2px) rotate(6deg) scale(0.92); }
         }
+
+        /* ── Desktop: hide step numbers ── */
+        .hiw-step-number { display: none; }
+
+        /* ── Tablet & small desktop (≤ 900px) ── */
         @media (max-width: 900px) {
           .hiw-main { flex-direction: column !important; }
-          .hiw-side { flex-direction: row !important; flex-wrap: wrap !important; justify-content: center !important; max-width: 100% !important; }
-          .hiw-center-col { width: 260px !important; height: 260px !important; }
+          .hiw-center-col { width: 220px !important; height: 220px !important; }
+          .hiw-center-img { width: 620px !important; }
+          .hiw-side {
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            max-width: 100% !important;
+          }
+          .hiw-step-card { flex: 1 1 260px; max-width: 340px; }
+        }
+
+        /* ── Mobile (≤ 600px) ── */
+        @media (max-width: 600px) {
+          .hiw-center-col { display: none !important; }
+
+          .hiw-main { gap: 0 !important; }
+
+          .hiw-side {
+            flex-direction: column !important;
+            flex-wrap: nowrap !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            gap: 0 !important;
+          }
+
+          /* All 4 cards stack vertically in correct order */
+          .hiw-side-left  { order: 1; }
+          .hiw-side-right { order: 2; }
+
+          .hiw-step-card {
+            flex: unset !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            background: rgba(0,95,105,0.05) !important;
+            border-color: rgba(0,95,105,0.12) !important;
+            border-radius: 16px !important;
+            margin-bottom: 8px !important;
+          }
+
+          /* Show step numbers on mobile for clarity */
+          .hiw-step-number { display: inline !important; }
+          .hiw-section { margin-bottom: 24px !important; padding-bottom: 40px !important; }
         }
       `}</style>
 
-      <section style={{
+      <section className="hiw-section" style={{
         fontFamily: "'Archivo', sans-serif",
         padding: "clamp(60px,8vw,100px) clamp(16px,4vw,60px)",
-background: "#ecf5f5",
+        background: "#ecf5f5",
         position: "relative",
         overflow: "hidden",
         marginBottom: "80px",
@@ -172,19 +232,40 @@ background: "#ecf5f5",
         </div>
 
         {/* 3-column layout */}
-        <div className="hiw-main" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "clamp(12px,2vw,28px)", position: "relative", zIndex: 2, maxWidth: "1200px", margin: "0 auto" }}>
+        <div className="hiw-main" style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "clamp(12px,2vw,28px)",
+          position: "relative",
+          zIndex: 2,
+          maxWidth: "1200px",
+          margin: "0 auto",
+        }}>
 
-          {/* LEFT: steps 1 & 3 */}
-          <div className="hiw-side" style={{ display: "flex", flexDirection: "column", gap: "4px", flex: "1 1 260px", maxWidth: "300px" }}>
-            <StepCard step={steps[0]} />
-            <StepCard step={steps[2]} />
+          {/* LEFT: steps 1 & 2 (mobile: column, order 1) */}
+          <div className="hiw-side hiw-side-left" style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "4px",
+            flex: "1 1 260px",
+            maxWidth: "300px",
+          }}>
+            <StepCard step={steps[0]} index={0} />
+            <StepCard step={steps[2]} index={2} />
           </div>
 
-          {/* CENTER */}
-          <div className="hiw-center-col"
-            style={{ position: "relative", width: "clamp(300px,28vw,400px)", height: "clamp(300px,28vw,400px)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "visible" }}
-          >
-
+          {/* CENTER — hidden on mobile */}
+          <div className="hiw-center-col" style={{
+            position: "relative",
+            width: "clamp(260px,28vw,400px)",
+            height: "clamp(260px,28vw,400px)",
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "visible",
+          }}>
             {/* Solid circle */}
             <div style={{
               position: "absolute",
@@ -217,10 +298,14 @@ background: "#ecf5f5",
               zIndex: 1,
             }} />
 
-            {/* Phone mockup */}
-            <div style={{ position: "absolute", zIndex: 2, width: "900px" }}>
+            {/* Phone mockup — sized relative to the center column, not fixed px */}
+            <div className="hiw-center-img" style={{
+              position: "absolute",
+              zIndex: 2,
+              width: "820px", /* desktop: extends beyond circle for visual effect */
+            }}>
               <img
-                src="/images/Hero/etapes.png"
+                src="/images/Hero/etapes1.png"
                 alt="Ticketché app mockup"
                 style={{
                   width: "100%",
@@ -233,13 +318,53 @@ background: "#ecf5f5",
             </div>
           </div>
 
-          {/* RIGHT: steps 2 & 4 */}
-          <div className="hiw-side" style={{ display: "flex", flexDirection: "column", gap: "4px", flex: "1 1 260px", maxWidth: "300px" }}>
-            <StepCard step={steps[1]} />
-            <StepCard step={steps[3]} />
+          {/* RIGHT: steps 2 & 4 (mobile: column, order 2) */}
+          <div className="hiw-side hiw-side-right" style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "4px",
+            flex: "1 1 260px",
+            maxWidth: "300px",
+          }}>
+            <StepCard step={steps[1]} index={1} />
+            <StepCard step={steps[3]} index={3} />
           </div>
 
         </div>
+
+        {/* Mobile-only: phone mockup shown below the cards */}
+        <div className="hiw-mobile-mockup" style={{
+          display: "none",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "40px",
+          marginLeft: "calc(-1 * clamp(16px,4vw,60px))",
+          marginRight: "calc(-1 * clamp(16px,4vw,60px))",
+          position: "relative",
+          zIndex: 2,
+        }}>
+          <div style={{ position: "absolute", width: "340px", height: "340px", borderRadius: "50%", background: "#005f69", zIndex: 0 }} />
+          <div style={{ position: "absolute", width: "405px", height: "405px", borderRadius: "50%", border: "2px dashed rgba(0,95,105,0.35)", zIndex: 0, pointerEvents: "none" }} />
+          <img
+            src="/images/Hero/etapes.png"
+            alt="Ticketché app mockup"
+            style={{
+              position: "relative",
+              zIndex: 2,
+              width: "145vw",
+              maxWidth: "820px",
+              height: "auto",
+              display: "block",
+              filter: "drop-shadow(0 20px 36px rgba(0,20,24,0.32))",
+            }}
+          />
+        </div>
+
+        <style>{`
+          @media (max-width: 600px) {
+            .hiw-mobile-mockup { display: flex !important; }
+          }
+        `}</style>
 
       </section>
     </>

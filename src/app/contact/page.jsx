@@ -193,13 +193,24 @@ ${form.name}`;
           align-self: flex-start;
         }
         .ct-link-white:hover { background: rgba(0,0,0,.35); transform: translateY(-1px); }
+
+        /* ── MOBILE UNIQUEMENT — ne touche pas au desktop ── */
+        @media (max-width: 768px) {
+          .ct-hero-section { padding: 80px 16px 40px !important; }
+          .ct-hero-section h1 { margin-top: 20px !important; }
+          .ct-middle-section { padding: 0 16px 50px !important; }
+          .ct-middle-grid { grid-template-columns: 1fr !important; gap: 32px !important; max-width: 100% !important; padding: 0 !important; }
+          .ct-carousel-wrap { height: 220px !important; }
+          .ct-form-box { padding: 32px 20px !important; }
+          .ct-form-row-2col { grid-template-columns: 1fr !important; }
+        }
       `}</style>
 
       <div style={{ fontFamily: "'Archivo', sans-serif", background: "#ecf5f5", position: "relative", overflow: "hidden" }}>
         <StarClusters />
 
       {/* ══ HERO ══ */}
-<section style={{ padding: "100px 20px 90px", textAlign: "center", position: "relative", zIndex: 2 }}>
+<section className="ct-hero-section" style={{ padding: "100px 20px 90px", textAlign: "center", position: "relative", zIndex: 2 }}>
   <h1 style={{ fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 900, color: "#0a1a1c", letterSpacing: -1, marginBottom: 14, lineHeight: 1.05, marginTop: 60 }}>
     Besoin <span style={{ color: "#005f69" }}>d'aide ?</span>
   </h1>
@@ -247,8 +258,8 @@ ${form.name}`;
           </div>
         </section> */}
         {/* ══ MIDDLE ══ */}
-        <section style={{ padding: "0 20px 70px", position: "relative", zIndex: 2 }}>
-          <div style={{
+        <section className="ct-middle-section" style={{ padding: "0 20px 70px", position: "relative", zIndex: 2 }}>
+          <div className="ct-middle-grid" style={{
             maxWidth: "90vw", margin: "0 auto", padding: "0 24px",
             display: "grid", gridTemplateColumns: "1fr 1.15fr", gap: 60,
            alignItems: "flex-start"
@@ -260,7 +271,7 @@ ${form.name}`;
   
   {/* Carrousel — flex: 1 pour occuper l'espace restant */}
               <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative" }}>
-                <div style={{ flex: 1, borderRadius: 16, overflow: "hidden", background: "#f0fafa", position: "relative", boxShadow: "0 4px 18px rgba(0,95,105,.15)" }}>
+                <div className="ct-carousel-wrap" style={{ flex: 1, borderRadius: 16, overflow: "hidden", background: "#f0fafa", position: "relative", boxShadow: "0 4px 18px rgba(0,95,105,.15)" }}>
                   <img
                     src={images[currentImg]}
                     alt={`photo ${currentImg + 1}`}
@@ -321,7 +332,7 @@ ${form.name}`;
             </div>
 
             {/* Formulaire */}
-            <div style={{
+            <div className="ct-form-box" style={{
               background: "linear-gradient(145deg, #005f69 0%, #004a52 100%)",
               borderRadius: 20, padding: "70px 28px",
               boxShadow: "0 20px 60px rgba(0,95,105,.3)",
@@ -344,7 +355,7 @@ ${form.name}`;
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 6 }}>
+                  <div className="ct-form-row-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 6 }}>
                     <div>
                       <label style={{ color: "rgba(255,255,255,.6)", fontSize: 11, fontWeight: 700, letterSpacing: .5, display: "block", marginBottom: 6, textTransform: "uppercase" }}>Votre nom</label>
                       <input name="name" value={form.name} onChange={handleChange} placeholder="Nom complet" required style={inputStyle}
@@ -359,7 +370,7 @@ ${form.name}`;
                     </div>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 6 }}>
+                  <div className="ct-form-row-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 6 }}>
                     <div>
                       <label style={{ color: "rgba(255,255,255,.6)", fontSize: 11, fontWeight: 700, letterSpacing: .5, display: "block", marginBottom: 6, textTransform: "uppercase" }}>Service</label>
                       <select name="service" value={form.service} onChange={handleChange} required

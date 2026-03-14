@@ -49,7 +49,6 @@ const getRating = (place) => {
   return (total / place.noteUsers.length).toFixed(1);
 };
 
-/* ── Distance Haversine en mètres ── */
 function getDistanceMeters(lat1, lon1, lat2, lon2) {
   const R = 6371000;
   const toRad = (x) => (x * Math.PI) / 180;
@@ -61,7 +60,6 @@ function getDistanceMeters(lat1, lon1, lat2, lon2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-/* ── Meilleur emplacement noté ── */
 function getBestRatedPlace(places) {
   return [...places].sort((a, b) => {
     const ra = parseFloat(getRating(a)) || 0;
@@ -84,10 +82,10 @@ const FILTERS = [
   { key: "garage",  label: "Garage",  Icon: Wrench            },
 ];
 
-const RADIUS_M = 5000; // rayon de recherche en mètres (5 km)
+const RADIUS_M = 5000;
 
 /* ══════════════════════════════════════════════
-   HERO CARD
+   HERO CARD — responsive
 ══════════════════════════════════════════════ */
 function HeroCard({ place, onClick, onItinerary, isNearby, distanceM }) {
   const rating = getRating(place);
@@ -106,108 +104,78 @@ function HeroCard({ place, onClick, onItinerary, isNearby, distanceM }) {
         fontFamily: "'Archivo', sans-serif",
       }}
     >
-      <div style={{ display: "grid", gridTemplateColumns: "1.45fr 1fr", gap: 6, padding: "8px 8px 0 8px", height: 272 }}>
+      {/* Sur mobile : photo unique pleine largeur. Sur desktop : grille 2 colonnes */}
+      <style>{`
+        .hero-grid { display: grid; grid-template-columns: 1.45fr 1fr; gap: 6px; padding: 8px 8px 0 8px; height: 272px; }
+        .hero-second-photo { display: block; }
+        @media (max-width: 640px) {
+          .hero-grid { grid-template-columns: 1fr; height: 240px; padding: 0; }
+          .hero-second-photo { display: none; }
+        }
+      `}</style>
 
+      <div className="hero-grid">
         {/* Photo principale */}
         <div style={{ position: "relative", borderRadius: 18, overflow: "hidden" }}>
           <Image src={getPlaceImage(place)} alt={place.name} fill style={{ objectFit: "cover" }} priority />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.75) 0%, rgba(0,0,0,.15) 55%, transparent 100%)" }} />
 
-          {/* Badge "Près de vous" ou "Mieux noté" */}
+          {/* Badge */}
           <div style={{ position: "absolute", top: 12, left: 12, display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
             {isNearby ? (
-              <span style={{
-                background: "#005f69", color: "white",
-                fontSize: 10, fontWeight: 800, padding: "4px 11px", borderRadius: 20,
-                letterSpacing: .5, textTransform: "uppercase",
-                display: "flex", alignItems: "center", gap: 5,
-              }}>
+              <span style={{ background: "#005f69", color: "white", fontSize: 10, fontWeight: 800, padding: "4px 11px", borderRadius: 20, letterSpacing: .5, textTransform: "uppercase", display: "flex", alignItems: "center", gap: 5 }}>
                 <MapPin weight="fill" style={{ width: 10, height: 10 }} />
                 À {Math.round(distanceM)} m de vous
               </span>
             ) : (
-              <span style={{
-                background: "#d97706", color: "white",
-                fontSize: 10, fontWeight: 800, padding: "4px 11px", borderRadius: 20,
-                letterSpacing: .5, textTransform: "uppercase",
-                display: "flex", alignItems: "center", gap: 5,
-              }}>
+              <span style={{ background: "#d97706", color: "white", fontSize: 10, fontWeight: 800, padding: "4px 11px", borderRadius: 20, letterSpacing: .5, textTransform: "uppercase", display: "flex", alignItems: "center", gap: 5 }}>
                 <Star weight="fill" style={{ width: 10, height: 10 }} />
                 Mieux noté
               </span>
             )}
             {tags.map((tag, i) => (
-              <span key={i} style={{
-                background: "rgba(255,255,255,.18)", backdropFilter: "blur(10px)",
-                border: "1px solid rgba(255,255,255,.3)", color: "white",
-                fontSize: 10, fontWeight: 800, padding: "4px 11px", borderRadius: 20,
-                letterSpacing: .5, textTransform: "uppercase",
-              }}>{tag}</span>
+              <span key={i} style={{ background: "rgba(255,255,255,.18)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,.3)", color: "white", fontSize: 10, fontWeight: 800, padding: "4px 11px", borderRadius: 20, letterSpacing: .5, textTransform: "uppercase" }}>
+                {tag}
+              </span>
             ))}
           </div>
 
           {/* Note */}
           {rating && (
-            <div style={{
-              position: "absolute", top: 12, right: 12,
-              display: "flex", alignItems: "center", gap: 5,
-              background: "rgba(255,255,255,.18)", backdropFilter: "blur(10px)",
-              border: "1px solid rgba(255,255,255,.3)", color: "white",
-              padding: "5px 11px", borderRadius: 20,
-            }}>
+            <div style={{ position: "absolute", top: 12, right: 12, display: "flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,.18)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,.3)", color: "white", padding: "5px 11px", borderRadius: 20 }}>
               <Star weight="fill" style={{ width: 12, height: 12, color: "#fbbf24" }} />
               <span style={{ fontWeight: 900, fontSize: 13 }}>{rating}</span>
             </div>
           )}
 
-          {/* Nom + ville + actions */}
+          {/* Nom + actions */}
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 16px 18px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 5 }}>
               <MapPin weight="fill" style={{ width: 12, height: 12, color: "#2dd4bf" }} />
-              <span style={{ color: "rgba(255,255,255,.7)", fontSize: 11, fontWeight: 700, letterSpacing: .3 }}>
-                {place.city}
-              </span>
+              <span style={{ color: "rgba(255,255,255,.7)", fontSize: 11, fontWeight: 700, letterSpacing: .3 }}>{place.city}</span>
             </div>
-            <h2 style={{ color: "white", fontSize: 21, fontWeight: 900, lineHeight: 1.2, marginBottom: 12, letterSpacing: -.3 }}>
-              {place.name}
-            </h2>
+            <h2 style={{ color: "white", fontSize: 21, fontWeight: 900, lineHeight: 1.2, marginBottom: 12, letterSpacing: -.3 }}>{place.name}</h2>
             <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
               <span style={{ color: "white", fontWeight: 900, fontSize: 16 }}>{getMinPrice(place)}</span>
               <button
                 onClick={(e) => onItinerary(e, place.id)}
-                style={{
-                  display: "flex", alignItems: "center", gap: 6,
-                  background: "white", color: "#005f69",
-                  fontWeight: 800, fontSize: 12, padding: "7px 16px",
-                  borderRadius: 20, border: "none", cursor: "pointer",
-                  fontFamily: "'Archivo', sans-serif",
-                }}
+                style={{ display: "flex", alignItems: "center", gap: 6, background: "white", color: "#005f69", fontWeight: 800, fontSize: 12, padding: "7px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontFamily: "'Archivo', sans-serif" }}
               >
                 <NavigationArrow style={{ width: 13, height: 13 }} /> Itinéraire
               </button>
-              <span style={{
-                display: "flex", alignItems: "center", gap: 5,
-                background: "rgba(255,255,255,.15)", backdropFilter: "blur(8px)",
-                border: "1px solid rgba(255,255,255,.25)",
-                color: "white", fontWeight: 700, fontSize: 12,
-                padding: "7px 14px", borderRadius: 20,
-              }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,.15)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,.25)", color: "white", fontWeight: 700, fontSize: 12, padding: "7px 14px", borderRadius: 20 }}>
                 Voir le détail <ArrowUpRight style={{ width: 13, height: 13 }} />
               </span>
             </div>
           </div>
         </div>
 
-        {/* Photo secondaire */}
-        <div style={{ borderRadius: 18, overflow: "hidden", position: "relative" }}>
+        {/* Photo secondaire — masquée sur mobile via CSS */}
+        <div className="hero-second-photo" style={{ borderRadius: 18, overflow: "hidden", position: "relative" }}>
           <Image src={getSecondImage(place)} alt={place.name} fill style={{ objectFit: "cover" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.38) 0%, transparent 55%)" }} />
           <div style={{ position: "absolute", bottom: 12, right: 12 }}>
-            <span style={{
-              background: "rgba(255,255,255,.9)", backdropFilter: "blur(8px)",
-              fontSize: 11, fontWeight: 700, padding: "5px 12px", borderRadius: 20,
-              color: "#374151", display: "flex", alignItems: "center", gap: 5,
-            }}>
+            <span style={{ background: "rgba(255,255,255,.9)", backdropFilter: "blur(8px)", fontSize: 11, fontWeight: 700, padding: "5px 12px", borderRadius: 20, color: "#374151", display: "flex", alignItems: "center", gap: 5 }}>
               <Camera style={{ width: 11, height: 11 }} /> Voir toutes les photos
             </span>
           </div>
@@ -215,31 +183,19 @@ function HeroCard({ place, onClick, onItinerary, isNearby, distanceM }) {
       </div>
 
       {/* Bande info */}
-      <div style={{
-        padding: "12px 20px 14px", display: "flex",
-        alignItems: "center", justifyContent: "space-between",
-        borderTop: "1px solid #f3f4f6", marginTop: 6,
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+      <div style={{ padding: "12px 20px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, borderTop: "1px solid #f3f4f6", marginTop: 6 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
           {tags.map((tag, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#4b5563", fontWeight: 600 }}>
               <ServiceIcon tag={tag} style={{ width: 15, height: 15, color: "#005f69" }} />
               {tag}
             </div>
           ))}
-          {place.details && (
-            <span style={{ fontSize: 12, color: "#9ca3af", fontWeight: 500, maxWidth: 240, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              {place.details}
-            </span>
-          )}
         </div>
         {rating && (
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             {[1,2,3,4,5].map(s => (
-              <Star key={s}
-                weight={s <= Math.round(parseFloat(rating)) ? "fill" : "regular"}
-                style={{ width: 12, height: 12, color: s <= Math.round(parseFloat(rating)) ? "#fbbf24" : "#e5e7eb" }}
-              />
+              <Star key={s} weight={s <= Math.round(parseFloat(rating)) ? "fill" : "regular"} style={{ width: 12, height: 12, color: s <= Math.round(parseFloat(rating)) ? "#fbbf24" : "#e5e7eb" }} />
             ))}
             <span style={{ fontSize: 12, fontWeight: 800, color: "#374151", marginLeft: 4 }}>{rating}</span>
             <span style={{ fontSize: 11, color: "#9ca3af", marginLeft: 2 }}>({place.noteUsers?.length} avis)</span>
@@ -251,7 +207,7 @@ function HeroCard({ place, onClick, onItinerary, isNearby, distanceM }) {
 }
 
 /* ══════════════════════════════════════════════
-   LIST CARD
+   LIST CARD — responsive
 ══════════════════════════════════════════════ */
 function ListCard({ place, index, onClick, onItinerary }) {
   const rating = getRating(place);
@@ -271,9 +227,19 @@ function ListCard({ place, index, onClick, onItinerary }) {
       }}
       whileHover={{ y: -2, boxShadow: "0 8px 24px rgba(0,95,105,.11)", borderColor: "rgba(0,95,105,.22)" }}
     >
-      <div style={{
+      {/* Bande colorée de gauche — masquée sur très petit mobile */}
+      <style>{`
+        .listcard-band { display: flex; }
+        .listcard-photo { width: 138px; flex-shrink: 0; }
+        @media (max-width: 400px) {
+          .listcard-band { display: none; }
+          .listcard-photo { width: 100px; }
+        }
+      `}</style>
+
+      <div className="listcard-band" style={{
         flexShrink: 0, width: 58,
-        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        flexDirection: "column", alignItems: "center", justifyContent: "center",
         gap: 5, background: "linear-gradient(160deg, #005f69, #004a52)",
       }}>
         <ServiceIcon tag={tags[0] ?? ""} style={{ width: 20, height: 20, color: "white" }} />
@@ -281,7 +247,8 @@ function ListCard({ place, index, onClick, onItinerary }) {
           {tags[0] ?? "Service"}
         </span>
       </div>
-      <div style={{ flexShrink: 0, width: 138, position: "relative", overflow: "hidden" }}>
+
+      <div className="listcard-photo" style={{ position: "relative", overflow: "hidden", flexShrink: 0 }}>
         <Image src={getPlaceImage(place)} alt={place.name} fill style={{ objectFit: "cover" }} />
         {rating && (
           <div style={{ position: "absolute", top: 8, left: 8, display: "flex", alignItems: "center", gap: 4, background: "rgba(255,255,255,.92)", backdropFilter: "blur(6px)", borderRadius: 20, padding: "3px 8px" }}>
@@ -290,7 +257,8 @@ function ListCard({ place, index, onClick, onItinerary }) {
           </div>
         )}
       </div>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "14px 18px", minWidth: 0 }}>
+
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "14px 14px", minWidth: 0 }}>
         <div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 7 }}>
             {tags.map((tag, i) => (
@@ -299,20 +267,13 @@ function ListCard({ place, index, onClick, onItinerary }) {
               </span>
             ))}
           </div>
-          <h3 style={{ fontWeight: 900, color: "#111827", fontSize: 15, lineHeight: 1.35, marginBottom: 5 }}>
-            {place.name}
-          </h3>
+          <h3 style={{ fontWeight: 900, color: "#111827", fontSize: 15, lineHeight: 1.35, marginBottom: 5 }}>{place.name}</h3>
           <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: "#9ca3af" }}>
             <MapPin weight="fill" style={{ width: 11, height: 11, color: "#005f69", flexShrink: 0 }} />
             {place.city}
           </div>
-          {place.details && (
-            <p style={{ fontSize: 12, color: "#6b7280", marginTop: 5, display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-              {place.details}
-            </p>
-          )}
         </div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 10, paddingTop: 10, borderTop: "1px solid #f3f4f6" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 10, paddingTop: 10, borderTop: "1px solid #f3f4f6", flexWrap: "wrap", gap: 6 }}>
           <span style={{ fontWeight: 900, color: "#005f69", fontSize: 14 }}>{getMinPrice(place)}</span>
           <div style={{ display: "flex", gap: 8 }}>
             <button
@@ -332,7 +293,7 @@ function ListCard({ place, index, onClick, onItinerary }) {
 }
 
 /* ══════════════════════════════════════════════
-   GRID CARD
+   GRID CARD — inchangée
 ══════════════════════════════════════════════ */
 function GridCard({ place, index, onClick, onItinerary }) {
   const rating = getRating(place);
@@ -357,9 +318,7 @@ function GridCard({ place, index, onClick, onItinerary }) {
           </div>
         )}
         <div style={{ position: "absolute", bottom: 10, right: 10 }}>
-          <span style={{ background: "rgba(0,0,0,.42)", backdropFilter: "blur(6px)", color: "white", fontSize: 10, fontWeight: 700, padding: "4px 9px", borderRadius: 20 }}>
-            {place.city}
-          </span>
+          <span style={{ background: "rgba(0,0,0,.42)", backdropFilter: "blur(6px)", color: "white", fontSize: 10, fontWeight: 700, padding: "4px 9px", borderRadius: 20 }}>{place.city}</span>
         </div>
       </div>
       <div style={{ padding: "14px 16px 16px" }}>
@@ -370,13 +329,9 @@ function GridCard({ place, index, onClick, onItinerary }) {
             </span>
           ))}
         </div>
-        <h3 style={{ fontWeight: 900, color: "#111827", fontSize: 14, lineHeight: 1.35, marginBottom: 4, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-          {place.name}
-        </h3>
+        <h3 style={{ fontWeight: 900, color: "#111827", fontSize: 14, lineHeight: 1.35, marginBottom: 4, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{place.name}</h3>
         {place.details && (
-          <p style={{ fontSize: 12, color: "#9ca3af", marginBottom: 10, display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-            {place.details}
-          </p>
+          <p style={{ fontSize: 12, color: "#9ca3af", marginBottom: 10, display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{place.details}</p>
         )}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 12, borderTop: "1px solid #f3f4f6" }}>
           <span style={{ fontWeight: 900, color: "#005f69", fontSize: 14 }}>{getMinPrice(place)}</span>
@@ -393,7 +348,112 @@ function GridCard({ place, index, onClick, onItinerary }) {
 }
 
 /* ══════════════════════════════════════════════
-   TOAST — "aucun emplacement autour de vous"
+   DRAWER SIDEBAR MOBILE
+══════════════════════════════════════════════ */
+function MobileFilterDrawer({ open, onClose, activeFilter, setActiveFilter, sortBy, setSortBy, searchQuery, setSearchQuery, all }) {
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          {/* Overlay */}
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={onClose}
+            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.4)", zIndex: 200 }}
+          />
+          {/* Drawer */}
+          <motion.div
+            initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 300 }}
+            style={{
+              position: "fixed", bottom: 0, left: 0, right: 0,
+              background: "white", borderRadius: "24px 24px 0 0",
+              zIndex: 201, padding: "0 20px 40px",
+              maxHeight: "85vh", overflowY: "auto",
+              fontFamily: "'Archivo', sans-serif",
+            }}
+          >
+            {/* Handle */}
+            <div style={{ display: "flex", justifyContent: "center", padding: "14px 0 18px" }}>
+              <div style={{ width: 36, height: 4, borderRadius: 4, background: "#e5e7eb" }} />
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+              <span style={{ fontWeight: 900, fontSize: 17, color: "#111827" }}>Filtres</span>
+              <button onClick={onClose} style={{ background: "#f3f4f6", border: "none", borderRadius: 10, padding: "6px 8px", cursor: "pointer" }}>
+                <X style={{ width: 16, height: 16, color: "#6b7280" }} />
+              </button>
+            </div>
+
+            {/* Recherche */}
+            <p style={{ fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: .8, color: "#9ca3af", marginBottom: 10 }}>Recherche</p>
+            <div style={{ position: "relative", marginBottom: 20 }}>
+              <MagnifyingGlass style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", width: 14, height: 14, color: "#d1d5db", pointerEvents: "none" }} />
+              <input
+                type="text" value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Nom, ville…"
+                style={{ width: "100%", padding: "11px 32px 11px 34px", border: "1.5px solid #e5e7eb", borderRadius: 12, background: "#f9fafb", fontSize: 14, fontWeight: 500, color: "#374151", outline: "none", fontFamily: "'Archivo', sans-serif", boxSizing: "border-box" }}
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery("")} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#d1d5db" }}>
+                  <X style={{ width: 13, height: 13 }} />
+                </button>
+              )}
+            </div>
+
+            {/* Service */}
+            <p style={{ fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: .8, color: "#9ca3af", marginBottom: 10 }}>Type de service</p>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
+              {FILTERS.map(({ key, label, Icon }) => (
+                <button key={key} onClick={() => setActiveFilter(key)} style={{
+                  display: "flex", alignItems: "center", gap: 7, padding: "9px 16px",
+                  borderRadius: 20, border: "1.5px solid", cursor: "pointer", fontSize: 13, fontWeight: 700,
+                  fontFamily: "'Archivo', sans-serif",
+                  borderColor: activeFilter === key ? "#005f69" : "#e5e7eb",
+                  background: activeFilter === key ? "#005f69" : "white",
+                  color: activeFilter === key ? "white" : "#6b7280",
+                }}>
+                  <Icon style={{ width: 14, height: 14 }} /> {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Tri */}
+            <p style={{ fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: .8, color: "#9ca3af", marginBottom: 10 }}>Trier par</p>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 24 }}>
+              {[
+                { key: "default", label: "Par défaut" },
+                { key: "rating",  label: "Meilleure note" },
+                { key: "price",   label: "Prix croissant" },
+              ].map(({ key, label }) => (
+                <button key={key} onClick={() => setSortBy(key)} style={{
+                  padding: "9px 16px", borderRadius: 20, border: "1.5px solid", cursor: "pointer",
+                  fontSize: 13, fontWeight: 700, fontFamily: "'Archivo', sans-serif",
+                  borderColor: sortBy === key ? "#005f69" : "#e5e7eb",
+                  background: sortBy === key ? "#005f69" : "white",
+                  color: sortBy === key ? "white" : "#6b7280",
+                }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={onClose}
+              style={{ width: "100%", background: "#005f69", color: "white", fontWeight: 800, fontSize: 15, padding: "14px", borderRadius: 16, border: "none", cursor: "pointer", fontFamily: "'Archivo', sans-serif" }}
+            >
+              Appliquer les filtres
+            </button>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   TOAST
 ══════════════════════════════════════════════ */
 function NearbyToast({ visible }) {
   return (
@@ -406,20 +466,16 @@ function NearbyToast({ visible }) {
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           style={{
             position: "fixed", top: 90, left: "50%", transform: "translateX(-50%)",
-            zIndex: 999,
-            background: "#1c1c1e",
-            color: "#fff",
-            borderRadius: 16,
-            padding: "13px 20px",
+            zIndex: 999, background: "#1c1c1e", color: "#fff",
+            borderRadius: 16, padding: "13px 20px",
             display: "flex", alignItems: "center", gap: 10,
             boxShadow: "0 8px 32px rgba(0,0,0,.22)",
-            fontFamily: "'Archivo', sans-serif",
-            fontSize: 13, fontWeight: 600,
-            whiteSpace: "nowrap",
+            fontFamily: "'Archivo', sans-serif", fontSize: 13, fontWeight: 600,
+            whiteSpace: "nowrap", maxWidth: "90vw",
           }}
         >
           <Warning weight="fill" style={{ width: 16, height: 16, color: "#fbbf24", flexShrink: 0 }} />
-          Aucun emplacement disponible actuellement autour de vous
+          Aucun emplacement disponible autour de vous
         </motion.div>
       )}
     </AnimatePresence>
@@ -436,16 +492,15 @@ export default function EstablishmentsPage() {
   const [activeFilter, setActiveFilter]   = useState("all");
   const [sortBy, setSortBy]               = useState("default");
   const [viewMode, setViewMode]           = useState("list");
+  const [drawerOpen, setDrawerOpen]       = useState(false);
 
-  /* ── géolocalisation ── */
-  const [userCoords, setUserCoords]       = useState(null); // { lat, lon }
-  const [geoReady, setGeoReady]           = useState(false); // true dès que la géoloc a répondu (succès ou échec)
+  const [userCoords, setUserCoords]       = useState(null);
+  const [geoReady, setGeoReady]           = useState(false);
   const [nearbyPlace, setNearbyPlace]     = useState(null);
   const [nearbyDist, setNearbyDist]       = useState(null);
   const [showNoNearbyToast, setShowNoNearbyToast] = useState(false);
   const toastTimerRef = useRef(null);
 
-  /* 1️⃣ Charger les places */
   useEffect(() => {
     fetchAllPlaces()
       .then((r) => { if (r.success) setAll(r.data); })
@@ -453,71 +508,37 @@ export default function EstablishmentsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  /* 2️⃣ Demander la géolocalisation dès le montage */
   useEffect(() => {
-    if (!navigator.geolocation) {
-      setGeoReady(true); // pas de géoloc dispo → on passe au fallback
-      return;
-    }
+    if (!navigator.geolocation) { setGeoReady(true); return; }
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setUserCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude });
-        setGeoReady(true);
-      },
-      () => {
-        setUserCoords(null);
-        setGeoReady(true); // refus ou erreur → fallback meilleure note
-      },
+      (pos) => { setUserCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude }); setGeoReady(true); },
+      () => { setUserCoords(null); setGeoReady(true); },
       { enableHighAccuracy: true, timeout: 8000 }
     );
   }, []);
 
-  /* 3️⃣ Dès que la géoloc a répondu ET les places sont chargées → chercher dans le rayon */
   useEffect(() => {
     if (!geoReady || all.length === 0) return;
-
-    // Pas de coordonnées (géoloc refusée) → toast + fallback
     if (!userCoords) {
-      setNearbyPlace(null);
-      setNearbyDist(null);
+      setNearbyPlace(null); setNearbyDist(null);
       setShowNoNearbyToast(true);
       clearTimeout(toastTimerRef.current);
       toastTimerRef.current = setTimeout(() => setShowNoNearbyToast(false), 4000);
       return;
     }
-
-    // Filtrer les places qui ont lat/lon renseignés
-    const withCoords = all.filter(
-      (p) => p.latitude != null && p.longitude != null
-    );
-
-    // Trouver le plus proche dans le rayon
-    let closest = null;
-    let closestDist = Infinity;
-
+    const withCoords = all.filter((p) => p.latitude != null && p.longitude != null);
+    let closest = null, closestDist = Infinity;
     for (const place of withCoords) {
-      const d = getDistanceMeters(
-        userCoords.lat, userCoords.lon,
-        parseFloat(place.latitude), parseFloat(place.longitude)
-      );
-      if (d <= RADIUS_M && d < closestDist) {
-        closest = place;
-        closestDist = d;
-      }
+      const d = getDistanceMeters(userCoords.lat, userCoords.lon, parseFloat(place.latitude), parseFloat(place.longitude));
+      if (d <= RADIUS_M && d < closestDist) { closest = place; closestDist = d; }
     }
-
-    if (closest) {
-      setNearbyPlace(closest);
-      setNearbyDist(closestDist);
-    } else {
-      // Aucun emplacement dans le rayon → toast 4s puis fallback meilleure note
-      setNearbyPlace(null);
-      setNearbyDist(null);
+    if (closest) { setNearbyPlace(closest); setNearbyDist(closestDist); }
+    else {
+      setNearbyPlace(null); setNearbyDist(null);
       setShowNoNearbyToast(true);
       clearTimeout(toastTimerRef.current);
       toastTimerRef.current = setTimeout(() => setShowNoNearbyToast(false), 4000);
     }
-
     return () => clearTimeout(toastTimerRef.current);
   }, [geoReady, userCoords, all]);
 
@@ -531,31 +552,21 @@ export default function EstablishmentsPage() {
     window.open(`https://app.ticketche.com/places/itinerary?placeId=${id}`, "_blank");
   }, []);
 
-  /* ── Filtrage / tri ── */
   const filtered = useMemo(() => {
     let res = [...all];
     if (activeFilter !== "all")
-      res = res.filter((p) =>
-        p.services.some((s) => s.pivot.status === "ON" && s.name.toLowerCase().includes(activeFilter))
-      );
+      res = res.filter((p) => p.services.some((s) => s.pivot.status === "ON" && s.name.toLowerCase().includes(activeFilter)));
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      res = res.filter((p) =>
-        p.name?.toLowerCase().includes(q) ||
-        p.city?.toLowerCase().includes(q) ||
-        p.services.some((s) => s.name.toLowerCase().includes(q))
-      );
+      res = res.filter((p) => p.name?.toLowerCase().includes(q) || p.city?.toLowerCase().includes(q) || p.services.some((s) => s.name.toLowerCase().includes(q)));
     }
     return res.sort((a, b) => {
-      if (sortBy === "rating")
-        return (parseFloat(getRating(b)) || 0) - (parseFloat(getRating(a)) || 0);
-      if (sortBy === "price")
-        return (parseFloat(a.minimum_price) || Infinity) - (parseFloat(b.minimum_price) || Infinity);
+      if (sortBy === "rating") return (parseFloat(getRating(b)) || 0) - (parseFloat(getRating(a)) || 0);
+      if (sortBy === "price")  return (parseFloat(a.minimum_price) || Infinity) - (parseFloat(b.minimum_price) || Infinity);
       return 0;
     });
   }, [all, activeFilter, searchQuery, sortBy]);
 
-  /* ── Hero card : emplacement nearby OU meilleur noté ── */
   const heroPlace = useMemo(() => {
     if (!searchQuery && activeFilter === "all") {
       if (nearbyPlace) return { place: nearbyPlace, isNearby: true, dist: nearbyDist };
@@ -565,13 +576,13 @@ export default function EstablishmentsPage() {
     return null;
   }, [nearbyPlace, nearbyDist, all, filtered, searchQuery, activeFilter]);
 
-  /* listItems = tous sauf le hero */
   const listItems = useMemo(() => {
     if (!heroPlace) return filtered;
     return filtered.filter((p) => p.id !== heroPlace.place.id);
   }, [filtered, heroPlace]);
 
-  /* ── Loader ── */
+  const activeFilterCount = (activeFilter !== "all" ? 1 : 0) + (sortBy !== "default" ? 1 : 0) + (searchQuery ? 1 : 0);
+
   if (loading) return (
     <div style={{ minHeight: "100vh", background: "#f8f7f5", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ display: "flex", gap: 8 }}>
@@ -586,30 +597,44 @@ export default function EstablishmentsPage() {
     </div>
   );
 
-  const sideCard = {
-    background: "white", borderRadius: 20, border: "1px solid #e5e7eb",
-    padding: "18px", boxShadow: "0 1px 4px rgba(0,0,0,.04)", marginBottom: 12,
-  };
-  const sideLabel = {
-    fontSize: 10, fontWeight: 900, textTransform: "uppercase",
-    letterSpacing: .8, color: "#9ca3af", marginBottom: 12,
-    display: "flex", alignItems: "center", gap: 6,
-  };
+  const sideCard  = { background: "white", borderRadius: 20, border: "1px solid #e5e7eb", padding: "18px", boxShadow: "0 1px 4px rgba(0,0,0,.04)", marginBottom: 12 };
+  const sideLabel = { fontSize: 10, fontWeight: 900, textTransform: "uppercase", letterSpacing: .8, color: "#9ca3af", marginBottom: 12, display: "flex", alignItems: "center", gap: 6 };
 
   return (
-    <main style={{ minHeight: "100vh", background: "#f8f7f5", paddingTop: 150, paddingBottom: 60, fontFamily: "'Archivo', sans-serif" }}>
+    <main style={{ minHeight: "100vh", background: "#f8f7f5", paddingTop: 100, paddingBottom: 60, fontFamily: "'Archivo', sans-serif" }}>
 
-      {/* Toast "aucun emplacement autour de vous" */}
+      <style>{`
+        /* Sidebar desktop / cachée sur mobile */
+        .hiw-sidebar { display: flex; flex-direction: column; }
+        /* Barre filtre mobile */
+        .mobile-filter-bar { display: none; }
+
+        @media (max-width: 768px) {
+          .hiw-sidebar     { display: none !important; }
+          .mobile-filter-bar { display: flex !important; }
+          .main-layout { flex-direction: column !important; gap: 0 !important; }
+        }
+      `}</style>
+
       <NearbyToast visible={showNoNearbyToast} />
 
-      <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 20px" }}>
+      {/* Drawer mobile */}
+      <MobileFilterDrawer
+        open={drawerOpen} onClose={() => setDrawerOpen(false)}
+        activeFilter={activeFilter} setActiveFilter={setActiveFilter}
+        sortBy={sortBy} setSortBy={setSortBy}
+        searchQuery={searchQuery} setSearchQuery={setSearchQuery}
+        all={all}
+      />
+
+      <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 16px" }}>
 
         {/* ── EN-TÊTE ── */}
         <motion.div
           initial={{ opacity: 0, y: -14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 28 }}
+          style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 20 }}
         >
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#9ca3af", fontWeight: 800, textTransform: "uppercase", letterSpacing: .8, marginBottom: 8 }}>
@@ -617,10 +642,10 @@ export default function EstablishmentsPage() {
               <CaretRight style={{ width: 10, height: 10 }} />
               <span style={{ color: "#005f69" }}>Établissements</span>
             </div>
-            <h1 style={{ fontSize: 28, fontWeight: 900, color: "#111827", letterSpacing: -.4, lineHeight: 1.15 }}>
+            <h1 style={{ fontSize: 26, fontWeight: 900, color: "#111827", letterSpacing: -.4, lineHeight: 1.15 }}>
               Nos <span style={{ color: "#005f69" }}>établissements</span>
             </h1>
-            <p style={{ color: "#9ca3af", marginTop: 5, fontSize: 14, fontWeight: 500 }}>
+            <p style={{ color: "#9ca3af", marginTop: 5, fontSize: 13, fontWeight: 500 }}>
               {filtered.length} établissement{filtered.length !== 1 ? "s" : ""} partenaire{filtered.length !== 1 ? "s" : ""}
             </p>
           </div>
@@ -641,17 +666,61 @@ export default function EstablishmentsPage() {
           </div>
         </motion.div>
 
-        {/* ── SIDEBAR + CONTENU ── */}
-        <div style={{ display: "flex", gap: 22, alignItems: "flex-start" }}>
+        {/* ── BARRE FILTRE MOBILE ── */}
+        <div className="mobile-filter-bar" style={{
+          gap: 8, marginBottom: 16, alignItems: "center",
+        }}>
+          {/* Bouton filtre */}
+          <button
+            onClick={() => setDrawerOpen(true)}
+            style={{
+              display: "flex", alignItems: "center", gap: 7,
+              background: activeFilterCount > 0 ? "#005f69" : "white",
+              color: activeFilterCount > 0 ? "white" : "#374151",
+              border: "1.5px solid", borderColor: activeFilterCount > 0 ? "#005f69" : "#e5e7eb",
+              borderRadius: 20, padding: "9px 16px",
+              fontSize: 13, fontWeight: 800, cursor: "pointer",
+              fontFamily: "'Archivo', sans-serif", flexShrink: 0,
+            }}
+          >
+            <Funnel style={{ width: 14, height: 14 }} />
+            Filtres
+            {activeFilterCount > 0 && (
+              <span style={{ background: "rgba(255,255,255,.25)", borderRadius: 20, padding: "1px 7px", fontSize: 11, fontWeight: 900 }}>
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
 
-          {/* SIDEBAR */}
+          {/* Chips de filtre rapide */}
+          <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 2 }}>
+            {FILTERS.map(({ key, label, Icon }) => (
+              <button key={key} onClick={() => setActiveFilter(key)} style={{
+                display: "flex", alignItems: "center", gap: 5,
+                flexShrink: 0, padding: "8px 14px", borderRadius: 20,
+                border: "1.5px solid", cursor: "pointer", fontSize: 12, fontWeight: 700,
+                fontFamily: "'Archivo', sans-serif",
+                borderColor: activeFilter === key ? "#005f69" : "#e5e7eb",
+                background: activeFilter === key ? "#005f69" : "white",
+                color: activeFilter === key ? "white" : "#6b7280",
+              }}>
+                <Icon style={{ width: 13, height: 13 }} /> {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* ── LAYOUT SIDEBAR + CONTENU ── */}
+        <div className="main-layout" style={{ display: "flex", gap: 22, alignItems: "flex-start" }}>
+
+          {/* SIDEBAR desktop */}
           <motion.aside
+            className="hiw-sidebar"
             initial={{ opacity: 0, x: -18 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.45, delay: 0.1 }}
             style={{ width: 240, flexShrink: 0 }}
           >
-            {/* Recherche */}
             <div style={sideCard}>
               <p style={sideLabel}><MagnifyingGlass style={{ width: 13, height: 13 }} /> Recherche</p>
               <div style={{ position: "relative" }}>
@@ -660,14 +729,7 @@ export default function EstablishmentsPage() {
                   type="text" value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Nom, ville…"
-                  style={{
-                    width: "100%", padding: "9px 32px 9px 34px",
-                    border: "1.5px solid #e5e7eb", borderRadius: 12,
-                    background: "#f9fafb", fontSize: 13, fontWeight: 500,
-                    color: "#374151", outline: "none",
-                    fontFamily: "'Archivo', sans-serif", transition: "border .15s",
-                    boxSizing: "border-box",
-                  }}
+                  style={{ width: "100%", padding: "9px 32px 9px 34px", border: "1.5px solid #e5e7eb", borderRadius: 12, background: "#f9fafb", fontSize: 13, fontWeight: 500, color: "#374151", outline: "none", fontFamily: "'Archivo', sans-serif", transition: "border .15s", boxSizing: "border-box" }}
                   onFocus={e => e.target.style.borderColor = "#005f69"}
                   onBlur={e  => e.target.style.borderColor = "#e5e7eb"}
                 />
@@ -679,63 +741,35 @@ export default function EstablishmentsPage() {
               </div>
             </div>
 
-            {/* Trier */}
             <div style={sideCard}>
               <p style={sideLabel}><SlidersHorizontal style={{ width: 13, height: 13 }} /> Trier par</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                {[
-                  { key: "default", label: "Par défaut"       },
-                  { key: "rating",  label: "Meilleure note"   },
-                  { key: "price",   label: "Prix (croissant)" },
-                ].map(({ key, label }) => (
-                  <button key={key} onClick={() => setSortBy(key)} style={{
-                    textAlign: "left", padding: "9px 12px", borderRadius: 10, border: "none", cursor: "pointer",
-                    fontSize: 13, fontWeight: sortBy === key ? 800 : 600,
-                    fontFamily: "'Archivo', sans-serif",
-                    background: sortBy === key ? "rgba(0,95,105,.07)" : "transparent",
-                    color: sortBy === key ? "#005f69" : "#6b7280",
-                    transition: "all .14s",
-                  }}>
+                {[{ key: "default", label: "Par défaut" }, { key: "rating", label: "Meilleure note" }, { key: "price", label: "Prix (croissant)" }].map(({ key, label }) => (
+                  <button key={key} onClick={() => setSortBy(key)} style={{ textAlign: "left", padding: "9px 12px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 13, fontWeight: sortBy === key ? 800 : 600, fontFamily: "'Archivo', sans-serif", background: sortBy === key ? "rgba(0,95,105,.07)" : "transparent", color: sortBy === key ? "#005f69" : "#6b7280", transition: "all .14s" }}>
                     {sortBy === key && <span style={{ marginRight: 5 }}>›</span>}{label}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Type de service */}
             <div style={sideCard}>
               <p style={sideLabel}><Funnel style={{ width: 13, height: 13 }} /> Type de service</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {FILTERS.map(({ key, label, Icon }) => (
-                  <button key={key} onClick={() => setActiveFilter(key)} style={{
-                    display: "flex", alignItems: "center", gap: 10,
-                    textAlign: "left", padding: "9px 12px", borderRadius: 10,
-                    border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700,
-                    fontFamily: "'Archivo', sans-serif",
-                    background: activeFilter === key ? "#005f69" : "transparent",
-                    color: activeFilter === key ? "white" : "#6b7280",
-                    transition: "all .14s",
-                  }}>
+                  <button key={key} onClick={() => setActiveFilter(key)} style={{ display: "flex", alignItems: "center", gap: 10, textAlign: "left", padding: "9px 12px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700, fontFamily: "'Archivo', sans-serif", background: activeFilter === key ? "#005f69" : "transparent", color: activeFilter === key ? "white" : "#6b7280", transition: "all .14s" }}>
                     <Icon style={{ width: 15, height: 15, flexShrink: 0 }} /> {label}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Stats */}
-            <div style={{
-              background: "linear-gradient(145deg, #005f69 0%, #004a52 100%)",
-              borderRadius: 20, padding: "20px 18px", color: "white",
-              boxShadow: "0 4px 16px rgba(0,95,105,.28)",
-            }}>
-              <Buildings style={{ width: 22, height: 22, color: "rgba(255,255,255,.5)", marginBottom: 10}} />
+            <div style={{ background: "linear-gradient(145deg, #005f69 0%, #004a52 100%)", borderRadius: 20, padding: "20px 18px", color: "white", boxShadow: "0 4px 16px rgba(0,95,105,.28)" }}>
+              <Buildings style={{ width: 22, height: 22, color: "rgba(255,255,255,.5)", marginBottom: 10 }} />
               <p style={{ fontSize: 34, fontWeight: 900, lineHeight: 1, letterSpacing: -1 }}>{all.length}</p>
               <p style={{ color: "rgba(255,255,255,.6)", fontSize: 13, fontWeight: 600, marginTop: 2 }}>établissements partenaires</p>
               <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,.12)" }}>
                 {FILTERS.slice(1).map(({ key, label, Icon }) => {
-                  const count = all.filter((p) =>
-                    p.services.some((s) => s.pivot.status === "ON" && s.name.toLowerCase().includes(key))
-                  ).length;
+                  const count = all.filter((p) => p.services.some((s) => s.pivot.status === "ON" && s.name.toLowerCase().includes(key))).length;
                   return (
                     <div key={key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13, marginBottom: 9 }}>
                       <span style={{ display: "flex", alignItems: "center", gap: 7, color: "rgba(255,255,255,.6)", fontWeight: 600 }}>
@@ -770,15 +804,7 @@ export default function EstablishmentsPage() {
 
               {filtered.length > 0 && viewMode === "list" && (
                 <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  {heroPlace && (
-                    <HeroCard
-                      place={heroPlace.place}
-                      onClick={handleClick}
-                      onItinerary={handleItinerary}
-                      isNearby={heroPlace.isNearby}
-                      distanceM={heroPlace.dist}
-                    />
-                  )}
+                  {heroPlace && <HeroCard place={heroPlace.place} onClick={handleClick} onItinerary={handleItinerary} isNearby={heroPlace.isNearby} distanceM={heroPlace.dist} />}
                   <p style={{ fontSize: 10, color: "#9ca3af", fontWeight: 900, textTransform: "uppercase", letterSpacing: .8, marginBottom: 12 }}>
                     {listItems.length} établissement{listItems.length !== 1 ? "s" : ""}
                   </p>
@@ -792,19 +818,11 @@ export default function EstablishmentsPage() {
 
               {filtered.length > 0 && viewMode === "grid" && (
                 <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  {heroPlace && (
-                    <HeroCard
-                      place={heroPlace.place}
-                      onClick={handleClick}
-                      onItinerary={handleItinerary}
-                      isNearby={heroPlace.isNearby}
-                      distanceM={heroPlace.dist}
-                    />
-                  )}
+                  {heroPlace && <HeroCard place={heroPlace.place} onClick={handleClick} onItinerary={handleItinerary} isNearby={heroPlace.isNearby} distanceM={heroPlace.dist} />}
                   <p style={{ fontSize: 10, color: "#9ca3af", fontWeight: 900, textTransform: "uppercase", letterSpacing: .8, marginBottom: 12 }}>
                     {listItems.length} établissement{listItems.length !== 1 ? "s" : ""}
                   </p>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))", gap: 14 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12 }}>
                     {listItems.map((place, i) => (
                       <GridCard key={place.id} place={place} index={i} onClick={handleClick} onItinerary={handleItinerary} />
                     ))}
@@ -814,6 +832,7 @@ export default function EstablishmentsPage() {
 
             </AnimatePresence>
           </div>
+
         </div>
       </div>
     </main>
