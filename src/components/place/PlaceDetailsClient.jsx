@@ -203,7 +203,7 @@ export default function PlaceDetailsClient() {
         position: "sticky", top: 0, zIndex: 50,
         background: "rgba(244,250,251,.92)", backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(0,95,105,.10)",
-        padding: "12px 32px",
+        padding: "12px 16px", maxWidth: 1140, marginLeft: "auto", marginRight: "auto",
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <button
@@ -223,28 +223,13 @@ export default function PlaceDetailsClient() {
           {place.name}
         </p>
 
-        {/* Favoris rapide */}
-        <button
-          onClick={() => setWishlisted(!wishlisted)}
-          style={{
-            width: 38, height: 38, borderRadius: "50%",
-            background: wishlisted ? "#fff0f0" : "#fff",
-            border: `1.5px solid ${wishlisted ? "#fca5a5" : "#e5e7eb"}`,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer",
-          }}
-        >
-          <Heart
-            weight={wishlisted ? "fill" : "regular"}
-            style={{ width: 16, height: 16, color: wishlisted ? "#ef4444" : "#9ca3af" }}
-          />
-        </button>
+
       </div>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           PHOTO GRID HERO
       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <div style={{ padding: "20px 32px 0" }}>
+      <div style={{ padding: "20px 16px 0", maxWidth: 1140, marginLeft: "auto", marginRight: "auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 10, height: 320, borderRadius: 22, overflow: "hidden" }}>
 
           {/* Photo principale */}
@@ -345,7 +330,7 @@ export default function PlaceDetailsClient() {
         display: "grid",
         gridTemplateColumns: "1fr 320px",
         gap: 20,
-        padding: "24px 32px 0",
+        padding: "24px 16px 0", maxWidth: 1140, marginLeft: "auto", marginRight: "auto",
         alignItems: "start",
       }}>
 
@@ -629,7 +614,7 @@ export default function PlaceDetailsClient() {
       {otherPlaces.length > 0 && (
         <div style={{ marginTop: 48 }}>
           {/* Séparateur visuel */}
-          <div style={{ padding: "0 32px", marginBottom: 8 }}>
+          <div style={{ padding: "0 16px", maxWidth: 1140, marginLeft: "auto", marginRight: "auto", marginBottom: 8 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
               <div style={{ flex: 1, height: 1, background: "linear-gradient(to right, transparent, #d4eaed)" }} />
              

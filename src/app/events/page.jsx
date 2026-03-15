@@ -206,52 +206,158 @@ function ListCard({ event, index, onClick }) {
 }
 
 /* ── Compact grid card ── */
+/* ── Compact grid card ── */
 function GridCard({ event, index, onClick }) {
+  const price  = getMinPrice(event.tickets);
+  const isFree = price === "Gratuit";
+  const dateStr = formatDateShort(event.start_date);
+
   return (
-    <motion.div
+    <motion.article
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.35, delay: index * 0.05 }}
       onClick={() => onClick(event)}
-      className="group cursor-pointer bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-[#005f69]/10 hover:border-[#005f69]/20 transition-all duration-300"
+      whileHover={{ y: -8, boxShadow: "0 0 0 4px #ffffff, 0 24px 56px rgba(0,0,0,0.35)" }}
+      style={{
+        position: "relative",
+        borderRadius: "20px",
+        overflow: "hidden",
+        border: "4px solid #ffffff",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.22)",
+        cursor: "pointer",
+        height: "320px",
+        display: "flex",
+        flexDirection: "column",
+      }}
     >
-      <div className="relative w-full overflow-hidden" style={{ aspectRatio: "16/9" }}>
+      {/* Image */}
+      <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
         <Image
           src={getEventImage(event)}
           alt={event.title}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-108"
+          className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-        <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end">
-          <span className="bg-black/40 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
-            {formatDateShort(event.start_date)}
-          </span>
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.55) 70%, rgba(0,0,0,0.82) 100%)",
+          zIndex: 1,
+        }} />
+      </div>
+
+      {/* Badge top-left : date */}
+      {dateStr && (
+        <div style={{
+          position: "absolute", top: 14, left: 14, zIndex: 3,
+          background: "rgba(255,255,255,0.18)", backdropFilter: "blur(10px)",
+          border: "2px solid rgba(255,255,255,0.7)", borderRadius: "999px",
+          padding: "4px 14px", fontSize: 11, fontWeight: 700, color: "#fff",
+          letterSpacing: "0.04em", whiteSpace: "nowrap",
+          display: "flex", alignItems: "center", gap: 5,
+        }}>
+          <Calendar style={{ width: 11, height: 11 }} />
+          {dateStr}
+        </div>
+      )}
+
+      {/* Badge top-right : lieu */}
+      {event.location_name && (
+        <div style={{
+          position: "absolute", top: 14, right: 14, zIndex: 3,
+          background: "rgba(255,255,255,0.18)", backdropFilter: "blur(8px)",
+          border: "1.5px solid rgba(255,255,255,0.6)", borderRadius: "999px",
+          padding: "4px 10px", fontSize: 10, fontWeight: 600, color: "#fff",
+          display: "flex", alignItems: "center", gap: 4,
+        }}>
+          <MapPin weight="fill" style={{ width: 10, height: 10 }} />
+          {event.location_name.length > 18 ? event.location_name.slice(0, 18) + "…" : event.location_name}
+        </div>
+      )}
+
+      {/* Body bas */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0,
+        padding: "16px 16px 18px",
+        display: "flex", flexDirection: "column", gap: 8,
+        zIndex: 2,
+      }}>
+        {/* Tags */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
           {event.is_featured && (
-            <span className="bg-[#692C00] text-white text-[9px] font-black px-2 py-1 rounded-full">★</span>
+            <span style={{
+              background: "rgba(255,255,255,0.18)", border: "1.5px solid rgba(255,255,255,0.45)",
+              borderRadius: "999px", padding: "2px 10px",
+              fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.95)", letterSpacing: "0.03em",
+            }}>✦ À la une</span>
+          )}
+          {event.category && (
+            <span style={{
+              background: "rgba(255,255,255,0.18)", border: "1.5px solid rgba(255,255,255,0.45)",
+              borderRadius: "999px", padding: "2px 10px",
+              fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.95)", letterSpacing: "0.03em",
+            }}>{event.category.title}</span>
           )}
         </div>
-      </div>
-      <div className="p-4">
-        {event.category && (
-          <span className="text-[#005f69] text-[10px] font-black uppercase tracking-widest">{event.category.title}</span>
-        )}
-        <h3 className="font-black text-gray-900 text-sm leading-snug mt-1 mb-3 line-clamp-2 group-hover:text-[#005f69] transition-colors">
+
+        {/* Titre */}
+        <h3 style={{
+          margin: 0, fontSize: 17, fontWeight: 800, color: "#fff",
+          lineHeight: 1.25, letterSpacing: "-0.01em",
+          textShadow: "0 1px 6px rgba(0,0,0,0.4)",
+          display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+        }}>
           {event.title}
+          {event.is_featured && (
+            <span style={{
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              width: 16, height: 16, background: "#005f69", borderRadius: "50%",
+              marginLeft: 6, verticalAlign: "middle",
+            }}>
+              <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
+                <path d="M2 5l2.5 2.5L8 3" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+          )}
         </h3>
-        <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-3">
-          <MapPin className="w-3 h-3 text-[#005f69] flex-shrink-0" />
-          <span className="truncate">{event.location_name}</span>
-        </div>
-        <div className="flex items-center justify-between pt-3 border-t border-gray-50">
-          <span className="font-black text-[#692C00] text-sm">{getMinPrice(event.tickets)}</span>
-          <span className="text-[10px] text-gray-400">{event.reservations_count ?? 0} rés.</span>
+
+        {/* Footer */}
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          paddingTop: 8, borderTop: "1.5px solid rgba(255,255,255,0.22)",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>
+              <Users style={{ width: 13, height: 13 }} />
+              {event.reservations_count ?? 0}
+            </span>
+            <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>
+              <Ticket style={{ width: 13, height: 13 }} />
+              {isFree ? "Gratuit" : price}
+            </span>
+          </div>
+          <button
+            style={{
+              display: "flex", alignItems: "center", gap: 5,
+              background: "#ffffff", color: "#005f69",
+              border: "none", borderRadius: "999px",
+              padding: "6px 14px", fontSize: 11, fontWeight: 800,
+              cursor: "pointer", letterSpacing: "0.02em",
+              transition: "background 0.15s, transform 0.15s",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+            }}
+            onClick={(e) => { e.stopPropagation(); onClick(event); }}
+            onMouseEnter={e => { e.currentTarget.style.background = "#e6f7f8"; e.currentTarget.style.transform = "scale(1.04)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.transform = "scale(1)"; }}
+          >
+            <ArrowUpRight style={{ width: 12, height: 12 }} />
+            Réserver
+          </button>
         </div>
       </div>
-    </motion.div>
+    </motion.article>
   );
 }
-
 /* ── [AJOUT] Mobile filter drawer ── */
 function MobileFilterDrawer({ open, onClose, searchQuery, onSearch, sortBy, setSortBy, categories, activeCategory, setActiveCategory }) {
   const activeCount = (sortBy !== "featured" ? 1 : 0) + (activeCategory ? 1 : 0) + (searchQuery ? 1 : 0);

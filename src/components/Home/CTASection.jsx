@@ -12,7 +12,7 @@ export const CTASection = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-8 lg:gap-12 items-end">
 
             {/* TEXTE CTA */}
-<div className="pt-4 md:pt-6 pb-3 md:pb-4 text-center sm:text-left self-center">              {/* Titre + confetti */}
+            <div className="pt-4 md:pt-6 pb-3 md:pb-4 text-center sm:text-left self-center">              {/* Titre + confetti */}
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4">
                 <div className="flex-1">
                   <h2 className="title-sub mb-4 md:mb-6 !text-white">
@@ -72,8 +72,8 @@ export const CTASection = () => {
                   maxWidth: "700px",
                   marginLeft: "auto",
                   marginRight: "-300px",
-                  marginTop: "140px",
-                  transform: "scale(1.9)",
+                  marginTop: "220px",        // ← était 140px, augmenté pour descendre l'image
+                  transform: "scale(1.7)",   // ← légèrement réduit pour que ça reste dans la section
                   transformOrigin: "bottom right",
                 }}
               />

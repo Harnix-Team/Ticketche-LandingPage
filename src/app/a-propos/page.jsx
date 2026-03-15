@@ -208,10 +208,12 @@ export default function AboutPage() {
         .ap-hero-wrap { position: relative; }
         .ap-hero {
           position: relative; z-index: 2;
-          padding: 100px 48px 80px;
+          /* ↓ padding-top augmenté à 140px pour la marge en haut */
+          padding: 140px 48px 80px;
           display: grid; grid-template-columns: 1fr 1fr;
           gap: 64px; align-items: center;
-          max-width: 1140px; margin: 0 auto; box-sizing: border-box;
+          /* ↓ max-width et margin: 0 auto supprimés — .about-page (90vw) gère la largeur */
+          box-sizing: border-box;
         }
 
         /* ── gauche ── */
@@ -256,15 +258,11 @@ export default function AboutPage() {
         }
         .ap-btn-sec:hover { border-color: #005f69; color: #005f69; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,95,105,0.12); }
 
-        /* ── droite : 3 images position absolute ──
-           - img haut  : décalée à droite, bord droit = bord droit img bas
-           - img bas   : part du bord gauche, plus large
-           - img droite: flotte dans le gap, centrée verticalement entre img-haut et img-bas
-        ── */
         .ap-right {
           position: relative;
           width: 100%;
           height: 452px;
+          padding-right: 48px;
         }
         .ap-img-card {
           border-radius: 20px; overflow: hidden; position: absolute;
@@ -273,41 +271,36 @@ export default function AboutPage() {
         }
         .ap-img-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* Haut gauche : décalée à droite, bord droit = bord droit de --bl */
         .ap-img-card--tl {
-          top: 0; left: 18%; right: 38%;
+          top: 0; left: 18%; right: 32%;
           height: 210px;
         }
         .ap-img-card--tl:hover { transform: translateY(-3px); }
 
-        /* Bas gauche : part du bord gauche, plus large */
         .ap-img-card--bl {
-          bottom: 0; left: 0; right: 38%;
+          bottom: 0; left: 0; right: 32%;
           height: 235px;
         }
         .ap-img-card--bl:hover { transform: translateY(3px); }
 
-        /* Droite : centrée dans le gap entre --tl (bas à 220px) et --bl (haut à 240px depuis bas = 480-240=240px)
-           gap va de top:220px à top:240px => centre = top:230px
-           hauteur 200px => top: 230 - 100 = 130px
-           ne touche ni --tl ni --bl */
         .ap-img-card--rc {
-          right: 0; width: 36%;
+          right: 0; width: 31%;
           top: 117px;
           height: 200px;
         }
         .ap-img-card--rc:hover { transform: translateY(-3px); }
 
-        /* pastilles déco */
         .ap-deco-dot {
           position: absolute; border-radius: 50%; pointer-events: none; z-index: 0;
         }
+
         /* ─── À PROPOS ─── */
         .ab-section {
+          /* ↓ max-width et margin: 0 auto supprimés — .about-page (90vw) gère la largeur */
           padding: 20px 48px 90px;
           display: grid; grid-template-columns: 1fr 1fr;
           gap: 80px; align-items: center;
-          max-width: 1200px; margin: 0 auto; box-sizing: border-box;
+          box-sizing: border-box;
         }
         .ab-left {
           position: relative; height: 460px;
@@ -553,13 +546,11 @@ export default function AboutPage() {
           text-align: center; gap: 0;
           position: relative; overflow: hidden;
         }
-        /* grille de points décorative */
         .cta-inner::before {
           content: ''; position: absolute; inset: 0;
           background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
           background-size: 28px 28px; pointer-events: none;
         }
-        /* lueur centrale */
         .cta-inner::after {
           content: ''; position: absolute; top: -60px; left: 50%;
           transform: translateX(-50%);
@@ -581,7 +572,6 @@ export default function AboutPage() {
           font-size: 16px; color: rgba(255,255,255,0.55); line-height: 1.75;
           max-width: 500px; margin-bottom: 40px; position: relative; z-index: 2;
         }
-        /* boutons côte à côte */
         .cta-actions {
           display: flex; align-items: center; gap: 16px;
           flex-wrap: wrap; justify-content: center;
@@ -613,7 +603,6 @@ export default function AboutPage() {
           background: rgba(255,255,255,0.14); color: white;
           transform: translateY(-2px);
         }
-        /* social proof */
         .cta-proof {
           display: flex; flex-direction: column; align-items: center; gap: 10px;
           position: relative; z-index: 2;
@@ -653,7 +642,7 @@ export default function AboutPage() {
         }
         @media (max-width: 900px) {
           .about-page { width: 100vw; }
-          .ap-hero { grid-template-columns: 1fr; padding: 80px 24px 60px; text-align: center; }
+          .ap-hero { grid-template-columns: 1fr; padding: 100px 24px 60px; text-align: center; }
           .ap-sub  { max-width: 100%; }
           .ap-stats { justify-content: center; }
           .ap-btns { justify-content: center; }
@@ -684,8 +673,6 @@ export default function AboutPage() {
 
       <div className="about-page">
         <StarClusters />
-
-
 
         {/* ══════════ HERO ══════════ */}
         <div className="ap-hero-wrap">
@@ -743,23 +730,17 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* ── DROITE : 3 images disposition EduFlex ── */}
+            {/* ── DROITE : 3 images ── */}
             <div className="ap-right">
-              {/* pastilles déco */}
               <div className="ap-deco-dot" style={{ width: 16, height: 16, background: "#005f69", opacity: 0.22, top: -8, right: 40 }} />
               <div className="ap-deco-dot" style={{ width: 10, height: 10, background: "#00818f", opacity: 0.30, bottom: 16, left: -6 }} />
 
-              {/* Col gauche — haut : petite/carrée */}
               <div className="ap-img-card ap-img-card--tl">
                 <img src={heroImages[0] ?? "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=600&q=80"} alt="Parking" />
               </div>
-
-              {/* Col gauche — bas : plus large et haute */}
               <div className="ap-img-card ap-img-card--bl">
                 <img src={heroImages[1] ?? "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80"} alt="Lavage" />
               </div>
-
-              {/* Col droite — centrée, pleine hauteur */}
               <div className="ap-img-card ap-img-card--rc">
                 <img src={heroImages[2] ?? "https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=600&q=80"} alt="Événement" />
               </div>
@@ -800,7 +781,7 @@ export default function AboutPage() {
             </h2>
             <p className="ab-desc">
               Ticketché réunit dans une seule application les services dont vous avez besoin au quotidien : parkings, lavages, garages et événements.
-              Trouvez rapidement un service autour de vous, accédez à des prestataires fiables et profitez d’une expérience simple, rapide et moderne.
+              Trouvez rapidement un service autour de vous, accédez à des prestataires fiables et profitez d'une expérience simple, rapide et moderne.
               Que vous soyez utilisateur ou gestionnaire de service, Ticketché vous aide à gagner du temps, mieux organiser vos activités et profiter pleinement de la ville.
             </p>
             <a
@@ -819,9 +800,9 @@ export default function AboutPage() {
           <div className="sv-header">
             <div className="sv-badge">Nos services</div>
             <h2 className="sv-title" style={{ fontSize: "clamp(22px, 2.8vw, 36px)", letterSpacing: "-0.01em" }}>
-  Réservez, gérez, profitez.<br />
-  <span>en un clic.</span>
-</h2>
+              Réservez, gérez, profitez.<br />
+              <span>en un clic.</span>
+            </h2>
           </div>
           <div className="sv-grid">
             {SERVICES.map((s, i) => (
@@ -936,14 +917,9 @@ export default function AboutPage() {
                 );
               })}
             </div>
-            <a
-              href={downloadLink}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="tc-btn"
->
-  Télécharger l'app <ArrowRight weight="bold" size={16} />
-</a>
+            <a href={downloadLink} target="_blank" rel="noopener noreferrer" className="tc-btn">
+              Télécharger l'app <ArrowRight weight="bold" size={16} />
+            </a>
           </div>
         </div>
 
@@ -976,8 +952,7 @@ export default function AboutPage() {
             </div>
             <a
               href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
-              target="_blank"
-              rel="noopener noreferrer"
+              target="_blank" rel="noopener noreferrer"
               className="tc-btn"
             >
               Rejoindre Ticketché <ArrowRight weight="bold" size={16} />
@@ -1003,7 +978,6 @@ export default function AboutPage() {
               Téléchargez l'application et accédez à des centaines de services autour de vous — parking, car wash, garages et événements.
             </p>
 
-            {/* Boutons côte à côte */}
             <div className="cta-actions">
               <a href={downloadLink} target="_blank" rel="noopener noreferrer" className="cta-btn-primary">
                 Télécharger l'app <ArrowRight weight="bold" size={16} />
@@ -1013,10 +987,8 @@ export default function AboutPage() {
               </a>
             </div>
 
-            {/* Social proof */}
             <div className="cta-proof">
               <div className="cta-proof-row">
-                {/* Avatars + étoiles + label — tout aligné */}
                 <div className="cta-avatars-stars">
                   <div className="cta-avatars">
                     {TEAM_AVATARS.map((src, i) => (
@@ -1024,7 +996,6 @@ export default function AboutPage() {
                     ))}
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                    {/* Étoiles sur la largeur exacte du label */}
                     <div className="cta-stars">
                       {[1,2,3,4,5,6,7].map(i => (
                         <span key={i} className="cta-star">★</span>
