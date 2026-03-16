@@ -23,34 +23,34 @@ export const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
- useEffect(() => {
+  useEffect(() => {
 
-  setIsMenuOpen(false);
+    setIsMenuOpen(false);
 
-  setActiveSection("");
-
-}, [pathname]);
-
-useEffect(() => {
-  if (!isHomePage) {
     setActiveSection("");
-  }
-}, [isHomePage]);
+
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!isHomePage) {
+      setActiveSection("");
+    }
+  }, [isHomePage]);
   const getLinkHref = (anchor) => (isHomePage ? anchor : `/${anchor}`);
 
   const navLinks = [
-  { href: "/a-propos", label: "À propos", isPage: true },
-  { href: "/events", label: "Événements", isPage: true },
-  { href: "/establishments", label: "Emplacements", isPage: true },
-  { href: "/contact", label: "Contact", isPage: true },
-];
+    { href: "/a-propos", label: "À propos", isPage: true },
+    { href: "/events", label: "Événements", isPage: true },
+    { href: "/establishments", label: "Emplacements", isPage: true },
+    { href: "/contact", label: "Contact", isPage: true },
+  ];
 
   // ScrollSpy — uniquement sur la home
   useEffect(() => {
 
-  if (!isHomePage) return;
+    if (!isHomePage) return;
 
-  const observedSections = new Set();
+    const observedSections = new Set();
 
     const intersectionObserver = new IntersectionObserver(
       (entries) => {
@@ -75,34 +75,34 @@ useEffect(() => {
   }, [isHomePage]);
 
   // Détermine si un lien est actif
-const isActive = (link) => {
+  const isActive = (link) => {
 
-  if (link.isPage) {
-    return pathname.startsWith(link.href);
-  }
+    if (link.isPage) {
+      return pathname.startsWith(link.href);
+    }
 
-  if (!isHomePage) return false;
+    if (!isHomePage) return false;
 
-  return activeSection === link.sectionId;
-};
- const underlineSpan = (active) => (
-  <span
-    style={{
-      display: "block",
-      position: "absolute",
-      left: 14,
-      bottom: 2,
-      width: "calc(100% - 28px)",
-      height: 2,
-      borderRadius: 1,
-      background: "#005f69",
-      transform: active ? "scaleX(1)" : "scaleX(0)",
-      transformOrigin: "center",
-      transition: "transform 0.25s ease",
-      pointerEvents: "none",
-    }}
-  />
-);
+    return activeSection === link.sectionId;
+  };
+  const underlineSpan = (active) => (
+    <span
+      style={{
+        display: "block",
+        position: "absolute",
+        left: 14,
+        bottom: 2,
+        width: "calc(100% - 28px)",
+        height: 2,
+        borderRadius: 1,
+        background: "#005f69",
+        transform: active ? "scaleX(1)" : "scaleX(0)",
+        transformOrigin: "center",
+        transition: "transform 0.25s ease",
+        pointerEvents: "none",
+      }}
+    />
+  );
 
   return (
     <header className="hdr">
@@ -254,6 +254,34 @@ const isActive = (link) => {
           transform: translateY(-2px);
           box-shadow: 0 8px 20px rgba(0, 196, 204, 0.3);
         }
+          
+        /* ── Mobile / Desktop toggle ── */
+.hdrMobileWrapper { display: none; }
+.hdrMobile        { display: none; padding-bottom: 1.25rem; }
+.hdrMobile.open   { display: block; }
+
+@media (max-width: 767px) {
+  .hdrContent        { display: none; }
+  .hdrMobileWrapper  { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+  .hdrMobile         { background: #ffffff; border-radius: 0 0 20px 20px; border-top: 1px solid rgba(0,95,105,0.08); }
+  
+  /* Container avec marges latérales pour que la pilule flotte */
+  .hdrContainer      { padding: 10px 16px; }
+
+  /* Avant scroll — transparent, pas d'arrondi */
+  .hdrGlass          { background: transparent !important; backdrop-filter: none; border-radius: 0 !important; }
+
+  /* Après scroll — fond blanc + arrondi avec overflow hidden */
+  .hdrGlass.scrolled {
+    background: #ffffff !important;
+    backdrop-filter: none;
+    border-radius: 20px !important;   /* ← 20px au lieu de 999px */
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+
+  .hdrMobile.open { margin-top: 0; }
+}
       `}</style>
     </header>
   );

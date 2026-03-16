@@ -268,6 +268,10 @@ export default function ActiveUsers() {
           border-radius: 6px 0 0 0 !important; backdrop-filter: blur(4px);
         }
         .leaflet-control-attribution a { color: rgba(0,95,105,0.6) !important; }
+        @media (max-width: 640px) {
+  .au-stats { grid-template-columns: repeat(2, 1fr) !important; }
+  .au-stats > div:last-child { grid-column: 1 / -1; max-width: 200px; margin: 0 auto; width: 100%; }
+}
       `}</style>
 
       {/* Blob déco fond */}
@@ -459,8 +463,7 @@ export default function ActiveUsers() {
         </div>
 
         {/* Stats globales */}
-        <div style={{
-          display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
+        <div className="au-stats" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
           gap: "12px", marginTop: "16px",
           animation: "fadeInUp 0.8s ease 0.2s both",
         }}>

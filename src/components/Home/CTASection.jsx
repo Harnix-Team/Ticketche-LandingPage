@@ -12,8 +12,7 @@ export const CTASection = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-8 lg:gap-12 items-end">
 
             {/* TEXTE CTA */}
-            <div className="pt-4 md:pt-6 pb-3 md:pb-4 text-center sm:text-left self-center">              {/* Titre + confetti */}
-              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4">
+<div className="pt-8 pb-8 md:pt-6 md:pb-4 text-center sm:text-left self-center">              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4">
                 <div className="flex-1">
                   <h2 className="title-sub mb-4 md:mb-6 !text-white">
                     Parking, lavage, garage, billetterie & événements tout en une seule app !

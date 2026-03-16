@@ -351,7 +351,7 @@ export default function HowItWorks() {
             style={{
               position: "relative",
               zIndex: 2,
-              width: "145vw",
+              width: "180vw",
               maxWidth: "820px",
               height: "auto",
               display: "block",

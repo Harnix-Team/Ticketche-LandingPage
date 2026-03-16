@@ -104,7 +104,7 @@ export default function FAQSection() {
 
         .faq-root {
 background: #ecf5f5;
-margin-top: -160px;
+margin-top: -60px;
 padding: 0 clamp(20px, 6vw, 88px) 5px ;
 overflow: visible;
         }
@@ -305,18 +305,19 @@ overflow: visible;
             grid-template-columns: 1fr;
             gap: 48px;
           }
-          .faq-right {
-            padding: clamp(80px, 12vw, 120px) 0;
-          }
-          .faq-card {
-            width: 48%;
-            min-width: 180px;
-          }
+            .faq-right { padding: 16px 0; }
+
+           .faq-card  { width: 95%; min-width: 280px; }
+
         }
 
-        @media (max-width: 520px) {
-          .faq-card { width: 60%; }
-        }
+       @media (max-width: 520px) {
+  .faq-card  { width: 100%; }
+  .faq-right { padding: 8px 0; }
+}
+          @media (max-width: 767px) {
+  .faq-root { margin-top: 40px !important; }
+}
       `}</style>
     </section>
   );

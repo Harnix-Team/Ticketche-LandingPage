@@ -20,8 +20,7 @@ export default function AppNotificationCompact() {
         return (
           <a href="https://apps.apple.com/fr/app/ticketch%C3%A9/id6758046811"
             target="_blank" rel="noopener noreferrer"
-            style={{ color: "rgba(255,255,255,0.85)", fontSize: 15
-            , fontWeight: 600, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)" }}>
+            style={{ display: "block", textAlign: "center", color: "rgba(255,255,255,0.85)", fontSize: 15, fontWeight: 600, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)" }}>
             Accéder à la version iOS →
           </a>
         );
@@ -29,17 +28,17 @@ export default function AppNotificationCompact() {
         return (
           <a href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
             target="_blank" rel="noopener noreferrer"
-            style={{ color: "rgba(255,255,255,0.85)", fontSize: 15, fontWeight: 600, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", wordSpacing: "4px" }}>
+            style={{ display: "block", textAlign: "center", color: "rgba(255,255,255,0.85)", fontSize: 15, fontWeight: 600, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", wordSpacing: "4px" }}>
             Accéder à la version Android →
           </a>
         );
       default:
         return (
-<p style={{ color: "rgba(255,255,255,0.85)", fontSize: 15, margin: 0, letterSpacing: "0.03em", wordSpacing: "3px" }}>
+          <p style={{ color: "rgba(255,255,255,0.85)", fontSize: 15, margin: 0, letterSpacing: "0.03em", wordSpacing: "3px" }}>
             Télécharger pour{' '}
             <a href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
               target="_blank" rel="noopener noreferrer"
-              style={{ fontWeight: 700, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", color: "white",wordSpacing: "4px" }}>Android</a>
+              style={{ fontWeight: 700, textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", color: "white", wordSpacing: "4px" }}>Android</a>
             {' '}ou{' '}
             <a href="https://apps.apple.com/fr/app/ticketch%C3%A9/id6758046811"
               target="_blank" rel="noopener noreferrer"
@@ -57,7 +56,9 @@ export default function AppNotificationCompact() {
           animate={{ y: 0, opacity: 1, scale: 1 }}
           exit={{ y: 40, opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-style={{ position: "fixed", bottom: 24, right: 24, zIndex: 50, width: 420 }}        >
+          className="app-notif"
+          style={{ position: "fixed", bottom: 24, right: 24, zIndex: 50, width: 420 }}
+        >
           {/* Glow */}
           <div style={{
             position: "absolute", inset: -1, borderRadius: 16,
@@ -70,7 +71,7 @@ style={{ position: "fixed", bottom: 24, right: 24, zIndex: 50, width: 420 }}    
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
             border: "1px solid rgba(255,255,255,0.12)",
-borderRadius: 16, padding: "16px 20px",            boxShadow: "0 20px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)",
+            borderRadius: 16, padding: "16px 20px", boxShadow: "0 20px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
 
@@ -119,118 +120,3 @@ borderRadius: 16, padding: "16px 20px",            boxShadow: "0 20px 40px rgba(
     </AnimatePresence>
   );
 }
-//cliquez ici pour la version (ios) ou ici pour la version (android)
-// 'use client';
-// import { useState, useEffect } from 'react';
-// import { X, Warning } from '@phosphor-icons/react';
-// import { motion, AnimatePresence } from 'framer-motion';
-// import { getDeviceOS, getDownloadLink } from '@/utils/deviceDetection';
-
-// export default function AppNotificationCompact() {
-//   const [isVisible, setIsVisible] = useState(true);
-  
-//   const [deviceOS, setDeviceOS] = useState('other');
-
-  
-  
-//   useEffect(() => {
-//     setDeviceOS(getDeviceOS());
-//   }, []);
-  
-//   if (!isVisible) return null;
-
-//   // Contenu dynamique selon l'appareil
-//   const getNotificationContent = () => {
-//     switch (deviceOS) {
-//       case 'ios':
-//         return (
-//           <p className="text-white text-sm md:text-[16px] leading-snug">
-//             {/* <strong>ticketché</strong> est temporairement indisponible sur App Store.{' '} */}
-//             <a 
-//               href={getDownloadLink()}
-//               target="_blank" 
-//               rel="noopener noreferrer"
-//               className="underline hover:text-amber-100 font-semibold"
-//             >
-//               Cliquez ici pour accéder à la version iOS
-//             </a>
-//           </p>
-//         );
-      
-//       case 'android':
-//         return (
-//           <p className="text-white text-sm md:text-[16px] leading-snug">
-//             {/* <strong>Ticketché</strong> est temporairement indisponible sur Google Play.{' '} */}
-//             <a 
-//               href={getDownloadLink()}
-//               target="_blank" 
-//               rel="noopener noreferrer"
-//               className="underline hover:text-amber-100 font-semibold"
-//             >
-//               Cliquez ici pour accéder à la version Android
-//             </a>
-//           </p>
-//         );
-      
-//       default: // Desktop ou autre
-//         return (
-//           <p className="text-white text-sm md:text-[16px] leading-snug">
-//             {/* <strong>Ticketché</strong> est temporairement indisponible sur App Store. Cliquez ici pour la version{' '} */}
-//             Cliquez ici pour la version{' '}
-//             <a 
-//               href={getDownloadLink()}
-//               target="_blank" 
-//               rel="noopener noreferrer"
-//               className="underline hover:text-amber-100 font-semibold"
-//             >
-//               Android
-//             </a>
-//             {' '}ou ici pour la version{' '}
-//             <a 
-//               href={getDownloadLink()}
-//               target="_blank" 
-//               rel="noopener noreferrer"
-//               className="underline hover:text-amber-100 font-semibold"
-//             >
-//               iOS
-//             </a>
-//           </p>
-//         );
-//     }
-//   };
-
-//   return (
-//     <AnimatePresence>
-//       {isVisible && (
-//         <motion.div
-//           initial={{ y: 100, opacity: 0 }}
-//           animate={{ y: 0, opacity: 1 }}
-//           exit={{ y: 100, opacity: 0 }}
-//           transition={{ duration: 0.3 }}
-//           className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 z-50 max-w-lg"
-//         >
-//           <div className="relative bg-[#005f69] backdrop-blur-md rounded-xl shadow-lg border border-amber-400/30 p-3 sm:p-4">
-//             <div className="flex items-center gap-2 sm:gap-3">
-//               {/* Icon */}
-//               <Warning className="w-5 h-5 text-white flex-shrink-0" />
-              
-//               {/* Text dynamique */}
-//               <div className="flex-1 min-w-0">
-//                 {getNotificationContent()}
-//               </div>
-
-//               {/* Close */}
-//               <button
-//                 onClick={() => setIsVisible(false)}
-//                 className="flex-shrink-0 w-6 h-6 rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center transition-all"
-//                 aria-label="Fermer"
-//               >
-//                 <X className="w-3.5 h-3.5 text-white" />
-//               </button>
-//             </div>
-//           </div>
-//         </motion.div>
-//       )}
-//     </AnimatePresence>
-//   );
-// }

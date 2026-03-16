@@ -238,11 +238,15 @@ function EventsPromo() {
         @keyframes iconBounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-4px);} }
         .promo-feature-tag:hover { background:rgba(4,121,126,0.1) !important; border-color:rgba(4,121,126,0.35) !important; color:#04797e !important; }
         .promo-feature-tag:hover svg { color:#04797e !important; }
+        @media (max-width: 768px) {
+  .promo-images   { display: none !important; }
+  .promo-buttons  { justify-content: center !important; }
+}
       `}</style>
 
       <div style={{
         position: "relative", borderRadius: "28px", overflow: "hidden",
-        padding: "clamp(40px,6vw,72px) clamp(32px,5vw,72px)",
+padding: "clamp(20px,3vw,40px) clamp(32px,5vw,72px)",
         background: "linear-gradient(145deg, #f4fbfb 0%, #eaf5f5 50%, #fdfaf6 100%)",
         border: "1.5px solid rgba(4,121,126,0.1)",
         display: "flex", alignItems: "center",
@@ -282,8 +286,7 @@ function EventsPromo() {
             })}
           </div>
 
-          <div style={{ display:"flex", alignItems:"center", gap:"12px", flexWrap:"wrap" }}>
-            <motion.a
+<div className="promo-buttons" style={{ display:"flex", alignItems:"center", gap:"12px", flexWrap:"wrap" }}>            <motion.a
               href={downloadLink} target="_blank" rel="noopener noreferrer"
               style={{ display:"inline-flex", alignItems:"center", gap:"10px", background:"linear-gradient(135deg,#04797e,#025f63)", color:"#fff", borderRadius:"999px", padding:"13px 26px", fontSize:"13px", fontWeight:800, textDecoration:"none", animation:"btnGlowPromo 3s ease-in-out infinite" }}
               whileHover={{ y:-3, scale:1.03 }} whileTap={{ scale:0.97 }}
@@ -302,7 +305,7 @@ function EventsPromo() {
         </div>
 
         {/* Illustration droite */}
-        <div style={{ flex:"0 0 auto", position:"relative", zIndex:2, display:"flex", gap:"8px", alignItems:"center" }}>
+<div className="promo-images" style={{ flex:"0 0 auto", position:"relative", zIndex:2, display:"flex", gap:"8px", alignItems:"center" }}>
           <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
             <div style={{ width:"clamp(140px,15vw,210px)", height:"clamp(130px,14vw,190px)", borderRadius:"14px", overflow:"hidden", boxShadow:"0 10px 28px rgba(0,0,0,0.15)", marginTop:"-16px" }}>
               <img src="/images/Events/1.jpg" alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
@@ -350,14 +353,14 @@ export const EventsCarousel = () => {
   }, []);
 
   useEffect(() => {
-    fetchAllEvents()
-      .then(({ success, data }) => {
-        if (!success) return;
-        const feat = (data ?? [])
-          .filter((e) => e.is_featured)
-          .sort((a, b) => (a.featured_order ?? 99) - (b.featured_order ?? 99));
-        setAllEvents(feat);
-      })
+   fetchAllEvents()
+  .then(({ success, data }) => {
+    if (!success) return;
+    const events = data ?? [];
+    // Priorité aux featured, sinon afficher tous les événements
+    const feat = events.filter((e) => e.is_featured);
+    setAllEvents(feat.length > 0 ? feat.sort((a, b) => (a.featured_order ?? 99) - (b.featured_order ?? 99)) : events);
+  })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -374,8 +377,7 @@ export const EventsCarousel = () => {
 
       <StarClusters />
 
-      <div style={{ maxWidth: "90vw", margin: "0 auto", padding: "0 24px", position: "relative", zIndex: 2 }}>
-
+<div style={{ maxWidth: "96vw", margin: "0 auto", padding: "0 16px", position: "relative", zIndex: 2 }}>
         {/* Header */}
         <motion.div
           style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"32px", gap:"16px", flexWrap:"wrap" }}

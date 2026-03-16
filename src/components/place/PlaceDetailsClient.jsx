@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { fetchAllPlaces } from "@/app/services/api";
 import { EstablishmentsSection } from "@/components/Home/EstablishmentsSection";
+import { getDownloadLink } from "@/utils/deviceDetection";
 import {
   MapPin, Star, Wrench, ArrowLeft, NavigationArrow,
   CheckCircle, Car, Drop, Shield, ArrowRight,
@@ -14,11 +15,98 @@ import {
 /* ══════════════════════════════════════════════
    TOKENS
 ══════════════════════════════════════════════ */
-const C  = "#005f69";
+const C = "#005f69";
 const CD = "#003d45";
 const CL = "rgba(0,95,105,.09)";
 
 const F = "'Archivo', sans-serif";
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE STYLES (injected once)
+══════════════════════════════════════════════ */
+const RESPONSIVE_CSS = `
+  /* Hero grid : 1 colonne sur mobile */
+  @media (max-width: 768px) {
+    .pd-hero-grid {
+      grid-template-columns: 1fr !important;
+      height: auto !important;
+    }
+    .pd-hero-main {
+      height: 260px !important;
+    }
+    .pd-hero-secondary {
+      display: none !important;
+    }
+  }
+
+  /* Grid principal : sidebar sous le contenu */
+  @media (max-width: 768px) {
+    .pd-main-grid {
+      grid-template-columns: 1fr !important;
+      padding: 16px 12px 0 !important;
+      gap: 14px !important;
+    }
+  }
+
+  /* Onglets : scroll horizontal */
+  @media (max-width: 480px) {
+    .pd-tabs-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      flex-wrap: nowrap !important;
+    }
+    .pd-tabs-scroll::-webkit-scrollbar { display: none; }
+    .pd-tabs-scroll button {
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding: 9px 12px 10px !important;
+      font-size: 12px !important;
+    }
+  }
+
+  /* Aperçu rapide : 2 colonnes */
+  @media (max-width: 480px) {
+    .pd-apercu-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+  }
+
+  /* Avis : 1 colonne */
+  @media (max-width: 640px) {
+    .pd-avis-grid {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
+  /* Top bar : nom tronqué */
+  @media (max-width: 480px) {
+    .pd-topbar-name {
+      font-size: 12px !important;
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  /* Card principale padding réduit */
+  @media (max-width: 480px) {
+    .pd-main-card {
+      padding: 18px 16px !important;
+    }
+    .pd-sidebar-card {
+      padding: 18px 16px !important;
+    }
+  }
+
+  /* CTA sidebar */
+  @media (max-width: 768px) {
+    .pd-cta-card {
+      border-radius: 16px !important;
+    }
+  }
+`;
 
 /* ══════════════════════════════════════════════
    HELPERS
@@ -137,12 +225,17 @@ function ReviewCard({ note, index }) {
 ══════════════════════════════════════════════ */
 export default function PlaceDetailsClient() {
   const { id } = useParams();
-  const [place, setPlace]         = useState(null);
+  const [place, setPlace] = useState(null);
   const [allPlaces, setAllPlaces] = useState([]);
-  const [loading, setLoading]     = useState(true);
+  const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState("services");
   const [wishlisted, setWishlisted] = useState(false);
+  const [downloadLink, setDownloadLink] = useState("https://play.google.com/store/apps/details?id=com.harnixsas.ticketche");
+
+  useEffect(() => {
+    setDownloadLink(getDownloadLink());
+  }, []);
 
   useEffect(() => {
     fetchAllPlaces()
@@ -172,10 +265,10 @@ export default function PlaceDetailsClient() {
   );
 
   /* ── computed ── */
-  const rating             = getPlaceRating(place);
+  const rating = getPlaceRating(place);
   const servicesByCategory = getServicesByCategory(place.services);
-  const activeServices     = place.services.filter((s) => s.pivot.status === "ON");
-  const heroImages         = place.images?.length > 0
+  const activeServices = place.services.filter((s) => s.pivot.status === "ON");
+  const heroImages = place.images?.length > 0
     ? place.images.map((img) => formatImage(img.link))
     : ["/images/Space/recom1.png"];
 
@@ -196,49 +289,50 @@ export default function PlaceDetailsClient() {
   return (
     <main style={{ minHeight: "100vh", background: "#f4fafb", fontFamily: F }}>
 
+      {/* ── Inject responsive styles ── */}
+      <style>{RESPONSIVE_CSS}</style>
+
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           TOP BAR
       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <div style={{
-        position: "sticky", top: 0, zIndex: 50,
-        background: "rgba(244,250,251,.92)", backdropFilter: "blur(12px)",
-        borderBottom: "1px solid rgba(0,95,105,.10)",
-        padding: "12px 16px", maxWidth: 1140, marginLeft: "auto", marginRight: "auto",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-      }}>
-        <button
-          onClick={() => window.close()}
-          style={{
-            display: "flex", alignItems: "center", gap: 7,
-            background: "#fff", border: "1px solid #e5e7eb", borderRadius: 999,
-            padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#374151",
-            cursor: "pointer", fontFamily: F, boxShadow: "0 1px 3px rgba(0,0,0,.06)",
-          }}
-        >
-          <ArrowLeft style={{ width: 13, height: 13 }} /> Retour
-        </button>
+{/* TOP BAR */}
+<div style={{
+  position: "sticky", top: 0, zIndex: 50,
+  background: "rgba(244,250,251,.92)", backdropFilter: "blur(12px)",
+  borderBottom: "1px solid rgba(0,95,105,.10)",
+  padding: "12px 0",
+}}>
+  <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+    <button
+      onClick={() => window.close()}
+      style={{
+        display: "flex", alignItems: "center", gap: 7,
+        background: "#fff", border: "1px solid #e5e7eb", borderRadius: 999,
+        padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#374151",
+        cursor: "pointer", fontFamily: F, boxShadow: "0 1px 3px rgba(0,0,0,.06)",
+      }}
+    >
+      <ArrowLeft style={{ width: 13, height: 13 }} /> Retour
+    </button>
 
-        {/* nom dans la barre pour mobile scroll */}
-        <p style={{ fontSize: 14, fontWeight: 800, color: CD, margin: 0, letterSpacing: -.2 }}>
-          {place.name}
-        </p>
-
-
-      </div>
-
+    <p className="pd-topbar-name" style={{ fontSize: 14, fontWeight: 800, color: CD, margin: 0, letterSpacing: -.2 }}>
+      {place.name}
+    </p>
+  </div>  {/* ← ferme le div intérieur */}
+</div>    {/* ← ferme le div extérieur */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           PHOTO GRID HERO
       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <div style={{ padding: "20px 16px 0", maxWidth: 1140, marginLeft: "auto", marginRight: "auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 10, height: 320, borderRadius: 22, overflow: "hidden" }}>
-
+        <div
+          className="pd-hero-grid"
+          style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 10, height: 320, borderRadius: 22, overflow: "hidden" }}
+        >
           {/* Photo principale */}
-          <div style={{ position: "relative" }}>
+          <div className="pd-hero-main" style={{ position: "relative", height: "100%" }}>
             <Image src={img1} alt={place.name} fill style={{ objectFit: "cover" }} priority />
-            {/* gradient bas */}
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 55%)" }} />
 
-            {/* Badge service */}
             {activeServices[0] && (
               <div style={{ position: "absolute", top: 14, left: 14 }}>
                 <span style={{
@@ -251,7 +345,6 @@ export default function PlaceDetailsClient() {
               </div>
             )}
 
-            {/* Rating badge */}
             {rating && (
               <div style={{
                 position: "absolute", top: 14, right: 14,
@@ -265,12 +358,11 @@ export default function PlaceDetailsClient() {
               </div>
             )}
 
-            {/* Nom + ville sur la photo */}
             <div style={{ position: "absolute", bottom: 18, left: 18, right: 18 }}>
               <h1 style={{ fontSize: 22, fontWeight: 900, color: "#fff", margin: "0 0 6px", letterSpacing: -.3, lineHeight: 1.2 }}>
                 {place.name}
               </h1>
-              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                 <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 13, color: "rgba(255,255,255,.85)", fontWeight: 500 }}>
                   <MapPin weight="fill" style={{ width: 13, height: 13, color: "#fff" }} />
                   {place.city}
@@ -289,12 +381,11 @@ export default function PlaceDetailsClient() {
             </div>
           </div>
 
-          {/* Photo secondaire + dot nav */}
-          <div style={{ position: "relative" }}>
+          {/* Photo secondaire */}
+          <div className="pd-hero-secondary" style={{ position: "relative" }}>
             <Image src={img2} alt={place.name} fill style={{ objectFit: "cover" }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.25) 0%, transparent 50%)" }} />
 
-            {/* Compteur photos */}
             {heroImages.length > 1 && (
               <div style={{
                 position: "absolute", top: 14, right: 14,
@@ -307,7 +398,6 @@ export default function PlaceDetailsClient() {
               </div>
             )}
 
-            {/* Dots navigation */}
             {heroImages.length > 1 && (
               <div style={{ position: "absolute", bottom: 14, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 5 }}>
                 {heroImages.slice(0, 5).map((_, i) => (
@@ -321,34 +411,46 @@ export default function PlaceDetailsClient() {
             )}
           </div>
         </div>
+
+        {/* Dots de navigation visibles sur mobile (photo secondaire masquée) */}
+        {heroImages.length > 1 && (
+          <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10 }}>
+            {heroImages.slice(0, 5).map((_, i) => (
+              <button key={i} onClick={() => setActiveImage(i)} style={{
+                width: i === activeImage ? 22 : 7, height: 7, borderRadius: 999,
+                background: i === activeImage ? C : "#cbd5e1",
+                border: "none", cursor: "pointer", padding: 0, transition: "all .2s",
+              }} />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          CORPS PRINCIPAL  ─  grid 2 colonnes
+          CORPS PRINCIPAL
       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 320px",
-        gap: 20,
-        padding: "24px 16px 0", maxWidth: 1140, marginLeft: "auto", marginRight: "auto",
-        alignItems: "start",
-      }}>
+      <div
+        className="pd-main-grid"
+        style={{
+          display: "grid", gridTemplateColumns: "1fr 320px", gap: 20,
+          padding: "24px 16px 0", maxWidth: 1140, marginLeft: "auto", marginRight: "auto",
+          alignItems: "start",
+        }}
+      >
 
         {/* ╔══════════════════════════════════════
             COLONNE GAUCHE
         ══════════════════════════════════════╗ */}
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
 
-          {/* ── Carte principale ── */}
-          <div style={{ background: "#fff", borderRadius: 20, padding: "26px 28px", border: "1px solid #e9e9e4", boxShadow: "0 1px 3px rgba(0,0,0,.05)" }}>
+          <div className="pd-main-card" style={{ background: "#fff", borderRadius: 20, padding: "26px 28px", border: "1px solid #e9e9e4", boxShadow: "0 1px 3px rgba(0,0,0,.05)" }}>
 
-            {/* Description */}
             <p style={{ fontSize: 14, lineHeight: 1.8, color: "#4b5563", marginBottom: 24 }}>
               {place.description ?? "Aucune description disponible pour cet emplacement."}
             </p>
 
             {/* ── ONGLETS ── */}
-            <div style={{ display: "flex", borderBottom: "1.5px solid #f0f0eb", marginBottom: 24 }}>
+            <div className="pd-tabs-scroll" style={{ display: "flex", borderBottom: "1.5px solid #f0f0eb", marginBottom: 24 }}>
               {tabs.map((tab) => (
                 <button key={tab} onClick={() => setActiveTab(tab)} style={{
                   background: "none", border: "none",
@@ -361,7 +463,7 @@ export default function PlaceDetailsClient() {
                 }}>
                   {tab === "services" ? "Services & Tarifs"
                     : tab === "horaires" ? "Horaires"
-                    : `Avis (${place.noteUsers?.length ?? 0})`}
+                      : `Avis (${place.noteUsers?.length ?? 0})`}
                 </button>
               ))}
             </div>
@@ -372,40 +474,38 @@ export default function PlaceDetailsClient() {
                 {Object.entries(servicesByCategory).length === 0
                   ? <p style={{ color: "#9ca3af", fontSize: 13 }}>Aucun service actif.</p>
                   : Object.entries(servicesByCategory).map(([cat, svcs], ci) => {
-                      const CatIcon = getServiceIcon(cat);
-                      return (
-                        <div key={cat} style={ci > 0 ? { marginTop: 22, paddingTop: 22, borderTop: "1px dashed #f0f0eb" } : {}}>
-                          {/* Catégorie header */}
-                          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                            <div style={{ width: 28, height: 28, borderRadius: 9, background: CL, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              <CatIcon style={{ width: 14, height: 14, color: C }} />
-                            </div>
-                            <span style={{ fontSize: 11, fontWeight: 900, color: C, textTransform: "uppercase", letterSpacing: .8 }}>{cat}</span>
+                    const CatIcon = getServiceIcon(cat);
+                    return (
+                      <div key={cat} style={ci > 0 ? { marginTop: 22, paddingTop: 22, borderTop: "1px dashed #f0f0eb" } : {}}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                          <div style={{ width: 28, height: 28, borderRadius: 9, background: CL, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <CatIcon style={{ width: 14, height: 14, color: C }} />
                           </div>
-                          {/* Services list */}
-                          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-                            {svcs.map((s, si) => (
-                              <motion.div key={si}
-                                initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: si * 0.04 }}
-                                style={{
-                                  display: "flex", alignItems: "center", justifyContent: "space-between",
-                                  padding: "12px 16px", borderRadius: 12,
-                                  background: "#f9f9f6", border: "1px solid #efefea",
-                                }}
-                              >
-                                <span style={{ fontSize: 13, color: "#374151", fontWeight: 600 }}>
-                                  {s.pivot.service_type_name || s.name}
-                                </span>
-                                <span style={{ fontSize: 12.5, fontWeight: 800, color: C, background: CL, padding: "4px 12px", borderRadius: 999 }}>
-                                  {Number(s.pivot.price).toLocaleString()} FCFA
-                                </span>
-                              </motion.div>
-                            ))}
-                          </div>
+                          <span style={{ fontSize: 11, fontWeight: 900, color: C, textTransform: "uppercase", letterSpacing: .8 }}>{cat}</span>
                         </div>
-                      );
-                    })
+                        <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+                          {svcs.map((s, si) => (
+                            <motion.div key={si}
+                              initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: si * 0.04 }}
+                              style={{
+                                display: "flex", alignItems: "center", justifyContent: "space-between",
+                                padding: "12px 16px", borderRadius: 12,
+                                background: "#f9f9f6", border: "1px solid #efefea",
+                              }}
+                            >
+                              <span style={{ fontSize: 13, color: "#374151", fontWeight: 600 }}>
+                                {s.pivot.service_type_name || s.name}
+                              </span>
+                              <span style={{ fontSize: 12.5, fontWeight: 800, color: C, background: CL, padding: "4px 12px", borderRadius: 999 }}>
+                                {Number(s.pivot.price).toLocaleString()} FCFA
+                              </span>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })
                 }
               </div>
             )}
@@ -415,21 +515,21 @@ export default function PlaceDetailsClient() {
               <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
                 {place.availabilities?.length > 0
                   ? place.availabilities.map((a, i) => {
-                      const short = DAYS_SHORT[a.day?.toLowerCase()] ?? a.day?.slice(0, 3) ?? "?";
-                      return (
-                        <div key={i} style={{
-                          display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
-                          background: "#f9f9f6", border: "1px solid #efefea",
-                          borderRadius: 14, padding: "14px 16px", minWidth: 66,
-                        }}>
-                          <span style={{ fontSize: 10, fontWeight: 900, color: C, textTransform: "uppercase", letterSpacing: .6 }}>{short}</span>
-                          <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#34d399" }} />
-                          <span style={{ fontSize: 10, color: "#9ca3af", fontWeight: 600, textAlign: "center", lineHeight: 1.5 }}>
-                            {a.open_hour}<br />—<br />{a.close_hour}
-                          </span>
-                        </div>
-                      );
-                    })
+                    const short = DAYS_SHORT[a.day?.toLowerCase()] ?? a.day?.slice(0, 3) ?? "?";
+                    return (
+                      <div key={i} style={{
+                        display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+                        background: "#f9f9f6", border: "1px solid #efefea",
+                        borderRadius: 14, padding: "14px 16px", minWidth: 66,
+                      }}>
+                        <span style={{ fontSize: 10, fontWeight: 900, color: C, textTransform: "uppercase", letterSpacing: .6 }}>{short}</span>
+                        <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#34d399" }} />
+                        <span style={{ fontSize: 10, color: "#9ca3af", fontWeight: 600, textAlign: "center", lineHeight: 1.5 }}>
+                          {a.open_hour}<br />—<br />{a.close_hour}
+                        </span>
+                      </div>
+                    );
+                  })
                   : <p style={{ color: "#9ca3af", fontSize: 13 }}>Horaires non renseignés.</p>
                 }
               </div>
@@ -437,7 +537,7 @@ export default function PlaceDetailsClient() {
 
             {/* ── TAB : Avis ── */}
             {activeTab === "avis" && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div className="pd-avis-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                 {place.noteUsers?.length > 0
                   ? place.noteUsers.map((note, i) => <ReviewCard key={note.id ?? i} note={note} index={i} />)
                   : <p style={{ color: "#9ca3af", fontSize: 13 }}>Aucun avis pour le moment.</p>
@@ -445,12 +545,12 @@ export default function PlaceDetailsClient() {
               </div>
             )}
 
-            {/* ── Aperçu rapide — toujours visible en bas ── */}
+            {/* ── Aperçu rapide ── */}
             <div style={{ marginTop: 28, paddingTop: 24, borderTop: "1px solid #f0f0eb" }}>
               <p style={{ fontSize: 9.5, color: "#9ca3af", fontWeight: 800, textTransform: "uppercase", letterSpacing: .7, marginBottom: 14 }}>
                 Aperçu rapide
               </p>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+              <div className="pd-apercu-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
                 {[
                   { label: "Places totales", val: place.total_place ?? "—", icon: Car, color: C },
                   { label: "Places libres", val: place.available_places ?? "—", icon: CheckCircle, color: "#059669" },
@@ -480,9 +580,8 @@ export default function PlaceDetailsClient() {
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
 
           {/* ── Prix + disponibilité ── */}
-          <div style={{ background: "#fff", borderRadius: 20, padding: "22px 22px 20px", border: "1px solid #e9e9e4", boxShadow: "0 1px 3px rgba(0,0,0,.05)" }}>
+          <div className="pd-sidebar-card" style={{ background: "#fff", borderRadius: 20, padding: "22px 22px 20px", border: "1px solid #e9e9e4", boxShadow: "0 1px 3px rgba(0,0,0,.05)" }}>
 
-            {/* Prix */}
             <div style={{ marginBottom: 16 }}>
               {place.minimum_price ? (
                 <>
@@ -496,7 +595,6 @@ export default function PlaceDetailsClient() {
               )}
             </div>
 
-            {/* Barre disponibilité */}
             {place.total_place && (
               <div style={{ background: "#f9f9f6", border: "1px solid #efefea", borderRadius: 12, padding: "12px 14px", marginBottom: 16 }}>
                 <div style={{ fontSize: 9.5, color: "#9ca3af", fontWeight: 800, letterSpacing: .7, textTransform: "uppercase", marginBottom: 8 }}>
@@ -521,7 +619,6 @@ export default function PlaceDetailsClient() {
               </div>
             )}
 
-            {/* Boutons Favoris + Itinéraire */}
             <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
               <button onClick={() => setWishlisted(!wishlisted)} style={{
                 flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
@@ -549,7 +646,6 @@ export default function PlaceDetailsClient() {
               </motion.a>
             </div>
 
-            {/* Détail des tarifs */}
             <div style={{ borderTop: "1px solid #f3f4f6", paddingTop: 16 }}>
               <p style={{ fontSize: 9.5, color: "#9ca3af", fontWeight: 800, textTransform: "uppercase", letterSpacing: .7, marginBottom: 12 }}>
                 Détail des tarifs
@@ -572,7 +668,7 @@ export default function PlaceDetailsClient() {
           </div>
 
           {/* ── CTA Réserver ── */}
-          <div style={{
+          <div className="pd-cta-card" style={{
             background: `linear-gradient(140deg, ${C} 0%, ${CD} 100%)`,
             borderRadius: 20, padding: "22px",
             boxShadow: "0 6px 20px rgba(0,95,105,.28)",
@@ -587,8 +683,7 @@ export default function PlaceDetailsClient() {
               Accédez à votre place en quelques secondes
             </p>
             <motion.a
-              href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
-              target="_blank" rel="noopener noreferrer"
+              href={downloadLink} target="_blank" rel="noopener noreferrer"
               whileTap={{ scale: 0.97 }}
               style={{
                 display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -605,24 +700,20 @@ export default function PlaceDetailsClient() {
             </motion.a>
           </div>
 
-        </div>{/* fin sidebar */}
-      </div>{/* fin grid principal */}
+        </div>
+      </div>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          SECTION AUTRES EMPLACEMENTS — pleine largeur
+          AUTRES EMPLACEMENTS
       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {otherPlaces.length > 0 && (
         <div style={{ marginTop: 48 }}>
-          {/* Séparateur visuel */}
           <div style={{ padding: "0 16px", maxWidth: 1140, marginLeft: "auto", marginRight: "auto", marginBottom: 8 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
               <div style={{ flex: 1, height: 1, background: "linear-gradient(to right, transparent, #d4eaed)" }} />
-             
               <div style={{ flex: 1, height: 1, background: "linear-gradient(to left, transparent, #d4eaed)" }} />
             </div>
           </div>
-
-          {/* Section réutilisée */}
           <EstablishmentsSection
             title={<>Autres <span style={{ color: C }}>emplacements</span></>}
             showSubtitle={false}
@@ -631,9 +722,7 @@ export default function PlaceDetailsClient() {
         </div>
       )}
 
-      {/* padding bas */}
       <div style={{ height: 60 }} />
-
     </main>
   );
 }

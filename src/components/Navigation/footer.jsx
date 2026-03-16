@@ -23,12 +23,12 @@ export const Footer = () => {
     { label: "Événements", href: "#events" },
   ];
 
-  const usefulLinks = [
-    { label: "Emplacements", href: "#locations" },
-    { label: "Avis clients", href: "#reviews" },
-    { label: "Contactez-nous", href: "#contact" },
-    { label: "Recrutement", href: "https://recrutement.ticketche.com" },
-  ];
+ const usefulLinks = [
+  { label: "Emplacements", href: "#emplacements" },
+  { label: "Avis clients", href: "#reviews" },
+  { label: "Contactez-nous", href: "/contact" },
+  { label: "Recrutement", href: "https://recrutement.ticketche.com" },
+];
 
   const contactLinks = [
     { label: "(+229) 01 40 51 21 33", href: "tel:+2290140512133" },
@@ -259,8 +259,9 @@ export const Footer = () => {
     .tck-links { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 540px) {
-    .tck-links { grid-template-columns: 1fr; }
-    .tck-bottom { flex-direction: column; align-items: flex-start; }
+   .tck-links { grid-template-columns: 1fr; }
+  .tck-bottom { flex-direction: column; align-items: center; text-align: center; }
+  .tck-policy-row { justify-content: center; }
   }
 `}</style>
 

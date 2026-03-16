@@ -5,6 +5,7 @@ import { fetchEventById } from "@/app/services/api";
 import { EventsCarousel } from "@/components/Home/EventsCarousel";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { getDownloadLink } from "@/utils/deviceDetection";
 import {
   Calendar, MapPin, User, Tag, Ticket, ArrowLeft,
   NavigationArrow, Link as LinkIcon, Users, Clock,
@@ -150,6 +151,9 @@ export default function EventDetailsPage() {
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab]   = useState("tickets");
   const [wishlisted, setWishlisted] = useState(false);
+  const [downloadLink, setDownloadLink] = useState("https://play.google.com/store/apps/details?id=com.harnixsas.ticketche");
+
+  useEffect(() => { setDownloadLink(getDownloadLink()); }, []);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -194,8 +198,18 @@ export default function EventDetailsPage() {
   return (
     <main style={{ minHeight: "100vh", background: "#f4fafb", fontFamily: F }}>
 
+      <style>{`
+        @media (max-width: 768px) {
+          .ed-hero-grid { grid-template-columns: 1fr !important; height: 260px !important; }
+          .ed-hero-grid > div:last-child { display: none; }
+          .ed-main-grid { grid-template-columns: 1fr !important; }
+          .ed-apercu-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .ed-tabs-scroll { overflow-x: auto; white-space: nowrap; }
+        }
+      `}</style>
+
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          TOP BAR — identique à PlaceDetailsClient
+          TOP BAR
       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <div style={{
         position: "sticky", top: 0, zIndex: 50,
@@ -214,23 +228,20 @@ export default function EventDetailsPage() {
           <p style={{ fontSize: 14, fontWeight: 800, color: CD, margin: 0, letterSpacing: -.2 }}>
             {event.title}
           </p>
-
-          
         </div>
       </div>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          PHOTO GRID HERO — identique à PlaceDetailsClient
+          PHOTO GRID HERO
       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <div style={{ maxWidth: 1140, margin: "0 auto", padding: "20px 16px 0" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 10, height: 320, borderRadius: 22, overflow: "hidden" }}>
+        <div className="ed-hero-grid" style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 10, height: 320, borderRadius: 22, overflow: "hidden" }}>
 
           {/* Photo principale */}
           <div style={{ position: "relative" }}>
             <Image src={img1} alt={event.title} fill style={{ objectFit: "cover" }} priority />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 55%)" }} />
 
-            {/* Badge catégorie */}
             {event.category && (
               <div style={{ position: "absolute", top: 14, left: 14 }}>
                 <span style={{ background: C, color: "#fff", fontSize: 10, fontWeight: 800, padding: "5px 13px", borderRadius: 999, textTransform: "uppercase", letterSpacing: .6 }}>
@@ -239,7 +250,6 @@ export default function EventDetailsPage() {
               </div>
             )}
 
-            {/* Badge featured */}
             {event.is_featured && (
               <div style={{ position: "absolute", top: 14, right: 14 }}>
                 <span style={{ background: "#692C00", color: "#fff", fontSize: 10, fontWeight: 800, padding: "5px 13px", borderRadius: 999, textTransform: "uppercase", letterSpacing: .6, display: "flex", alignItems: "center", gap: 5 }}>
@@ -248,7 +258,6 @@ export default function EventDetailsPage() {
               </div>
             )}
 
-            {/* Titre + infos */}
             <div style={{ position: "absolute", bottom: 18, left: 18, right: 18 }}>
               <h1 style={{ fontSize: 22, fontWeight: 900, color: "#fff", margin: "0 0 6px", letterSpacing: -.3, lineHeight: 1.2 }}>
                 {event.title}
@@ -300,7 +309,7 @@ export default function EventDetailsPage() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           CORPS PRINCIPAL — grid 2 colonnes
       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <div style={{ maxWidth: 1140, margin: "0 auto", padding: "24px 16px 0", display: "grid", gridTemplateColumns: "1fr 320px", gap: 20, alignItems: "start" }}>
+      <div className="ed-main-grid" style={{ maxWidth: 1140, margin: "0 auto", padding: "24px 16px 0", display: "grid", gridTemplateColumns: "1fr 320px", gap: 20, alignItems: "start" }}>
 
         {/* ╔══════════════════════════════════════
             COLONNE GAUCHE
@@ -308,7 +317,6 @@ export default function EventDetailsPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ background: "#fff", borderRadius: 20, padding: "26px 28px", border: "1px solid #e9e9e4", boxShadow: "0 1px 3px rgba(0,0,0,.05)" }}>
 
-            {/* Description */}
             {event.description && (
               <p style={{ fontSize: 14, lineHeight: 1.8, color: "#4b5563", marginBottom: 24 }}>
                 {event.description}
@@ -316,7 +324,7 @@ export default function EventDetailsPage() {
             )}
 
             {/* ── ONGLETS ── */}
-            <div style={{ display: "flex", borderBottom: "1.5px solid #f0f0eb", marginBottom: 24 }}>
+            <div className="ed-tabs-scroll" style={{ display: "flex", borderBottom: "1.5px solid #f0f0eb", marginBottom: 24 }}>
               {tabs.map((tab) => (
                 <button key={tab} onClick={() => setActiveTab(tab)} style={{
                   background: "none", border: "none",
@@ -380,7 +388,6 @@ export default function EventDetailsPage() {
                   );
                 })}
 
-                {/* Lieux associés */}
                 {event.places?.length > 0 && (
                   <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px dashed #f0f0eb" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
@@ -417,7 +424,7 @@ export default function EventDetailsPage() {
               <p style={{ fontSize: 9.5, color: "#9ca3af", fontWeight: 800, textTransform: "uppercase", letterSpacing: .7, marginBottom: 14 }}>
                 Aperçu rapide
               </p>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+              <div className="ed-apercu-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
                 {[
                   { label: "Tickets",        val: event.tickets?.length ?? "—",       icon: Ticket,       color: C },
                   { label: "Réservations",   val: event.reservations_count ?? 0,       icon: Users,        color: "#059669" },
@@ -446,10 +453,8 @@ export default function EventDetailsPage() {
         ══════════════════════════════════════╗ */}
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
 
-          {/* ── Prix + disponibilité ── */}
           <div style={{ background: "#fff", borderRadius: 20, padding: "22px 22px 20px", border: "1px solid #e9e9e4", boxShadow: "0 1px 3px rgba(0,0,0,.05)" }}>
 
-            {/* Prix */}
             <div style={{ marginBottom: 16 }}>
               <span style={{ fontSize: 30, fontWeight: 900, color: isFree ? C : "#111827", letterSpacing: -.5 }}>
                 {minPrice}
@@ -457,7 +462,6 @@ export default function EventDetailsPage() {
               {!isFree && <span style={{ fontSize: 13, color: "#9ca3af", marginLeft: 4, fontWeight: 500 }}> / billet</span>}
             </div>
 
-            {/* Barre disponibilité tickets */}
             {totalTickets !== null && (
               <div style={{ background: "#f9f9f6", border: "1px solid #efefea", borderRadius: 12, padding: "12px 14px", marginBottom: 16 }}>
                 <div style={{ fontSize: 9.5, color: "#9ca3af", fontWeight: 800, letterSpacing: .7, textTransform: "uppercase", marginBottom: 8 }}>
@@ -482,7 +486,6 @@ export default function EventDetailsPage() {
               </div>
             )}
 
-            {/* Favoris + Itinéraire */}
             <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
               <button onClick={() => setWishlisted(!wishlisted)} style={{
                 flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
@@ -503,7 +506,6 @@ export default function EventDetailsPage() {
               </motion.a>
             </div>
 
-            {/* Détail des tarifs */}
             {event.tickets?.length > 0 && (
               <div style={{ borderTop: "1px solid #f3f4f6", paddingTop: 16 }}>
                 <p style={{ fontSize: 9.5, color: "#9ca3af", fontWeight: 800, textTransform: "uppercase", letterSpacing: .7, marginBottom: 12 }}>
@@ -539,7 +541,7 @@ export default function EventDetailsPage() {
               Achetez vos billets en quelques secondes
             </p>
             <motion.a
-              href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
+              href={downloadLink}
               target="_blank" rel="noopener noreferrer"
               whileTap={{ scale: 0.97 }}
               style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#fff", color: C, borderRadius: 12, padding: "13px 18px", fontSize: 13, fontWeight: 800, textDecoration: "none", fontFamily: F, position: "relative" }}
@@ -554,19 +556,6 @@ export default function EventDetailsPage() {
 
         </div>
       </div>
-
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          AUTRES ÉVÉNEMENTS — comme PlaceDetailsClient
-      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* <div style={{ marginTop: 48 }}>
-        <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 16px", marginBottom: 8 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div style={{ flex: 1, height: 1, background: "linear-gradient(to right, transparent, #d4eaed)" }} />
-            <div style={{ flex: 1, height: 1, background: "linear-gradient(to left, transparent, #d4eaed)" }} />
-          </div>
-        </div>
-        <EventsCarousel />
-      </div> */}
 
       {/* padding bas */}
       <div style={{ height: 60 }} />

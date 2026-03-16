@@ -94,7 +94,7 @@ ${form.name}`;
     width: "100%", padding: "11px 14px",
     background: "rgba(255,255,255,.07)",
     border: "1.5px solid rgba(255,255,255,.12)",
-    borderRadius: 8, color: "white", fontSize: 13,
+    borderRadius: 8, color: "white", fontSize: 16,
     fontFamily: "'Archivo', sans-serif", outline: "none",
     transition: "border .15s", boxSizing: "border-box",
   };
@@ -420,9 +420,6 @@ ${form.name}`;
             </div>
           </div>
         </section>
-
-      
-
       </div>
     </>
   );

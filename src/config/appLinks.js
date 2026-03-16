@@ -4,10 +4,10 @@
 
 export const APP_LINKS = {
   // Liens de téléchargement
-  download: {
-    ios: "https://app.ticketche.com",
-    android: "https://app.ticketche.com",
-    playStore: "https://app.ticketche.com",
+ download: {
+    ios: "https://apps.apple.com/app/ticketche/id6741428128",
+    android: "https://play.google.com/store/apps/details?id=com.harnixsas.ticketche",
+    playStore: "https://play.google.com/store/apps/details?id=com.harnixsas.ticketche",
     default: "/download"
   },
 };

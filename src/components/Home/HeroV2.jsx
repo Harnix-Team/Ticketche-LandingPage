@@ -1,5 +1,7 @@
 "use client";
 import { ArrowRight, Star } from "@phosphor-icons/react";
+import { useEffect, useState } from "react";
+import { getDownloadLink } from "@/utils/deviceDetection";
 
 /* ─────────────────────────────────────────────
    Micro-clusters éparpillés sur toute la hero
@@ -163,7 +165,11 @@ function StarClusters() {
 // }
 
 export const HeroV2 = () => {
+const [downloadLink, setDownloadLink] = useState("https://play.google.com/store/apps/details?id=com.harnixsas.ticketche");
 
+  useEffect(() => {
+    setDownloadLink(getDownloadLink());
+  }, []);
   return (
     <>
       <style>{`
@@ -318,6 +324,9 @@ export const HeroV2 = () => {
           .hero-stars { display: none; }
           .hero-orbe-mobile { display: block; }
           .hero-mockup-desktop { display: none !important; }
+          h1 { font-size: 1.65rem !important; }
+  .hero-subtitle { font-size: 0.95rem !important; line-height: 1.65 !important; }
+  .btn-hero { min-width: 200px !important; font-size: 0.88rem !important; }
         }
         @media (min-width: 768px) {
           .hero-orbe-mobile { display: none; }
@@ -416,7 +425,7 @@ export const HeroV2 = () => {
           </div>
 
           {/* Sous-titre — identique à l'original */}
-          <p style={{
+          <p className="hero-subtitle" style={{
             fontSize: "clamp(1.1rem, 2vw, 1.3rem)",
             color: "#4b5563", maxWidth: "880px",
             textAlign: "center", lineHeight: 1.8,
@@ -428,7 +437,7 @@ export const HeroV2 = () => {
 
           {/* ── Bouton animé ── */}
           <a
-            href="https://app.ticketche.com/" target="_blank"
+            href={downloadLink} target="_blank"
             rel="noopener noreferrer"
             className="btn-hero"
             style={{
@@ -449,9 +458,9 @@ export const HeroV2 = () => {
 
           {/* — Mobile : orbe uniquement — */}
           <div className="hero-orbe-mobile" style={{
-            width: "200vw", maxWidth: "300vw",
-            margin: "32px auto 0",
-            marginLeft: "calc(-100vw + 50%)",
+            width: "230vw", maxWidth: "340vw",   /* ← image plus grande */
+            margin: "12px auto 0",               /* ← espace réduit */
+            marginLeft: "calc(-115vw + 50%)",    /* ← recentre */
             animation: "fadeUp 0.9s ease 0.9s both",
           }}>
             <img src="/images/Hero/orbe.png" alt="Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />

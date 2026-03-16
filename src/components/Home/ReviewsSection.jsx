@@ -49,16 +49,16 @@ const reviews = [
 
 /* ─── Star Clusters ─────────────────────────────── */
 const CLUSTERS = [
-  { cx: "3%",  cy: "10%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.50, anim: 0, delay: "0s",   dur: "3.2s", color: "#00818f" }, { x: 16, y: -10, size: 9, opacity: 0.30, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" }] },
-  { cx: "92%", cy: "8%",  stars: [{ x: 0, y: 0, size: 14, opacity: 0.45, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" }, { x: -13, y: 12, size: 9, opacity: 0.30, anim: 2, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
-  { cx: "1%",  cy: "50%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.35, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" }, { x: 14, y: -8, size: 7, opacity: 0.25, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" }] },
+  { cx: "3%", cy: "10%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.50, anim: 0, delay: "0s", dur: "3.2s", color: "#00818f" }, { x: 16, y: -10, size: 9, opacity: 0.30, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" }] },
+  { cx: "92%", cy: "8%", stars: [{ x: 0, y: 0, size: 14, opacity: 0.45, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" }, { x: -13, y: 12, size: 9, opacity: 0.30, anim: 2, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
+  { cx: "1%", cy: "50%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.35, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" }, { x: 14, y: -8, size: 7, opacity: 0.25, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" }] },
   { cx: "95%", cy: "45%", stars: [{ x: 0, y: 0, size: 11, opacity: 0.40, anim: 0, delay: "0.3s", dur: "3.3s", color: "#00818f" }, { x: -12, y: 10, size: 7, opacity: 0.25, anim: 1, delay: "0.6s", dur: "2.9s", color: "#00515a" }] },
-  { cx: "5%",  cy: "82%", stars: [{ x: 0, y: 0, size: 9,  opacity: 0.30, anim: 1, delay: "0.2s", dur: "2.9s", color: "#00818f" }, { x: 11, y: -7, size: 6, opacity: 0.22, anim: 2, delay: "0.5s", dur: "3.6s", color: "#00515a" }] },
+  { cx: "5%", cy: "82%", stars: [{ x: 0, y: 0, size: 9, opacity: 0.30, anim: 1, delay: "0.2s", dur: "2.9s", color: "#00818f" }, { x: 11, y: -7, size: 6, opacity: 0.22, anim: 2, delay: "0.5s", dur: "3.6s", color: "#00515a" }] },
   { cx: "88%", cy: "78%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.35, anim: 2, delay: "0.4s", dur: "3.1s", color: "#00515a" }, { x: -10, y: -9, size: 7, opacity: 0.22, anim: 0, delay: "0.7s", dur: "2.8s", color: "#00818f" }] },
-  { cx: "48%", cy: "3%",  stars: [{ x: 0, y: 0, size: 8,  opacity: 0.28, anim: 0, delay: "0.1s", dur: "3.0s", color: "#00818f" }] },
-  { cx: "50%", cy: "95%", stars: [{ x: 0, y: 0, size: 8,  opacity: 0.25, anim: 1, delay: "0.3s", dur: "3.2s", color: "#00515a" }] },
-  { cx: "20%", cy: "6%",  stars: [{ x: 0, y: 0, size: 7,  opacity: 0.22, anim: 2, delay: "0.2s", dur: "2.8s", color: "#00818f" }] },
-  { cx: "75%", cy: "90%", stars: [{ x: 0, y: 0, size: 7,  opacity: 0.22, anim: 0, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
+  { cx: "48%", cy: "3%", stars: [{ x: 0, y: 0, size: 8, opacity: 0.28, anim: 0, delay: "0.1s", dur: "3.0s", color: "#00818f" }] },
+  { cx: "50%", cy: "95%", stars: [{ x: 0, y: 0, size: 8, opacity: 0.25, anim: 1, delay: "0.3s", dur: "3.2s", color: "#00515a" }] },
+  { cx: "20%", cy: "6%", stars: [{ x: 0, y: 0, size: 7, opacity: 0.22, anim: 2, delay: "0.2s", dur: "2.8s", color: "#00818f" }] },
+  { cx: "75%", cy: "90%", stars: [{ x: 0, y: 0, size: 7, opacity: 0.22, anim: 0, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
 ];
 
 function StarClusters() {
@@ -212,6 +212,7 @@ export default function ReviewsSection() {
 
   return (
     <section
+      id="reviews"
       style={{
         fontFamily: "'Archivo', sans-serif",
         overflow: "hidden",
@@ -269,7 +270,7 @@ export default function ReviewsSection() {
         </div>
 
         {/* Carousel */}
-<div style={{ position: "relative", height: "clamp(340px, 44vw, 420px)" }}>
+        <div style={{ position: "relative", height: "clamp(340px, 44vw, 420px)" }}>
           {reviews.map((review, i) => (
             <ReviewCard
               key={i}

@@ -19,64 +19,64 @@ const STATIC_IMAGES = [
 ];
 
 const CLUSTERS = [
-  { cx: "2%",  cy: "4%",  stars: [{ x: 0, y: 0, size: 13, opacity: 0.40, anim: 0, delay: "0s",   dur: "3.2s", color: "#00818f" }, { x: 16, y: -10, size: 8, opacity: 0.25, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" }] },
-  { cx: "91%", cy: "3%",  stars: [{ x: 0, y: 0, size: 13, opacity: 0.38, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" }, { x: -12, y: 11, size: 8, opacity: 0.22, anim: 2, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
-  { cx: "1%",  cy: "18%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.28, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" }, { x: 13, y: -7, size: 6, opacity: 0.18, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" }] },
+  { cx: "2%", cy: "4%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.40, anim: 0, delay: "0s", dur: "3.2s", color: "#00818f" }, { x: 16, y: -10, size: 8, opacity: 0.25, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" }] },
+  { cx: "91%", cy: "3%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.38, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" }, { x: -12, y: 11, size: 8, opacity: 0.22, anim: 2, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
+  { cx: "1%", cy: "18%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.28, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" }, { x: 13, y: -7, size: 6, opacity: 0.18, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" }] },
   { cx: "95%", cy: "20%", stars: [{ x: 0, y: 0, size: 11, opacity: 0.32, anim: 0, delay: "0.3s", dur: "3.3s", color: "#00818f" }, { x: -11, y: 9, size: 6, opacity: 0.18, anim: 1, delay: "0.6s", dur: "2.9s", color: "#00515a" }] },
-  { cx: "44%", cy: "1%",  stars: [{ x: 0, y: 0, size: 7,  opacity: 0.20, anim: 0, delay: "0.1s", dur: "3.0s", color: "#00818f" }] },
-  { cx: "3%",  cy: "34%", stars: [{ x: 0, y: 0, size: 9,  opacity: 0.25, anim: 1, delay: "0.4s", dur: "3.2s", color: "#00818f" }, { x: 12, y: 8,  size: 5, opacity: 0.15, anim: 0, delay: "0.7s", dur: "2.8s", color: "#00515a" }] },
+  { cx: "44%", cy: "1%", stars: [{ x: 0, y: 0, size: 7, opacity: 0.20, anim: 0, delay: "0.1s", dur: "3.0s", color: "#00818f" }] },
+  { cx: "3%", cy: "34%", stars: [{ x: 0, y: 0, size: 9, opacity: 0.25, anim: 1, delay: "0.4s", dur: "3.2s", color: "#00818f" }, { x: 12, y: 8, size: 5, opacity: 0.15, anim: 0, delay: "0.7s", dur: "2.8s", color: "#00515a" }] },
   { cx: "94%", cy: "36%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.28, anim: 2, delay: "0.2s", dur: "3.6s", color: "#00515a" }, { x: -10, y: 10, size: 6, opacity: 0.16, anim: 1, delay: "0.5s", dur: "3.0s", color: "#00818f" }] },
-  { cx: "2%",  cy: "52%", stars: [{ x: 0, y: 0, size: 11, opacity: 0.30, anim: 0, delay: "0.3s", dur: "3.4s", color: "#00818f" }, { x: 14, y: -9, size: 7, opacity: 0.18, anim: 2, delay: "0.6s", dur: "2.9s", color: "#00515a" }] },
-  { cx: "93%", cy: "54%", stars: [{ x: 0, y: 0, size: 9,  opacity: 0.26, anim: 1, delay: "0.1s", dur: "3.1s", color: "#00515a" }] },
-  { cx: "48%", cy: "38%", stars: [{ x: 0, y: 0, size: 6,  opacity: 0.16, anim: 0, delay: "0.5s", dur: "3.3s", color: "#00818f" }] },
-  { cx: "1%",  cy: "68%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.28, anim: 2, delay: "0.2s", dur: "3.5s", color: "#00818f" }, { x: 11, y: -8, size: 6, opacity: 0.16, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00515a" }] },
+  { cx: "2%", cy: "52%", stars: [{ x: 0, y: 0, size: 11, opacity: 0.30, anim: 0, delay: "0.3s", dur: "3.4s", color: "#00818f" }, { x: 14, y: -9, size: 7, opacity: 0.18, anim: 2, delay: "0.6s", dur: "2.9s", color: "#00515a" }] },
+  { cx: "93%", cy: "54%", stars: [{ x: 0, y: 0, size: 9, opacity: 0.26, anim: 1, delay: "0.1s", dur: "3.1s", color: "#00515a" }] },
+  { cx: "48%", cy: "38%", stars: [{ x: 0, y: 0, size: 6, opacity: 0.16, anim: 0, delay: "0.5s", dur: "3.3s", color: "#00818f" }] },
+  { cx: "1%", cy: "68%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.28, anim: 2, delay: "0.2s", dur: "3.5s", color: "#00818f" }, { x: 11, y: -8, size: 6, opacity: 0.16, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00515a" }] },
   { cx: "95%", cy: "70%", stars: [{ x: 0, y: 0, size: 12, opacity: 0.32, anim: 1, delay: "0.3s", dur: "3.2s", color: "#00515a" }, { x: -13, y: 10, size: 7, opacity: 0.20, anim: 2, delay: "0.6s", dur: "3.0s", color: "#00818f" }] },
-  { cx: "3%",  cy: "84%", stars: [{ x: 0, y: 0, size: 9,  opacity: 0.24, anim: 0, delay: "0.1s", dur: "3.4s", color: "#00818f" }] },
+  { cx: "3%", cy: "84%", stars: [{ x: 0, y: 0, size: 9, opacity: 0.24, anim: 0, delay: "0.1s", dur: "3.4s", color: "#00818f" }] },
   { cx: "92%", cy: "86%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.28, anim: 1, delay: "0.4s", dur: "3.1s", color: "#00515a" }, { x: -10, y: -8, size: 5, opacity: 0.15, anim: 0, delay: "0.7s", dur: "2.8s", color: "#00818f" }] },
-  { cx: "50%", cy: "96%", stars: [{ x: 0, y: 0, size: 7,  opacity: 0.18, anim: 2, delay: "0.2s", dur: "3.3s", color: "#00818f" }] },
-  { cx: "25%", cy: "12%", stars: [{ x: 0, y: 0, size: 6,  opacity: 0.15, anim: 0, delay: "0.5s", dur: "3.0s", color: "#00515a" }] },
-  { cx: "72%", cy: "15%", stars: [{ x: 0, y: 0, size: 7,  opacity: 0.18, anim: 1, delay: "0.3s", dur: "3.2s", color: "#00818f" }] },
-  { cx: "20%", cy: "60%", stars: [{ x: 0, y: 0, size: 6,  opacity: 0.14, anim: 2, delay: "0.6s", dur: "3.5s", color: "#00515a" }] },
-  { cx: "78%", cy: "62%", stars: [{ x: 0, y: 0, size: 7,  opacity: 0.16, anim: 0, delay: "0.2s", dur: "3.1s", color: "#00818f" }] },
-  { cx: "35%", cy: "80%", stars: [{ x: 0, y: 0, size: 6,  opacity: 0.15, anim: 1, delay: "0.4s", dur: "2.9s", color: "#00515a" }] },
-  { cx: "65%", cy: "82%", stars: [{ x: 0, y: 0, size: 8,  opacity: 0.20, anim: 2, delay: "0.1s", dur: "3.3s", color: "#00818f" }] },
+  { cx: "50%", cy: "96%", stars: [{ x: 0, y: 0, size: 7, opacity: 0.18, anim: 2, delay: "0.2s", dur: "3.3s", color: "#00818f" }] },
+  { cx: "25%", cy: "12%", stars: [{ x: 0, y: 0, size: 6, opacity: 0.15, anim: 0, delay: "0.5s", dur: "3.0s", color: "#00515a" }] },
+  { cx: "72%", cy: "15%", stars: [{ x: 0, y: 0, size: 7, opacity: 0.18, anim: 1, delay: "0.3s", dur: "3.2s", color: "#00818f" }] },
+  { cx: "20%", cy: "60%", stars: [{ x: 0, y: 0, size: 6, opacity: 0.14, anim: 2, delay: "0.6s", dur: "3.5s", color: "#00515a" }] },
+  { cx: "78%", cy: "62%", stars: [{ x: 0, y: 0, size: 7, opacity: 0.16, anim: 0, delay: "0.2s", dur: "3.1s", color: "#00818f" }] },
+  { cx: "35%", cy: "80%", stars: [{ x: 0, y: 0, size: 6, opacity: 0.15, anim: 1, delay: "0.4s", dur: "2.9s", color: "#00515a" }] },
+  { cx: "65%", cy: "82%", stars: [{ x: 0, y: 0, size: 8, opacity: 0.20, anim: 2, delay: "0.1s", dur: "3.3s", color: "#00818f" }] },
 ];
 
 const SERVICES = [
-  { icon: <MapPin weight="bold" />,          title: "Trouvez des services autour de vous", desc: "Découvrez facilement des parkings, lavages et garages disponibles près de vous, directement depuis l'application.", num: "01" },
-  { icon: <CreditCard weight="bold" />,      title: "Payez simplement",                    desc: "Effectuez vos paiements rapidement et en toute sécurité grâce aux solutions de paiement intégrées.", num: "02", highlight: true },
-  { icon: <Wrench weight="bold" />,          title: "Accédez aux meilleurs garages",       desc: "Trouvez des garages fiables pour l'entretien et la réparation de votre véhicule.", num: "03" },
-  { icon: <Ticket weight="bold" />,          title: "Découvrez les événements",            desc: "Concerts, festivals, soirées... accédez aux événements autour de vous et obtenez vos billets facilement.", num: "04" },
-  { icon: <NavigationArrow weight="bold" />, title: "Localisation en temps réel",          desc: "Repérez instantanément les services disponibles autour de vous, où que vous soyez.", num: "05" },
-  { icon: <ClipboardText weight="bold" />,   title: "Tous vos tickets au même endroit",    desc: "Gardez une trace de vos tickets et transactions. Plus besoin de conserver des papiers.", num: "06" },
+  { icon: <MapPin weight="bold" />, title: "Trouvez des services autour de vous", desc: "Découvrez facilement des parkings, lavages et garages disponibles près de vous, directement depuis l'application.", num: "01" },
+  { icon: <CreditCard weight="bold" />, title: "Payez simplement", desc: "Effectuez vos paiements rapidement et en toute sécurité grâce aux solutions de paiement intégrées.", num: "02", highlight: true },
+  { icon: <Wrench weight="bold" />, title: "Accédez aux meilleurs garages", desc: "Trouvez des garages fiables pour l'entretien et la réparation de votre véhicule.", num: "03" },
+  { icon: <Ticket weight="bold" />, title: "Découvrez les événements", desc: "Concerts, festivals, soirées... accédez aux événements autour de vous et obtenez vos billets facilement.", num: "04" },
+  { icon: <NavigationArrow weight="bold" />, title: "Localisation en temps réel", desc: "Repérez instantanément les services disponibles autour de vous, où que vous soyez.", num: "05" },
+  { icon: <ClipboardText weight="bold" />, title: "Tous vos tickets au même endroit", desc: "Gardez une trace de vos tickets et transactions. Plus besoin de conserver des papiers.", num: "06" },
 ];
 const FEATURES = [
-  { icon: MapPin,    title: "Parking · Lavage · Garage",  desc: "Localisez, réservez et payez en temps réel. Centres de lavage notés, garages certifiés, parkings disponibles près de vous.", accent: "#005F69" },
-  { icon: Ticket,    title: "Billetterie & Événements",    desc: "Achetez vos billets de concerts, festivals et conférences. Gérez vos propres événements avec vente de tickets intégrée.", accent: "#692C00" },
-  { icon: Wallet,    title: "Portefeuille numérique",      desc: "Centralisez votre solde, rechargez en Mobile Money et réglez tous vos services Ticketché d'un seul tap.", accent: "#005F69" },
-  { icon: Tag,       title: "Codes promo & réductions",    desc: "Saisissez un code promo au paiement pour obtenir des réductions instantanées sur tous vos services.", accent: "#692C00" },
-  { icon: Star,      title: "Avis & notations",            desc: "Consultez les avis vérifiés avant de choisir un prestataire. Notez votre expérience et aidez la communauté.", accent: "#005F69" },
-  { icon: Car,       title: "Enregistrement de véhicules", desc: "Ajoutez vos véhicules une fois pour toujours. Chaque réservation est automatiquement rattachée.", accent: "#692C00" },
-  { icon: QrCode,    title: "QR Code & accès rapide",      desc: "Ticket numérique infalsifiable pour chaque service. Scan instantané — zéro papier, zéro file d'attente.", accent: "#005F69" },
-  { icon: Handshake, title: "Services additionnels",       desc: "Les gérants proposent des extras : vidange, gonflage pneus, nettoyage intérieur — réservables dans l'app.", accent: "#692C00" },
+  { icon: MapPin, title: "Parking · Lavage · Garage", desc: "Localisez, réservez et payez en temps réel. Centres de lavage notés, garages certifiés, parkings disponibles près de vous.", accent: "#005F69" },
+  { icon: Ticket, title: "Billetterie & Événements", desc: "Achetez vos billets de concerts, festivals et conférences. Gérez vos propres événements avec vente de tickets intégrée.", accent: "#692C00" },
+  { icon: Wallet, title: "Portefeuille numérique", desc: "Centralisez votre solde, rechargez en Mobile Money et réglez tous vos services Ticketché d'un seul tap.", accent: "#005F69" },
+  { icon: Tag, title: "Codes promo & réductions", desc: "Saisissez un code promo au paiement pour obtenir des réductions instantanées sur tous vos services.", accent: "#692C00" },
+  { icon: Star, title: "Avis & notations", desc: "Consultez les avis vérifiés avant de choisir un prestataire. Notez votre expérience et aidez la communauté.", accent: "#005F69" },
+  { icon: Car, title: "Enregistrement de véhicules", desc: "Ajoutez vos véhicules une fois pour toujours. Chaque réservation est automatiquement rattachée.", accent: "#692C00" },
+  { icon: QrCode, title: "QR Code & accès rapide", desc: "Ticket numérique infalsifiable pour chaque service. Scan instantané — zéro papier, zéro file d'attente.", accent: "#005F69" },
+  { icon: Handshake, title: "Services additionnels", desc: "Les gérants proposent des extras : vidange, gonflage pneus, nettoyage intérieur — réservables dans l'app.", accent: "#692C00" },
 ];
 
 const USER_ITEMS = [
-  { icon: MapPin,       title: "Trouvez rapidement le service qu'il vous faut", desc: "Services à proximité, prix, disponibilités, horaires et gérants les mieux notés — tout en un coup d'œil." },
-  { icon: DeviceMobile, title: "Ticket numérique sécurisé",                     desc: "Fini les tickets papier qui se perdent. Votre ticket sur votre téléphone, clair, vérifiable à tout moment." },
-  { icon: CreditCard,   title: "Paiement fluide et sécurisé",                   desc: "Payez sans tracas grâce à nos partenaires certifiés. Un simple scan à la sortie et vous êtes libre." },
-  { icon: Ticket,       title: "Billets d'événements en ligne",                 desc: "Concerts, soirées, expos — réservez vos tickets depuis l'app, recevez votre QR code et entrez sans attendre." },
+  { icon: MapPin, title: "Trouvez rapidement le service qu'il vous faut", desc: "Services à proximité, prix, disponibilités, horaires et gérants les mieux notés — tout en un coup d'œil." },
+  { icon: DeviceMobile, title: "Ticket numérique sécurisé", desc: "Fini les tickets papier qui se perdent. Votre ticket sur votre téléphone, clair, vérifiable à tout moment." },
+  { icon: CreditCard, title: "Paiement fluide et sécurisé", desc: "Payez sans tracas grâce à nos partenaires certifiés. Un simple scan à la sortie et vous êtes libre." },
+  { icon: Ticket, title: "Billets d'événements en ligne", desc: "Concerts, soirées, expos — réservez vos tickets depuis l'app, recevez votre QR code et entrez sans attendre." },
 ];
 
 const MANAGER_ITEMS = [
-  { icon: Pulse,         title: "Suivi en temps réel",     desc: "Véhicules en cours, opérations terminées, files d'attente et volumes journaliers." },
-  { icon: Money,         title: "Encaissement simplifié",  desc: "Paiements espèces et mobile money avec traçabilité complète, sans erreurs." },
-  { icon: ChartBar,      title: "Statistiques détaillées", desc: "Revenus, heures de pointe, services les plus demandés et progression du CA." },
-  { icon: ShieldCheck,   title: "Réduction de la fraude",  desc: "Tickets numériques horodatés, impossibles à falsifier. Litiges éliminés." },
-  { icon: Users,         title: "Gestion du personnel",    desc: "Performances individuelles, services traités et historique complet des agents." },
-  { icon: ClipboardText, title: "Organisation renforcée",  desc: "Toutes vos opérations centralisées. Plus de papier, plus d'oublis, plus de pertes." },
-  { icon: TrendUp,       title: "Revenus optimisés",       desc: "Identifiez vos meilleures plages horaires et maximisez votre rentabilité." },
-  { icon: Ticket,        title: "Billetterie événements",  desc: "Créez vos événements, vendez vos tickets en ligne et suivez vos réservations." },
+  { icon: Pulse, title: "Suivi en temps réel", desc: "Véhicules en cours, opérations terminées, files d'attente et volumes journaliers." },
+  { icon: Money, title: "Encaissement simplifié", desc: "Paiements espèces et mobile money avec traçabilité complète, sans erreurs." },
+  { icon: ChartBar, title: "Statistiques détaillées", desc: "Revenus, heures de pointe, services les plus demandés et progression du CA." },
+  { icon: ShieldCheck, title: "Réduction de la fraude", desc: "Tickets numériques horodatés, impossibles à falsifier. Litiges éliminés." },
+  { icon: Users, title: "Gestion du personnel", desc: "Performances individuelles, services traités et historique complet des agents." },
+  { icon: ClipboardText, title: "Organisation renforcée", desc: "Toutes vos opérations centralisées. Plus de papier, plus d'oublis, plus de pertes." },
+  { icon: TrendUp, title: "Revenus optimisés", desc: "Identifiez vos meilleures plages horaires et maximisez votre rentabilité." },
+  { icon: Ticket, title: "Billetterie événements", desc: "Créez vos événements, vendez vos tickets en ligne et suivez vos réservations." },
 ];
 
 const TEAM_AVATARS = [
@@ -121,11 +121,11 @@ export default function AboutPage() {
           : [];
         const placeImages = placesRes.status === "fulfilled" && placesRes.value?.success
           ? (placesRes.value.data ?? []).filter(p => p.images?.length > 0).map(p => {
-              const link = p.images[0].link;
-              if (!link) return null;
-              const cleaned = link.replace("/storage/app/public", "/storage");
-              return cleaned.startsWith("http") ? cleaned : `https://api.ticketche.com${cleaned}`;
-            }).filter(Boolean)
+            const link = p.images[0].link;
+            if (!link) return null;
+            const cleaned = link.replace("/storage/app/public", "/storage");
+            return cleaned.startsWith("http") ? cleaned : `https://api.ticketche.com${cleaned}`;
+          }).filter(Boolean)
           : [];
         const all = [...eventImages, ...placeImages, ...STATIC_IMAGES];
         if (all.length >= 3) setHeroImages(all.slice(0, 4));
@@ -209,7 +209,7 @@ export default function AboutPage() {
         .ap-hero {
           position: relative; z-index: 2;
           /* ↓ padding-top augmenté à 140px pour la marge en haut */
-          padding: 140px 48px 80px;
+          padding: 160px 48px 80px;
           display: grid; grid-template-columns: 1fr 1fr;
           gap: 64px; align-items: center;
           /* ↓ max-width et margin: 0 auto supprimés — .about-page (90vw) gère la largeur */
@@ -641,14 +641,15 @@ export default function AboutPage() {
           .ft-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 900px) {
+.cta-trust-dot { display: none; }
           .about-page { width: 100vw; }
           .ap-hero { grid-template-columns: 1fr; padding: 100px 24px 60px; text-align: center; }
           .ap-sub  { max-width: 100%; }
           .ap-stats { justify-content: center; }
           .ap-btns { justify-content: center; }
-          .ap-right { height: 360px; }
-          .ap-img-card--tl { height: 160px; }
-          .ap-img-card--bl { height: 180px; }
+.ap-right { display: none; }
+.ap-btns { flex-wrap: nowrap; }
+.tc-btn, .ap-btn-sec { font-size: 12px !important; padding: 11px 18px !important; }
           .ab-section { grid-template-columns: 1fr; padding: 40px 24px 60px; gap: 48px; }
           .ab-left { height: 380px; }
           .sv-grid { grid-template-columns: 1fr 1fr; }
@@ -657,9 +658,8 @@ export default function AboutPage() {
           .mg-root { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; }
           .cta-inner { padding: 56px 28px; }
           .cta-actions { flex-direction: column; align-items: center; }
-          .cta-trust { flex-direction: column; gap: 8px; }
-          .cta-trust-dot { display: none; }
-        }
+.cta-trust { flex-direction: row !important; gap: 12px !important; flex-wrap: wrap; justify-content: center; }
+.cta-trust-dot { display: block !important; }        }
         @media (max-width: 640px) {
           .ab-left { height: 300px; }
           .ft-grid { grid-template-columns: 1fr; }
@@ -718,7 +718,7 @@ export default function AboutPage() {
 
               <div className="ap-btns">
                 <a
-                  href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
+                  href={downloadLink}
                   target="_blank" rel="noopener noreferrer"
                   className="tc-btn"
                 >
@@ -785,7 +785,7 @@ export default function AboutPage() {
               Que vous soyez utilisateur ou gestionnaire de service, Ticketché vous aide à gagner du temps, mieux organiser vos activités et profiter pleinement de la ville.
             </p>
             <a
-              href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
+              href={downloadLink}
               target="_blank"
               rel="noopener noreferrer"
               className="tc-btn"
@@ -871,9 +871,9 @@ export default function AboutPage() {
           </div>
           <div className="ft-pillars">
             {[
-              { icon: DeviceMobile, label: "App mobile",   sub: "iOS & Android" },
-              { icon: CreditCard,   label: "Mobile Money", sub: "Paiement sécurisé" },
-              { icon: Users,        label: "Communauté",   sub: "Avis fiables" },
+              { icon: DeviceMobile, label: "App mobile", sub: "iOS & Android" },
+              { icon: CreditCard, label: "Mobile Money", sub: "Paiement sécurisé" },
+              { icon: Users, label: "Communauté", sub: "Avis fiables" },
             ].map(({ icon: Icon, label, sub }, i) => (
               <div key={i} className="ft-pillar">
                 <div className="ft-pillar-icon">
@@ -951,7 +951,7 @@ export default function AboutPage() {
               })}
             </div>
             <a
-              href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche"
+              href={downloadLink}
               target="_blank" rel="noopener noreferrer"
               className="tc-btn"
             >
@@ -997,7 +997,7 @@ export default function AboutPage() {
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                     <div className="cta-stars">
-                      {[1,2,3,4,5,6,7].map(i => (
+                      {[1, 2, 3, 4, 5, 6, 7].map(i => (
                         <span key={i} className="cta-star">★</span>
                       ))}
                     </div>
