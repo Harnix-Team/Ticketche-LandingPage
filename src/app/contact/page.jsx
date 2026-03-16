@@ -65,20 +65,16 @@ export default function ContactPage() {
     return;
   }
 
-  const whatsappMessage = `Bonjour ! 👋
+ const whatsappMessage = `Bonjour,
 
-Je vous contacte via le site Ticketché.
 
-*Informations de contact :*
-- Nom : ${form.name}
-- Email : ${form.email}
-- Service : ${form.service}
-- Date souhaitée : ${form.date}
+Nom : ${form.name}
+Email : ${form.email}
+Service : ${form.service || "Non specifie"}
+Date souhaitee : ${form.date || "Non precisee"}
 
-*Message :*
+Message :
 ${form.message}
-
-Merci de me recontacter dès que possible.
 
 Cordialement,
 ${form.name}`;
