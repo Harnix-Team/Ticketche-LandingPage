@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Phone, EnvelopeSimple, Ticket, Headset, Newspaper,
@@ -8,16 +8,16 @@ import {
 
 
 const CLUSTERS = [
-  { cx: "2%",  cy: "6%",  stars: [{ x: 0, y: 0, size: 13, opacity: 0.45, anim: 0, delay: "0s",   dur: "3.2s", color: "#00818f" }, { x: 16, y: -10, size: 8, opacity: 0.28, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" }] },
-  { cx: "91%", cy: "5%",  stars: [{ x: 0, y: 0, size: 13, opacity: 0.40, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" }, { x: -12, y: 11, size: 8, opacity: 0.25, anim: 2, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
-  { cx: "1%",  cy: "40%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.32, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" }, { x: 13, y: -7, size: 6, opacity: 0.20, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" }] },
+  { cx: "2%", cy: "6%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.45, anim: 0, delay: "0s", dur: "3.2s", color: "#00818f" }, { x: 16, y: -10, size: 8, opacity: 0.28, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" }] },
+  { cx: "91%", cy: "5%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.40, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" }, { x: -12, y: 11, size: 8, opacity: 0.25, anim: 2, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
+  { cx: "1%", cy: "40%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.32, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" }, { x: 13, y: -7, size: 6, opacity: 0.20, anim: 0, delay: "0.4s", dur: "2.7s", color: "#00818f" }] },
   { cx: "94%", cy: "38%", stars: [{ x: 0, y: 0, size: 11, opacity: 0.35, anim: 0, delay: "0.3s", dur: "3.3s", color: "#00818f" }, { x: -11, y: 9, size: 6, opacity: 0.20, anim: 1, delay: "0.6s", dur: "2.9s", color: "#00515a" }] },
-  { cx: "4%",  cy: "72%", stars: [{ x: 0, y: 0, size: 9,  opacity: 0.28, anim: 1, delay: "0.2s", dur: "2.9s", color: "#00818f" }, { x: 11, y: -6, size: 6, opacity: 0.18, anim: 2, delay: "0.5s", dur: "3.6s", color: "#00515a" }] },
+  { cx: "4%", cy: "72%", stars: [{ x: 0, y: 0, size: 9, opacity: 0.28, anim: 1, delay: "0.2s", dur: "2.9s", color: "#00818f" }, { x: 11, y: -6, size: 6, opacity: 0.18, anim: 2, delay: "0.5s", dur: "3.6s", color: "#00515a" }] },
   { cx: "89%", cy: "70%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.30, anim: 2, delay: "0.4s", dur: "3.1s", color: "#00515a" }, { x: -9, y: -8, size: 6, opacity: 0.18, anim: 0, delay: "0.7s", dur: "2.8s", color: "#00818f" }] },
-  { cx: "44%", cy: "1%",  stars: [{ x: 0, y: 0, size: 7,  opacity: 0.22, anim: 0, delay: "0.1s", dur: "3.0s", color: "#00818f" }] },
-  { cx: "50%", cy: "94%", stars: [{ x: 0, y: 0, size: 7,  opacity: 0.20, anim: 1, delay: "0.3s", dur: "3.2s", color: "#00515a" }] },
-  { cx: "20%", cy: "4%",  stars: [{ x: 0, y: 0, size: 6,  opacity: 0.18, anim: 2, delay: "0.2s", dur: "2.8s", color: "#00818f" }] },
-  { cx: "74%", cy: "92%", stars: [{ x: 0, y: 0, size: 6,  opacity: 0.18, anim: 0, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
+  { cx: "44%", cy: "1%", stars: [{ x: 0, y: 0, size: 7, opacity: 0.22, anim: 0, delay: "0.1s", dur: "3.0s", color: "#00818f" }] },
+  { cx: "50%", cy: "94%", stars: [{ x: 0, y: 0, size: 7, opacity: 0.20, anim: 1, delay: "0.3s", dur: "3.2s", color: "#00515a" }] },
+  { cx: "20%", cy: "4%", stars: [{ x: 0, y: 0, size: 6, opacity: 0.18, anim: 2, delay: "0.2s", dur: "2.8s", color: "#00818f" }] },
+  { cx: "74%", cy: "92%", stars: [{ x: 0, y: 0, size: 6, opacity: 0.18, anim: 0, delay: "0.5s", dur: "3.4s", color: "#00515a" }] },
 ];
 
 const images = [
@@ -49,23 +49,23 @@ export default function ContactPage() {
   const [currentImg, setCurrentImg] = useState(0);
 
   useEffect(() => {
-  const interval = setInterval(() => {
-    setCurrentImg((prev) => (prev + 1) % images.length);
-  }, 3000); // change toutes les 3 secondes
-  return () => clearInterval(interval);
-}, [currentImg]);
+    const interval = setInterval(() => {
+      setCurrentImg((prev) => (prev + 1) % images.length);
+    }, 3000); // change toutes les 3 secondes
+    return () => clearInterval(interval);
+  }, [currentImg]);
 
   const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!form.name || !form.email || !form.message) {
-    alert("Veuillez remplir tous les champs obligatoires.");
-    return;
-  }
+    if (!form.name || !form.email || !form.message) {
+      alert("Veuillez remplir tous les champs obligatoires.");
+      return;
+    }
 
- const whatsappMessage = `Bonjour,
+    const whatsappMessage = `Bonjour,
 
 
 Nom : ${form.name}
@@ -79,13 +79,13 @@ ${form.message}
 Cordialement,
 ${form.name}`;
 
-  const encodedMessage = encodeURIComponent(whatsappMessage);
-  window.open(`https://wa.me/2290140512133?text=${encodedMessage}`, "_blank");
+    const encodedMessage = encodeURIComponent(whatsappMessage);
+    window.open(`https://wa.me/2290140512133?text=${encodedMessage}`, "_blank");
 
-  setSent(true);
-  setTimeout(() => setSent(false), 4000);
-  setForm({ name: "", email: "", service: "", date: "", message: "" });
-};
+    setSent(true);
+    setTimeout(() => setSent(false), 4000);
+    setForm({ name: "", email: "", service: "", date: "", message: "" });
+  };
   const inputStyle = {
     width: "100%", padding: "11px 14px",
     background: "rgba(255,255,255,.07)",
@@ -191,30 +191,33 @@ ${form.name}`;
         .ct-link-white:hover { background: rgba(0,0,0,.35); transform: translateY(-1px); }
 
         /* ── MOBILE UNIQUEMENT — ne touche pas au desktop ── */
-        @media (max-width: 768px) {
-          .ct-hero-section { padding: 80px 16px 40px !important; }
-          .ct-hero-section h1 { margin-top: 20px !important; }
-          .ct-middle-section { padding: 0 16px 50px !important; }
-          .ct-middle-grid { grid-template-columns: 1fr !important; gap: 32px !important; max-width: 100% !important; padding: 0 !important; }
-          .ct-carousel-wrap { height: 220px !important; }
-          .ct-form-box { padding: 32px 20px !important; }
-          .ct-form-row-2col { grid-template-columns: 1fr !important; }
-        }
+       @media (max-width: 768px) {
+  .ct-hero-section { padding: 80px 16px 40px !important; }
+  .ct-hero-section h1 { margin-top: 20px !important; }
+  .ct-middle-section { padding: 0 16px 50px !important; }
+  .ct-middle-grid { grid-template-columns: 1fr !important; gap: 32px !important; max-width: 100% !important; padding: 0 !important; }
+  .ct-carousel-wrap { height: 220px !important; }
+  .ct-form-box { padding: 32px 20px !important; }
+  .ct-form-row-2col { grid-template-columns: 1fr !important; }
+  .ct-form-box input,
+  .ct-form-box select,
+  .ct-form-box textarea { width: 100% !important; box-sizing: border-box !important; }
+}
       `}</style>
 
       <div style={{ fontFamily: "'Archivo', sans-serif", background: "#ecf5f5", position: "relative", overflow: "hidden" }}>
         <StarClusters />
 
-      {/* ══ HERO ══ */}
-<section className="ct-hero-section" style={{ padding: "100px 20px 90px", textAlign: "center", position: "relative", zIndex: 2 }}>
-  <h1 style={{ fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 900, color: "#0a1a1c", letterSpacing: -1, marginBottom: 14, lineHeight: 1.05, marginTop: 60 }}>
-    Besoin <span style={{ color: "#005f69" }}>d'aide ?</span>
-  </h1>
-  <p style={{ color: "#6b7280", fontSize: 18, fontWeight: 500, margin: "0 auto" }}>
-    Contactez-nous et un représentant vous répondra dans les plus brefs délais.
-  </p>
-</section>
-  {/* ══ CARDS BOTTOM ══ */}
+        {/* ══ HERO ══ */}
+        <section className="ct-hero-section" style={{ padding: "100px 20px 90px", textAlign: "center", position: "relative", zIndex: 2 }}>
+          <h1 style={{ fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 900, color: "#0a1a1c", letterSpacing: -1, marginBottom: 14, lineHeight: 1.05, marginTop: 60 }}>
+            Besoin <span style={{ color: "#005f69" }}>d'aide ?</span>
+          </h1>
+          <p style={{ color: "#6b7280", fontSize: 18, fontWeight: 500, margin: "0 auto" }}>
+            Contactez-nous et un représentant vous répondra dans les plus brefs délais.
+          </p>
+        </section>
+        {/* ══ CARDS BOTTOM ══ */}
         {/* <section style={{ padding: "0 20px 80px", position: "relative", zIndex: 2 }}>
           <div style={{ maxWidth: "90vw", margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
 
@@ -258,14 +261,14 @@ ${form.name}`;
           <div className="ct-middle-grid" style={{
             maxWidth: "90vw", margin: "0 auto", padding: "0 24px",
             display: "grid", gridTemplateColumns: "1fr 1.15fr", gap: 60,
-           alignItems: "flex-start"
-,
+            alignItems: "flex-start"
+            ,
           }}>
 
             {/* Colonne gauche — hauteur calée sur la droite */}
             <div style={{ display: "flex", flexDirection: "column" }}>
-  
-  {/* Carrousel — flex: 1 pour occuper l'espace restant */}
+
+              {/* Carrousel — flex: 1 pour occuper l'espace restant */}
               <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative" }}>
                 <div className="ct-carousel-wrap" style={{ flex: 1, borderRadius: 16, overflow: "hidden", background: "#f0fafa", position: "relative", boxShadow: "0 4px 18px rgba(0,95,105,.15)" }}>
                   <img
@@ -286,9 +289,9 @@ ${form.name}`;
                 </div>
 
                 {/* Dots */}
-<div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10, marginBottom: 46 }}>                  {images.map((_, i) => (
-                    <div key={i} onClick={() => setCurrentImg(i)} style={{ width: i === currentImg ? 20 : 7, height: 7, borderRadius: 999, background: i === currentImg ? "#005f69" : "rgba(0,95,105,.25)", cursor: "pointer", transition: "all 0.3s ease" }} />
-                  ))}
+                <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10, marginBottom: 46 }}>                  {images.map((_, i) => (
+                  <div key={i} onClick={() => setCurrentImg(i)} style={{ width: i === currentImg ? 20 : 7, height: 7, borderRadius: 999, background: i === currentImg ? "#005f69" : "rgba(0,95,105,.25)", cursor: "pointer", transition: "all 0.3s ease" }} />
+                ))}
                 </div>
               </div>
               {/* Localisation */}
@@ -324,7 +327,7 @@ ${form.name}`;
                 </div>
               </div>
 
-            
+
             </div>
 
             {/* Formulaire */}
@@ -334,7 +337,7 @@ ${form.name}`;
               boxShadow: "0 20px 60px rgba(0,95,105,.3)",
               boxSizing: "border-box",
               display: "flex", flexDirection: "column",
-            //  margin: "40px ", 
+              //  margin: "40px ", 
             }}>
               <h3 style={{ fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 900, color: "white", lineHeight: 1.2, marginBottom: 6, letterSpacing: -.3 }}>
                 Prendre rendez-vous
@@ -356,13 +359,13 @@ ${form.name}`;
                       <label style={{ color: "rgba(255,255,255,.6)", fontSize: 11, fontWeight: 700, letterSpacing: .5, display: "block", marginBottom: 6, textTransform: "uppercase" }}>Votre nom</label>
                       <input name="name" value={form.name} onChange={handleChange} placeholder="Nom complet" required style={inputStyle}
                         onFocus={e => e.target.style.borderColor = "rgba(0,196,212,.7)"}
-                        onBlur={e  => e.target.style.borderColor = "rgba(255,255,255,.12)"} />
+                        onBlur={e => e.target.style.borderColor = "rgba(255,255,255,.12)"} />
                     </div>
                     <div>
                       <label style={{ color: "rgba(255,255,255,.6)", fontSize: 11, fontWeight: 700, letterSpacing: .5, display: "block", marginBottom: 6, textTransform: "uppercase" }}>Votre email</label>
                       <input name="email" value={form.email} onChange={handleChange} type="email" placeholder="Entrez votre email" required style={inputStyle}
                         onFocus={e => e.target.style.borderColor = "rgba(0,196,212,.7)"}
-                        onBlur={e  => e.target.style.borderColor = "rgba(255,255,255,.12)"} />
+                        onBlur={e => e.target.style.borderColor = "rgba(255,255,255,.12)"} />
                     </div>
                   </div>
 
@@ -372,12 +375,12 @@ ${form.name}`;
                       <select name="service" value={form.service} onChange={handleChange} required
                         style={{ ...inputStyle, cursor: "pointer", appearance: "none", WebkitAppearance: "none" }}
                         onFocus={e => e.target.style.borderColor = "rgba(0,196,212,.7)"}
-                        onBlur={e  => e.target.style.borderColor = "rgba(255,255,255,.12)"}>
+                        onBlur={e => e.target.style.borderColor = "rgba(255,255,255,.12)"}>
                         <option value="" disabled style={{ background: "#004a52" }}>Sélectionner</option>
                         <option value="parking" style={{ background: "#004a52" }}>Parking</option>
-                        <option value="lavage"  style={{ background: "#004a52" }}>Lavage</option>
-                        <option value="garage"  style={{ background: "#004a52" }}>Garage</option>
-                        <option value="event"   style={{ background: "#004a52" }}>Evenement</option>
+                        <option value="lavage" style={{ background: "#004a52" }}>Lavage</option>
+                        <option value="garage" style={{ background: "#004a52" }}>Garage</option>
+                        <option value="event" style={{ background: "#004a52" }}>Evenement</option>
                       </select>
                     </div>
                     <div>
@@ -385,7 +388,7 @@ ${form.name}`;
                       <input name="date" value={form.date} onChange={handleChange} type="date"
                         style={{ ...inputStyle, colorScheme: "dark" }}
                         onFocus={e => e.target.style.borderColor = "rgba(0,196,212,.7)"}
-                        onBlur={e  => e.target.style.borderColor = "rgba(255,255,255,.12)"} />
+                        onBlur={e => e.target.style.borderColor = "rgba(255,255,255,.12)"} />
                     </div>
                   </div>
 
@@ -394,7 +397,7 @@ ${form.name}`;
                     <textarea name="message" value={form.message} onChange={handleChange} placeholder="Décrivez votre demande…"
                       style={{ ...inputStyle, resize: "none", lineHeight: 1.6, flex: 1, minHeight: 60 }}
                       onFocus={e => e.target.style.borderColor = "rgba(0,196,212,.7)"}
-                      onBlur={e  => e.target.style.borderColor = "rgba(255,255,255,.12)"} />
+                      onBlur={e => e.target.style.borderColor = "rgba(255,255,255,.12)"} />
                   </div>
 
                   <button type="submit" style={{

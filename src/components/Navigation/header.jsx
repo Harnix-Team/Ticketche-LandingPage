@@ -24,18 +24,14 @@ export const Header = () => {
   }, []);
 
   useEffect(() => {
-
     setIsMenuOpen(false);
-
     setActiveSection("");
-
   }, [pathname]);
 
   useEffect(() => {
-    if (!isHomePage) {
-      setActiveSection("");
-    }
+    if (!isHomePage) setActiveSection("");
   }, [isHomePage]);
+
   const getLinkHref = (anchor) => (isHomePage ? anchor : `/${anchor}`);
 
   const navLinks = [
@@ -45,13 +41,9 @@ export const Header = () => {
     { href: "/contact", label: "Contact", isPage: true },
   ];
 
-  // ScrollSpy — uniquement sur la home
   useEffect(() => {
-
     if (!isHomePage) return;
-
     const observedSections = new Set();
-
     const intersectionObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -74,19 +66,15 @@ export const Header = () => {
     return () => { intersectionObserver.disconnect(); mutationObserver.disconnect(); };
   }, [isHomePage]);
 
-  // Détermine si un lien est actif
   const isActive = (link) => {
-
-    if (link.isPage) {
-      return pathname.startsWith(link.href);
-    }
-
+    if (link.isPage) return pathname.startsWith(link.href);
     if (!isHomePage) return false;
-
     return activeSection === link.sectionId;
   };
+
   const underlineSpan = (active) => (
     <span
+      className="hdrUnderline"
       style={{
         display: "block",
         position: "absolute",
@@ -117,7 +105,6 @@ export const Header = () => {
                   <Image src="/images/logo.png" alt="Ticketché" fill className="object-contain" priority />
                 </div>
               </Link>
-
               <div className={`hdrRight ${isScrolled ? "scrolled" : ""}`}>
                 <nav>
                   {navLinks.map((link) => {
@@ -195,17 +182,10 @@ export const Header = () => {
           color: #005f69;
           background: #ecf5f5;
         }
-.hdrLink span {
-  transform: scaleX(0);
-}
+        .hdrLink span { transform: scaleX(0); }
+        .hdrLink.active span { transform: scaleX(1); }
+        .hdrLink.active { background: #ecf5f5; color: #005f69; }
 
-.hdrLink.active span {
-  transform: scaleX(1);
-}
-  .hdrLink.active {
-  background: #ecf5f5;
-  color: #005f69;
-}
         .hdrCta {
           font-size: clamp(0.92rem, 1.05vw, 1rem);
           font-weight: 700;
@@ -229,14 +209,12 @@ export const Header = () => {
           padding: 1rem 0;
           display: block;
           position: relative;
-          border-bottom: 2px solid transparent;
-          transition: color 0.25s ease, border-color 0.25s ease;
+          transition: color 0.25s ease;
+          border: none !important;
+          text-decoration: none;
         }
         .hdrMobileLink:hover,
-        .hdrMobileLink.active {
-          color: #005f69;
-          border-bottom-color: #005f69;
-        }
+        .hdrMobileLink.active { color: #005f69; }
 
         .hdrMobileCta {
           font-size: clamp(1.02rem, 4.5vw, 1.15rem);
@@ -254,34 +232,27 @@ export const Header = () => {
           transform: translateY(-2px);
           box-shadow: 0 8px 20px rgba(0, 196, 204, 0.3);
         }
-          
-        /* ── Mobile / Desktop toggle ── */
-.hdrMobileWrapper { display: none; }
-.hdrMobile        { display: none; padding-bottom: 1.25rem; }
-.hdrMobile.open   { display: block; }
 
-@media (max-width: 767px) {
-  .hdrContent        { display: none; }
-  .hdrMobileWrapper  { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-  .hdrMobile         { background: #ffffff; border-radius: 0 0 20px 20px; border-top: 1px solid rgba(0,95,105,0.08); }
-  
-  /* Container avec marges latérales pour que la pilule flotte */
-  .hdrContainer      { padding: 10px 16px; }
+        .hdrMobileWrapper { display: none; }
+        .hdrMobile        { display: none; padding-bottom: 1.25rem; }
+        .hdrMobile.open   { display: block; }
 
-  /* Avant scroll — transparent, pas d'arrondi */
-  .hdrGlass          { background: transparent !important; backdrop-filter: none; border-radius: 0 !important; }
-
-  /* Après scroll — fond blanc + arrondi avec overflow hidden */
-  .hdrGlass.scrolled {
-    background: #ffffff !important;
-    backdrop-filter: none;
-    border-radius: 20px !important;   /* ← 20px au lieu de 999px */
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    overflow: hidden;
-  }
-
-  .hdrMobile.open { margin-top: 0; }
-}
+        @media (max-width: 767px) {
+          .hdrUnderline { display: none !important; }
+          .hdrContent        { display: none; }
+          .hdrMobileWrapper  { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+          .hdrMobile { background: #ffffff; border-radius: 0 0 20px 20px; }
+          .hdrContainer      { padding: 10px 16px; }
+          .hdrGlass          { background: transparent !important; backdrop-filter: none; border-radius: 0 !important; }
+          .hdrGlass.scrolled {
+            background: #ffffff !important;
+            backdrop-filter: none;
+            border-radius: 20px !important;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+          }
+          .hdrMobile.open { margin-top: 0; }
+        }
       `}</style>
     </header>
   );

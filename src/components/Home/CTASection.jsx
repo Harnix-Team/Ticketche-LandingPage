@@ -12,24 +12,24 @@ export const CTASection = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-8 lg:gap-12 items-end">
 
             {/* TEXTE CTA */}
-<div className="pt-8 pb-8 md:pt-6 md:pb-4 text-center sm:text-left self-center">              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4">
-                <div className="flex-1">
-                  <h2 className="title-sub mb-4 md:mb-6 !text-white">
-                    Parking, lavage, garage, billetterie & événements tout en une seule app !
-                  </h2>
-                  <p className="text-sm sm:text-base lg:text-lg text-white/80 mb-6 md:mb-8">
-                    Ticketché centralise 4 services en une seule app : parking, lavage auto,
-                    garage & mécanique, billetterie d'événements et gestion d'événements. Réservez, payez et profitez où que vous soyez.
-                  </p>
-                </div>
-                <div className="flex-shrink-0 hidden sm:block">
-                  <img
-                    src="/images/Download/confetti.png"
-                    className="h-16 md:h-20 w-auto"
-                    alt="Confettis"
-                  />
-                </div>
+            <div className="pt-8 pb-8 md:pt-6 md:pb-4 text-center sm:text-left self-center">              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4">
+              <div className="flex-1">
+                <h2 className="title-sub mb-4 md:mb-6 !text-white">
+                  Parking, lavage, garage, billetterie & événements tout en une seule app !
+                </h2>
+                <p className="text-sm sm:text-base lg:text-lg text-white/80 mb-6 md:mb-8">
+                  Ticketché centralise 4 services en une seule app : parking, lavage auto,
+                  garage & mécanique, billetterie d'événements et gestion d'événements. Réservez, payez et profitez où que vous soyez.
+                </p>
               </div>
+              <div className="flex-shrink-0 hidden sm:block">
+                <img
+                  src="/images/Download/confetti.png"
+                  className="h-16 md:h-20 w-auto"
+                  alt="Confettis"
+                />
+              </div>
+            </div>
 
               {/* AVATAR + TEXTE */}
               <div className="flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left space-y-3 sm:space-y-0 sm:space-x-4 mb-6 md:mb-8">
@@ -71,8 +71,8 @@ export const CTASection = () => {
                   maxWidth: "700px",
                   marginLeft: "auto",
                   marginRight: "-300px",
-                  marginTop: "220px",        // ← était 140px, augmenté pour descendre l'image
-                  transform: "scale(1.7)",   // ← légèrement réduit pour que ça reste dans la section
+                  marginTop: "170px",
+                  transform: "scale(1.8)",
                   transformOrigin: "bottom right",
                 }}
               />

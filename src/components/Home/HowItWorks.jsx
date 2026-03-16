@@ -15,7 +15,7 @@ const steps = [
   {
     Icon: GridFour,
     title: "Choisissez un Service",
-    description: "Parking, lavage auto, garage & mécanique ou billetterie — sélectionnez le service dont vous avez besoin en quelques secondes.",
+    description: "Parking, lavage auto, garage & mécanique ou billetterie sélectionnez le service dont vous avez besoin en quelques secondes.",
     color: "#005f69",
     bg: "rgba(0,95,105,0.10)",
     border: "rgba(0,95,105,0.22)",

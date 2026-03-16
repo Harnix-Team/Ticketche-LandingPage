@@ -62,10 +62,10 @@ const FEATURES = [
 ];
 
 const USER_ITEMS = [
-  { icon: MapPin, title: "Trouvez rapidement le service qu'il vous faut", desc: "Services à proximité, prix, disponibilités, horaires et gérants les mieux notés — tout en un coup d'œil." },
+  { icon: MapPin, title: "Trouvez rapidement le service qu'il vous faut", desc: "Services à proximité, prix, disponibilités, horaires et gérants les mieux notés tout en un coup d'œil." },
   { icon: DeviceMobile, title: "Ticket numérique sécurisé", desc: "Fini les tickets papier qui se perdent. Votre ticket sur votre téléphone, clair, vérifiable à tout moment." },
   { icon: CreditCard, title: "Paiement fluide et sécurisé", desc: "Payez sans tracas grâce à nos partenaires certifiés. Un simple scan à la sortie et vous êtes libre." },
-  { icon: Ticket, title: "Billets d'événements en ligne", desc: "Concerts, soirées, expos — réservez vos tickets depuis l'app, recevez votre QR code et entrez sans attendre." },
+  { icon: Ticket, title: "Billets d'événements en ligne", desc: "Concerts, soirées, expositions réservez vos tickets depuis l'app, recevez votre QR code et entrez sans attendre." },
 ];
 
 const MANAGER_ITEMS = [
@@ -697,13 +697,13 @@ export default function AboutPage() {
 
               <p className="ap-sub">
                 Ticketché connecte les Béninois aux services et événements qui les entourent.
-                Trouvez, réservez et payez en quelques clics — que vous soyez conducteur,
+                Trouvez, réservez et payez en quelques clics que vous soyez conducteur,
                 amateur de sorties ou gestionnaire d'un établissement.
               </p>
 
               <div className="ap-stats">
                 <div className="ap-stat">
-                  <span className="ap-stat-num">+5 000</span>
+                  <span className="ap-stat-num">+30</span>
                   <span className="ap-stat-label">Utilisateurs actifs</span>
                 </div>
                 <div className="ap-stat">
@@ -1002,7 +1002,7 @@ export default function AboutPage() {
                       ))}
                     </div>
                     <span className="cta-proof-label">
-                      <strong>5/5</strong> · +5 000 utilisateurs
+                      <strong>5/5</strong> · +30 utilisateurs
                     </span>
                   </div>
                 </div>

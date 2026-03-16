@@ -102,68 +102,6 @@ function StarClusters() {
   );
 }
 
-/* Arc inchangé — position et contenu identiques à l'original */
-// function DashedArc() {
-//   const R = 100;
-//   const size = R * 2 + 60;
-//   const cx = R + 30;
-//   const cy = R + 30;
-//   const startAngle = -40 * (Math.PI / 180);
-//   const endAngle = -650 * (Math.PI / 180);
-//   const startX = cx + R * Math.cos(startAngle);
-//   const startY = cy + R * Math.sin(startAngle);
-//   const endX = cx + R * Math.cos(endAngle);
-//   const endY = cy + R * Math.sin(endAngle);
-//   const arcLen = R * (210 * Math.PI / 180);
-
-//   return (
-//     <div style={{
-//       position: "absolute",
-//       top: "30%",
-//       transform: "translate(-50%, -50%)",
-//       width: size, height: size,
-//       pointerEvents: "none", zIndex: 5,
-//     }}>
-//       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} fill="none" style={{ overflow: "visible" }}>
-//         <path
-//           d={`M ${startX} ${startY} A ${R} ${R} 0 1 0 ${endX} ${endY}`}
-//           stroke="#367e86" strokeWidth="2.5" strokeDasharray="14 10"
-//           strokeLinecap="round" fill="none"
-//           style={{ animation: "dashScroll 8s linear infinite" }}
-//         />
-//         <path
-//           d={`M ${startX} ${startY} A ${R} ${R} 0 1 0 ${endX} ${endY}`}
-//           stroke="rgba(54,126,134,0.45)" strokeWidth="1.7"
-//           strokeLinecap="round" fill="none"
-//           strokeDasharray={`${arcLen} ${arcLen}`}
-//           style={{ animation: "dashDraw 6s ease-in-out infinite" }}
-//         />
-//         <g transform={`translate(${endX}, ${endY}) rotate(20)`}>
-//           <path d="M 0 0 L -8 -16 M 0 0 L 8 -16" stroke="#367e86" strokeWidth="2.4" strokeLinecap="round" fill="none" />
-//         </g>
-//       </svg>
-
-//       {/* 3 étoiles flottantes positionnées à l'extrémité de l'arc */}
-//       {[
-//         { dx: -2, dy: -36, size: 26, color: "#00818f", anim: "arcStar0", dur: "2.6s", delay: "0s" },
-//         { dx: 28, dy: -14, size: 17, color: "#00d4e0", anim: "arcStar1", dur: "3.1s", delay: "0.4s" },
-//         { dx: -24, dy: 12, size: 13, color: "#00515a", anim: "arcStar2", dur: "2.3s", delay: "0.7s" },
-//       ].map((s, i) => (
-//         <div key={i} style={{
-//           position: "absolute",
-//           left: endX + s.dx,
-//           top: endY + s.dy,
-//           transform: "translate(-50%,-50%)",
-//           animation: `${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`,
-//           filter: `drop-shadow(0 0 6px ${s.color}cc)`,
-//         }}>
-//           <Star weight="fill" style={{ width: s.size, height: s.size, color: s.color }} />
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-
 export const HeroV2 = () => {
 const [downloadLink, setDownloadLink] = useState("https://play.google.com/store/apps/details?id=com.harnixsas.ticketche");
 
@@ -373,7 +311,7 @@ const [downloadLink, setDownloadLink] = useState("https://play.google.com/store/
           display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center",
           minHeight: "100vh",
-          padding: "clamp(14px, 14vh, 160px) clamp(0px, 1vw, 8px) 20px",
+padding: "clamp(14px, 14vh, 160px) clamp(20px, 5vw, 40px) 20px",
           gap: "clamp(16px, 2.4vw, 26px)",
         }}>
 

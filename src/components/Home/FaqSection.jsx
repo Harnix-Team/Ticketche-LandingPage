@@ -301,19 +301,17 @@ overflow: visible;
 
         /* ── RESPONSIVE ── */
         @media (max-width: 860px) {
-          .faq-inner {
-            grid-template-columns: 1fr;
-            gap: 48px;
-          }
-            .faq-right { padding: 16px 0; }
+  .faq-inner {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+.faq-right { padding: 0; margin-top: -80px; }
+  .faq-card  { width: 95%; min-width: 280px; }
+}
 
-           .faq-card  { width: 95%; min-width: 280px; }
-
-        }
-
-       @media (max-width: 520px) {
+@media (max-width: 520px) {
   .faq-card  { width: 100%; }
-  .faq-right { padding: 8px 0; }
+.faq-right { padding: 0; margin-top: -80px; 
 }
           @media (max-width: 767px) {
   .faq-root { margin-top: 40px !important; }

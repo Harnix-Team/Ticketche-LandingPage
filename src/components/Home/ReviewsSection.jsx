@@ -244,8 +244,7 @@ export default function ReviewsSection() {
 
       <StarClusters />
 
-      <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 2 }}>
-
+<div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 2, padding: "0 clamp(20px, 5vw, 40px)" }}>
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "clamp(50px, 7vw, 90px)" }}>
           <h2 style={{

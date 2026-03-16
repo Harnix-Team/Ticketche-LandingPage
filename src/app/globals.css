@@ -162,8 +162,10 @@ html { scroll-behavior: smooth; }
 }
 .hdrMobileLink:hover { color: #005f69; background: rgba(0, 95, 105, 0.06); padding-left: 28px; }
 .hdrMobileLink.active { color: #005f69; }
-.hdrMobileLink.active::after { content: ""; position: absolute; bottom: -1px; width: 100%; height: 2px; background: #005f69; border-radius: 2px; }
-
+.hdrMobileLink {
+  border-bottom: none !important;
+  text-decoration: none !important;
+}
 .hdrMobileCta {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; margin-top: 16px; padding: 16px;
