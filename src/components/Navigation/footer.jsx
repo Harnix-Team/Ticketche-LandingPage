@@ -18,36 +18,36 @@ export const Footer = () => {
 
   const navigationLinks = [
     { label: "Accueil", href: "/" },
-    { label: "À propos", href: "#about" },
-    { label: "Services", href: "#services" },
+    { label: "À propos", href: "/a-propos" },
+    { label: "Services", href: "/a-propos#nos-services" },
     { label: "Événements", href: "#events" },
   ];
 
- const usefulLinks = [
-  { label: "Emplacements", href: "#emplacements" },
-  { label: "Avis clients", href: "#reviews" },
-  { label: "Contactez-nous", href: "/contact" },
-  { label: "Recrutement", href: "https://recrutement.ticketche.com" },
-];
+  const usefulLinks = [
+    { label: "Emplacements", href: "#emplacements" },
+    { label: "Avis clients", href: "#reviews" },
+    { label: "Contactez-nous", href: "/contact" },
+    { label: "Recrutement", href: "https://recrutement.ticketche.com" },
+  ];
 
   const contactLinks = [
     { label: "(+229) 01 40 51 21 33", href: "tel:+2290140512133" },
     { label: "support@ticketche.com", href: "mailto:support@ticketche.com" },
   ];
 
- const policyLinks = [
-  {
-    label: "Politique de confidentialité",
-    href: "/politiques/confidentialite",
-  },
-  { label: "Conditions d'utilisation", href: "/politiques/conditions" },
-  { label: "Mentions légales", href: "/politiques/mentions" },
-];
- const socialLinks = [
-  { icon: FacebookLogo, href: "https://www.facebook.com/share/1AaDERj83T/?mibextid=wwXIfr", label: "Facebook" },
-  { icon: TiktokLogo, href: "https://www.tiktok.com/@ticketch?_r=1&_t=ZS-94YYeuvBujN", label: "TikTok" },
-  { icon: InstagramLogo, href: "https://www.instagram.com/ticketche?igsh=eXl0MjZmeHByaDg5", label: "Instagram" },
-];
+  const policyLinks = [
+    {
+      label: "Politique de confidentialité",
+      href: "/politiques/confidentialite",
+    },
+    { label: "Conditions d'utilisation", href: "/politiques/conditions" },
+    { label: "Mentions légales", href: "/politiques/mentions" },
+  ];
+  const socialLinks = [
+    { icon: FacebookLogo, href: "https://www.facebook.com/share/1AaDERj83T/?mibextid=wwXIfr", label: "Facebook" },
+    { icon: TiktokLogo, href: "https://www.tiktok.com/@ticketch?_r=1&_t=ZS-94YYeuvBujN", label: "TikTok" },
+    { icon: InstagramLogo, href: "https://www.instagram.com/ticketche?igsh=eXl0MjZmeHByaDg5", label: "Instagram" },
+  ];
 
   const appStoreLinks = [
     {

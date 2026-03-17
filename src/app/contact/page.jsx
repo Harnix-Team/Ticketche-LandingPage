@@ -52,7 +52,7 @@ export default function ContactPage() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImg((prev) => (prev + 1) % images.length);
-    }, 3000); // change toutes les 3 secondes
+    }, 3000);
     return () => clearInterval(interval);
   }, [currentImg]);
 
@@ -86,6 +86,7 @@ ${form.name}`;
     setTimeout(() => setSent(false), 4000);
     setForm({ name: "", email: "", service: "", date: "", message: "" });
   };
+
   const inputStyle = {
     width: "100%", padding: "11px 14px",
     background: "rgba(255,255,255,.07)",
@@ -190,19 +191,18 @@ ${form.name}`;
         }
         .ct-link-white:hover { background: rgba(0,0,0,.35); transform: translateY(-1px); }
 
-        /* ── MOBILE UNIQUEMENT — ne touche pas au desktop ── */
-       @media (max-width: 768px) {
-  .ct-hero-section { padding: 80px 16px 40px !important; }
-  .ct-hero-section h1 { margin-top: 20px !important; }
-  .ct-middle-section { padding: 0 16px 50px !important; }
-  .ct-middle-grid { grid-template-columns: 1fr !important; gap: 32px !important; max-width: 100% !important; padding: 0 !important; }
-  .ct-carousel-wrap { height: 220px !important; }
-  .ct-form-box { padding: 32px 20px !important; }
-  .ct-form-row-2col { grid-template-columns: 1fr !important; }
-  .ct-form-box input,
-  .ct-form-box select,
-  .ct-form-box textarea { width: 100% !important; box-sizing: border-box !important; }
-}
+        @media (max-width: 768px) {
+          .ct-hero-section { padding: 80px 16px 40px !important; }
+          .ct-hero-section h1 { margin-top: 20px !important; }
+          .ct-middle-section { padding: 0 16px 50px !important; }
+          .ct-middle-grid { grid-template-columns: 1fr !important; gap: 32px !important; max-width: 100% !important; padding: 0 !important; }
+          .ct-carousel-wrap { height: 220px !important; }
+          .ct-form-box { padding: 24px 20px !important; }
+          .ct-form-row-2col { grid-template-columns: 1fr !important; }
+          .ct-form-box input,
+          .ct-form-box select,
+          .ct-form-box textarea { width: 100% !important; box-sizing: border-box !important; }
+        }
       `}</style>
 
       <div style={{ fontFamily: "'Archivo', sans-serif", background: "#ecf5f5", position: "relative", overflow: "hidden" }}>
@@ -217,58 +217,18 @@ ${form.name}`;
             Contactez-nous et un représentant vous répondra dans les plus brefs délais.
           </p>
         </section>
-        {/* ══ CARDS BOTTOM ══ */}
-        {/* <section style={{ padding: "0 20px 80px", position: "relative", zIndex: 2 }}>
-          <div style={{ maxWidth: "90vw", margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
 
-            <div className="ct-card-teal">
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(0,0,0,.18)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
-                <Ticket weight="fill" style={{ width: 22, height: 22, color: "white" }} />
-              </div>
-              <h4 style={{ color: "white", fontWeight: 900, fontSize: 18, marginBottom: 12 }}>Ticket Support</h4>
-              <p style={{ color: "rgba(255,255,255,.75)", fontSize: 13, lineHeight: 1.75, marginBottom: 10 }}>
-                Soumettez un ticket d'assistance et notre équipe vous prendra en charge rapidement pour résoudre votre problème.
-              </p>
-              <Link href="/support" className="ct-link-white" style={{ marginTop: "12px" }}>Nous contacter</Link>
-            </div>
-
-            <div className="ct-card-light">
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(0,95,105,.10)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
-                <Headset weight="fill" style={{ width: 22, height: 22, color: "#005f69" }} />
-              </div>
-              <h4 style={{ color: "#0a1a1c", fontWeight: 900, fontSize: 18, marginBottom: 12 }}>Appel Gratuit</h4>
-              <p style={{ color: "#6b7280", fontSize: 13, lineHeight: 1.75, marginBottom: 10 }}>
-                Appelez notre centre d'assistance disponible 7j/7 pour toute question sur nos établissements partenaires.
-              </p>
-              <Link href="tel:+22997000000" className="ct-link-dark" style={{ marginTop: "12px" }}>Nous contacter</Link>
-            </div>
-
-            <div className="ct-card-light">
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(0,95,105,.10)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
-                <Newspaper weight="fill" style={{ width: 22, height: 22, color: "#005f69" }} />
-              </div>
-              <h4 style={{ color: "#0a1a1c", fontWeight: 900, fontSize: 18, marginBottom: 12 }}>Actualités</h4>
-              <p style={{ color: "#6b7280", fontSize: 13, lineHeight: 1.75, marginBottom: 10 }}>
-                Restez informé des dernières nouveautés, offres exclusives et nouveaux établissements disponibles sur Ticketche.
-              </p>
-              <Link href="/news" className="ct-link-dark" style={{ marginTop: "12px" }}>Nous contacter</Link>
-            </div>
-
-          </div>
-        </section> */}
         {/* ══ MIDDLE ══ */}
         <section className="ct-middle-section" style={{ padding: "0 20px 70px", position: "relative", zIndex: 2 }}>
           <div className="ct-middle-grid" style={{
             maxWidth: "90vw", margin: "0 auto", padding: "0 24px",
             display: "grid", gridTemplateColumns: "1fr 1.15fr", gap: 60,
-            alignItems: "flex-start"
-            ,
+            alignItems: "flex-start",
           }}>
 
-            {/* Colonne gauche — hauteur calée sur la droite */}
+            {/* Colonne gauche */}
             <div style={{ display: "flex", flexDirection: "column" }}>
 
-              {/* Carrousel — flex: 1 pour occuper l'espace restant */}
               <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative" }}>
                 <div className="ct-carousel-wrap" style={{ flex: 1, borderRadius: 16, overflow: "hidden", background: "#f0fafa", position: "relative", boxShadow: "0 4px 18px rgba(0,95,105,.15)" }}>
                   <img
@@ -276,8 +236,6 @@ ${form.name}`;
                     alt={`photo ${currentImg + 1}`}
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "opacity 0.4s ease" }}
                   />
-
-                  {/* Flèches */}
                   <button onClick={() => setCurrentImg((prev) => (prev - 1 + images.length) % images.length)}
                     style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.88)", border: "none", borderRadius: "50%", width: 32, height: 32, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,.15)" }}>
                     <CaretLeft weight="bold" style={{ width: 16, height: 16, color: "#005f69" }} />
@@ -288,13 +246,13 @@ ${form.name}`;
                   </button>
                 </div>
 
-                {/* Dots */}
-                <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10, marginBottom: 46 }}>                  {images.map((_, i) => (
-                  <div key={i} onClick={() => setCurrentImg(i)} style={{ width: i === currentImg ? 20 : 7, height: 7, borderRadius: 999, background: i === currentImg ? "#005f69" : "rgba(0,95,105,.25)", cursor: "pointer", transition: "all 0.3s ease" }} />
-                ))}
+                <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10, marginBottom: 46 }}>
+                  {images.map((_, i) => (
+                    <div key={i} onClick={() => setCurrentImg(i)} style={{ width: i === currentImg ? 20 : 7, height: 7, borderRadius: 999, background: i === currentImg ? "#005f69" : "rgba(0,95,105,.25)", cursor: "pointer", transition: "all 0.3s ease" }} />
+                  ))}
                 </div>
               </div>
-              {/* Localisation */}
+
               <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
                 <div style={{ width: 44, height: 44, borderRadius: "50%", background: "#005f69", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 4px 14px rgba(0,95,105,.3)" }}>
                   <MapPin weight="fill" style={{ width: 20, height: 20, color: "white" }} />
@@ -305,7 +263,6 @@ ${form.name}`;
                 </div>
               </div>
 
-              {/* Téléphone */}
               <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
                 <div style={{ width: 44, height: 44, borderRadius: "50%", background: "#005f69", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 4px 14px rgba(0,95,105,.3)" }}>
                   <Phone weight="fill" style={{ width: 20, height: 20, color: "white" }} />
@@ -316,7 +273,6 @@ ${form.name}`;
                 </div>
               </div>
 
-              {/* Email */}
               <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
                 <div style={{ width: 44, height: 44, borderRadius: "50%", background: "#005f69", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 4px 14px rgba(0,95,105,.3)" }}>
                   <EnvelopeSimple weight="fill" style={{ width: 20, height: 20, color: "white" }} />
@@ -326,18 +282,15 @@ ${form.name}`;
                   <p style={{ color: "#9ca3af", fontSize: 14, fontWeight: 500 }}>Envoyez un email</p>
                 </div>
               </div>
-
-
             </div>
 
             {/* Formulaire */}
             <div className="ct-form-box" style={{
               background: "linear-gradient(145deg, #005f69 0%, #004a52 100%)",
-              borderRadius: 20, padding: "70px 28px",
+              borderRadius: 20, padding: "28px",
               boxShadow: "0 20px 60px rgba(0,95,105,.3)",
               boxSizing: "border-box",
               display: "flex", flexDirection: "column",
-              //  margin: "40px ", 
             }}>
               <h3 style={{ fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 900, color: "white", lineHeight: 1.2, marginBottom: 6, letterSpacing: -.3 }}>
                 Prendre rendez-vous
@@ -354,7 +307,9 @@ ${form.name}`;
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-                  <div className="ct-form-row-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 6 }}>
+
+                  {/* Nom + Email */}
+                  <div className="ct-form-row-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
                     <div>
                       <label style={{ color: "rgba(255,255,255,.6)", fontSize: 11, fontWeight: 700, letterSpacing: .5, display: "block", marginBottom: 6, textTransform: "uppercase" }}>Votre nom</label>
                       <input name="name" value={form.name} onChange={handleChange} placeholder="Nom complet" required style={inputStyle}
@@ -369,7 +324,8 @@ ${form.name}`;
                     </div>
                   </div>
 
-                  <div className="ct-form-row-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 6 }}>
+                  {/* Service + Date */}
+                  <div className="ct-form-row-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
                     <div>
                       <label style={{ color: "rgba(255,255,255,.6)", fontSize: 11, fontWeight: 700, letterSpacing: .5, display: "block", marginBottom: 6, textTransform: "uppercase" }}>Service</label>
                       <select name="service" value={form.service} onChange={handleChange} required
@@ -392,7 +348,8 @@ ${form.name}`;
                     </div>
                   </div>
 
-                  <div style={{ marginBottom: 14, flex: 1, display: "flex", flexDirection: "column" }}>
+                  {/* Message */}
+                  <div style={{ marginBottom: 20, flex: 1, display: "flex", flexDirection: "column" }}>
                     <label style={{ color: "rgba(255,255,255,.6)", fontSize: 11, fontWeight: 700, letterSpacing: .5, display: "block", marginBottom: 6, textTransform: "uppercase" }}>Votre message</label>
                     <textarea name="message" value={form.message} onChange={handleChange} placeholder="Décrivez votre demande…"
                       style={{ ...inputStyle, resize: "none", lineHeight: 1.6, flex: 1, minHeight: 60 }}

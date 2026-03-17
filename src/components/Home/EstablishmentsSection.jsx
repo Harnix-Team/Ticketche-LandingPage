@@ -223,7 +223,7 @@ const styles = {
   },
   section: {
     padding: "40px 0 80px",
-    background: "#ffffff",
+background: "#ebf4f4",
     position: "relative",
     overflow: "hidden",
   },
@@ -251,7 +251,7 @@ const styles = {
   },
   sectionSubtitle: {
     margin: 0,
-    fontSize: "17px",
+    fontSize: "14px",
     color: "#6b7280",
     maxWidth: "540px",
     lineHeight: 1.7,
@@ -567,7 +567,6 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
   const loadPlaces = async () => {
     try {
       const response = await fetchAllPlaces();
-      console.log("Places response:", response); // ← ajoute ça
       if (response.success) setEstablishments(response.data);
     } catch (_) { }
     finally { setLoading(false); }

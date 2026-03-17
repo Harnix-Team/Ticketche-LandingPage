@@ -243,7 +243,7 @@ overflow: visible;
 
         .faq-badge {
           position: absolute;
-          bottom: 22px;
+          bottom: -1px;
           left: 50%;
           transform: translateX(-50%);
           background: rgba(0,0,0,0.32);

@@ -19,7 +19,6 @@ const reviews = [
     rating: 5,
     text: "J'utilise Ticketché pour tout : je trouve un parking en 30 secondes, je réserve mon lavage auto le week-end et j'achète mes billets de concert sans bouger de chez moi. Une app indispensable !",
     blobColor: "#04545d",
-    featured: true,
   },
   {
     name: "Jean-Marc Gbeto",

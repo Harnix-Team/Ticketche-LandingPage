@@ -99,25 +99,18 @@ html { scroll-behavior: smooth; }
 .hdrNav { display: flex; align-items: center; gap: 4px; }
 
 .hdrLink {
-  
   position: relative;
   display: inline-block;
-  padding: 10px 16px 4px;
-  font-size: 1rem; /* +4px : 14px → 18px */
-  font-weight: 600; letter-spacing: 0.02em;
-  color: #374151; border-radius: 50px;
-  transition: all 0.3s ease; white-space: nowrap;
+  padding: 6px 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  border-radius: 999px;
+  transition: color 0.25s ease, background 0.25s ease;
+  white-space: nowrap;
 }
-.hdrLink::after {
-  content: ''; position: absolute; bottom: 6px; left: 50%;
-  transform: translateX(-50%); width: 0; height: 2px;
-  background: linear-gradient(135deg, #004a52, #005f69, #007a87);
-  border-radius: 2px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.hdrLink:hover { color: #005f69; background: rgba(0, 95, 105, 0.06); }
-.hdrLink:hover::after { width: 24px; }
-.hdrLink.active { color: #005f69; }
-.hdrLink.active::after { width: 24px; }
+.hdrLink:hover,
+.hdrLink.active { color: #005f69; background: #ecf5f5; }
 
 .hdrCta {
   display: inline-flex; align-items: center; gap: 8px;
@@ -213,112 +206,6 @@ footer a, footer li a { font-size: 1rem !important; }
 }
 .footer-badge img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .footer-badge--google img { width: 160%; height: 160%; }
-
-/* ═══════════════════════════════════════════════════════
-   EVENTS CAROUSEL
-═══════════════════════════════════════════════════════ */
-.evcSection {
-  padding: clamp(32px, 5vw, 72px) 0;
-  background: linear-gradient(to bottom, white, rgba(224,245,247,0.18), white);
-  overflow: hidden;
-}
-.evc-header {
-  display: flex; align-items: center; flex-wrap: wrap;
-  width: 100%; max-width: 1200px; margin: 0 auto 24px auto;
-  padding: 0 5%; gap: 12px;
-}
-@media (min-width: 1024px) { .evc-header { width: calc(100% - 8%); } }
-.evc-header__title { font-size: clamp(1.7rem, 4vw, 2.8rem); font-weight: 900; color: #111827; margin: 0; line-height: 1.15; letter-spacing: -0.02em; }
-.evc-header__subtitle { font-size: clamp(0.9rem, 2vw, 1.1rem); color: #6b7280; margin: 0; line-height: 1.6; }
-.evc-header__cta {
-  text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
-  background: #005f69; color: white; padding: 10px 30px; border-radius: 9999px;
-  font-size: clamp(0.9rem, 2vw, 0.90rem); font-weight: 700; margin-left: auto; transition: background 0.2s;
-}
-.evc-header__cta:hover { background: #004a52; transform: translateX(3px); }
-
-.evc-carousel {
-  position: relative; margin-top: 20px; width: 100%;
-  max-width: 1900px; margin-left: auto; margin-right: auto; padding: 0 2.5%;
-}
-.evc-carousel__track {
-  display: flex; gap: clamp(12px, 2vw, 18px); overflow-x: auto;
-  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
-  cursor: grab; padding: 8px 0 40px 0; scrollbar-width: none; scroll-behavior: smooth;
-}
-@media (min-width: 1024px) { .evc-carousel__track { padding-left: 0; } }
-.evc-carousel__track::-webkit-scrollbar { display: none; }
-.evc-carousel__track--nograb { cursor: default; overflow-x: auto; }
-
-.evc-carousel__slide { flex-shrink: 0; scroll-snap-align: start; width: 85vw; max-width: 480px; }
-@media (min-width: 640px) { .evc-carousel__slide { width: calc(50% - 9px); max-width: 480px; } }
-@media (min-width: 1024px) { .evc-carousel__slide { width: calc(55% - 12px); max-width: 680px; } }
-
-.evc-nav {
-  position: absolute; top: 40%; transform: translateY(-50%);
-  width: 40px; height: 40px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  border: 1px solid #e5e7eb; background: white; color: #6b7280;
-  cursor: pointer; transition: all 0.2s ease; z-index: 10;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-.evc-nav--prev { left: 4px; }
-.evc-nav--next { right: 4px; }
-@media (min-width: 1024px) { .evc-nav--prev { left: 20px; } .evc-nav--next { right: 20px; } }
-.evc-nav:hover:not(:disabled) { background: #005f69; color: white; border-color: #005f69; box-shadow: 0 6px 12px rgba(0,95,105,0.2); }
-.evc-nav:disabled { opacity: 0.3; cursor: not-allowed; }
-.evc-nav__icon { width: 18px; height: 18px; }
-
-.evc-indicators { display: flex; justify-content: center; gap: 8px; margin-top: 16px; position: absolute; bottom: 0; left: 0; right: 0; z-index: 10; }
-.evc-indicator { width: 8px; height: 8px; border-radius: 50%; background: #d1d5db; border: none; padding: 0; cursor: pointer; transition: all 0.3s ease; }
-.evc-indicator:hover { background: #9ca3af; }
-.evc-indicator--active { width: 24px; border-radius: 12px; background: #005f69; }
-
-.evc-skeleton { width: 100%; height: 360px; border-radius: 20px; background: linear-gradient(90deg, #f3f4f6 25%, #e9eaec 50%, #f3f4f6 75%); background-size: 400% 100%; animation: evcShimmer 1.5s infinite; }
-
-.evc-card {
-  position: relative; width: 100%; border-radius: 24px; overflow: hidden;
-  cursor: pointer; aspect-ratio: 3/4; display: flex; flex-direction: column; justify-content: flex-end;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-  border: 2px solid rgba(255,255,255,0.6);
-  transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
-}
-.evc-card:hover { box-shadow: 0 20px 50px rgba(0,95,105,0.22); border-color: rgba(255,255,255,0.95); }
-.evc-card__bg { position: absolute; inset: 0; z-index: 0; }
-.evc-card__overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.72) 75%, rgba(0,0,0,0.88) 100%);
-  z-index: 1;
-}
-.evc-card__top { position: absolute; top: 14px; left: 0; right: 0; z-index: 3; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 14px; }
-.evc-card__content { position: relative; z-index: 2; padding: clamp(16px, 4vw, 22px); display: flex; flex-direction: column; gap: 8px; }
-.evc-card__title { font-size: clamp(1rem, 3vw, 1.25rem); font-weight: 900; color: #ffffff; line-height: 1.25; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.evc-card__desc { font-size: clamp(0.72rem, 2vw, 0.8rem); color: rgba(255,255,255,0.75); line-height: 1.5; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.evc-card__meta { display: flex; flex-direction: column; gap: 4px; }
-.evc-card__meta-row { display: flex; align-items: center; gap: 5px; font-size: clamp(0.68rem, 2vw, 0.76rem); color: rgba(255,255,255,0.65); }
-.evc-card__meta-icon { width: 12px; height: 12px; color: #00c4d4; flex-shrink: 0; }
-.evc-card__meta-truncate { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.evc-card__footer { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; gap: 8px; }
-.evc-card__stats { display: flex; align-items: center; gap: 12px; }
-.evc-card__stat { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; color: rgba(255,255,255,0.7); }
-.evc-card__stat-icon { width: 13px; height: 13px; }
-.evc-card__price { display: flex; align-items: center; gap: 4px; font-size: clamp(0.78rem, 2vw, 0.85rem); font-weight: 800; color: #ffffff; }
-.evc-card__price-icon { width: 13px; height: 13px; color: #ffffff; }
-.evc-card__cta {
-  display: flex; align-items: center; gap: 5px;
-  background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.3); color: #ffffff;
-  font-size: 0.72rem; font-weight: 700;
-  padding: 7px 14px; border-radius: 50px; cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease; white-space: nowrap;
-}
-.evc-card__cta:hover { background: rgba(255,255,255,0.28); border-color: rgba(255,255,255,0.5); }
-.evc-card__cta-icon { width: 12px; height: 12px; }
-
-.evc-badge { z-index: 3; font-size: 0.68rem; font-weight: 700; padding: 5px 13px; border-radius: 50px; letter-spacing: 0.03em; display: inline-flex; align-items: center; gap: 4px; }
-.evc-badge--featured { background: rgba(105,44,0,0.85); backdrop-filter: blur(8px); color: white; border: 1px solid rgba(255,255,255,0.2); }
-.evc-badge--cat { background: rgba(255,255,255,0.18); backdrop-filter: blur(10px); color: #ffffff; border: 1px solid rgba(255,255,255,0.3); }
-.evc-empty { padding: 0 32px; font-size: 0.88rem; color: #9ca3af; font-style: italic; }
 
 /* ═══════════════════════════════════════════════════════
    ESTABLISHMENTS SECTION

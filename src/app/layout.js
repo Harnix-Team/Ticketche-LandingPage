@@ -1,18 +1,9 @@
-import { Geist, Geist_Mono, Archivo } from "next/font/google";
+import { Archivo } from "next/font/google";
 import "./globals.css";
 import { HeaderWrapper } from "@/components/Navigation/HeaderWrapper";
 import { Footer } from "@/components/Navigation/footer";
 import AppNotification from "@/components/AppNotification";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -65,7 +56,7 @@ export const metadata = {
     siteName: "Ticketché",
     images: [
       {
-        url: "/images/logo.svg",
+        url: "/images/og-image.png",
         width: 1200,
         height: 630,
         alt: "Ticketché",
@@ -103,7 +94,7 @@ export default function RootLayout({ children }) {
         <meta name="google-site-verification" content="KduTih3KqfMa3oOnXKluxcZ9HivlOJ6vOIp2cqH3Lm0" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} antialiased bg-[#047b7f13]`}
+        className={`${archivo.variable} antialiased bg-[#047b7f13]`}
       >
         <HeaderWrapper />
         {children}

@@ -179,7 +179,7 @@ const sections = [
     title: "Responsabilités",
     content: (
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <div style={{ padding: "14px 16px", background: "rgba(0,95,105,0.07)", borderRadius: 12, borderLeft: "4px solid #005f69" }}>
+        <div style={{ padding: "14px 16px", background: "rgba(0,95,105,0.07)", borderRadius: 12, border: "1px solid rgba(0,95,105,0.2)" }}>
           <p style={{ fontWeight: 800, fontSize: 14, color: "#005f69", marginBottom: 4 }}>Ticketché agit en tant qu'intermédiaire</p>
           <p style={{ fontSize: 13, color: "#4b6366", lineHeight: 1.7 }}>Entre les utilisateurs et les prestataires de services (parkings, garages, lavages)</p>
         </div>
@@ -254,7 +254,7 @@ const sections = [
     num: "10",
     title: "Modifications des CGU",
     content: (
-      <div style={{ padding: "18px 20px", background: "rgba(255,180,0,0.06)", borderRadius: 14, border: "1.5px solid rgba(255,180,0,0.22)", borderLeft: "4px solid #f59e0b" }}>
+      <div style={{ padding: "18px 20px", background: "rgba(255,180,0,0.06)", borderRadius: 14, border: "1px solid rgba(255,180,0,0.22)" }}>
         <p style={{ color: "#4b6366", lineHeight: 1.85, fontSize: 15 }}>
           Ticketché se réserve le droit de modifier les présentes CGU à tout moment. Les utilisateurs seront
           informés de toute modification par notification dans l'application ou par email. L'utilisation continue
@@ -409,7 +409,6 @@ export default function TermsAndConditionsPage() {
           style={{
             background: "white", borderRadius: 20,
             padding: "clamp(18px, 4vw, 28px) clamp(16px, 4vw, 36px)",
-            borderTop: "4px solid #005f69",
             boxShadow: "0 12px 40px rgba(0,95,105,0.14)",
             display: "flex", alignItems: "flex-start", gap: 16, flexWrap: "wrap",
           }}

@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Star, DeviceMobile } from "@phosphor-icons/react";
 import Link from "next/link";
 import { getDeviceOS } from "@/utils/deviceDetection";
 import { APP_LINKS } from "@/config/appLinks";
+import { Star, DeviceMobile, ArrowLeft } from "@phosphor-icons/react";
 
 const CLUSTERS = [
   { cx: "3%", cy: "8%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.45, anim: 0, delay: "0s", dur: "3.2s", color: "#00818f" }, { x: 16, y: -10, size: 8, opacity: 0.28, anim: 1, delay: "0.3s", dur: "2.8s", color: "#00515a" }] },
@@ -168,7 +168,7 @@ export default function DownloadPage() {
             transition={{ delay: 0.75, duration: 0.6 }}
             style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", flexWrap: "wrap", marginBottom: "28px" }}
           >
-            <a href="https://apps.apple.com/app/ticketche/id6743762073" target="_blank" rel="noopener noreferrer" className="dl-store-btn">
+            <a href="https://apps.apple.com/fr/app/ticketch%C3%A9/id6758046811" target="_blank" rel="noopener noreferrer" className="dl-store-btn">
               <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on App Store" style={{ height: "48px", width: "auto", display: "block" }} />
             </a>
             <a href="https://play.google.com/store/apps/details?id=com.harnixsas.ticketche" target="_blank" rel="noopener noreferrer" className="dl-store-btn">
@@ -183,7 +183,7 @@ export default function DownloadPage() {
             transition={{ delay: 0.9, duration: 0.6 }}
           >
             <Link href="/" className="dl-btn-outline">
-              ← Retour à l'accueil
+              <ArrowLeft weight="bold" style={{ width: 15, height: 15 }} /> Retour à l'accueil
             </Link>
           </motion.div>
 

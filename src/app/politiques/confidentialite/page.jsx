@@ -209,7 +209,7 @@ export default function PrivacyPolicyPage() {
             <DataCard num="3" title="Localisation" items={["Position GPS (avec consentement)", "Historique des parkings"]} />
             <DataCard num="4" title="Paiement" items={["Informations de facturation", "Historique des transactions"]} />
           </div>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 12, background: TL, borderLeft: `4px solid ${T}`, borderRadius: "0 12px 12px 0", padding: "14px 18px" }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 12, background: TL, border: `1px solid #b2d8dc`, borderRadius: 12, padding: "14px 18px" }}>
             <Warning size={18} color={T} weight="fill" style={{ flexShrink: 0, marginTop: 2 }} />
             <p style={{ margin: 0, fontSize: 13, color: TB, lineHeight: 1.6, fontFamily: "'Archivo', sans-serif" }}>
               <strong>Note :</strong> Les données de carte bancaire sont traitées uniquement par nos prestataires certifiés (Stripe, PayPal) et ne sont jamais stockées sur nos serveurs.
@@ -485,7 +485,7 @@ export default function PrivacyPolicyPage() {
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "0 20px", marginTop: -40, position: "relative", zIndex: 10 }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-          style={{ background: "#fff", borderRadius: 20, boxShadow: "0 12px 48px rgba(0,95,105,0.15)", padding: "28px 32px", borderTop: `4px solid ${T}` }}
+          style={{ background: "#fff", borderRadius: 20, boxShadow: "0 12px 48px rgba(0,95,105,0.15)", padding: "28px 32px" }}
         >
           <p style={{ margin: 0, fontSize: 15, color: "#1a1a1a", lineHeight: 1.8, fontFamily: "'Archivo', sans-serif" }}>
             Chez{" "}

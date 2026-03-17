@@ -34,16 +34,18 @@ export default function TicketcheFonction() {
       padding: "clamp(48px, 7vw, 90px) clamp(20px, 5vw, 72px)",
       paddingBottom: "clamp(80px, 10vw, 120px)",
       position: "relative",
-background: "#ffffff",    }}>
+      background: "#ffffff",
+    }}>
       <div style={{ maxWidth: "1280px", margin: "0 auto", position: "relative" }}>
 
+        {/* ── GRANDE CARTE SOMBRE ── */}
         {/* ── GRANDE CARTE SOMBRE ── */}
         <div style={{
           border: "1px solid #001e22",
           borderRadius: "clamp(24px, 3vw, 36px)",
           padding: "clamp(36px, 5vw, 60px) clamp(28px, 5vw, 80px)",
           position: "relative",
-          overflow: "hidden",
+          overflow: "visible",
         }}>
 
           {/* Halos déco */}
@@ -57,13 +59,12 @@ background: "#ffffff",    }}>
             </h2>
             <p style={{ fontSize: "clamp(0.88rem, 1.2vw, 1rem)", color: "#001e22", lineHeight: 1.75, maxWidth: "360px", margin: 0, paddingTop: "6px" }}>
               Ne perdez plus de temps à chercher.
-Avec Ticketché, localisez rapidement un parking, garage, lavage ou évènements, disponible près de vous et accédez au service en quelques secondes. 
+              Avec Ticketché, localisez rapidement un parking, garage, lavage ou évènements, disponible près de vous et accédez au service en quelques secondes.
             </p>
           </div>
 
           {/* ── CARROUSEL (inline dans la carte) ── */}
-          <div style={{ position: "relative", zIndex: 2 }}>
-
+          <div style={{ position: "relative", zIndex: 2, margin: "0 -16px" }}>
             {/* Bouton précédent */}
             <button
               onClick={scrollLeft}
@@ -142,7 +143,7 @@ Avec Ticketché, localisez rapidement un parking, garage, lavage ou évènements
                 gap: "clamp(12px, 1.5vw, 20px)",
                 overflowX: "auto",
                 scrollBehavior: "smooth",
-                padding: "12px 4px 20px",
+                padding: "12px 16px 28px",
                 scrollSnapType: "x mandatory",
                 WebkitOverflowScrolling: "touch",
                 scrollbarWidth: "none",

@@ -72,26 +72,6 @@ export const Header = () => {
     return activeSection === link.sectionId;
   };
 
-  const underlineSpan = (active) => (
-    <span
-      className="hdrUnderline"
-      style={{
-        display: "block",
-        position: "absolute",
-        left: 14,
-        bottom: 2,
-        width: "calc(100% - 28px)",
-        height: 2,
-        borderRadius: 1,
-        background: "#005f69",
-        transform: active ? "scaleX(1)" : "scaleX(0)",
-        transformOrigin: "center",
-        transition: "transform 0.25s ease",
-        pointerEvents: "none",
-      }}
-    />
-  );
-
   return (
     <header className="hdr">
       <div className={`hdrContainer ${isScrolled ? "scrolled" : ""}`}>
@@ -116,7 +96,6 @@ export const Header = () => {
                         className={`hdrLink ${active ? "active" : ""}`}
                       >
                         {link.label}
-                        {underlineSpan(active)}
                       </Link>
                     );
                   })}
@@ -173,7 +152,6 @@ export const Header = () => {
           font-weight: 600;
           padding: 6px 14px;
           color: #333;
-          position: relative;
           border-radius: 999px;
           transition: color 0.25s ease, background 0.25s ease;
         }
@@ -182,16 +160,13 @@ export const Header = () => {
           color: #005f69;
           background: #ecf5f5;
         }
-        .hdrLink span { transform: scaleX(0); }
-        .hdrLink.active span { transform: scaleX(1); }
-        .hdrLink.active { background: #ecf5f5; color: #005f69; }
 
         .hdrCta {
           font-size: clamp(0.92rem, 1.05vw, 1rem);
           font-weight: 700;
           background: #00515a;
           color: white;
-          padding: clamp(0.55rem, 0.9vw, 0.75rem) clamp(1.3rem, 1.8vw, 1.6rem);
+padding: 0.65rem 1.4rem;
           border-radius: 999px;
           transition: all 0.3s ease;
           min-width: 130px;
@@ -208,7 +183,6 @@ export const Header = () => {
           color: #333;
           padding: 1rem 0;
           display: block;
-          position: relative;
           transition: color 0.25s ease;
           border: none !important;
           text-decoration: none;
@@ -238,7 +212,6 @@ export const Header = () => {
         .hdrMobile.open   { display: block; }
 
         @media (max-width: 767px) {
-          .hdrUnderline { display: none !important; }
           .hdrContent        { display: none; }
           .hdrMobileWrapper  { display: flex; align-items: center; justify-content: space-between; width: 100%; }
           .hdrMobile { background: #ffffff; border-radius: 0 0 20px 20px; }

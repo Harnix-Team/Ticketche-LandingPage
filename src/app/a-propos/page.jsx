@@ -796,7 +796,7 @@ export default function AboutPage() {
         </div>
 
         {/* ══════════ SERVICES ══════════ */}
-        <div className="sv-root">
+        <div className="sv-root" id="nos-services">
           <div className="sv-header">
             <div className="sv-badge">Nos services</div>
             <h2 className="sv-title" style={{ fontSize: "clamp(22px, 2.8vw, 36px)", letterSpacing: "-0.01em" }}>

@@ -556,8 +556,7 @@ export default function PlaceDetailsClient() {
                   { label: "Places totales", val: place.total_place ?? "—", icon: Car, color: C },
                   { label: "Places libres", val: place.available_places ?? "—", icon: CheckCircle, color: "#059669" },
                   { label: "Note", val: rating ?? "—", icon: Star, color: "#d97706" },
-                  { label: "Sécurité", val: "Certifié", icon: Shield, color: "#1d4ed8" },
-                ].map((item, i) => {
+{ label: "Sécurité", val: "Certifié", icon: Shield, color: "#005f69" },                ].map((item, i) => {
                   const Icon = item.icon;
                   return (
                     <div key={i} style={{ padding: "12px 14px", background: "#f9f9f6", borderRadius: 14, border: "1px solid #efefea" }}>

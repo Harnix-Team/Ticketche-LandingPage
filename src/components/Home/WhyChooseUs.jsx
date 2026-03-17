@@ -123,7 +123,7 @@ export default function WhyChooseUs() {
 
         .wcu-card {
           position: relative;
-          background: #ecf5f5;
+          background: #ffffff;
           border-radius: 20px;
           border: 1.5px solid rgba(0,0,0,0.08);
           padding: 36px 28px 32px;

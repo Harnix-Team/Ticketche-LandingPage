@@ -418,17 +418,18 @@ padding: "clamp(14px, 14vh, 160px) clamp(20px, 5vw, 40px) 20px",
               <img src="/images/Hero/img11.png" alt="App Ticketché" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             </div>
             {/* carte gauche */}
-            <div style={{ position: "absolute", left: "-12%", top: "30%", width: "clamp(200px,35vw,400px)", borderRadius: "clamp(14px,1.8vw,22px)", overflow: "hidden", boxShadow: "0 20px 56px rgba(0,0,0,0.15),0 4px 16px rgba(0,81,90,0.12)", zIndex: 6 }}>
-              <img src="/images/Hero/img3.jpg" alt="Parking Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
-            </div>
+           <div style={{ position: "absolute", left: "-12%", top: "30%", width: "clamp(200px,35vw,400px)", borderRadius: "clamp(14px,1.8vw,22px)", overflow: "hidden", boxShadow: "0 20px 56px rgba(0,0,0,0.15),0 4px 16px rgba(0,81,90,0.12)", zIndex: 6 }}>
+  <img src="/images/Hero/img3.jpg" alt="Parking Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
+  <div style={{ position: "absolute", inset: 0, borderRadius: "clamp(14px,1.8vw,22px)", border: "3px solid #00515a", pointerEvents: "none", zIndex: 2 }} />
+</div>
             {/* carte droite haut */}
             <div style={{ position: "absolute", right: "-9%", top: "20%", width: "clamp(200px,250vw,350px)", borderRadius: "clamp(14px,1.8vw,20px)", overflow: "hidden", boxShadow: "0 16px 44px rgba(0,0,0,0.13),0 4px 14px rgba(0,81,90,0.11)", zIndex: 5 }}>
               <img src="/images/Hero/img2.png" alt="Événements Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
             </div>
             {/* carte droite bas */}
-            <div style={{ position: "absolute", right: "-12%", bottom: "5%", width: "clamp(400px,19vw,300px)", borderRadius: "clamp(14px,1.8vw,20px)", overflow: "hidden", boxShadow: "0 16px 44px rgba(0,0,0,0.13),0 4px 14px rgba(0,81,90,0.11)", zIndex: 5 }}>
-              <img src="/images/Hero/img44.jpg" alt="Garage Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
-            </div>
+            <div style={{ position: "absolute", right: "-12%", bottom: "5%", width: "clamp(400px,19vw,300px)", borderRadius: "8px", overflow: "hidden", boxShadow: "0 16px 44px rgba(0,0,0,0.13),0 4px 14px rgba(0,81,90,0.11)", zIndex: 5 }}>
+  <img src="/images/Hero/img44.jpg" alt="Garage Ticketché" style={{ width: "100%", height: "auto", display: "block" }} />
+</div>
           </div>
 
         </div>
