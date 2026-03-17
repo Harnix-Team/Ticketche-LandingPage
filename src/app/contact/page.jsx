@@ -47,6 +47,7 @@ export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", service: "", date: "", message: "" });
   const [sent, setSent] = useState(false);
   const [currentImg, setCurrentImg] = useState(0);
+  const WHATSAPP_NUMBER = "22999984345";
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -80,8 +81,7 @@ Cordialement,
 ${form.name}`;
 
     const encodedMessage = encodeURIComponent(whatsappMessage);
-    window.open(`https://wa.me/2290140512133?text=${encodedMessage}`, "_blank");
-
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, "_blank");
     setSent(true);
     setTimeout(() => setSent(false), 4000);
     setForm({ name: "", email: "", service: "", date: "", message: "" });

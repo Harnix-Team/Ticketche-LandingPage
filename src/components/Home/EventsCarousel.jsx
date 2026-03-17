@@ -49,7 +49,7 @@ function StarClusters() {
 }
 
 /* ══════════════════════════════════════════════
-   EventCard
+   EventCard — même design que PlaceCard
 ══════════════════════════════════════════════ */
 function EventCard({ event }) {
   const handleClick = () => {
@@ -59,22 +59,28 @@ function EventCard({ event }) {
     }
   };
 
-  const price   = getMinPrice(event.tickets);
-  const isFree  = price === "Gratuit";
-  const dateStr = formatDate(event.start_date);
+  const price    = getMinPrice(event.tickets);
+  const isFree   = price === "Gratuit";
+  const dateStr  = formatDate(event.start_date);
 
   return (
     <motion.article
       onClick={handleClick}
       whileHover={{ y: -8, boxShadow: "0 0 0 4px #ffffff, 0 24px 56px rgba(0,0,0,0.35)" }}
       style={{
-        position: "relative", borderRadius: "20px", overflow: "hidden",
-        border: "4px solid #ffffff", boxShadow: "0 8px 32px rgba(0,0,0,0.22)",
-        cursor: "pointer", height: "320px",
-        display: "flex", flexDirection: "column",
+        position: "relative",
+        borderRadius: "20px",
+        overflow: "hidden",
+        border: "4px solid #ffffff",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.22)",
+        cursor: "pointer",
+        height: "320px",
+        display: "flex",
+        flexDirection: "column",
       }}
       transition={{ duration: 0.22, ease: "easeOut" }}
     >
+      {/* ── Image ── */}
       <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
         <Image
           src={getEventImage(event)}
@@ -90,6 +96,7 @@ function EventCard({ event }) {
         }} />
       </div>
 
+      {/* ── Badge top-left : date (même style que rating dans PlaceCard) ── */}
       {dateStr && (
         <div style={{
           position: "absolute", top: "14px", left: "14px", zIndex: 3,
@@ -104,6 +111,7 @@ function EventCard({ event }) {
         </div>
       )}
 
+      {/* ── Badge top-right : ville / lieu (même style que badgeCity) ── */}
       {event.location_name && (
         <div style={{
           position: "absolute", top: "14px", right: "14px", zIndex: 3,
@@ -117,12 +125,15 @@ function EventCard({ event }) {
         </div>
       )}
 
+      {/* ── Body bas ── */}
       <div style={{
         position: "absolute", bottom: 0, left: 0, right: 0,
         padding: "16px 16px 18px",
         display: "flex", flexDirection: "column", gap: "8px",
         zIndex: 2,
       }}>
+
+        {/* Tags (catégorie + featured — même style que service tags) */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
           {event.is_featured && (
             <span style={{
@@ -140,6 +151,7 @@ function EventCard({ event }) {
           )}
         </div>
 
+        {/* Titre (même style que place name) */}
         <h3 style={{
           margin: 0, fontSize: "17px", fontWeight: 800, color: "#ffffff",
           lineHeight: 1.25, letterSpacing: "-0.01em",
@@ -160,20 +172,26 @@ function EventCard({ event }) {
           )}
         </h3>
 
+        {/* Footer (même structure que PlaceCard footer) */}
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
           paddingTop: "8px", borderTop: "1.5px solid rgba(255,255,255,0.22)",
         }}>
+          {/* Stats gauche */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            {/* Réservations */}
             <span style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "12px", fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>
               <Users style={{ width: 13, height: 13 }} />
               {event.reservations_count ?? 0}
             </span>
+            {/* Prix */}
             <span style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "12px", fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>
               <Ticket style={{ width: 13, height: 13 }} />
               {isFree ? "Gratuit" : price}
             </span>
           </div>
+
+          {/* Bouton (même style exact que "Itinéraire" dans PlaceCard) */}
           <button
             style={{
               display: "flex", alignItems: "center", gap: "5px",
@@ -221,21 +239,20 @@ function EventsPromo() {
         .promo-feature-tag:hover { background:rgba(4,121,126,0.1) !important; border-color:rgba(4,121,126,0.35) !important; color:#04797e !important; }
         .promo-feature-tag:hover svg { color:#04797e !important; }
         @media (max-width: 768px) {
-          .promo-images  { display: none !important; }
-          .promo-buttons { justify-content: center !important; }
-        }
+  .promo-images   { display: none !important; }
+  .promo-buttons  { justify-content: center !important; }
+}
       `}</style>
 
       <div style={{
-  position: "relative", borderRadius: "28px", overflow: "hidden",
-  padding: "clamp(20px,3vw,40px) clamp(32px,5vw,72px)",
-  background: "linear-gradient(145deg, #f4fbfb 0%, #eaf5f5 50%, #fdfaf6 100%)",
-  border: "1.5px solid rgba(4,121,126,0.1)",
-  display: "flex", alignItems: "center",
-  gap: "clamp(32px,5vw,80px)", flexWrap: "wrap",
-  minHeight: "320px", boxShadow: "0 4px 32px rgba(4,121,126,0.06)",
-  maxWidth: "1280px", margin: "0 auto", width: "100%",
-}}>
+        position: "relative", borderRadius: "28px", overflow: "hidden",
+padding: "clamp(20px,3vw,40px) clamp(32px,5vw,72px)",
+        background: "linear-gradient(145deg, #f4fbfb 0%, #eaf5f5 50%, #fdfaf6 100%)",
+        border: "1.5px solid rgba(4,121,126,0.1)",
+        display: "flex", alignItems: "center",
+        gap: "clamp(32px,5vw,80px)", flexWrap: "wrap",
+        minHeight: "320px", boxShadow: "0 4px 32px rgba(4,121,126,0.06)",
+      }}>
         <div style={{ position:"absolute", top:"-80px", right:"8%", width:"360px", height:"360px", borderRadius:"50%", background:"radial-gradient(circle, rgba(4,121,126,0.10) 0%, transparent 70%)", animation:"floatOrb1 8s ease-in-out infinite", pointerEvents:"none" }} />
         <div style={{ position:"absolute", bottom:"-100px", right:"30%", width:"280px", height:"280px", borderRadius:"50%", background:"radial-gradient(circle, rgba(106,45,2,0.07) 0%, transparent 70%)", animation:"floatOrb2 10s ease-in-out infinite", pointerEvents:"none" }} />
 
@@ -269,8 +286,7 @@ function EventsPromo() {
             })}
           </div>
 
-          <div className="promo-buttons" style={{ display:"flex", alignItems:"center", gap:"12px", flexWrap:"wrap" }}>
-            <motion.a
+<div className="promo-buttons" style={{ display:"flex", alignItems:"center", gap:"12px", flexWrap:"wrap" }}>            <motion.a
               href={downloadLink} target="_blank" rel="noopener noreferrer"
               style={{ display:"inline-flex", alignItems:"center", gap:"10px", background:"linear-gradient(135deg,#04797e,#025f63)", color:"#fff", borderRadius:"999px", padding:"13px 26px", fontSize:"13px", fontWeight:800, textDecoration:"none", animation:"btnGlowPromo 3s ease-in-out infinite" }}
               whileHover={{ y:-3, scale:1.03 }} whileTap={{ scale:0.97 }}
@@ -288,7 +304,8 @@ function EventsPromo() {
           </div>
         </div>
 
-        <div className="promo-images" style={{ flex:"0 0 auto", position:"relative", zIndex:2, display:"flex", gap:"8px", alignItems:"center" }}>
+        {/* Illustration droite */}
+<div className="promo-images" style={{ flex:"0 0 auto", position:"relative", zIndex:2, display:"flex", gap:"8px", alignItems:"center" }}>
           <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
             <div style={{ width:"clamp(140px,15vw,210px)", height:"clamp(130px,14vw,190px)", borderRadius:"14px", overflow:"hidden", boxShadow:"0 10px 28px rgba(0,0,0,0.15)", marginTop:"-16px" }}>
               <img src="/images/Events/1.jpg" alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
@@ -336,18 +353,18 @@ export const EventsCarousel = () => {
   }, []);
 
   useEffect(() => {
-    fetchAllEvents()
-      .then((result) => {
-      if (!result) return;
-      const { success, data } = result;
-        if (!success) return;
-        const events = data ?? [];
-        const feat = events.filter((e) => e.is_featured);
-        setAllEvents(feat.length > 0 ? feat.sort((a, b) => (a.featured_order ?? 99) - (b.featured_order ?? 99)) : events);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+  fetchAllEvents()
+  .then((result) => {
+    if (!result) return;
+    const { success, data } = result;
+    if (!success) return;
+    const events = data ?? [];
+    const feat = events.filter((e) => e.is_featured);
+    setAllEvents(feat.length > 0 ? feat.sort((a, b) => (a.featured_order ?? 99) - (b.featured_order ?? 99)) : events);
+  })
+    .catch(console.error)
+    .finally(() => setLoading(false));
+}, []);
 
   const displayed = useMemo(() => allEvents.slice(0, 8), [allEvents]);
 
@@ -361,44 +378,49 @@ export const EventsCarousel = () => {
 
       <StarClusters />
 
-      <div style={{ maxWidth: "96vw", margin: "0 auto", padding: "0 16px", position: "relative", zIndex: 2 }}>
-        {loading ? (
-          <div style={{ display:"flex", justifyContent:"center", gap:"10px", padding:"48px 0" }}>
-            {[0, 0.2, 0.4].map((delay, i) => (
-              <motion.div key={i}
-                style={{ width:10, height:10, borderRadius:"50%", background: i%2===0 ? "#04797e" : "#6a2d02" }}
-                animate={{ scale:[1,1.5,1], opacity:[1,0.4,1] }}
-                transition={{ duration:1, repeat:Infinity, delay }}
-              />
-            ))}
+<div style={{ maxWidth: "96vw", margin: "0 auto", padding: "0 16px", position: "relative", zIndex: 2 }}>
+        {/* Header */}
+        <motion.div
+          style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"32px", gap:"16px", flexWrap:"wrap" }}
+          initial={{ opacity:0, y:-20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}
+        >
+          <div>
+            <h2 style={{ margin:"0 0 6px", fontSize:"clamp(1.6rem,2.8vw,2.4rem)", fontWeight:900, color:"#0a1628", letterSpacing:"-0.02em" }}>
+              Événements <span style={{ color:"#04797e" }}>à la une</span>
+            </h2>
+            <p style={{ margin:0, fontSize:"15px", color:"#6b7280", lineHeight:1.6 }}>
+              Les incontournables du moment, sélectionnés pour vous
+            </p>
           </div>
-        ) : (
-          <div style={{ display:"flex", flexDirection:"column", gap:"40px" }}>
-            <EventsPromo />
-            {displayed.length > 0 && (
-              <>
-                <motion.div
-                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:"16px", flexWrap:"wrap" }}
-                  initial={{ opacity:0, y:-20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}
-                >
-                  <div>
-                    <h2 style={{ margin:"0 0 6px", fontSize:"clamp(1.6rem,2.8vw,2.4rem)", fontWeight:900, color:"#0a1628", letterSpacing:"-0.02em" }}>
-                      Événements <span style={{ color:"#04797e" }}>à la une</span>
-                    </h2>
-                    <p style={{ margin:0, fontSize:"15px", color:"#6b7280", lineHeight:1.6 }}>
-                      Les incontournables du moment, sélectionnés pour vous
-                    </p>
-                  </div>
-                  <motion.a
-                    href="/events"
-                    style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"linear-gradient(135deg,#04797e,#025f63)", color:"#fff", borderRadius:"999px", padding:"10px 22px", fontSize:"13px", fontWeight:700, textDecoration:"none", boxShadow:"0 4px 16px rgba(4,121,126,0.3)", whiteSpace:"nowrap" }}
-                    whileHover={{ scale:1.04, boxShadow:"0 6px 24px rgba(4,121,126,0.4)" }} whileTap={{ scale:0.97 }}
-                  >
-                    Tout voir
-                    <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/></svg>
-                  </motion.a>
-                </motion.div>
+          <motion.a
+            href="/events"
+            style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"linear-gradient(135deg,#04797e,#025f63)", color:"#fff", borderRadius:"999px", padding:"10px 22px", fontSize:"13px", fontWeight:700, textDecoration:"none", boxShadow:"0 4px 16px rgba(4,121,126,0.3)", whiteSpace:"nowrap" }}
+            whileHover={{ scale:1.04, boxShadow:"0 6px 24px rgba(4,121,126,0.4)" }} whileTap={{ scale:0.97 }}
+          >
+            Tout voir
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/></svg>
+          </motion.a>
+        </motion.div>
 
+        {/* Contenu */}
+        <motion.div
+          initial={{ opacity:0 }} whileInView={{ opacity:1 }}
+          viewport={{ once:true, amount:0.05 }} transition={{ duration:0.6, delay:0.1 }}
+        >
+          {loading ? (
+            <div style={{ display:"flex", justifyContent:"center", gap:"10px", padding:"48px 0" }}>
+              {[0, 0.2, 0.4].map((delay, i) => (
+                <motion.div key={i}
+                  style={{ width:10, height:10, borderRadius:"50%", background: i%2===0 ? "#04797e" : "#6a2d02" }}
+                  animate={{ scale:[1,1.5,1], opacity:[1,0.4,1] }}
+                  transition={{ duration:1, repeat:Infinity, delay }}
+                />
+              ))}
+            </div>
+          ) : (
+            <div style={{ display:"flex", flexDirection:"column", gap:"40px" }}>
+              <EventsPromo />
+              {displayed.length > 0 && (
                 <AnimatePresence mode="wait">
                   <motion.div
                     key="events-grid"
@@ -414,10 +436,11 @@ export const EventsCarousel = () => {
                     ))}
                   </motion.div>
                 </AnimatePresence>
-              </>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )}
+        </motion.div>
+
       </div>
     </section>
   );
