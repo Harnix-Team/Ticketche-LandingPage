@@ -1,9 +1,9 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchAllPlaces } from "@/app/services/api";
-import { NavigationArrow, MagnifyingGlass, MapPin, Star } from "@phosphor-icons/react";
+import { NavigationArrow, MagnifyingGlass, MapPin, Star, ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 
 /* ─── helpers ─────────────────────────────────── */
 const formatTicketcheImage = (img) =>
@@ -281,12 +281,52 @@ const styles = {
     padding: "60px 20px",
     color: "#9ca3af",
   },
+  carouselWrapper: {
+    position: "relative",
+  },
+  carousel: {
+    display: "flex",
+    gap: "16px",
+    overflowX: "auto",
+    scrollSnapType: "x mandatory",
+    WebkitOverflowScrolling: "touch",
+    paddingBottom: "16px",
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
+  },
+  carouselItem: {
+    flex: "0 0 82vw",
+    maxWidth: "320px",
+    scrollSnapAlign: "start",
+  },
+  carouselArrow: {
+    position: "absolute",
+    top: "50%",
+    transform: "translateY(-60%)",
+    zIndex: 10,
+    width: "36px",
+    height: "36px",
+    borderRadius: "50%",
+    background: "#ffffff",
+    border: "none",
+    boxShadow: "0 4px 14px rgba(0,0,0,0.18)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    color: "#005f69",
+    transition: "background 0.15s, transform 0.15s, opacity 0.15s",
+  },
+  dotsRow: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "6px",
+    marginTop: "14px",
+  },
 };
 
 /* ─── PlaceCard ─────────────────────────────────── */
 function PlaceCard({ place, onItinerary }) {
-  const [hovered, setHovered] = useState(false);
-
   const handleClick = () => {
     localStorage.setItem("selectedPlace", JSON.stringify(place));
     window.open(`/places/${place.id}`, "_blank");
@@ -297,8 +337,6 @@ function PlaceCard({ place, onItinerary }) {
   return (
     <motion.article
       onClick={handleClick}
-      onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
       whileHover={{ y: -8, boxShadow: "0 0 0 4px #ffffff, 0 24px 56px rgba(0,0,0,0.35)" }}
       style={styles.card}
       transition={{ duration: 0.22, ease: "easeOut" }}
@@ -376,6 +414,121 @@ function PlaceCard({ place, onItinerary }) {
         </div>
       </div>
     </motion.article>
+  );
+}
+
+/* ─── MobileCarousel ────────────────────────────── */
+function MobileCarousel({ items, onItinerary }) {
+  const scrollRef = useRef(null);
+  const autoRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const CARD_WIDTH = typeof window !== "undefined" ? window.innerWidth * 0.82 + 16 : 300;
+
+  const scrollTo = (index) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const clamped = Math.max(0, Math.min(index, items.length - 1));
+    el.scrollTo({ left: clamped * CARD_WIDTH, behavior: "smooth" });
+    setActiveIndex(clamped);
+  };
+
+  const startAuto = () => {
+    autoRef.current = setInterval(() => {
+      setActiveIndex((prev) => {
+        const next = prev >= items.length - 1 ? 0 : prev + 1;
+        const el = scrollRef.current;
+        if (el) el.scrollTo({ left: next * CARD_WIDTH, behavior: "smooth" });
+        return next;
+      });
+    }, 3000);
+  };
+
+  const stopAuto = () => clearInterval(autoRef.current);
+
+  useEffect(() => {
+    startAuto();
+    return () => stopAuto();
+  }, [items.length]);
+
+  /* sync activeIndex on manual scroll */
+  const handleScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const index = Math.round(el.scrollLeft / CARD_WIDTH);
+    setActiveIndex(index);
+  };
+
+  return (
+    <div style={styles.carouselWrapper}>
+      {/* Flèche gauche */}
+      <button
+        style={{ ...styles.carouselArrow, left: "-14px", opacity: activeIndex === 0 ? 0.35 : 1 }}
+        onClick={() => { stopAuto(); scrollTo(activeIndex - 1); startAuto(); }}
+        onMouseEnter={e => { e.currentTarget.style.background = "#e6f7f8"; e.currentTarget.style.transform = "translateY(-60%) scale(1.08)"; }}
+        onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.transform = "translateY(-60%) scale(1)"; }}
+        aria-label="Précédent"
+      >
+        <ArrowLeft weight="bold" size={16} />
+      </button>
+
+      {/* Track */}
+      <div
+        ref={scrollRef}
+        style={styles.carousel}
+        onScroll={handleScroll}
+        onMouseEnter={stopAuto}
+        onMouseLeave={startAuto}
+        onTouchStart={stopAuto}
+        onTouchEnd={startAuto}
+      >
+        <style>{`
+          .es-carousel-track::-webkit-scrollbar { display: none; }
+        `}</style>
+        {items.map((place, i) => (
+          <motion.div
+            key={place.id}
+            style={styles.carouselItem}
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.35, delay: i * 0.07 }}
+          >
+            <PlaceCard place={place} onItinerary={onItinerary} />
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Flèche droite */}
+      <button
+        style={{ ...styles.carouselArrow, right: "-14px", opacity: activeIndex === items.length - 1 ? 0.35 : 1 }}
+        onClick={() => { stopAuto(); scrollTo(activeIndex + 1); startAuto(); }}
+        onMouseEnter={e => { e.currentTarget.style.background = "#e6f7f8"; e.currentTarget.style.transform = "translateY(-60%) scale(1.08)"; }}
+        onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.transform = "translateY(-60%) scale(1)"; }}
+        aria-label="Suivant"
+      >
+        <ArrowRight weight="bold" size={16} />
+      </button>
+
+      {/* Dots */}
+      <div style={styles.dotsRow}>
+        {items.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => { stopAuto(); scrollTo(i); startAuto(); }}
+            style={{
+              width: i === activeIndex ? "20px" : "7px",
+              height: "7px",
+              borderRadius: "999px",
+              background: i === activeIndex ? "#005f69" : "#d1d5db",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              transition: "all 0.25s ease",
+            }}
+            aria-label={`Slide ${i + 1}`}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -561,7 +714,15 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
                 Réinitialiser la recherche
               </button>
             </motion.div>
+          ) : gridCols === 1 ? (
+            /* ── Carrousel mobile ── */
+            <MobileCarousel
+              key="carousel"
+              items={displayedEstablishments}
+              onItinerary={handleItineraryClick}
+            />
           ) : (
+            /* ── Grille tablet/desktop ── */
             <motion.div
               key={`grid-${activeFilter}-${searchQuery}`}
               style={{ ...styles.grid, gridTemplateColumns: `repeat(${gridCols}, 1fr)` }}
