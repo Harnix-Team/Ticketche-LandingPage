@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "T5969GY7M2.com.harnixsas.ticketche",
+        "paths": [
+          "/events/details*",
+          "/places/details*",
+          "/sign-up*"
+        ]
+      }
+    ]
+  }
+}

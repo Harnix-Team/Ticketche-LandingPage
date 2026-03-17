@@ -11,6 +11,14 @@ export async function generateStaticParams() {
   return [];
 }
 
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+  return {
+    other: {
+"apple-itunes-app": `app-id=6758046811, app-argument=ticketche://events/details?eventId=${id}`,    },
+  };
+}
+
 export default function EventDetailsPage() {
   return <EventDetailsClient />;
 }

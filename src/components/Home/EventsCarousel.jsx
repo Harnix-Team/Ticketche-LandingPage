@@ -96,7 +96,7 @@ function EventCard({ event }) {
         }} />
       </div>
 
-      {/* ── Badge top-left : date (même style que rating dans PlaceCard) ── */}
+      {/* ── Badge top-left : date ── */}
       {dateStr && (
         <div style={{
           position: "absolute", top: "14px", left: "14px", zIndex: 3,
@@ -111,7 +111,7 @@ function EventCard({ event }) {
         </div>
       )}
 
-      {/* ── Badge top-right : ville / lieu (même style que badgeCity) ── */}
+      {/* ── Badge top-right : ville / lieu ── */}
       {event.location_name && (
         <div style={{
           position: "absolute", top: "14px", right: "14px", zIndex: 3,
@@ -133,7 +133,7 @@ function EventCard({ event }) {
         zIndex: 2,
       }}>
 
-        {/* Tags (catégorie + featured — même style que service tags) */}
+        {/* Tags */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
           {event.is_featured && (
             <span style={{
@@ -151,7 +151,7 @@ function EventCard({ event }) {
           )}
         </div>
 
-        {/* Titre (même style que place name) */}
+        {/* Titre */}
         <h3 style={{
           margin: 0, fontSize: "17px", fontWeight: 800, color: "#ffffff",
           lineHeight: 1.25, letterSpacing: "-0.01em",
@@ -172,26 +172,22 @@ function EventCard({ event }) {
           )}
         </h3>
 
-        {/* Footer (même structure que PlaceCard footer) */}
+        {/* Footer */}
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
           paddingTop: "8px", borderTop: "1.5px solid rgba(255,255,255,0.22)",
         }}>
-          {/* Stats gauche */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            {/* Réservations */}
             <span style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "12px", fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>
               <Users style={{ width: 13, height: 13 }} />
               {event.reservations_count ?? 0}
             </span>
-            {/* Prix */}
             <span style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "12px", fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>
               <Ticket style={{ width: 13, height: 13 }} />
               {isFree ? "Gratuit" : price}
             </span>
           </div>
 
-          {/* Bouton (même style exact que "Itinéraire" dans PlaceCard) */}
           <button
             style={{
               display: "flex", alignItems: "center", gap: "5px",
@@ -378,29 +374,7 @@ export const EventsCarousel = () => {
 
       <StarClusters />
 
-<div style={{ maxWidth: "96vw", margin: "0 auto", padding: "0 16px", position: "relative", zIndex: 2 }}>
-        {/* Header */}
-        <motion.div
-          style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"32px", gap:"16px", flexWrap:"wrap" }}
-          initial={{ opacity:0, y:-20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}
-        >
-          <div>
-            <h2 style={{ margin:"0 0 6px", fontSize:"clamp(1.6rem,2.8vw,2.4rem)", fontWeight:900, color:"#0a1628", letterSpacing:"-0.02em" }}>
-              Événements <span style={{ color:"#04797e" }}>à la une</span>
-            </h2>
-            <p style={{ margin:0, fontSize:"15px", color:"#6b7280", lineHeight:1.6 }}>
-              Les incontournables du moment, sélectionnés pour vous
-            </p>
-          </div>
-          <motion.a
-            href="/events"
-            style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"linear-gradient(135deg,#04797e,#025f63)", color:"#fff", borderRadius:"999px", padding:"10px 22px", fontSize:"13px", fontWeight:700, textDecoration:"none", boxShadow:"0 4px 16px rgba(4,121,126,0.3)", whiteSpace:"nowrap" }}
-            whileHover={{ scale:1.04, boxShadow:"0 6px 24px rgba(4,121,126,0.4)" }} whileTap={{ scale:0.97 }}
-          >
-            Tout voir
-            <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/></svg>
-          </motion.a>
-        </motion.div>
+      <div style={{ maxWidth: "96vw", margin: "0 auto", padding: "0 16px", position: "relative", zIndex: 2 }}>
 
         {/* Contenu */}
         <motion.div
@@ -420,6 +394,30 @@ export const EventsCarousel = () => {
           ) : (
             <div style={{ display:"flex", flexDirection:"column", gap:"40px" }}>
               <EventsPromo />
+
+              {/* Header : titre + bouton "Tout voir" — placé sous EventsPromo */}
+              <motion.div
+                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:"16px", flexWrap:"wrap" }}
+                initial={{ opacity:0, y:-20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}
+              >
+                <div>
+                  <h2 style={{ margin:"0 0 6px", fontSize:"clamp(1.6rem,2.8vw,2.4rem)", fontWeight:900, color:"#0a1628", letterSpacing:"-0.02em" }}>
+                    Événements <span style={{ color:"#04797e" }}>à la une</span>
+                  </h2>
+                  <p style={{ margin:0, fontSize:"15px", color:"#6b7280", lineHeight:1.6 }}>
+                    Les incontournables du moment, sélectionnés pour vous
+                  </p>
+                </div>
+                <motion.a
+                  href="/events"
+                  style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"linear-gradient(135deg,#04797e,#025f63)", color:"#fff", borderRadius:"999px", padding:"10px 22px", fontSize:"13px", fontWeight:700, textDecoration:"none", boxShadow:"0 4px 16px rgba(4,121,126,0.3)", whiteSpace:"nowrap" }}
+                  whileHover={{ scale:1.04, boxShadow:"0 6px 24px rgba(4,121,126,0.4)" }} whileTap={{ scale:0.97 }}
+                >
+                  Tout voir
+                  <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/></svg>
+                </motion.a>
+              </motion.div>
+
               {displayed.length > 0 && (
                 <AnimatePresence mode="wait">
                   <motion.div

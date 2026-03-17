@@ -564,15 +564,16 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
   }, []);
 
   useEffect(() => {
-    const loadPlaces = async () => {
-      try {
-        const response = await fetchAllPlaces();
-        if (response.success) setEstablishments(response.data);
-      } catch (_) { }
-      finally { setLoading(false); }
-    };
-    loadPlaces();
-  }, []);
+  const loadPlaces = async () => {
+    try {
+      const response = await fetchAllPlaces();
+      console.log("Places response:", response); // ← ajoute ça
+      if (response.success) setEstablishments(response.data);
+    } catch (_) { }
+    finally { setLoading(false); }
+  };
+  loadPlaces();
+}, []);
 
   const handleItineraryClick = (placeId) => {
     window.open(`https://app.ticketche.com/places/itinerary?placeId=${placeId}`, "_blank");

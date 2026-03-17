@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { fetchAllPlaces } from "@/app/services/api";
 import { EstablishmentsSection } from "@/components/Home/EstablishmentsSection";
 import { getDownloadLink } from "@/utils/deviceDetection";
+import { useDeepLink } from "@/utils/useDeepLink";
 import {
   MapPin, Star, Wrench, ArrowLeft, NavigationArrow,
   CheckCircle, Car, Drop, Shield, ArrowRight,
@@ -232,7 +233,7 @@ export default function PlaceDetailsClient() {
   const [activeTab, setActiveTab] = useState("services");
   const [wishlisted, setWishlisted] = useState(false);
   const [downloadLink, setDownloadLink] = useState("https://play.google.com/store/apps/details?id=com.harnixsas.ticketche");
-
+  const { openInApp } = useDeepLink();
   useEffect(() => {
     setDownloadLink(getDownloadLink());
   }, []);
@@ -295,31 +296,31 @@ export default function PlaceDetailsClient() {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           TOP BAR
       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-{/* TOP BAR */}
-<div style={{
-  position: "sticky", top: 0, zIndex: 50,
-  background: "rgba(244,250,251,.92)", backdropFilter: "blur(12px)",
-  borderBottom: "1px solid rgba(0,95,105,.10)",
-  padding: "12px 0",
-}}>
-  <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-    <button
-      onClick={() => window.close()}
-      style={{
-        display: "flex", alignItems: "center", gap: 7,
-        background: "#fff", border: "1px solid #e5e7eb", borderRadius: 999,
-        padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#374151",
-        cursor: "pointer", fontFamily: F, boxShadow: "0 1px 3px rgba(0,0,0,.06)",
-      }}
-    >
-      <ArrowLeft style={{ width: 13, height: 13 }} /> Retour
-    </button>
+      {/* TOP BAR */}
+      <div style={{
+        position: "sticky", top: 0, zIndex: 50,
+        background: "rgba(244,250,251,.92)", backdropFilter: "blur(12px)",
+        borderBottom: "1px solid rgba(0,95,105,.10)",
+        padding: "12px 0",
+      }}>
+        <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <button
+            onClick={() => window.close()}
+            style={{
+              display: "flex", alignItems: "center", gap: 7,
+              background: "#fff", border: "1px solid #e5e7eb", borderRadius: 999,
+              padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#374151",
+              cursor: "pointer", fontFamily: F, boxShadow: "0 1px 3px rgba(0,0,0,.06)",
+            }}
+          >
+            <ArrowLeft style={{ width: 13, height: 13 }} /> Retour
+          </button>
 
-    <p className="pd-topbar-name" style={{ fontSize: 14, fontWeight: 800, color: CD, margin: 0, letterSpacing: -.2 }}>
-      {place.name}
-    </p>
-  </div>  {/* ← ferme le div intérieur */}
-</div>    {/* ← ferme le div extérieur */}
+          <p className="pd-topbar-name" style={{ fontSize: 14, fontWeight: 800, color: CD, margin: 0, letterSpacing: -.2 }}>
+            {place.name}
+          </p>
+        </div>  {/* ← ferme le div intérieur */}
+      </div>    {/* ← ferme le div extérieur */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           PHOTO GRID HERO
       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -698,6 +699,23 @@ export default function PlaceDetailsClient() {
               </div>
               <ArrowRight style={{ width: 14, height: 14, opacity: .4 }} />
             </motion.a>
+
+            {/* Bouton deep link */}
+            <button
+              onClick={() => openInApp("place", place.id)}
+              style={{
+                marginTop: 10, width: "100%",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                background: "rgba(255,255,255,.12)", backdropFilter: "blur(8px)",
+                border: "1.5px solid rgba(255,255,255,.25)",
+                color: "#fff", borderRadius: 12,
+                padding: "11px 18px", fontSize: 13, fontWeight: 700,
+                cursor: "pointer", fontFamily: F,
+                position: "relative",
+              }}
+            >
+              Ouvrir dans l'app
+            </button>
           </div>
 
         </div>

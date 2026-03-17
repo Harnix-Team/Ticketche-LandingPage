@@ -6,7 +6,7 @@ const safeFetch = async (url) => {
   return res.json().catch(() => null);
 };
 
-export const fetchAllPlaces = () => safeFetch(`${API_URL}/api/v1/all_places?validatedOnly=true`);
+export const fetchAllPlaces = () => safeFetch(`${API_URL}/api/v1/all_places?validatedOnly=1`);
 export const fetchAllEvents = () => safeFetch(`${API_URL}/api/v2/events`);
 export const fetchEventById = (id) => safeFetch(`${API_URL}/api/v2/events/${id}`);
 export const fetchEventCategories = () => safeFetch(`${API_URL}/api/v2/event_categories`);

@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.harnixsas.ticketche",
+      "sha256_cert_fingerprints": [
+        "9F:F3:32:6A:BF:62:7E:32:BA:BE:96:26:DF:8E:F9:A5:D3:68:E1:AB:25:54:ED:F7:87:2A:3F:83:BE:2C:2F:9B"
+      ]
+    }
+  }
+]

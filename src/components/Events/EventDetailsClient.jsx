@@ -5,7 +5,8 @@ import { fetchEventById } from "@/app/services/api";
 import { EventsCarousel } from "@/components/Home/EventsCarousel";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { getDownloadLink } from "@/utils/deviceDetection";
+import { getDownloadLink } from "@/utils/deviceDetection"; import { useDeepLink } from "@/utils/useDeepLink";
+
 import {
   Calendar, MapPin, User, Tag, Ticket, ArrowLeft,
   NavigationArrow, Link as LinkIcon, Users, Clock,
@@ -16,10 +17,10 @@ import {
 /* ══════════════════════════════════════════════
    TOKENS — identiques à PlaceDetailsClient
 ══════════════════════════════════════════════ */
-const C  = "#005f69";
+const C = "#005f69";
 const CD = "#003d45";
 const CL = "rgba(0,95,105,.09)";
-const F  = "'Archivo', sans-serif";
+const F = "'Archivo', sans-serif";
 
 /* ══════════════════════════════════════════════
    HELPERS
@@ -37,14 +38,14 @@ const getMinPrice = (tickets = []) => {
   return Math.min(...prices).toLocaleString() + " FCFA";
 };
 
-const getEventImage  = (event) => event?.images?.[0]?.url  ?? "/images/logo.png";
-const getSecondImage = (event) => event?.images?.[1]?.url  ?? getEventImage(event);
+const getEventImage = (event) => event?.images?.[0]?.url ?? "/images/logo.png";
+const getSecondImage = (event) => event?.images?.[1]?.url ?? getEventImage(event);
 
 /* ── Stars ── */
 function Stars({ value }) {
   return (
     <div style={{ display: "flex", gap: 2 }}>
-      {[1,2,3,4,5].map((n) => (
+      {[1, 2, 3, 4, 5].map((n) => (
         <Star key={n} weight={n <= Math.round(Number(value)) ? "fill" : "regular"}
           style={{ width: 12, height: 12, color: n <= Math.round(Number(value)) ? "#fbbf24" : "#e5e7eb" }} />
       ))}
@@ -67,9 +68,9 @@ function Loader() {
 
 /* ── TicketCard — design original conservé ── */
 function TicketCard({ ticket, index }) {
-  const isFree     = ticket.price === 0;
-  const remaining  = ticket.quantity ? ticket.quantity - (ticket.quantity_sold ?? 0) : null;
-  const pct        = remaining && ticket.quantity ? Math.round((remaining / ticket.quantity) * 100) : null;
+  const isFree = ticket.price === 0;
+  const remaining = ticket.quantity ? ticket.quantity - (ticket.quantity_sold ?? 0) : null;
+  const pct = remaining && ticket.quantity ? Math.round((remaining / ticket.quantity) * 100) : null;
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 }}
@@ -146,13 +147,13 @@ function ProgramItem({ item, index }) {
 ══════════════════════════════════════════════ */
 export default function EventDetailsPage() {
   const { id } = useParams();
-  const [event, setEvent]           = useState(null);
-  const [loading, setLoading]       = useState(true);
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
-  const [activeTab, setActiveTab]   = useState("tickets");
+  const [activeTab, setActiveTab] = useState("tickets");
   const [wishlisted, setWishlisted] = useState(false);
   const [downloadLink, setDownloadLink] = useState("https://play.google.com/store/apps/details?id=com.harnixsas.ticketche");
-
+  const { openInApp } = useDeepLink();
   useEffect(() => { setDownloadLink(getDownloadLink()); }, []);
 
   useEffect(() => {
@@ -181,17 +182,17 @@ export default function EventDetailsPage() {
   );
 
   /* ── computed ── */
-  const minPrice    = getMinPrice(event.tickets);
-  const isFree      = minPrice === "Gratuit";
-  const mapsUrl     = event.latitude ? `https://maps.google.com/?q=${event.latitude},${event.longitude}` : "#";
-  const heroImages  = event.images?.length > 0 ? event.images.map((img) => img.url) : ["/images/logo.png"];
-  const img1        = heroImages[activeImage] ?? heroImages[0];
-  const img2        = heroImages[activeImage === 0 ? 1 : 0] ?? heroImages[0];
+  const minPrice = getMinPrice(event.tickets);
+  const isFree = minPrice === "Gratuit";
+  const mapsUrl = event.latitude ? `https://maps.google.com/?q=${event.latitude},${event.longitude}` : "#";
+  const heroImages = event.images?.length > 0 ? event.images.map((img) => img.url) : ["/images/logo.png"];
+  const img1 = heroImages[activeImage] ?? heroImages[0];
+  const img2 = heroImages[activeImage === 0 ? 1 : 0] ?? heroImages[0];
 
   const totalTickets = event.tickets?.reduce((acc, t) => acc + (t.quantity ?? 0), 0) ?? null;
-  const soldTickets  = event.tickets?.reduce((acc, t) => acc + (t.quantity_sold ?? 0), 0) ?? null;
-  const pctSold      = totalTickets ? Math.round((soldTickets / totalTickets) * 100) : null;
-  const remaining    = totalTickets ? totalTickets - soldTickets : null;
+  const soldTickets = event.tickets?.reduce((acc, t) => acc + (t.quantity_sold ?? 0), 0) ?? null;
+  const pctSold = totalTickets ? Math.round((soldTickets / totalTickets) * 100) : null;
+  const remaining = totalTickets ? totalTickets - soldTickets : null;
 
   const tabs = ["tickets", "détails", "programme"];
 
@@ -338,7 +339,7 @@ export default function EventDetailsPage() {
                   {tab === "tickets"
                     ? `Tickets (${event.tickets?.length ?? 0})`
                     : tab === "détails" ? "Détails"
-                    : `Programme (${event.program_items?.length ?? 0})`}
+                      : `Programme (${event.program_items?.length ?? 0})`}
                 </button>
               ))}
             </div>
@@ -380,8 +381,8 @@ export default function EventDetailsPage() {
                       </div>
                       {item.isLink
                         ? <a href={item.val} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12.5, fontWeight: 800, color: C, background: CL, padding: "4px 12px", borderRadius: 999, textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}>
-                            Rejoindre <ArrowSquareOut style={{ width: 11, height: 11 }} />
-                          </a>
+                          Rejoindre <ArrowSquareOut style={{ width: 11, height: 11 }} />
+                        </a>
                         : <span style={{ fontSize: 12.5, fontWeight: 800, color: C, background: CL, padding: "4px 12px", borderRadius: 999 }}>{item.val}</span>
                       }
                     </motion.div>
@@ -426,10 +427,10 @@ export default function EventDetailsPage() {
               </p>
               <div className="ed-apercu-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
                 {[
-                  { label: "Tickets",        val: event.tickets?.length ?? "—",       icon: Ticket,       color: C },
-                  { label: "Réservations",   val: event.reservations_count ?? 0,       icon: Users,        color: "#059669" },
-                  { label: "Prix minimum",   val: getMinPrice(event.tickets),          icon: Tag,          color: "#d97706" },
-                  { label: "Sécurité",       val: "Certifié",                          icon: Shield,       color: "#1d4ed8" },
+                  { label: "Tickets", val: event.tickets?.length ?? "—", icon: Ticket, color: C },
+                  { label: "Réservations", val: event.reservations_count ?? 0, icon: Users, color: "#059669" },
+                  { label: "Prix minimum", val: getMinPrice(event.tickets), icon: Tag, color: "#d97706" },
+                  { label: "Sécurité", val: "Certifié", icon: Shield, color: "#1d4ed8" },
                 ].map((item, i) => {
                   const Icon = item.icon;
                   return (
@@ -552,6 +553,23 @@ export default function EventDetailsPage() {
               </div>
               <ArrowRight style={{ width: 14, height: 14, opacity: .4 }} />
             </motion.a>
+
+            {/* Bouton deep link */}
+            <button
+              onClick={() => openInApp("event", event.id)}
+              style={{
+                marginTop: 10, width: "100%",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                background: "rgba(255,255,255,.12)", backdropFilter: "blur(8px)",
+                border: "1.5px solid rgba(255,255,255,.25)",
+                color: "#fff", borderRadius: 12,
+                padding: "11px 18px", fontSize: 13, fontWeight: 700,
+                cursor: "pointer", fontFamily: F,
+                position: "relative",
+              }}
+            >
+              Ouvrir dans l'app
+            </button>
           </div>
 
         </div>
