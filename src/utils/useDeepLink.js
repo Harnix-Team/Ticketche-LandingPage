@@ -7,14 +7,23 @@ const STORE_URLS = {
 
 export function useDeepLink() {
   const openInApp = useCallback((type, id) => {
-    const paths = {
+    // Chemins deep link pour l'app mobile
+    const appPaths = {
       event: `events/details?eventId=${id}`,
       place: `places/details?placeId=${id}`,
       referral: `sign-up?referral_code=${id}`,
     };
 
-    const path = paths[type];
-    if (!path) return;
+    // Routes web pour le fallback desktop
+    const webPaths = {
+      event: `events/${id}`,
+      place: `places/${id}`,
+      referral: `sign-up?referral_code=${id}`,
+    };
+
+    const appPath = appPaths[type];
+    const webPath = webPaths[type];
+    if (!appPath) return;
 
     const ua = navigator.userAgent.toLowerCase();
     const isIOS = /iphone|ipad|ipod/.test(ua);
@@ -22,7 +31,7 @@ export function useDeepLink() {
 
     if (isAndroid) {
       const intentUrl =
-        `intent://${path}#Intent;` +
+        `intent://${appPath}#Intent;` +
         `scheme=ticketche;` +
         `package=com.harnixsas.ticketche;` +
         `S.browser_fallback_url=${encodeURIComponent(STORE_URLS.android)};` +
@@ -33,14 +42,15 @@ export function useDeepLink() {
       let appOpened = false;
       const onBlur = () => { appOpened = true; };
       window.addEventListener("blur", onBlur);
-      window.location.href = `ticketche://${path}`;
+      window.location.href = `ticketche://${appPath}`;
       setTimeout(() => {
         window.removeEventListener("blur", onBlur);
         if (!appOpened) window.location.href = STORE_URLS.ios;
       }, 1200);
 
     } else {
-      window.open(`https://ticketche.com/${path}`, "_blank");
+      // Desktop : ouvrir la page de détail web dans un nouvel onglet (URL relative)
+      window.open(`/${webPath}`, "_blank");
     }
   }, []);
 

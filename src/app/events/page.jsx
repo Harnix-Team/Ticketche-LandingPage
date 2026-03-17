@@ -119,7 +119,7 @@ function HeroCard({ event, onClick }) {
         <div className="flex items-center gap-4">
           <span className="text-white font-black text-lg">{getMinPrice(event.tickets)}</span>
           <span className="flex items-center gap-2 bg-white text-[#005f69] font-black text-sm px-5 py-2.5 rounded-full group-hover:bg-[#005f69] group-hover:text-white transition-colors duration-300">
-            Réserver
+            Voir les détails
             <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
           </span>
         </div>
