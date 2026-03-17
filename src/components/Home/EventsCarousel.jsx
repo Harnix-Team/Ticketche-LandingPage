@@ -374,72 +374,80 @@ export const EventsCarousel = () => {
 
       <StarClusters />
 
-      <div style={{ maxWidth: "96vw", margin: "0 auto", padding: "0 16px", position: "relative", zIndex: 2 }}>
-
-        {/* Contenu */}
-        <motion.div
-          initial={{ opacity:0 }} whileInView={{ opacity:1 }}
-          viewport={{ once:true, amount:0.05 }} transition={{ duration:0.6, delay:0.1 }}
-        >
-          {loading ? (
-            <div style={{ display:"flex", justifyContent:"center", gap:"10px", padding:"48px 0" }}>
-              {[0, 0.2, 0.4].map((delay, i) => (
-                <motion.div key={i}
-                  style={{ width:10, height:10, borderRadius:"50%", background: i%2===0 ? "#04797e" : "#6a2d02" }}
-                  animate={{ scale:[1,1.5,1], opacity:[1,0.4,1] }}
-                  transition={{ duration:1, repeat:Infinity, delay }}
-                />
-              ))}
-            </div>
-          ) : (
-            <div style={{ display:"flex", flexDirection:"column", gap:"40px" }}>
+      {/* EventsPromo — largeur TicketcheFonction */}
+        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px", position: "relative", zIndex: 2 }}>
+          <motion.div
+            initial={{ opacity:0 }} whileInView={{ opacity:1 }}
+            viewport={{ once:true, amount:0.05 }} transition={{ duration:0.6, delay:0.1 }}
+          >
+            {loading ? (
+              <div style={{ display:"flex", justifyContent:"center", gap:"10px", padding:"48px 0" }}>
+                {[0, 0.2, 0.4].map((delay, i) => (
+                  <motion.div key={i}
+                    style={{ width:10, height:10, borderRadius:"50%", background: i%2===0 ? "#04797e" : "#6a2d02" }}
+                    animate={{ scale:[1,1.5,1], opacity:[1,0.4,1] }}
+                    transition={{ duration:1, repeat:Infinity, delay }}
+                  />
+                ))}
+              </div>
+            ) : (
               <EventsPromo />
+            )}
+          </motion.div>
+        </div>
 
-              {/* Header : titre + bouton "Tout voir" — placé sous EventsPromo */}
-              <motion.div
-                style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:"16px", flexWrap:"wrap" }}
-                initial={{ opacity:0, y:-20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}
-              >
-                <div>
-                  <h2 style={{ margin:"0 0 6px", fontSize:"clamp(1.6rem,2.8vw,2.4rem)", fontWeight:900, color:"#0a1628", letterSpacing:"-0.02em" }}>
-                    Événements <span style={{ color:"#04797e" }}>à la une</span>
-                  </h2>
-                  <p style={{ margin:0, fontSize:"15px", color:"#6b7280", lineHeight:1.6 }}>
-                    Les incontournables du moment, sélectionnés pour vous
-                  </p>
-                </div>
-                <motion.a
-                  href="/events"
-                  style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"linear-gradient(135deg,#04797e,#025f63)", color:"#fff", borderRadius:"999px", padding:"10px 22px", fontSize:"13px", fontWeight:700, textDecoration:"none", boxShadow:"0 4px 16px rgba(4,121,126,0.3)", whiteSpace:"nowrap" }}
-                  whileHover={{ scale:1.04, boxShadow:"0 6px 24px rgba(4,121,126,0.4)" }} whileTap={{ scale:0.97 }}
+        {/* Header + Grid — largeur EstablishmentsSection */}
+        <div style={{ maxWidth: "90vw", margin: "0 auto", padding: "0 24px", position: "relative", zIndex: 2 }}>
+          <motion.div
+            initial={{ opacity:0 }} whileInView={{ opacity:1 }}
+            viewport={{ once:true, amount:0.05 }} transition={{ duration:0.6, delay:0.1 }}
+          >
+            {!loading && (
+              <div style={{ display:"flex", flexDirection:"column", gap:"40px", paddingTop:"40px" }}>
+                {/* Header */}
+                <motion.div
+                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:"16px", flexWrap:"wrap" }}
+                  initial={{ opacity:0, y:-20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}
                 >
-                  Tout voir
-                  <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/></svg>
-                </motion.a>
-              </motion.div>
-
-              {displayed.length > 0 && (
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key="events-grid"
-                    style={{ display:"grid", gridTemplateColumns:`repeat(${gridCols}, 1fr)`, gap:"28px" }}
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
+                  <div>
+                    <h2 style={{ margin:"0 0 6px", fontSize:"clamp(1.6rem,2.8vw,2.4rem)", fontWeight:900, color:"#0a1628", letterSpacing:"-0.02em" }}>
+                      Événements <span style={{ color:"#04797e" }}>à la une</span>
+                    </h2>
+                    <p style={{ margin:0, fontSize:"15px", color:"#6b7280", lineHeight:1.6 }}>
+                      Les incontournables du moment, sélectionnés pour vous
+                    </p>
+                  </div>
+                  <motion.a
+                    href="/events"
+                    style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"linear-gradient(135deg,#04797e,#025f63)", color:"#fff", borderRadius:"999px", padding:"10px 22px", fontSize:"13px", fontWeight:700, textDecoration:"none", boxShadow:"0 4px 16px rgba(4,121,126,0.3)", whiteSpace:"nowrap" }}
+                    whileHover={{ scale:1.04, boxShadow:"0 6px 24px rgba(4,121,126,0.4)" }} whileTap={{ scale:0.97 }}
                   >
-                    {displayed.map((ev) => (
-                      <motion.div key={ev.id} variants={itemVariants} layout>
-                        <EventCard event={ev} />
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                </AnimatePresence>
-              )}
-            </div>
-          )}
-        </motion.div>
+                    Tout voir
+                    <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/></svg>
+                  </motion.a>
+                </motion.div>
 
-      </div>
+                {displayed.length > 0 && (
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key="events-grid"
+                      style={{ display:"grid", gridTemplateColumns:`repeat(${gridCols}, 1fr)`, gap:"28px" }}
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
+                    >
+                      {displayed.map((ev) => (
+                        <motion.div key={ev.id} variants={itemVariants} layout>
+                          <EventCard event={ev} />
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  </AnimatePresence>
+                )}
+              </div>
+            )}
+          </motion.div>
+        </div>
     </section>
   );
 };
