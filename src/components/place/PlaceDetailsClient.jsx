@@ -240,10 +240,10 @@ export default function PlaceDetailsClient() {
   useEffect(() => {
     fetchAllPlaces()
       .then((r) => {
-        if (r.success) {
-          const found = r.data.find((p) => String(p.id) === String(id));
+        if (r?.success) {
+          const found = r?.data?.find((p) => String(p.id) === String(id));
           if (found) setPlace(found);
-          setAllPlaces(r.data);
+          setAllPlaces(r?.data ?? []);
         }
       })
       .catch(console.error)

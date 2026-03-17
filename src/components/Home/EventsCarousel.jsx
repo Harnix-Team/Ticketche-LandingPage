@@ -337,7 +337,9 @@ export const EventsCarousel = () => {
 
   useEffect(() => {
     fetchAllEvents()
-      .then(({ success, data }) => {
+      .then((result) => {
+      if (!result) return;
+      const { success, data } = result;
         if (!success) return;
         const events = data ?? [];
         const feat = events.filter((e) => e.is_featured);

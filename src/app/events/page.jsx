@@ -455,14 +455,14 @@ export default function EventsPage() {
   const router = useRouter();
   useEffect(() => {
     fetchAllEvents()
-      .then((data) => { if (data.success) setAllEvents(data.data ?? []); })
+      .then((data) => { if (data?.success) setAllEvents(data?.data ?? []); })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
     fetchEventCategories()
-      .then((data) => { if (data.success) setCategories(data.data ?? []); })
+      .then((data) => { if (data?.success) setCategories(data?.data ?? []); })
       .catch(console.error);
   }, []);
 

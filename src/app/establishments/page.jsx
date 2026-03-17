@@ -449,7 +449,7 @@ export default function EstablishmentsPage() {
 
   useEffect(() => {
     fetchAllPlaces()
-      .then((r) => { if (r.success) setAll(r.data); })
+      .then((r) => { if (r?.success) setAll(r?.data); })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);

@@ -43,14 +43,14 @@ export const EventsSection = () => {
   const searchTimeout = useRef(null);
   useEffect(() => {
     fetchAllEvents()
-      .then((data) => { if (data.success) setAllEvents(data.data ?? []); })
+      .then((data) => { if (data?.success) setAllEvents(data?.data ?? []); })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
     fetchEventCategories()
-      .then((data) => { if (data.success) setCategories(data.data ?? []); })
+      .then((data) => { if (data?.success) setCategories(data?.data ?? []); })
       .catch(console.error);
   }, []);
 
