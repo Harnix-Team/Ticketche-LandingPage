@@ -4,11 +4,12 @@ import { fetchAllPlaces } from "@/app/services/api";
 export async function generateStaticParams() {
   try {
     const response = await fetchAllPlaces();
-    if (response.success) {
-      return response.data.map((place) => ({ id: place.id }));
+    if (response?.success && response.data?.length > 0) {
+      return response.data.map((place) => ({ id: String(place.id) }));
     }
   } catch {}
-  return [];
+  // Fallback requis par output: export — la page sera générée mais affichera un état vide
+  return [{ id: "0" }];
 }
 
 export async function generateMetadata({ params }) {

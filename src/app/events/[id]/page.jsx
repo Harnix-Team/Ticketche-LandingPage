@@ -4,11 +4,12 @@ import { fetchAllEvents } from "@/app/services/api";
 export async function generateStaticParams() {
   try {
     const data = await fetchAllEvents();
-    if (data.success) {
-      return data.data.map((event) => ({ id: event.id }));
+    if (data?.success && data.data?.length > 0) {
+      return data.data.map((event) => ({ id: String(event.id) }));
     }
   } catch {}
-  return [];
+  // Fallback requis par output: export — la page sera générée mais affichera un état vide
+  return [{ id: "0" }];
 }
 
 export async function generateMetadata({ params }) {
