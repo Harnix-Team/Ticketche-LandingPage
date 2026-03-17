@@ -460,11 +460,13 @@ export default function EventsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => {
-    fetchEventCategories()
-      .then((data) => { if (data?.success) setCategories(data?.data ?? []); })
-      .catch(console.error);
-  }, []);
+useEffect(() => {
+  fetchEventCategories()
+    .then((data) => {
+      if (data?.success) setCategories(data?.data ?? []);
+    })
+    .catch(console.error);
+}, []);
 
   const handleSearch = useCallback((query) => {
     setSearchQuery(query);

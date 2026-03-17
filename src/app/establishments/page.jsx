@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { fetchAllPlaces } from "@/app/services/api";
+import { fetchAllPlaces, getPlacesByLocation } from "@/app/services/api";
 import {
   NavigationArrow, MagnifyingGlass, X, Car, Drop, Wrench,
   SlidersHorizontal, Star, MapPin, CaretRight, ArrowUpRight,
@@ -13,8 +13,13 @@ import {
 /* ══════════════════════════════════════════════
    HELPERS
 ══════════════════════════════════════════════ */
-const formatImage = (img) =>
-  img ? img.replace("/storage/app/public", "/storage") : "/images/logo.png";
+const formatImage = (img) => {
+  if (!img) return "/images/logo.png";
+  // Lien déjà absolu (https://...)
+  if (img.startsWith("http")) return img;
+  // Lien relatif legacy
+  return img.replace("/storage/app/public", "/storage");
+};
 
 const getPlaceImage = (place) =>
   place.images?.length > 0
@@ -49,17 +54,6 @@ const getRating = (place) => {
   return (total / place.noteUsers.length).toFixed(1);
 };
 
-function getDistanceMeters(lat1, lon1, lat2, lon2) {
-  const R = 6371000;
-  const toRad = (x) => (x * Math.PI) / 180;
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
 function getBestRatedPlace(places) {
   return [...places].sort((a, b) => {
     const ra = parseFloat(getRating(a)) || 0;
@@ -82,12 +76,12 @@ const FILTERS = [
   { key: "garage", label: "Garage", Icon: Wrench },
 ];
 
-const RADIUS_M = 5000;
+const RADIUS_M = 20000; // 20 km
 
 /* ══════════════════════════════════════════════
    HERO CARD
 ══════════════════════════════════════════════ */
-function HeroCard({ place, onClick, onItinerary, isNearby, distanceM }) {
+function HeroCard({ place, onClick, onItinerary, isNearby, distanceKm }) {
   const rating = getRating(place);
   const tags = getServiceTags(place);
 
@@ -122,7 +116,7 @@ function HeroCard({ place, onClick, onItinerary, isNearby, distanceM }) {
             {isNearby ? (
               <span style={{ background: "#005f69", color: "white", fontSize: 10, fontWeight: 800, padding: "4px 11px", borderRadius: 20, letterSpacing: .5, textTransform: "uppercase", display: "flex", alignItems: "center", gap: 5 }}>
                 <MapPin weight="fill" style={{ width: 10, height: 10 }} />
-                À {Math.round(distanceM)} m de vous
+                {distanceKm != null ? `À ${distanceKm < 1 ? Math.round(distanceKm * 1000) + " m" : distanceKm.toFixed(1) + " km"} de vous` : "Le plus proche"}
               </span>
             ) : (
               <span style={{ background: "#d97706", color: "white", fontSize: 10, fontWeight: 800, padding: "4px 11px", borderRadius: 20, letterSpacing: .5, textTransform: "uppercase", display: "flex", alignItems: "center", gap: 5 }}>
@@ -214,7 +208,6 @@ function ListCard({ place, index, onClick, onItinerary }) {
       onClick={() => onClick(place)}
       className="group flex items-stretch gap-0 cursor-pointer bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg hover:shadow-[#005f69]/8 hover:border-[#005f69]/20 transition-all duration-300"
     >
-      {/* Bande colorée gauche */}
       <div className="flex-shrink-0 w-14 sm:w-16 bg-gradient-to-b from-[#005f69] to-[#004a52] flex flex-col items-center justify-center gap-1.5 py-4">
         <ServiceIcon tag={tags[0] ?? ""} style={{ width: 18, height: 18, color: "white" }} />
         <span className="text-white/50 text-[8px] font-black uppercase tracking-wider text-center leading-tight px-1">
@@ -222,7 +215,6 @@ function ListCard({ place, index, onClick, onItinerary }) {
         </span>
       </div>
 
-      {/* Image */}
       <div className="relative flex-shrink-0 w-24 sm:w-36 overflow-hidden">
         <Image src={getPlaceImage(place)} alt={place.name} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
         {rating && (
@@ -233,7 +225,6 @@ function ListCard({ place, index, onClick, onItinerary }) {
         )}
       </div>
 
-      {/* Contenu */}
       <div className="flex-1 flex flex-col justify-between p-3 sm:p-4 min-w-0">
         <div>
           <div className="flex gap-1.5 flex-wrap mb-1.5">
@@ -440,53 +431,50 @@ export default function EstablishmentsPage() {
   const [viewMode, setViewMode] = useState("list");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const [userCoords, setUserCoords] = useState(null);
-  const [geoReady, setGeoReady] = useState(false);
-  const [nearbyPlace, setNearbyPlace] = useState(null);
-  const [nearbyDist, setNearbyDist] = useState(null);
+  // Geoloc & hero
+  const [nearbyPlace, setNearbyPlace] = useState(null);  // { place, distanceKm }
   const [showNoNearbyToast, setShowNoNearbyToast] = useState(false);
   const toastTimerRef = useRef(null);
 
+  /* ── 1. Charger tous les établissements ── */
   useEffect(() => {
     fetchAllPlaces()
-      .then((r) => { if (r?.success) setAll(r?.data); })
+      .then((r) => { if (r?.success) setAll(r?.data ?? []); })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
+  /* ── 2. Géolocalisation → appel API getPlacesByLocation ── */
   useEffect(() => {
-    if (!navigator.geolocation) { setGeoReady(true); return; }
+    if (!navigator.geolocation) return;
+
     navigator.geolocation.getCurrentPosition(
-      (pos) => { setUserCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude }); setGeoReady(true); },
-      () => { setUserCoords(null); setGeoReady(true); },
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        try {
+          const data = await getPlacesByLocation(latitude, longitude, RADIUS_M);
+          // On attend soit { success, data: [...] } soit { data: [...] }
+          const places = data?.data ?? [];
+          if (places.length > 0) {
+            setNearbyPlace({ place: places[0], distanceKm: places[0].distance ?? null });
+          } else {
+            // Aucun résultat dans le rayon → toast
+            setShowNoNearbyToast(true);
+            clearTimeout(toastTimerRef.current);
+            toastTimerRef.current = setTimeout(() => setShowNoNearbyToast(false), 4000);
+          }
+        } catch {
+          // Erreur réseau → fallback silencieux sur "mieux noté"
+        }
+      },
+      () => {
+        // Géoloc refusée → fallback silencieux sur "mieux noté"
+      },
       { enableHighAccuracy: true, timeout: 8000 }
     );
-  }, []);
 
-  useEffect(() => {
-    if (!geoReady || all.length === 0) return;
-    if (!userCoords) {
-      setNearbyPlace(null); setNearbyDist(null);
-      setShowNoNearbyToast(true);
-      clearTimeout(toastTimerRef.current);
-      toastTimerRef.current = setTimeout(() => setShowNoNearbyToast(false), 4000);
-      return;
-    }
-    const withCoords = all.filter((p) => p.latitude != null && p.longitude != null);
-    let closest = null, closestDist = Infinity;
-    for (const place of withCoords) {
-      const d = getDistanceMeters(userCoords.lat, userCoords.lon, parseFloat(place.latitude), parseFloat(place.longitude));
-      if (d <= RADIUS_M && d < closestDist) { closest = place; closestDist = d; }
-    }
-    if (closest) { setNearbyPlace(closest); setNearbyDist(closestDist); }
-    else {
-      setNearbyPlace(null); setNearbyDist(null);
-      setShowNoNearbyToast(true);
-      clearTimeout(toastTimerRef.current);
-      toastTimerRef.current = setTimeout(() => setShowNoNearbyToast(false), 4000);
-    }
     return () => clearTimeout(toastTimerRef.current);
-  }, [geoReady, userCoords, all]);
+  }, []);
 
   const handleClick = useCallback((place) => {
     localStorage.setItem("selectedPlace", JSON.stringify(place));
@@ -498,13 +486,18 @@ export default function EstablishmentsPage() {
     window.open(`https://app.ticketche.com/places/itinerary?placeId=${id}`, "_blank");
   }, []);
 
+  /* ── Filtrage & tri ── */
   const filtered = useMemo(() => {
-    let res = [...all];
+    let res = [...all].filter((p) => p.status === "VALIDATED");
     if (activeFilter !== "all")
       res = res.filter((p) => p.services.some((s) => s.pivot.status === "ON" && s.name.toLowerCase().includes(activeFilter)));
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      res = res.filter((p) => p.name?.toLowerCase().includes(q) || p.city?.toLowerCase().includes(q) || p.services.some((s) => s.name.toLowerCase().includes(q)));
+      res = res.filter((p) =>
+        p.name?.toLowerCase().includes(q) ||
+        p.city?.toLowerCase().includes(q) ||
+        p.services.some((s) => s.name.toLowerCase().includes(q))
+      );
     }
     return res.sort((a, b) => {
       if (sortBy === "rating") return (parseFloat(getRating(b)) || 0) - (parseFloat(getRating(a)) || 0);
@@ -513,15 +506,20 @@ export default function EstablishmentsPage() {
     });
   }, [all, activeFilter, searchQuery, sortBy]);
 
+  /* ── Hero : nearby (API) > mieux noté (fallback) ── */
   const heroPlace = useMemo(() => {
-    if (!searchQuery && activeFilter === "all") {
-      if (nearbyPlace) return { place: nearbyPlace, isNearby: true, dist: nearbyDist };
-      if (all.length > 0) return { place: getBestRatedPlace(all), isNearby: false, dist: null };
+    // Si filtre ou recherche actif → premier résultat filtré
+    if (searchQuery || activeFilter !== "all") {
+      return filtered.length > 0 ? { place: filtered[0], isNearby: false } : null;
     }
-    if (filtered.length > 0) return { place: filtered[0], isNearby: false, dist: null };
-    return null;
-  }, [nearbyPlace, nearbyDist, all, filtered, searchQuery, activeFilter]);
+    // Priorité 1 : résultat de getPlacesByLocation
+    if (nearbyPlace) return { place: nearbyPlace.place, isNearby: true, distanceKm: nearbyPlace.distanceKm };
+    // Priorité 2 : mieux noté parmi tous
+    const best = getBestRatedPlace(all);
+    return best ? { place: best, isNearby: false } : null;
+  }, [nearbyPlace, all, filtered, searchQuery, activeFilter]);
 
+  /* ── Liste sans le hero ── */
   const listItems = useMemo(() => {
     if (!heroPlace) return filtered;
     return filtered.filter((p) => p.id !== heroPlace.place.id);
@@ -609,14 +607,13 @@ export default function EstablishmentsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex flex-col lg:flex-row gap-8">
 
-          {/* ════ SIDEBAR — cachée sur mobile ════ */}
+          {/* ════ SIDEBAR ════ */}
           <motion.aside
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="hidden lg:block w-full lg:w-64 flex-shrink-0 space-y-4"
           >
-            {/* Search */}
             <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
               <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Recherche</p>
               <div className="relative">
@@ -634,7 +631,6 @@ export default function EstablishmentsPage() {
               </div>
             </div>
 
-            {/* Sort */}
             <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
               <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 flex items-center gap-1.5">
                 <SlidersHorizontal className="w-3.5 h-3.5" /> Trier par
@@ -654,7 +650,6 @@ export default function EstablishmentsPage() {
               </div>
             </div>
 
-            {/* Filtres service */}
             <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
               <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 flex items-center gap-1.5">
                 <Funnel className="w-3.5 h-3.5" /> Type de service
@@ -670,7 +665,6 @@ export default function EstablishmentsPage() {
               </div>
             </div>
 
-            {/* Stats card */}
             <div className="bg-gradient-to-b from-[#005f69] to-[#004a52] rounded-2xl p-5 text-white shadow-lg">
               <Buildings className="w-5 h-5 text-white/50 mb-3" />
               <p className="text-4xl font-black leading-none tracking-tight">{all.length}</p>
@@ -716,9 +710,11 @@ export default function EstablishmentsPage() {
                 <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   {heroPlace && (
                     <HeroCard
-                      place={heroPlace.place} onClick={handleClick}
+                      place={heroPlace.place}
+                      onClick={handleClick}
                       onItinerary={handleItinerary}
-                      isNearby={heroPlace.isNearby} distanceM={heroPlace.dist}
+                      isNearby={heroPlace.isNearby}
+                      distanceKm={heroPlace.distanceKm}
                     />
                   )}
                   <div className="flex items-center justify-between mb-4">
@@ -738,9 +734,11 @@ export default function EstablishmentsPage() {
                 <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   {heroPlace && (
                     <HeroCard
-                      place={heroPlace.place} onClick={handleClick}
+                      place={heroPlace.place}
+                      onClick={handleClick}
                       onItinerary={handleItinerary}
-                      isNearby={heroPlace.isNearby} distanceM={heroPlace.dist}
+                      isNearby={heroPlace.isNearby}
+                      distanceKm={heroPlace.distanceKm}
                     />
                   )}
                   <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-4">
