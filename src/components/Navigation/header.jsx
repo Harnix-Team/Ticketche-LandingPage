@@ -166,7 +166,7 @@ export const Header = () => {
           font-weight: 700;
           background: #00515a;
           color: white;
-padding: 0.65rem 1.4rem;
+padding: 0.65rem 1rem;
           border-radius: 999px;
           transition: all 0.3s ease;
           min-width: 130px;

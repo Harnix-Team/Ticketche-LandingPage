@@ -243,7 +243,7 @@ overflow: visible;
 
         .faq-badge {
           position: absolute;
-          bottom: -1px;
+          bottom: -33px;
           left: 50%;
           transform: translateX(-50%);
           background: rgba(0,0,0,0.32);
@@ -307,6 +307,8 @@ overflow: visible;
   }
 .faq-right { padding: 0; margin-top: -80px; }
   .faq-card  { width: 95%; min-width: 280px; }
+    .faq-root  { padding-bottom: 40px; }
+
 }
 
 @media (max-width: 520px) {
