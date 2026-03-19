@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, MapPin, Ticket, ArrowRight, Users, Star, MusicNote, FilmSlate, SoccerBall, Confetti, DeviceMobile } from "@phosphor-icons/react";
+import { Calendar, MapPin, Ticket, ArrowRight, ArrowUpRight, Users, Star, MusicNote, FilmSlate, SoccerBall, Confetti, DeviceMobile } from "@phosphor-icons/react";
 import { getDownloadLink } from "@/utils/deviceDetection";
 import { fetchAllEvents } from "@/app/services/api";
 
@@ -52,10 +53,11 @@ function StarClusters() {
    EventCard — même design que PlaceCard
 ══════════════════════════════════════════════ */
 function EventCard({ event }) {
+  const router = useRouter();
   const handleClick = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("selectedEvent", JSON.stringify(event));
-      window.open(`/events/${event.id}`, "_blank");
+      router.push(`/events/${event.id}`);
     }
   };
 
@@ -198,12 +200,12 @@ function EventCard({ event }) {
               transition: "background 0.15s, transform 0.15s",
               boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
             }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => { e.stopPropagation(); router.push(`/events/${event.id}`); }}
             onMouseEnter={e => { e.currentTarget.style.background = "#e6f7f8"; e.currentTarget.style.transform = "scale(1.04)"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.transform = "scale(1)"; }}
           >
-            <ArrowRight style={{ width: 12, height: 12 }} />
-            Réserver
+            Détails
+            <ArrowUpRight style={{ width: 12, height: 12 }} />
           </button>
         </div>
       </div>

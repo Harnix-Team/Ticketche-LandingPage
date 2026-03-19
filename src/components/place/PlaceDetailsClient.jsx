@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { fetchAllPlaces } from "@/app/services/api";
@@ -226,6 +226,7 @@ function ReviewCard({ note, index }) {
 ══════════════════════════════════════════════ */
 export default function PlaceDetailsClient() {
   const { id } = useParams();
+  const router = useRouter();
   const [place, setPlace] = useState(null);
   const [allPlaces, setAllPlaces] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -258,7 +259,7 @@ export default function PlaceDetailsClient() {
       <div style={{ textAlign: "center" }}>
         <MapPin size={52} color={C} weight="duotone" style={{ marginBottom: 16 }} />
         <p style={{ fontWeight: 900, fontSize: 18, color: "#374151", marginBottom: 10 }}>Emplacement introuvable</p>
-        <button onClick={() => window.close()} style={{ color: C, background: "none", border: "none", cursor: "pointer", fontWeight: 700, fontSize: 14 }}>
+        <button onClick={() => router.back()} style={{ color: C, background: "none", border: "none", cursor: "pointer", fontWeight: 700, fontSize: 14 }}>
           Fermer
         </button>
       </div>
@@ -305,7 +306,7 @@ export default function PlaceDetailsClient() {
       }}>
         <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <button
-            onClick={() => window.close()}
+            onClick={() => router.back()}
             style={{
               display: "flex", alignItems: "center", gap: 7,
               background: "#fff", border: "1px solid #e5e7eb", borderRadius: 999,
@@ -682,7 +683,7 @@ export default function PlaceDetailsClient() {
             <p style={{ fontSize: 16, fontWeight: 900, color: "#fff", marginBottom: 18, lineHeight: 1.35, position: "relative" }}>
               Accédez à votre place en quelques secondes
             </p>
-            <motion.a
+            {/* <motion.a
               href={downloadLink} target="_blank" rel="noopener noreferrer"
               whileTap={{ scale: 0.97 }}
               style={{
@@ -697,7 +698,7 @@ export default function PlaceDetailsClient() {
                 Réserver via l'app
               </div>
               <ArrowRight style={{ width: 14, height: 14, opacity: .4 }} />
-            </motion.a>
+            </motion.a> */}
 
             {/* Bouton deep link */}
             <button

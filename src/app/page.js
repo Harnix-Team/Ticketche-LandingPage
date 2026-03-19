@@ -14,12 +14,12 @@ export default function Home() {
   return (
     <div>
       <HeroV2 />
+      <EstablishmentsSection />
+      <EventsCarousel />
       <TrustedBySection />
       <WhyChooseUs />
       <TicketcheFonction />
       <HowItWorks />
-      <EstablishmentsSection />
-      <EventsCarousel />
       <ReviewsSection />
       <FAQSection />
       <ActiveUsers />

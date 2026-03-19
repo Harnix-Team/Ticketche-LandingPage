@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -423,6 +424,7 @@ function NearbyToast({ visible }) {
    PAGE PRINCIPALE
 ══════════════════════════════════════════════ */
 export default function EstablishmentsPage() {
+  const router = useRouter();
   const [all, setAll] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -448,25 +450,50 @@ export default function EstablishmentsPage() {
   useEffect(() => {
     if (!navigator.geolocation) return;
 
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        try {
-          const data = await getPlacesByLocation(latitude, longitude, RADIUS_M);
-          // On attend soit { success, data: [...] } soit { data: [...] }
-          const places = data?.data ?? [];
-          if (places.length > 0) {
-            setNearbyPlace({ place: places[0], distanceKm: places[0].distance ?? null });
-          } else {
-            // Aucun résultat dans le rayon → toast
-            setShowNoNearbyToast(true);
-            clearTimeout(toastTimerRef.current);
-            toastTimerRef.current = setTimeout(() => setShowNoNearbyToast(false), 4000);
-          }
-        } catch {
-          // Erreur réseau → fallback silencieux sur "mieux noté"
+    const CACHE_KEY = "ticketche_nearby_place";
+    const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+    const fetchNearby = async (latitude, longitude, fromCache = false) => {
+      try {
+        const data = await getPlacesByLocation(latitude, longitude, RADIUS_M);
+        const places = data?.data ?? [];
+        if (places.length > 0) {
+          const result = { place: places[0], distanceKm: places[0].distance ?? null };
+          setNearbyPlace(result);
+          // Mettre en cache la position + résultat
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            latitude, longitude,
+            result,
+            timestamp: Date.now(),
+          }));
+        } else if (!fromCache) {
+          setShowNoNearbyToast(true);
+          clearTimeout(toastTimerRef.current);
+          toastTimerRef.current = setTimeout(() => setShowNoNearbyToast(false), 4000);
         }
-      },
+      } catch {
+        // Erreur réseau → fallback silencieux sur "mieux noté"
+      }
+    };
+
+    // 1. Charger immédiatement depuis le cache si disponible et récent
+    try {
+      const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+      if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+        setNearbyPlace(cached.result);
+        // Rafraîchir en arrière-plan sans bloquer l'affichage
+        navigator.geolocation.getCurrentPosition(
+          (pos) => fetchNearby(pos.coords.latitude, pos.coords.longitude),
+          () => {},
+          { enableHighAccuracy: false, timeout: 8000 }
+        );
+        return () => clearTimeout(toastTimerRef.current);
+      }
+    } catch {}
+
+    // 2. Pas de cache → demander la position normalement
+    navigator.geolocation.getCurrentPosition(
+      (pos) => fetchNearby(pos.coords.latitude, pos.coords.longitude),
       () => {
         // Géoloc refusée → fallback silencieux sur "mieux noté"
       },
@@ -478,8 +505,8 @@ export default function EstablishmentsPage() {
 
   const handleClick = useCallback((place) => {
     localStorage.setItem("selectedPlace", JSON.stringify(place));
-    window.open(`/places/${place.id}`, "_blank");
-  }, []);
+    router.push(`/places/${place.id}`);
+  }, [router]);
 
   const handleItinerary = useCallback((e, id) => {
     e.stopPropagation();

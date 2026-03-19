@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { fetchEventById } from "@/app/services/api";
 import { EventsCarousel } from "@/components/Home/EventsCarousel";
 import Image from "next/image";
@@ -147,6 +147,7 @@ function ProgramItem({ item, index }) {
 ══════════════════════════════════════════════ */
 export default function EventDetailsPage() {
   const { id } = useParams();
+  const router = useRouter();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
@@ -174,7 +175,7 @@ export default function EventDetailsPage() {
       <div style={{ textAlign: "center" }}>
         <Ticket size={52} color={C} weight="duotone" style={{ marginBottom: 16 }} />
         <p style={{ fontWeight: 900, fontSize: 18, color: "#374151", marginBottom: 10 }}>Événement introuvable</p>
-        <button onClick={() => window.history.back()} style={{ color: C, background: "none", border: "none", cursor: "pointer", fontWeight: 700, fontSize: 14 }}>
+        <button onClick={() => { if (window.history.length > 1) { router.back(); } else { router.push("/events"); } }} style={{ color: C, background: "none", border: "none", cursor: "pointer", fontWeight: 700, fontSize: 14 }}>
           Retour
         </button>
       </div>
@@ -220,7 +221,7 @@ export default function EventDetailsPage() {
       }}>
         <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <button
-            onClick={() => window.history.back()}
+            onClick={() => { if (window.history.length > 1) { router.back(); } else { router.push("/events"); } }}
             style={{ display: "flex", alignItems: "center", gap: 7, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 999, padding: "8px 18px", fontSize: 13, fontWeight: 700, color: "#374151", cursor: "pointer", fontFamily: F, boxShadow: "0 1px 3px rgba(0,0,0,.06)" }}
           >
             <ArrowLeft style={{ width: 13, height: 13 }} /> Retour
@@ -430,7 +431,7 @@ export default function EventDetailsPage() {
                   { label: "Tickets", val: event.tickets?.length ?? "—", icon: Ticket, color: C },
                   { label: "Réservations", val: event.reservations_count ?? 0, icon: Users, color: "#059669" },
                   { label: "Prix minimum", val: getMinPrice(event.tickets), icon: Tag, color: "#d97706" },
-                  { label: "Sécurité", val: "Certifié", icon: Shield, color: "#1d4ed8" },
+                  { label: "Sécurité", val: "Certifié", icon: Shield, color: "#005f69" },
                 ].map((item, i) => {
                   const Icon = item.icon;
                   return (
@@ -541,7 +542,7 @@ export default function EventDetailsPage() {
             <p style={{ fontSize: 16, fontWeight: 900, color: "#fff", marginBottom: 18, lineHeight: 1.35, position: "relative" }}>
               Achetez vos billets en quelques secondes
             </p>
-            <motion.a
+            {/* <motion.a
               href={downloadLink}
               target="_blank" rel="noopener noreferrer"
               whileTap={{ scale: 0.97 }}
@@ -552,7 +553,7 @@ export default function EventDetailsPage() {
                 Réserver via l'app
               </div>
               <ArrowRight style={{ width: 14, height: 14, opacity: .4 }} />
-            </motion.a>
+            </motion.a> */}
 
             {/* Bouton deep link */}
             <button
@@ -574,8 +575,6 @@ export default function EventDetailsPage() {
 
         </div>
       </div>
-
-      {/* padding bas */}
       <div style={{ height: 60 }} />
 
     </main>

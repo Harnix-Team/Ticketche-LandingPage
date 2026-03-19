@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState, useMemo, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchAllPlaces } from "@/app/services/api";
-import { NavigationArrow, MagnifyingGlass, MapPin, Star, ArrowLeft, ArrowRight } from "@phosphor-icons/react";
+import { MagnifyingGlass, MapPin, Star, ArrowLeft, ArrowRight, ArrowUpRight } from "@phosphor-icons/react";
 
 /* ─── helpers ─────────────────────────────────── */
 const formatTicketcheImage = (img) =>
@@ -222,7 +223,7 @@ const styles = {
     boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
   },
   section: {
-    padding: "40px 0 80px",
+    padding: "60px 0 80px",
 background: "#ebf4f4",
     position: "relative",
     overflow: "hidden",
@@ -326,10 +327,10 @@ background: "#ebf4f4",
 };
 
 /* ─── PlaceCard ─────────────────────────────────── */
-function PlaceCard({ place, onItinerary }) {
+function PlaceCard({ place, onDetails }) {
   const handleClick = () => {
     localStorage.setItem("selectedPlace", JSON.stringify(place));
-    window.open(`/places/${place.id}`, "_blank");
+    onDetails(place.id);
   };
 
   const rating = getPlaceRating(place);
@@ -404,12 +405,12 @@ function PlaceCard({ place, onItinerary }) {
 
           <button
             style={styles.itineraryBtn}
-            onClick={(e) => { e.stopPropagation(); onItinerary(place.id); }}
+            onClick={(e) => { e.stopPropagation(); onDetails(place.id); }}
             onMouseEnter={e => { e.currentTarget.style.background = "#e6f7f8"; e.currentTarget.style.transform = "scale(1.04)"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.transform = "scale(1)"; }}
           >
-            <NavigationArrow style={{ width: 12, height: 12 }} />
-            Itinéraire
+            Détails
+            <ArrowUpRight style={{ width: 12, height: 12 }} />
           </button>
         </div>
       </div>
@@ -418,7 +419,7 @@ function PlaceCard({ place, onItinerary }) {
 }
 
 /* ─── MobileCarousel ────────────────────────────── */
-function MobileCarousel({ items, onItinerary }) {
+function MobileCarousel({ items, onDetails }) {
   const scrollRef = useRef(null);
   const autoRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -492,7 +493,7 @@ function MobileCarousel({ items, onItinerary }) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.35, delay: i * 0.07 }}
           >
-            <PlaceCard place={place} onItinerary={onItinerary} />
+            <PlaceCard place={place} onDetails={onDetails} />
           </motion.div>
         ))}
       </div>
@@ -545,6 +546,7 @@ const itemVariants = {
 
 /* ─── MAIN ─────────────────────────────────────── */
 export const EstablishmentsSection = ({ title, showSubtitle = true, showButton = true }) => {
+  const router = useRouter();
   const [establishments, setEstablishments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -574,8 +576,8 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
   loadPlaces();
 }, []);
 
-  const handleItineraryClick = (placeId) => {
-    window.open(`https://app.ticketche.com/places/itinerary?placeId=${placeId}`, "_blank");
+  const handleDetailsClick = (placeId) => {
+    router.push(`/places/${placeId}`);
   };
 
   const filteredEstablishments = useMemo(() => {
@@ -661,7 +663,6 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
           {showButton &&
             <motion.a
               href="/establishments"
-              target="_blank"
               rel="noopener noreferrer"
               style={styles.ctaBtn}
               whileHover={{ scale: 1.04, boxShadow: "0 6px 24px rgba(0,95,105,0.4)" }}
@@ -719,7 +720,7 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
             <MobileCarousel
               key="carousel"
               items={displayedEstablishments}
-              onItinerary={handleItineraryClick}
+              onDetails={handleDetailsClick}
             />
           ) : (
             /* ── Grille tablet/desktop ── */
@@ -732,7 +733,7 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
             >
               {displayedEstablishments.map((place) => (
                 <motion.div key={place.id} variants={itemVariants} layout>
-                  <PlaceCard place={place} onItinerary={handleItineraryClick} />
+                  <PlaceCard place={place} onDetails={handleDetailsClick} />
                 </motion.div>
               ))}
             </motion.div>

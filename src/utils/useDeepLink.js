@@ -7,14 +7,12 @@ const STORE_URLS = {
 
 export function useDeepLink() {
   const openInApp = useCallback((type, id) => {
-    // Chemins deep link pour l'app mobile
     const appPaths = {
       event: `events/details?eventId=${id}`,
       place: `places/details?placeId=${id}`,
       referral: `sign-up?referral_code=${id}`,
     };
 
-    // Routes web pour le fallback desktop
     const webPaths = {
       event: `events/${id}`,
       place: `places/${id}`,
@@ -49,8 +47,8 @@ export function useDeepLink() {
       }, 1200);
 
     } else {
-      // Desktop : ouvrir la page de détail web dans un nouvel onglet (URL relative)
-      window.open(`/${webPath}`, "_blank");
+      // Desktop : navigation dans le même onglet
+      window.location.href = `/${webPath}`;
     }
   }, []);
 
