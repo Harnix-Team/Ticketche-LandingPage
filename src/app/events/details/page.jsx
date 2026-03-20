@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import EventDetailsClient from "@/components/Events/EventDetailsClient";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ searchParams }) {
   const { eventId } = await searchParams;
   return {

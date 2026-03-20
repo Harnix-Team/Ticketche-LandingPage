@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import PlaceDetailsClient from "@/components/place/PlaceDetailsClient";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ searchParams }) {
   const { placeId } = await searchParams;
   return {
