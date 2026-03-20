@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import EventDetailsClient from "@/components/Events/EventDetailsClient";
 
 export async function generateMetadata({ searchParams }) {
@@ -10,5 +11,9 @@ export async function generateMetadata({ searchParams }) {
 }
 
 export default function EventDetailsPage() {
-  return <EventDetailsClient />;
+  return (
+    <Suspense fallback={null}>
+      <EventDetailsClient />
+    </Suspense>
+  );
 }
