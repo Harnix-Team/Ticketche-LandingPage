@@ -505,7 +505,7 @@ export default function EstablishmentsPage() {
 
   const handleClick = useCallback((place) => {
     localStorage.setItem("selectedPlace", JSON.stringify(place));
-    router.push(`/places/${place.id}`);
+    router.push(`/places/details?placeId=${place.id}`);
   }, [router]);
 
   const handleItinerary = useCallback((e, id) => {

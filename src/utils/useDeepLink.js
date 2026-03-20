@@ -14,8 +14,8 @@ export function useDeepLink() {
     };
 
     const webPaths = {
-      event: `events/${id}`,
-      place: `places/${id}`,
+      event: `events/details?eventId=${id}`,
+      place: `places/details?placeId=${id}`,
       referral: `sign-up?referral_code=${id}`,
     };
 

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { fetchAllPlaces } from "@/app/services/api";
@@ -225,7 +225,8 @@ function ReviewCard({ note, index }) {
    PAGE PRINCIPALE
 ══════════════════════════════════════════════ */
 export default function PlaceDetailsClient() {
-  const { id } = useParams();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("placeId");
   const router = useRouter();
   const [place, setPlace] = useState(null);
   const [allPlaces, setAllPlaces] = useState([]);

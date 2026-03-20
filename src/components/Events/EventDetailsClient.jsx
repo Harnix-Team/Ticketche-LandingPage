@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { fetchEventById } from "@/app/services/api";
 import { EventsCarousel } from "@/components/Home/EventsCarousel";
 import Image from "next/image";
@@ -146,7 +146,8 @@ function ProgramItem({ item, index }) {
    PAGE PRINCIPALE
 ══════════════════════════════════════════════ */
 export default function EventDetailsPage() {
-  const { id } = useParams();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("eventId");
   const router = useRouter();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);

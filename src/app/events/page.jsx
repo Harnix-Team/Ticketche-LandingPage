@@ -483,7 +483,7 @@ useEffect(() => {
   }, []);
 
   const handleEventClick = (event) => {
-    router.push(`/events/${event.id}`);
+    router.push(`/events/details?eventId=${event.id}`);
   };
 
   const filteredEvents = useMemo(() => {
