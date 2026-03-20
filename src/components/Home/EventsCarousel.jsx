@@ -57,7 +57,7 @@ function EventCard({ event }) {
   const handleClick = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("selectedEvent", JSON.stringify(event));
-      router.push(`/events/${event.id}`);
+      router.push(`/events/details?eventId=${event.id}`);
     }
   };
 
@@ -200,7 +200,7 @@ function EventCard({ event }) {
               transition: "background 0.15s, transform 0.15s",
               boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
             }}
-            onClick={(e) => { e.stopPropagation(); router.push(`/events/${event.id}`); }}
+            onClick={(e) => { e.stopPropagation(); router.push(`/events/details?eventId=${event.id}`); }}
             onMouseEnter={e => { e.currentTarget.style.background = "#e6f7f8"; e.currentTarget.style.transform = "scale(1.04)"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.transform = "scale(1)"; }}
           >

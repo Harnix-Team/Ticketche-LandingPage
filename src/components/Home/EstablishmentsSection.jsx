@@ -577,7 +577,7 @@ export const EstablishmentsSection = ({ title, showSubtitle = true, showButton =
 }, []);
 
   const handleDetailsClick = (placeId) => {
-    router.push(`/places/${placeId}`);
+    router.push(`/places/details?placeId=${placeId}`);
   };
 
   const filteredEstablishments = useMemo(() => {
