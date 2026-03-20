@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // output: 'export', // Active l'export statique
   trailingSlash: true,
   images: {
-    unoptimized: true, // Nécessaire pour l'export statique
+    unoptimized: true,
   },
   async headers() {
     return [
@@ -11,6 +10,18 @@ const nextConfig = {
         source: "/(.*)",
         headers: [
           { key: "ngrok-skip-browser-warning", value: "true" }
+        ],
+      },
+      {
+        source: "/.well-known/apple-app-site-association",
+        headers: [
+          { key: "Content-Type", value: "application/json" }
+        ],
+      },
+      {
+        source: "/.well-known/assetlinks.json",
+        headers: [
+          { key: "Content-Type", value: "application/json" }
         ],
       },
     ];
