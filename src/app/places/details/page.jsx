@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import PlaceDetailsClient from "@/components/place/PlaceDetailsClient";
 
 export async function generateMetadata({ searchParams }) {
@@ -10,5 +11,9 @@ export async function generateMetadata({ searchParams }) {
 }
 
 export default function PlaceDetailsPage() {
-  return <PlaceDetailsClient />;
+  return (
+    <Suspense fallback={null}>
+      <PlaceDetailsClient />
+    </Suspense>
+  );
 }
