@@ -1,0 +1,100 @@
+name: Build & push docker image
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: "version"
+      is_latest:
+        type: choice
+        description: "Is this the latest version?"
+        default: "yes"
+        options:
+          - "yes"
+          - "no"
+
+env:
+  TAG: ${{ github.event.inputs.version }}
+  IS_LATEST: ${{ github.event.inputs.is_latest || 'yes' }}
+  APP_URL: https://ticketche.com
+
+concurrency:
+  group: build-and-push-docker-image
+  cancel-in-progress: true
+
+jobs:
+  build-and-push:
+    name: Build & push frontend image
+    runs-on: ubuntu-latest
+    environment: prod
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get app version
+        if: ${{ env.TAG == '' }}
+        run: |
+          APP_VERSION=$(jq -r .version package.json)
+          echo "TAG=$APP_VERSION" >> $GITHUB_ENV
+          echo "TAG=$APP_VERSION"
+
+      - name: Create .env file and set client vars only
+        run: |
+          cp .env.template .env
+          sed -i "s|NODE_ENV=.*|NODE_ENV=production|" .env
+          sed -i "s|NEXT_PUBLIC_APP_URL=.*|NEXT_PUBLIC_APP_URL=${{ env.APP_URL }}|" .env
+
+      - name: Set lowercase registry owner
+        run: echo "OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ env.OWNER }}/ticketche-landing-page:${{ env.TAG }}
+            ${{ env.IS_LATEST == 'yes' && env.TAG != 'latest' && format('ghcr.io/{0}/ticketche-landing-page:latest', env.OWNER) || '' }}
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Image publiée — ticketche-landing-page" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| | |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| Registry | \`ghcr.io\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Image | \`ghcr.io/${{ env.OWNER }}/ticketche-landing-page\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tag | \`${{ env.TAG }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branche | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| App URL | ${{ env.APP_URL }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tags poussés :**" >> $GITHUB_STEP_SUMMARY
+          echo "- \`ghcr.io/${{ env.OWNER }}/ticketche-landing-page:${{ env.TAG }}\`" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ env.IS_LATEST }}" = "yes" ] && [ "${{ env.TAG }}" != "latest" ]; then
+            echo "- \`ghcr.io/${{ env.OWNER }}/ticketche-landing-page:latest\`" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> Le déploiement est géré par **ticketche-infra**." >> $GITHUB_STEP_SUMMARY

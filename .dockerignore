@@ -1,0 +1,15 @@
+# Folders
+
+node_modules/
+.next/
+
+# Files
+
+.dockerignore
+docker/
+Dockerfile
+docker-compose.yml
+_.log
+_.env
+.git
+.github/
