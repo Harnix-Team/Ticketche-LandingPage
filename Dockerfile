@@ -13,7 +13,7 @@ RUN npm ci
 COPY . .
 
 # Build l'application en production
-RUN npm run build
+RUN npm run build:no-lint
 
 # Étape 2 : Runtime
 FROM node:22-alpine AS runner
