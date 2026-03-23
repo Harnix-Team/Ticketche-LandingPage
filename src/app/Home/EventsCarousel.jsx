@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, MapPin, Ticket, ArrowRight, ArrowUpRight, Users, Star, MusicNote, FilmSlate, SoccerBall, Confetti, DeviceMobile } from "@phosphor-icons/react";
 import { getDownloadLink } from "@/utils/deviceDetection";
-import { fetchAllEvents, queryKeys } from "@/app/services/api";
+import { fetchAllEvents } from "@/app/services/api";
 
 /* ─── helpers ─────────────────────────────────── */
 const getEventImage = (e) =>
@@ -335,6 +334,8 @@ const itemVariants = {
 
 /* ─── MAIN ─────────────────────────────────────── */
 export const EventsCarousel = () => {
+  const [allEvents, setAllEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [gridCols, setGridCols] = useState(4);
 
   useEffect(() => {
@@ -349,18 +350,19 @@ export const EventsCarousel = () => {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  const { data: allEvents = [], isLoading: loading } = useQuery({
-    queryKey: queryKeys.allEvents,
-    queryFn: fetchAllEvents,
-    select: (result) => {
-      if (!result?.success) return [];
-      const events = result.data ?? [];
-      const feat = events.filter((e) => e.is_featured);
-      return feat.length > 0
-        ? feat.sort((a, b) => (a.featured_order ?? 99) - (b.featured_order ?? 99))
-        : events;
-    },
-  });
+  useEffect(() => {
+    fetchAllEvents()
+      .then((result) => {
+        if (!result) return;
+        const { success, data } = result;
+        if (!success) return;
+        const events = data ?? [];
+        const feat = events.filter((e) => e.is_featured);
+        setAllEvents(feat.length > 0 ? feat.sort((a, b) => (a.featured_order ?? 99) - (b.featured_order ?? 99)) : events);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
 const displayed = useMemo(() => allEvents.slice(0, 4), [allEvents]);
   return (
@@ -400,7 +402,7 @@ const displayed = useMemo(() => allEvents.slice(0, 4), [allEvents]);
         initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
         viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.6, delay: 0.1 }}
       >
-        {!loading && (
+        {!loading && displayed.length > 0 && (
           <div style={{ display: "flex", flexDirection: "column", gap: "40px", paddingTop: "40px" }}>
             {/* Header */}
             <motion.div
@@ -425,23 +427,21 @@ const displayed = useMemo(() => allEvents.slice(0, 4), [allEvents]);
               </motion.a>
             </motion.div>
 
-            {displayed.length > 0 && (
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key="events-grid"
-                  style={{ display: "grid", gridTemplateColumns: `repeat(${gridCols}, 1fr)`, gap: "28px" }}
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  {displayed.map((ev) => (
-                    <motion.div key={ev.id} variants={itemVariants} layout>
-                      <EventCard event={ev} />
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
-            )}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key="events-grid"
+                style={{ display: "grid", gridTemplateColumns: `repeat(${gridCols}, 1fr)`, gap: "28px" }}
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                {displayed.map((ev) => (
+                  <motion.div key={ev.id} variants={itemVariants} layout>
+                    <EventCard event={ev} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            </AnimatePresence>
           </div>
         )}
       </motion.div>
