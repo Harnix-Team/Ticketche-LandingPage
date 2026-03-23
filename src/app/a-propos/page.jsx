@@ -6,7 +6,7 @@ import {
   ChartBar, Money, Pulse, ShieldCheck, ClipboardText, TrendUp, NavigationArrow
 } from "@phosphor-icons/react";
 import { fetchAllPlaces, fetchAllEvents } from "@/app/services/api";
-import FAQSection from "@/components/Home/FaqSection";
+import FAQSection from "@/app/Home/FaqSection";
 import { getDownloadLink } from "@/utils/deviceDetection";
 
 

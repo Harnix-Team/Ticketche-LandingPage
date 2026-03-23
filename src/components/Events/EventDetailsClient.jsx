@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { fetchEventById } from "@/app/services/api";
-import { EventsCarousel } from "@/components/Home/EventsCarousel";
+import { useQuery } from "@tanstack/react-query";
+import { fetchEventById, queryKeys } from "@/app/services/api";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { getDownloadLink } from "@/utils/deviceDetection"; import { useDeepLink } from "@/utils/useDeepLink";
@@ -149,8 +149,6 @@ export default function EventDetailsPage() {
   const searchParams = useSearchParams();
   const id = searchParams.get("eventId");
   const router = useRouter();
-  const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState("tickets");
   const [wishlisted, setWishlisted] = useState(false);
@@ -158,16 +156,12 @@ export default function EventDetailsPage() {
   const { openInApp } = useDeepLink();
   useEffect(() => { setDownloadLink(getDownloadLink()); }, []);
 
-  useEffect(() => {
-    const fetchEventDetails = async () => {
-      try {
-        const data = await fetchEventById(id);
-        if (data.success) setEvent(data.data);
-      } catch (err) { console.error(err); }
-      finally { setLoading(false); }
-    };
-    fetchEventDetails();
-  }, [id]);
+  const { data: event = null, isLoading: loading } = useQuery({
+    queryKey: queryKeys.eventById(id),
+    queryFn: () => fetchEventById(id),
+    enabled: !!id,
+    select: (res) => res?.data ?? null,
+  });
 
   if (loading) return <Loader />;
 
@@ -427,12 +421,11 @@ export default function EventDetailsPage() {
               <p style={{ fontSize: 9.5, color: "#9ca3af", fontWeight: 800, textTransform: "uppercase", letterSpacing: .7, marginBottom: 14 }}>
                 Aperçu rapide
               </p>
-              <div className="ed-apercu-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+              <div className="ed-apercu-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
                 {[
                   { label: "Tickets", val: event.tickets?.length ?? "—", icon: Ticket, color: C },
                   { label: "Réservations", val: event.reservations_count ?? 0, icon: Users, color: "#059669" },
                   { label: "Prix minimum", val: getMinPrice(event.tickets), icon: Tag, color: "#d97706" },
-                  { label: "Sécurité", val: "Certifié", icon: Shield, color: "#005f69" },
                 ].map((item, i) => {
                   const Icon = item.icon;
                   return (
@@ -570,7 +563,7 @@ export default function EventDetailsPage() {
                 position: "relative",
               }}
             >
-              Ouvrir dans l'app
+              Acheter un ticket 
             </button>
           </div>
 

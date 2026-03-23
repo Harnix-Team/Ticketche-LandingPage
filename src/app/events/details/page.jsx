@@ -1,13 +1,12 @@
 import { Suspense } from "react";
 import EventDetailsClient from "@/components/Events/EventDetailsClient";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
-export async function generateMetadata({ searchParams }) {
-  const { eventId } = await searchParams;
+export function generateMetadata() {
   return {
     other: {
-      "apple-itunes-app": `app-id=6758046811, app-argument=ticketche://events/details?eventId=${eventId}`,
+      "apple-itunes-app": `app-id=6758046811, app-argument=ticketche://events/details`,
     },
   };
 }

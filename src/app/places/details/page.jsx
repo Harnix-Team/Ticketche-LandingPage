@@ -1,13 +1,12 @@
 import { Suspense } from "react";
 import PlaceDetailsClient from "@/components/place/PlaceDetailsClient";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
-export async function generateMetadata({ searchParams }) {
-  const { placeId } = await searchParams;
+export function generateMetadata() {
   return {
     other: {
-      "apple-itunes-app": `app-id=6758046811, app-argument=ticketche://places/details?placeId=${placeId}`,
+      "apple-itunes-app": `app-id=6758046811, app-argument=ticketche://places/details`,
     },
   };
 }
