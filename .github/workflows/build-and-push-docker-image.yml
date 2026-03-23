@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - landing-page-v2
     tags:
       - "v*.*.*"
   workflow_dispatch:
@@ -23,6 +24,7 @@ env:
   TAG: ${{ github.event.inputs.version }}
   IS_LATEST: ${{ github.event.inputs.is_latest || 'yes' }}
   APP_URL: https://ticketche.com
+  API_URL: https://api.ticketche.com
 
 concurrency:
   group: build-and-push-docker-image
@@ -50,9 +52,10 @@ jobs:
 
       - name: Create .env file and set client vars only
         run: |
-          cp .env.template .env
+          cp .env.example .env
           sed -i "s|NODE_ENV=.*|NODE_ENV=production|" .env
           sed -i "s|NEXT_PUBLIC_APP_URL=.*|NEXT_PUBLIC_APP_URL=${{ env.APP_URL }}|" .env
+          sed -i "s|NEXT_PUBLIC_API_URL=.*|NEXT_PUBLIC_API_URL=${{ env.API_URL }}|" .env
 
       - name: Set lowercase registry owner
         run: echo "OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
