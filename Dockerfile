@@ -7,6 +7,8 @@ ENV NODE_ENV=production
 
 # Copie des fichiers nécessaires à l'installation
 COPY package.json package-lock.json ./
+
+# Installation des dépendances
 RUN npm ci
 
 # Copie du reste du projet
