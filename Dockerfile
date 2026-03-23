@@ -25,13 +25,17 @@ RUN addgroup -g 1001 -S nodejs && \
 
 WORKDIR /app
 
+# Copie les fichiers de configuration
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package-lock.json ./package-lock.json
+
+# Installation des dépendances de production seulement
+RUN npm ci --omit=dev
+
 # Copie les fichiers nécessaires au runtime
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/next.config.ts ./next.config.ts
-COPY --from=builder /app/tsconfig.json ./tsconfig.json
+COPY --from=builder /app/next.config.mjs ./next.config.mjs
 
 # Désactive l'exécution de shells
 ENV SHELL=/bin/false
