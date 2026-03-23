@@ -1,14 +1,14 @@
-import { CTASection } from "@/components/Home/CTASection";
-import { EstablishmentsSection } from "@/components/Home/EstablishmentsSection";
-import { HeroV2 } from "@/components/Home/HeroV2";
-import TrustedBySection from "@/components/Home/TrustedBySection";
-import { EventsCarousel } from "@/components/Home/EventsCarousel";
-import TicketcheFonction from "@/components/Home/TicketcheFonction";
-import HowItWorks from "@/components/Home/HowItWorks";
-import FAQSection from "@/components/Home/FaqSection";
-import ActiveUsers from "@/components/Home/Activeusers";
-import ReviewsSection from "@/components/Home/ReviewsSection";
-import WhyChooseUs from "@/components/Home/WhyChooseUs";
+import { CTASection } from "@/app/Home/CTASection";
+import { EstablishmentsSection } from "@/app/Home/EstablishmentsSection";
+import { HeroV2 } from "@/app/Home/HeroV2";
+import TrustedBySection from "@/app/Home/TrustedBySection";
+import { EventsCarousel } from "@/app/Home/EventsCarousel";
+import TicketcheFonction from "@/app/Home/TicketcheFonction";
+import HowItWorks from "@/app/Home/HowItWorks";
+import FAQSection from "@/app/Home/FaqSection";
+import ActiveUsers from "@/app/Home/Activeusers";
+import ReviewsSection from "@/app/Home/ReviewsSection";
+import WhyChooseUs from "@/app/Home/WhyChooseUs";
 
 export default function Home() {
   return (

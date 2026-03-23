@@ -1,6 +1,4 @@
-const API_URL = typeof window !== "undefined"
-  ? "/api/proxy"
-  : process.env.NEXT_PUBLIC_API_URL;
+const API_URL = "https://api.ticketche.com";
 
 const safeFetch = async (url) => {
   const res = await fetch(url);
@@ -26,3 +24,12 @@ export const getPlacesByLocation = (latitude, longitude, radius = 20000) =>
   })
     .then((res) => (res.ok ? res.json() : null))
     .catch(() => null);
+// Query keys centralisées
+export const queryKeys = {
+  allPlaces: ["places", "all"],
+  allEvents: ["events", "all"],
+  eventById: (id) => ["events", id],
+  eventCategories: ["events", "categories"],
+  searchEvents: (query) => ["events", "search", query],
+  placesByLocation: (lat, lng) => ["places", "location", lat, lng],
+};

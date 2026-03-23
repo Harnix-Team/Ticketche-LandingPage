@@ -3,6 +3,7 @@ import "./globals.css";
 import { HeaderWrapper } from "@/components/Navigation/HeaderWrapper";
 import { Footer } from "@/components/Navigation/footer";
 import AppNotification from "@/components/AppNotification";
+import Providers from "@/app/providers";
 
 
 const archivo = Archivo({
@@ -98,10 +99,12 @@ export default function RootLayout({ children }) {
       <body
         className={`${archivo.variable} antialiased bg-[#047b7f13]`}
       >
-        <HeaderWrapper />
-        {children}
-        <Footer />
-        <AppNotification />
+        <Providers>
+          <HeaderWrapper />
+          {children}
+          <Footer />
+          <AppNotification />
+        </Providers>
       </body>
     </html>
   );

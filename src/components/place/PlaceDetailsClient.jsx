@@ -1,15 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { fetchAllPlaces } from "@/app/services/api";
-import { EstablishmentsSection } from "@/components/Home/EstablishmentsSection";
+import { fetchAllPlaces, queryKeys } from "@/app/services/api";
 import { getDownloadLink } from "@/utils/deviceDetection";
 import { useDeepLink } from "@/utils/useDeepLink";
 import {
   MapPin, Star, Wrench, ArrowLeft, NavigationArrow,
-  CheckCircle, Car, Drop, Shield, ArrowRight,
+  CheckCircle, Car, Drop, Shield, ArrowRight, ArrowUpRight,
   Heart, Camera,
 } from "@phosphor-icons/react";
 
@@ -228,9 +228,6 @@ export default function PlaceDetailsClient() {
   const searchParams = useSearchParams();
   const id = searchParams.get("placeId");
   const router = useRouter();
-  const [place, setPlace] = useState(null);
-  const [allPlaces, setAllPlaces] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState("services");
   const [wishlisted, setWishlisted] = useState(false);
@@ -240,18 +237,23 @@ export default function PlaceDetailsClient() {
     setDownloadLink(getDownloadLink());
   }, []);
 
+  const { data: allPlaces = [], isLoading: loading } = useQuery({
+    queryKey: queryKeys.allPlaces,
+    queryFn: fetchAllPlaces,
+    enabled: !!id,
+    select: (r) => r?.data ?? [],
+  });
+  const place = allPlaces.find((p) => String(p.id) === String(id)) ?? null;
+
+  // Auto-swipe images
   useEffect(() => {
-    fetchAllPlaces()
-      .then((r) => {
-        if (r?.success) {
-          const found = r?.data?.find((p) => String(p.id) === String(id));
-          if (found) setPlace(found);
-          setAllPlaces(r?.data ?? []);
-        }
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, [id]);
+    if (!place?.images?.length || place.images.length <= 1) return;
+    const total = Math.min(place.images.length, 5);
+    const timer = setInterval(() => {
+      setActiveImage((prev) => (prev + 1) % total);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [place?.images?.length]);
 
   if (loading) return <Loader />;
 
@@ -284,7 +286,7 @@ export default function PlaceDetailsClient() {
 
   const servicesTotal = activeServices.reduce((acc, s) => acc + (Number(s.pivot.price) || 0), 0);
   const tabs = ["services", "horaires", "avis"];
-  const otherPlaces = allPlaces.filter((p) => String(p.id) !== String(id));
+  const otherPlaces = id ? allPlaces.filter((p) => String(p.id) !== String(id)) : [];
 
   /* ════════════════════════════════
      RENDER
@@ -376,10 +378,7 @@ export default function PlaceDetailsClient() {
                     {place.available_places ?? "—"} / {place.total_place} places
                   </span>
                 )}
-                <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 13, color: "#6ee7b7", fontWeight: 600 }}>
-                  <CheckCircle weight="fill" style={{ width: 13, height: 13 }} />
-                  Certifié
-                </span>
+
               </div>
             </div>
           </div>
@@ -398,18 +397,6 @@ export default function PlaceDetailsClient() {
               }}>
                 <Camera style={{ width: 11, height: 11, color: "#fff" }} />
                 <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>{heroImages.length}</span>
-              </div>
-            )}
-
-            {heroImages.length > 1 && (
-              <div style={{ position: "absolute", bottom: 14, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 5 }}>
-                {heroImages.slice(0, 5).map((_, i) => (
-                  <button key={i} onClick={() => setActiveImage(i)} style={{
-                    width: i === activeImage ? 22 : 7, height: 7, borderRadius: 999,
-                    background: i === activeImage ? "#fff" : "rgba(255,255,255,.45)",
-                    border: "none", cursor: "pointer", padding: 0, transition: "all .2s",
-                  }} />
-                ))}
               </div>
             )}
           </div>
@@ -553,12 +540,11 @@ export default function PlaceDetailsClient() {
               <p style={{ fontSize: 9.5, color: "#9ca3af", fontWeight: 800, textTransform: "uppercase", letterSpacing: .7, marginBottom: 14 }}>
                 Aperçu rapide
               </p>
-              <div className="pd-apercu-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+              <div className="pd-apercu-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
                 {[
                   { label: "Places totales", val: place.total_place ?? "—", icon: Car, color: C },
                   { label: "Places libres", val: place.available_places ?? "—", icon: CheckCircle, color: "#059669" },
-                  { label: "Note", val: rating ?? "—", icon: Star, color: "#d97706" },
-{ label: "Sécurité", val: "Certifié", icon: Shield, color: "#005f69" },                ].map((item, i) => {
+                  { label: "Note", val: rating ?? "—", icon: Star, color: "#d97706" },                ].map((item, i) => {
                   const Icon = item.icon;
                   return (
                     <div key={i} style={{ padding: "12px 14px", background: "#f9f9f6", borderRadius: 14, border: "1px solid #efefea" }}>
@@ -660,12 +646,7 @@ export default function PlaceDetailsClient() {
                   </div>
                 ))}
               </div>
-              {activeServices.length > 0 && (
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 12, marginTop: 8, borderTop: "1px solid #f3f4f6" }}>
-                  <span style={{ fontSize: 14, fontWeight: 800, color: C }}>Total estimé</span>
-                  <span style={{ fontSize: 14, fontWeight: 900, color: C }}>{servicesTotal.toLocaleString()} FCFA</span>
-                </div>
-              )}
+
             </div>
           </div>
 
@@ -733,11 +714,88 @@ export default function PlaceDetailsClient() {
               <div style={{ flex: 1, height: 1, background: "linear-gradient(to left, transparent, #d4eaed)" }} />
             </div>
           </div>
-          <EstablishmentsSection
-            title={<>Autres <span style={{ color: C }}>emplacements</span></>}
-            showSubtitle={false}
-            showButton={false}
-          />
+          <div style={{ padding: "40px 0 60px", background: "#ebf4f4", position: "relative", overflow: "hidden" }}>
+            <div style={{ maxWidth: "90vw", margin: "0 auto", padding: "0 24px", position: "relative", zIndex: 2 }}>
+              <h3 style={{ margin: "0 0 28px", fontSize: 40, fontWeight: 900, color: "#0a1628", letterSpacing: "-0.02em" }}>
+                Autres <span style={{ color: C }}>emplacements</span>
+              </h3>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 28 }}>
+                {otherPlaces.slice(0, 4).map((p) => {
+                  const pRating = p.noteUsers?.length > 0
+                    ? (p.noteUsers.reduce((s, n) => s + parseFloat(n.star), 0) / p.noteUsers.length).toFixed(1)
+                    : null;
+                  const pImg = p.images?.length > 0
+                    ? p.images[0].link?.replace("/storage/app/public", "/storage")
+                    : "/images/Space/recom1.png";
+                  const pTags = [...new Set(p.services.filter((s) => s.pivot.status === "ON").map((s) => s.name))].slice(0, 3);
+                  const pPrice = p.minimum_price
+                    ? `${p.minimum_price} FCFA`
+                    : (() => { const prices = p.services.filter((s) => s.pivot.status === "ON").map((s) => s.pivot.price); return prices.length > 0 ? `${Math.min(...prices)} FCFA` : "Sur demande"; })();
+
+                  return (
+                    <motion.article
+                      key={p.id}
+                      onClick={() => { localStorage.setItem("selectedPlace", JSON.stringify(p)); router.push(`/places/details?placeId=${p.id}`); }}
+                      whileHover={{ y: -8, boxShadow: "0 0 0 4px #ffffff, 0 24px 56px rgba(0,0,0,0.35)" }}
+                      transition={{ duration: 0.22, ease: "easeOut" }}
+                      style={{ position: "relative", borderRadius: 20, overflow: "hidden", border: "4px solid #ffffff", boxShadow: "0 8px 32px rgba(0,0,0,0.22)", cursor: "pointer", height: 320, display: "flex", flexDirection: "column" }}
+                    >
+                      <div style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+                        <Image src={pImg} alt={p.name} fill sizes="(max-width: 640px) 100vw, 33vw" style={{ objectFit: "cover" }} />
+                        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.55) 70%, rgba(0,0,0,0.82) 100%)", zIndex: 1 }} />
+                      </div>
+
+                      {pRating && (
+                        <div style={{ position: "absolute", top: 14, left: 14, zIndex: 3, background: "rgba(255,255,255,0.18)", backdropFilter: "blur(10px)", border: "2px solid rgba(255,255,255,0.7)", borderRadius: 999, padding: "4px 14px", fontSize: 11, fontWeight: 700, color: "#fff", display: "flex", alignItems: "center", gap: 5 }}>
+                          <span>★</span><span>{pRating}</span>
+                        </div>
+                      )}
+
+                      {p.city && (
+                        <div style={{ position: "absolute", top: 14, right: 14, zIndex: 3, background: "rgba(255,255,255,0.18)", backdropFilter: "blur(8px)", border: "1.5px solid rgba(255,255,255,0.6)", borderRadius: 999, padding: "4px 10px", fontSize: 10, fontWeight: 600, color: "#fff", display: "flex", alignItems: "center", gap: 4 }}>
+                          <MapPin weight="fill" style={{ width: 10, height: 10 }} />
+                          {p.city}
+                        </div>
+                      )}
+
+                      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px 16px 18px", display: "flex", flexDirection: "column", gap: 8, zIndex: 2 }}>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                          {pTags.map((tag, i) => (
+                            <span key={i} style={{ background: "rgba(255,255,255,0.18)", border: "1.5px solid rgba(255,255,255,0.45)", borderRadius: 999, padding: "2px 10px", fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.95)", letterSpacing: "0.03em" }}>{tag}</span>
+                          ))}
+                        </div>
+                        <h3 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: "#fff", lineHeight: 1.25, letterSpacing: "-0.01em", textShadow: "0 1px 6px rgba(0,0,0,0.4)" }}>
+                          {p.name}
+                        </h3>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 8, borderTop: "1.5px solid rgba(255,255,255,0.22)" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                            {p.noteUsers?.length > 0 && (
+                              <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>
+                                <svg width="13" height="13" viewBox="0 0 20 20" fill="rgba(255,255,255,0.8)"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                {p.noteUsers.length}
+                              </span>
+                            )}
+                            <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>
+                              <svg width="13" height="13" viewBox="0 0 20 20" fill="rgba(255,255,255,0.8)"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" /></svg>
+                              {pPrice}
+                            </span>
+                          </div>
+                          <button
+                            style={{ display: "flex", alignItems: "center", gap: 5, background: "#ffffff", color: "#005f69", border: "none", borderRadius: 999, padding: "6px 14px", fontSize: 11, fontWeight: 800, cursor: "pointer", letterSpacing: "0.02em", transition: "background 0.15s, transform 0.15s", boxShadow: "0 2px 8px rgba(0,0,0,0.2)" }}
+                            onClick={(e) => { e.stopPropagation(); localStorage.setItem("selectedPlace", JSON.stringify(p)); router.push(`/places/details?placeId=${p.id}`); }}
+                            onMouseEnter={e => { e.currentTarget.style.background = "#e6f7f8"; e.currentTarget.style.transform = "scale(1.04)"; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.transform = "scale(1)"; }}
+                          >
+                            Détails <ArrowUpRight style={{ width: 12, height: 12 }} />
+                          </button>
+                        </div>
+                      </div>
+                    </motion.article>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

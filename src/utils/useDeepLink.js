@@ -37,17 +37,25 @@ export function useDeepLink() {
       window.location.href = intentUrl;
 
     } else if (isIOS) {
+      // iframe cachée pour tenter l'ouverture sans erreur Safari
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = `ticketche://${appPath}`;
+      document.body.appendChild(iframe);
+
       let appOpened = false;
       const onBlur = () => { appOpened = true; };
       window.addEventListener("blur", onBlur);
-      window.location.href = `ticketche://${appPath}`;
+
       setTimeout(() => {
+        document.body.removeChild(iframe);
         window.removeEventListener("blur", onBlur);
-        if (!appOpened) window.location.href = STORE_URLS.ios;
-      }, 1200);
+        if (!appOpened) {
+          window.location.href = STORE_URLS.ios;
+        }
+      }, 1500);
 
     } else {
-      // Desktop : navigation dans le même onglet
       window.location.href = `/${webPath}`;
     }
   }, []);
