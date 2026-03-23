@@ -3,18 +3,17 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-ENV NODE_ENV=production
-
 # Copie des fichiers nécessaires à l'installation
 COPY package.json package-lock.json ./
 
-# Installation des dépendances
+# Installation des dépendances (y compris devDependencies pour le build)
 RUN npm ci
 
 # Copie du reste du projet
 COPY . .
 
 # Build l'application en production
+ENV NODE_ENV=production
 RUN npm run build
 
 # Étape 2 : Runtime
