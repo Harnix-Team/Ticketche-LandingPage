@@ -1,21 +1,8 @@
 name: Build & push docker image
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
-      version:
-        type: string
-        description: "version"
-      is_latest:
-        type: choice
-        description: "Is this the latest version?"
-        default: "yes"
-        options:
-          - "yes"
-          - "no"
       deploy:
         description: "Deploy after pushing the image?"
         type: boolean
@@ -23,7 +10,6 @@ on:
 
 env:
   TAG: ${{ github.event.inputs.version }}
-  IS_LATEST: ${{ github.event.inputs.is_latest || 'yes' }}
   APP_URL: https://ticketche.com
   API_URL: https://api.ticketche.com
   DEPLOY_FOLDER: /root/app/ticketche
@@ -80,7 +66,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.OWNER }}/ticketche-landing-page:${{ env.TAG }}
-            ${{ env.IS_LATEST == 'yes' && env.TAG != 'latest' && format('ghcr.io/{0}/ticketche-landing-page:latest', env.OWNER) || '' }}
+            ghcr.io/${{ env.OWNER }}/ticketche-landing-page:latest
 
       - name: Summary
         if: always()
