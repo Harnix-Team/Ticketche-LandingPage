@@ -9,7 +9,6 @@ on:
         default: true
 
 env:
-  TAG: ${{ github.event.inputs.version }}
   APP_URL: https://ticketche.com
   API_URL: https://api.ticketche.com
   DEPLOY_FOLDER: /root/app/ticketche
@@ -32,7 +31,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get app version
-        if: ${{ env.TAG == '' }}
         run: |
           APP_VERSION=$(jq -r .version package.json)
           echo "TAG=$APP_VERSION" >> $GITHUB_ENV
@@ -84,9 +82,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Tags poussés :**" >> $GITHUB_STEP_SUMMARY
           echo "- \`ghcr.io/${{ env.OWNER }}/ticketche-landing-page:${{ env.TAG }}\`" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ env.IS_LATEST }}" = "yes" ] && [ "${{ env.TAG }}" != "latest" ]; then
-            echo "- \`ghcr.io/${{ env.OWNER }}/ticketche-landing-page:latest\`" >> $GITHUB_STEP_SUMMARY
-          fi
+          echo "- \`ghcr.io/${{ env.OWNER }}/ticketche-landing-page:latest\`" >> $GITHUB_STEP_SUMMARY
   
   deploy:
     name: Deploy on VPS
