@@ -90,7 +90,6 @@ jobs:
     environment: prod
     permissions:
       contents: read
-      packages: write
     needs: build-and-push
     if: inputs.deploy == true
 
@@ -104,6 +103,7 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           command_timeout: 15m
           script: |
+            set -e
             echo "Logging in to GitHub Container Registry..."
             OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u $OWNER --password-stdin
@@ -116,5 +116,18 @@ jobs:
               cd ${{ env.DEPLOY_FOLDER }}/$env/INFRA
               docker compose -p ticketche-${env} -f docker-compose.${env}.yml up -d --remove-orphans --force-recreate ticketche-${env}-landing-page
             done
+
+      - name: Deployment Summary
+        if: always()
+        run: |
+          echo "## Déploiement terminé — ticketche-landing-page" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| | |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| Serveur | VPS |" >> $GITHUB_STEP_SUMMARY
+          echo "| Environnements | prod, dev |" >> $GITHUB_STEP_SUMMARY
+          echo "| Image | \`ghcr.io/${{ secrets.REGISTRY_OWNER || github.repository_owner }}/ticketche-landing-page:latest\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branche | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
 
               
