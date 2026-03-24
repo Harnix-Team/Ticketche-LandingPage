@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-      - landing-page-v2
-    tags:
-      - "v*.*.*"
   workflow_dispatch:
     inputs:
       version:
@@ -19,12 +16,17 @@ on:
         options:
           - "yes"
           - "no"
+      deploy:
+        description: "Deploy after pushing the image?"
+        type: boolean
+        default: true
 
 env:
   TAG: ${{ github.event.inputs.version }}
   IS_LATEST: ${{ github.event.inputs.is_latest || 'yes' }}
   APP_URL: https://ticketche.com
   API_URL: https://api.ticketche.com
+  DEPLOY_FOLDER: /root/app/ticketche
 
 concurrency:
   group: build-and-push-docker-image
@@ -99,5 +101,38 @@ jobs:
           if [ "${{ env.IS_LATEST }}" = "yes" ] && [ "${{ env.TAG }}" != "latest" ]; then
             echo "- \`ghcr.io/${{ env.OWNER }}/ticketche-landing-page:latest\`" >> $GITHUB_STEP_SUMMARY
           fi
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "> Le déploiement est géré par **ticketche-infra**." >> $GITHUB_STEP_SUMMARY
+  
+  deploy:
+    name: Deploy on VPS
+    runs-on: ubuntu-latest
+    environment: prod
+    permissions:
+      contents: read
+      packages: write
+    needs: build-and-push
+    if: inputs.deploy == true
+
+    steps:
+      - name: Pull latest images on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          command_timeout: 15m
+          script: |
+            echo "Logging in to GitHub Container Registry..."
+            OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u $OWNER --password-stdin
+
+            echo "Pulling latest landing page image..."
+            docker pull ghcr.io/${OWNER}/ticketche-landing-page:latest
+            
+            echo "Restarting landing page container with new image..."
+            for env in prod dev; do
+              cd ${{ env.DEPLOY_FOLDER }}/$env/INFRA
+              docker compose -p ticketche-${env} -f docker-compose.${env}.yml up -d --remove-orphans --force-recreate ticketche-${env}-landing-page
+            done
+
+              
