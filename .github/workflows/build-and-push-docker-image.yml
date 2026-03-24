@@ -1,30 +1,17 @@
 name: Build & push docker image
 
 on:
-  push:
-    branches:
-      - main
-      - landing-page-v2
-    tags:
-      - "v*.*.*"
   workflow_dispatch:
     inputs:
-      version:
-        type: string
-        description: "version"
-      is_latest:
-        type: choice
-        description: "Is this the latest version?"
-        default: "yes"
-        options:
-          - "yes"
-          - "no"
+      deploy:
+        description: "Deploy after pushing the image?"
+        type: boolean
+        default: true
 
 env:
-  TAG: ${{ github.event.inputs.version }}
-  IS_LATEST: ${{ github.event.inputs.is_latest || 'yes' }}
   APP_URL: https://ticketche.com
   API_URL: https://api.ticketche.com
+  DEPLOY_FOLDER: /root/app/ticketche
 
 concurrency:
   group: build-and-push-docker-image
@@ -44,7 +31,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get app version
-        if: ${{ env.TAG == '' }}
         run: |
           APP_VERSION=$(jq -r .version package.json)
           echo "TAG=$APP_VERSION" >> $GITHUB_ENV
@@ -78,7 +64,9 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.OWNER }}/ticketche-landing-page:${{ env.TAG }}
-            ${{ env.IS_LATEST == 'yes' && env.TAG != 'latest' && format('ghcr.io/{0}/ticketche-landing-page:latest', env.OWNER) || '' }}
+            ghcr.io/${{ env.OWNER }}/ticketche-landing-page:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Summary
         if: always()
@@ -96,8 +84,76 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Tags poussés :**" >> $GITHUB_STEP_SUMMARY
           echo "- \`ghcr.io/${{ env.OWNER }}/ticketche-landing-page:${{ env.TAG }}\`" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ env.IS_LATEST }}" = "yes" ] && [ "${{ env.TAG }}" != "latest" ]; then
-            echo "- \`ghcr.io/${{ env.OWNER }}/ticketche-landing-page:latest\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`ghcr.io/${{ env.OWNER }}/ticketche-landing-page:latest\`" >> $GITHUB_STEP_SUMMARY
+  
+  deploy:
+    name: Deploy on VPS
+    runs-on: ubuntu-latest
+    environment: prod
+    permissions:
+      contents: read
+    needs: build-and-push
+    if: inputs.deploy == true
+
+    steps:
+      - name: Verify required secrets
+        run: |
+          if [ -z "${{ secrets.VPS_HOST }}" ]; then
+            echo "❌ Error: VPS_HOST secret is not defined"
+            exit 1
           fi
+          if [ -z "${{ secrets.VPS_USER }}" ]; then
+            echo "❌ Error: VPS_USER secret is not defined"
+            exit 1
+          fi
+          if [ -z "${{ secrets.VPS_SSH_KEY }}" ]; then
+            echo "❌ Error: VPS_SSH_KEY secret is not defined"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SSH_PASSPHRASE }}" ]; then
+            echo "❌ Error: SSH_PASSPHRASE secret is not defined"
+            exit 1
+          fi
+          if [ -z "${{ secrets.GHCR_TOKEN }}" ]; then
+            echo "❌ Error: GHCR_TOKEN secret is not defined"
+            exit 1
+          fi
+          echo "✅ All required secrets are defined"
+
+      - name: Pull latest images on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          command_timeout: 15m
+          script: |
+            set -e
+            echo "Logging in to GitHub Container Registry..."
+            OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u $OWNER --password-stdin
+
+            echo "Pulling latest landing page image..."
+            docker pull ghcr.io/${OWNER}/ticketche-landing-page:latest
+            
+            echo "Restarting landing page container with new image..."
+            for env in prod dev; do
+              cd ${{ env.DEPLOY_FOLDER }}/$env/INFRA
+              docker compose -p ticketche-${env} -f docker-compose.${env}.yml up -d --remove-orphans --force-recreate ticketche-${env}-landing-page
+            done
+
+      - name: Deployment Summary
+        if: always()
+        run: |
+          echo "## Déploiement terminé — ticketche-landing-page" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "> Le déploiement est géré par **ticketche-infra**." >> $GITHUB_STEP_SUMMARY
+          echo "| | |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| Serveur | VPS |" >> $GITHUB_STEP_SUMMARY
+          echo "| Environnements | prod, dev |" >> $GITHUB_STEP_SUMMARY
+          echo "| Image | \`ghcr.io/${{ secrets.REGISTRY_OWNER || github.repository_owner }}/ticketche-landing-page:latest\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branche | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+
+              
