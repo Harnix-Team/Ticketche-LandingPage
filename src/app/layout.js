@@ -5,11 +5,10 @@ import { Footer } from "@/components/Navigation/footer";
 import AppNotification from "@/components/AppNotification";
 import Providers from "@/app/providers";
 
-
 const archivo = Archivo({
   variable: "--font-archivo",
   subsets: ["latin"],
-  weight: ["300","400","500","600","700","900"],
+  weight: ["300", "400", "500", "600", "700", "900"],
   display: "swap",
   preload: false,
 });
@@ -82,7 +81,7 @@ export const metadata = {
   },
 
   icons: {
-    icon: "/images/favicon.ico",
+    icon: "/images/logoTick.ico",
     shortcut: "/images/app.png",
     apple: "/images/appl.png",
   },
@@ -94,11 +93,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr">
       <head>
-        <meta name="google-site-verification" content="KduTih3KqfMa3oOnXKluxcZ9HivlOJ6vOIp2cqH3Lm0" />
+        <meta
+          name="google-site-verification"
+          content="KduTih3KqfMa3oOnXKluxcZ9HivlOJ6vOIp2cqH3Lm0"
+        />
       </head>
-      <body
-        className={`${archivo.variable} antialiased bg-[#047b7f13]`}
-      >
+      <body className={`${archivo.variable} antialiased bg-[#047b7f13]`}>
         <Providers>
           <HeaderWrapper />
           {children}
