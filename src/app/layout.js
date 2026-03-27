@@ -81,9 +81,9 @@ export const metadata = {
   },
 
   icons: {
-    icon: "/images/logoTick.ico",
-    shortcut: "/images/app.png",
-    apple: "/images/appl.png",
+    icon: "/images/logonav.png",
+    shortcut: "/images/logonav.png",
+    apple: "/images/logonav.png",
   },
 
   manifest: "/site.webmanifest",

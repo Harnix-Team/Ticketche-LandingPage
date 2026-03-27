@@ -161,17 +161,17 @@ export const Header = () => {
           background: #ecf5f5;
         }
 
-        .hdrCta {
-          font-size: clamp(0.92rem, 1.05vw, 1rem);
-          font-weight: 700;
-          background: #00515a;
-          color: white;
-padding: 0.65rem 1rem;
-          border-radius: 999px;
-          transition: all 0.3s ease;
-          min-width: 130px;
-          text-align: center;
-        }
+       /* Après */
+.hdrCta {
+  font-size: clamp(0.92rem, 1.05vw, 1rem);
+  font-weight: 700;
+  background: #00515a;
+  color: white;
+  padding: 0.65rem 0.9rem 0.65rem 1rem;
+  border-radius: 999px;
+  transition: all 0.3s ease;
+  text-align: center;
+}
         .hdrCta:hover {
           transform: translateY(-2px);
           box-shadow: 0 8px 20px rgba(0, 196, 204, 0.3);

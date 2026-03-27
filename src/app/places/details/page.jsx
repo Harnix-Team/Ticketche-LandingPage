@@ -1,12 +1,13 @@
 import { Suspense } from "react";
 import PlaceDetailsClient from "@/components/place/PlaceDetailsClient";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
-export function generateMetadata() {
+export function generateMetadata({ searchParams }) {
+  const placeId = searchParams?.placeId ?? "";
   return {
     other: {
-      "apple-itunes-app": `app-id=6758046811, app-argument=ticketche://places/details`,
+      "apple-itunes-app": `app-id=6758046811, app-argument=ticketche://places/details?placeId=${placeId}`,
     },
   };
 }

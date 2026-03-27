@@ -93,7 +93,8 @@ html { scroll-behavior: smooth; }
 .hdrLogoImg { width: 130px; height: 48px; position: relative; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
 .hdrLogoImg.scrolled { width: 130px; height: 48px; }
 
-.hdrRight { display: flex; align-items: center; gap: 32px; transition: gap 0.4s ease; }
+.hdrRight { display: flex; align-items: center; gap: 36px; transition: gap 0.4s ease; }
+.hdrRight nav { display: flex; align-items: center; gap: 4px; }
 .hdrRight.scrolled { gap: 24px; }
 
 .hdrNav { display: flex; align-items: center; gap: 4px; }
