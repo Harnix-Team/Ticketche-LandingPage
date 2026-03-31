@@ -27,14 +27,6 @@ const nextConfig = {
       },
     ];
   },
-  async rewrites() {
-    return [
-      {
-        source: "/api/proxy/:path*",
-        destination: "https://api.ticketche.com/:path*",
-      },
-    ];
-  },
 }
 
 export default nextConfig;

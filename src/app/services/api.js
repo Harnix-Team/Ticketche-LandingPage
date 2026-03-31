@@ -1,12 +1,8 @@
-const isDev = process.env.NODE_ENV === 'development';
+const API_URL = "https://api.ticketche.com";
 
 const safeFetch = async (url) => {
   try {
-    const path = url.replace("https://api.ticketche.com", "");
-    const proxyUrl = isDev
-      ? `/api/proxy${path}`
-      : `/proxy.php?path=${encodeURIComponent(path)}`;
-    const res = await fetch(proxyUrl);
+    const res = await fetch(url);
     if (!res.ok) return null;
     return res.json().catch(() => null);
   } catch {
@@ -14,25 +10,21 @@ const safeFetch = async (url) => {
   }
 };
 
-export const fetchAllPlaces = () => safeFetch(`https://api.ticketche.com/api/v1/all_places?validatedOnly=1`);
-export const fetchAllEvents = () => safeFetch(`https://api.ticketche.com/api/v2/events`);
-export const fetchEventById = (id) => safeFetch(`https://api.ticketche.com/api/v2/events/${id}`);
-export const fetchEventCategories = () => safeFetch(`https://api.ticketche.com/api/v2/event_categories`);
+export const fetchAllPlaces = () => safeFetch(`${API_URL}/api/v1/all_places?validatedOnly=1`);
+export const fetchAllEvents = () => safeFetch(`${API_URL}/api/v2/events`);
+export const fetchEventById = (id) => safeFetch(`${API_URL}/api/v2/events/${id}`);
+export const fetchEventCategories = () => safeFetch(`${API_URL}/api/v2/event_categories`);
 export const searchEvents = (query) =>
-  safeFetch(`https://api.ticketche.com/api/v2/events/search?query=${encodeURIComponent(query)}`);
+  safeFetch(`${API_URL}/api/v2/events/search?query=${encodeURIComponent(query)}`);
 
-export const getPlacesByLocation = (latitude, longitude, radius = 20000) => {
-  const proxyUrl = isDev
-    ? `/api/proxy/api/v2/getPlaces`
-    : `/proxy.php?path=${encodeURIComponent('/api/v2/getPlaces')}`;
-  return fetch(proxyUrl, {
+export const getPlacesByLocation = (latitude, longitude, radius = 20000) =>
+  fetch(`${API_URL}/api/v2/getPlaces`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ latitude, longitude, radius }),
   })
     .then((res) => (res.ok ? res.json() : null))
     .catch(() => null);
-};
 
 export const queryKeys = {
   allPlaces: ["places", "all"],
