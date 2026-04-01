@@ -1,4 +1,5 @@
 "use client";
+import { PHONE_DISPLAY } from "@/config/constants";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -11,22 +12,22 @@ import {
 } from "@phosphor-icons/react";
 
 /* ─── palette & tokens ─── */
-const T   = "#005F69";
-const TB  = "#003f46";
-const TL  = "#e8f4f5";
+const T = "#005F69";
+const TB = "#003f46";
+const TL = "#e8f4f5";
 const TLL = "#f4fafb";
 
 /* ─── Star Clusters ─────────────────────────────── */
 const STARS = [
-  { cx:"3%",  cy:"8%",  s:[{x:0,y:0,sz:13,op:0.45,a:0,d:"0s",  dr:"3.2s",c:"#00818f"},{x:16,y:-10,sz:8,op:0.25,a:1,d:"0.3s",dr:"2.8s",c:"#00515a"}]},
-  { cx:"92%", cy:"6%",  s:[{x:0,y:0,sz:14,op:0.40,a:1,d:"0.2s",dr:"3.0s",c:"#00818f"},{x:-13,y:12,sz:8,op:0.22,a:2,d:"0.5s",dr:"3.4s",c:"#00515a"}]},
-  { cx:"1%",  cy:"45%", s:[{x:0,y:0,sz:10,op:0.30,a:2,d:"0.1s",dr:"3.5s",c:"#00515a"}]},
-  { cx:"95%", cy:"40%", s:[{x:0,y:0,sz:11,op:0.35,a:0,d:"0.3s",dr:"3.3s",c:"#00818f"}]},
-  { cx:"5%",  cy:"78%", s:[{x:0,y:0,sz:9, op:0.28,a:1,d:"0.2s",dr:"2.9s",c:"#00818f"}]},
-  { cx:"88%", cy:"75%", s:[{x:0,y:0,sz:10,op:0.32,a:2,d:"0.4s",dr:"3.1s",c:"#00515a"}]},
-  { cx:"48%", cy:"2%",  s:[{x:0,y:0,sz:8, op:0.22,a:0,d:"0.1s",dr:"3.0s",c:"#00818f"}]},
-  { cx:"25%", cy:"92%", s:[{x:0,y:0,sz:7, op:0.20,a:1,d:"0.5s",dr:"3.2s",c:"#00515a"}]},
-  { cx:"70%", cy:"90%", s:[{x:0,y:0,sz:9, op:0.25,a:2,d:"0.3s",dr:"2.8s",c:"#00818f"}]},
+  { cx: "3%", cy: "8%", s: [{ x: 0, y: 0, sz: 13, op: 0.45, a: 0, d: "0s", dr: "3.2s", c: "#00818f" }, { x: 16, y: -10, sz: 8, op: 0.25, a: 1, d: "0.3s", dr: "2.8s", c: "#00515a" }] },
+  { cx: "92%", cy: "6%", s: [{ x: 0, y: 0, sz: 14, op: 0.40, a: 1, d: "0.2s", dr: "3.0s", c: "#00818f" }, { x: -13, y: 12, sz: 8, op: 0.22, a: 2, d: "0.5s", dr: "3.4s", c: "#00515a" }] },
+  { cx: "1%", cy: "45%", s: [{ x: 0, y: 0, sz: 10, op: 0.30, a: 2, d: "0.1s", dr: "3.5s", c: "#00515a" }] },
+  { cx: "95%", cy: "40%", s: [{ x: 0, y: 0, sz: 11, op: 0.35, a: 0, d: "0.3s", dr: "3.3s", c: "#00818f" }] },
+  { cx: "5%", cy: "78%", s: [{ x: 0, y: 0, sz: 9, op: 0.28, a: 1, d: "0.2s", dr: "2.9s", c: "#00818f" }] },
+  { cx: "88%", cy: "75%", s: [{ x: 0, y: 0, sz: 10, op: 0.32, a: 2, d: "0.4s", dr: "3.1s", c: "#00515a" }] },
+  { cx: "48%", cy: "2%", s: [{ x: 0, y: 0, sz: 8, op: 0.22, a: 0, d: "0.1s", dr: "3.0s", c: "#00818f" }] },
+  { cx: "25%", cy: "92%", s: [{ x: 0, y: 0, sz: 7, op: 0.20, a: 1, d: "0.5s", dr: "3.2s", c: "#00515a" }] },
+  { cx: "70%", cy: "90%", s: [{ x: 0, y: 0, sz: 9, op: 0.25, a: 2, d: "0.3s", dr: "2.8s", c: "#00818f" }] },
 ];
 
 function StarClusters() {
@@ -38,9 +39,9 @@ function StarClusters() {
         @keyframes ppStar2{0%,100%{transform:translateY(0) scale(1);}40%{transform:translateY(-7px) rotate(-12deg) scale(1.12);}80%{transform:translateY(-2px) rotate(6deg) scale(0.92);}}
       `}</style>
       {STARS.map((cluster, ci) => (
-        <div key={ci} style={{position:"absolute",left:cluster.cx,top:cluster.cy,width:0,height:0,zIndex:0,pointerEvents:"none"}}>
+        <div key={ci} style={{ position: "absolute", left: cluster.cx, top: cluster.cy, width: 0, height: 0, zIndex: 0, pointerEvents: "none" }}>
           {cluster.s.map((s, si) => (
-            <div key={si} style={{position:"absolute",left:s.x,top:s.y,transform:"translate(-50%,-50%)",opacity:s.op,animation:`ppStar${s.a} ${s.dr} ease-in-out ${s.d} infinite`,filter:`drop-shadow(0 0 3px ${s.c}88)`}}>
+            <div key={si} style={{ position: "absolute", left: s.x, top: s.y, transform: "translate(-50%,-50%)", opacity: s.op, animation: `ppStar${s.a} ${s.dr} ease-in-out ${s.d} infinite`, filter: `drop-shadow(0 0 3px ${s.c}88)` }}>
               <Star size={s.sz} color={s.c} weight="fill" />
             </div>
           ))}
@@ -190,7 +191,7 @@ export default function PrivacyPolicyPage() {
         <div>
           <InfoRow icon={FileText} label="Application" value="Ticketché" />
           <InfoRow icon={Envelope} label="Email" value="support@ticketche.com" />
-          <InfoRow icon={Phone} label="Téléphone" value="+229 01 99 98 43 45" />
+          <InfoRow icon={Phone} label="Téléphone" value={PHONE_DISPLAY} />
           <InfoRow icon={MapPin} label="Adresse" value="Abomey-Calavi, Bénin" />
         </div>
       ),
@@ -238,10 +239,10 @@ export default function PrivacyPolicyPage() {
       content: (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {[
-            { icon: FileText,    title: "Exécution du contrat",  desc: "Fourniture des services demandés" },
-            { icon: CheckCircle, title: "Consentement",          desc: "Acceptation explicite du traitement (ex : géolocalisation)" },
-            { icon: Shield,      title: "Intérêt légitime",      desc: "Amélioration des services et prévention des fraudes" },
-            { icon: Scales,      title: "Obligation légale",     desc: "Respect des obligations fiscales et comptables" },
+            { icon: FileText, title: "Exécution du contrat", desc: "Fourniture des services demandés" },
+            { icon: CheckCircle, title: "Consentement", desc: "Acceptation explicite du traitement (ex : géolocalisation)" },
+            { icon: Shield, title: "Intérêt légitime", desc: "Amélioration des services et prévention des fraudes" },
+            { icon: Scales, title: "Obligation légale", desc: "Respect des obligations fiscales et comptables" },
           ].map(({ icon: Icon, title, desc }, i) => (
             <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 14, padding: "16px 18px", borderRadius: 12, background: TLL, border: `1px solid #d4eaed` }}>
               <div style={{ width: 36, height: 36, borderRadius: 10, background: T, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -266,10 +267,10 @@ export default function PrivacyPolicyPage() {
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
             {[
-              { icon: Buildings,  title: "Gestionnaires de parkings",  desc: "Pour traiter vos réservations" },
-              { icon: CreditCard, title: "Prestataires de paiement",   desc: "Stripe, PayPal pour paiements sécurisés" },
-              { icon: Cloud,      title: "Services d'hébergement",     desc: "Stockage sécurisé des données" },
-              { icon: ChatCircle, title: "Services de communication",  desc: "Envoi d'emails et notifications" },
+              { icon: Buildings, title: "Gestionnaires de parkings", desc: "Pour traiter vos réservations" },
+              { icon: CreditCard, title: "Prestataires de paiement", desc: "Stripe, PayPal pour paiements sécurisés" },
+              { icon: Cloud, title: "Services d'hébergement", desc: "Stockage sécurisé des données" },
+              { icon: ChatCircle, title: "Services de communication", desc: "Envoi d'emails et notifications" },
             ].map(({ icon: Icon, title, desc }, i) => (
               <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "16px 18px", borderRadius: 12, background: "#fff", border: `1px solid #d4eaed` }}>
                 <div style={{ width: 38, height: 38, borderRadius: 11, background: TL, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -297,10 +298,10 @@ export default function PrivacyPolicyPage() {
       content: (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
           {[
-            { type: "Données de compte",         duration: "Jusqu'à suppression + 1 an" },
-            { type: "Données de transaction",     duration: "10 ans" },
+            { type: "Données de compte", duration: "Jusqu'à suppression + 1 an" },
+            { type: "Données de transaction", duration: "10 ans" },
             { type: "Données de géolocalisation", duration: "6 mois maximum" },
-            { type: "Logs de connexion",          duration: "1 an" },
+            { type: "Logs de connexion", duration: "1 an" },
           ].map(({ type, duration }, i) => (
             <div key={i} style={{ padding: "18px 20px", borderRadius: 14, background: TLL, border: `1px solid #d4eaed` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
@@ -322,12 +323,12 @@ export default function PrivacyPolicyPage() {
             Conformément au RGPD, vous disposez des droits suivants :
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10 }}>
-            <RightCard icon={Eye}          title="Droit d'accès"          desc="Consulter vos données" />
+            <RightCard icon={Eye} title="Droit d'accès" desc="Consulter vos données" />
             <RightCard icon={PencilSimple} title="Droit de rectification" desc="Corriger vos données" />
-            <RightCard icon={Trash}        title="Droit à l'effacement"   desc="Supprimer vos données" />
-            <RightCard icon={Package}      title="Droit à la portabilité" desc="Récupérer vos données" />
-            <RightCard icon={ProhibitInset} title="Droit d'opposition"    desc="Refuser le traitement" />
-            <RightCard icon={PauseCircle}  title="Droit à la limitation"  desc="Limiter le traitement" />
+            <RightCard icon={Trash} title="Droit à l'effacement" desc="Supprimer vos données" />
+            <RightCard icon={Package} title="Droit à la portabilité" desc="Récupérer vos données" />
+            <RightCard icon={ProhibitInset} title="Droit d'opposition" desc="Refuser le traitement" />
+            <RightCard icon={PauseCircle} title="Droit à la limitation" desc="Limiter le traitement" />
           </div>
           <div style={{ background: T, borderRadius: 16, padding: "22px 24px", color: "#fff" }}>
             <p style={{ margin: "0 0 14px", fontSize: 14, fontWeight: 700, fontFamily: "'Archivo', sans-serif" }}>Pour exercer vos droits :</p>
@@ -354,12 +355,12 @@ export default function PrivacyPolicyPage() {
       title: "Sécurité de vos données",
       content: (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12 }}>
-          <SecCard icon={LockKey}   title="Chiffrement SSL/TLS"  desc="Communications sécurisées" />
-          <SecCard icon={HardDrive} title="Serveurs certifiés"   desc="Stockage sécurisé" />
-          <SecCard icon={Key}       title="Authentification forte" desc="Gestion des accès" />
-          <SecCard icon={Database}  title="Sauvegardes régulières" desc="Plan de reprise d'activité" />
-          <SecCard icon={Detective} title="Audits de sécurité"   desc="Vérifications régulières" />
-          <SecCard icon={Cpu}       title="Monitoring 24/7"      desc="Surveillance continue" />
+          <SecCard icon={LockKey} title="Chiffrement SSL/TLS" desc="Communications sécurisées" />
+          <SecCard icon={HardDrive} title="Serveurs certifiés" desc="Stockage sécurisé" />
+          <SecCard icon={Key} title="Authentification forte" desc="Gestion des accès" />
+          <SecCard icon={Database} title="Sauvegardes régulières" desc="Plan de reprise d'activité" />
+          <SecCard icon={Detective} title="Audits de sécurité" desc="Vérifications régulières" />
+          <SecCard icon={Cpu} title="Monitoring 24/7" desc="Surveillance continue" />
         </div>
       ),
     },
@@ -403,6 +404,17 @@ export default function PrivacyPolicyPage() {
       icon: Envelope,
       title: "Contact",
       content: (
+        <div style={{ background: TLL, border: `1px solid #d4eaed`, borderRadius: 14, padding: "22px 24px" }}>
+          <p style={{ margin: 0, fontSize: 14, color: "#1a1a1a", lineHeight: 1.8, fontFamily: "'Archivo', sans-serif" }}>
+            Nous pouvons modifier cette politique à tout moment. En cas de modification importante, vous serez informé par notification dans l'application ou par email. Nous vous encourageons à consulter régulièrement cette page.
+          </p>
+        </div>
+      ),
+    },
+    {
+      icon: Envelope,
+      title: "Contact",
+      content: (
         <div style={{ background: T, borderRadius: 16, padding: "24px 26px", color: "#fff" }}>
           <p style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 700, fontFamily: "'Archivo', sans-serif" }}>
             Délégué à la Protection des Données (DPO)
@@ -425,6 +437,7 @@ export default function PrivacyPolicyPage() {
       ),
     },
   ];
+
 
   return (
     <div style={{ fontFamily: "'Archivo', sans-serif", minHeight: "100vh", background: TLL, position: "relative", overflow: "hidden" }}>

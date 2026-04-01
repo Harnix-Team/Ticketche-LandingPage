@@ -5,6 +5,7 @@ import {
   Phone, EnvelopeSimple, Ticket, Headset, Newspaper,
   ArrowRight, CheckCircle, Star, MapPin, CaretLeft, CaretRight,
 } from "@phosphor-icons/react";
+import { PHONE_NUMBER, PHONE_DISPLAY } from "@/config/constants";
 
 
 const CLUSTERS = [
@@ -47,7 +48,7 @@ export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", service: "", date: "", message: "" });
   const [sent, setSent] = useState(false);
   const [currentImg, setCurrentImg] = useState(0);
-  const WHATSAPP_NUMBER = "22999984345";
+  const WHATSAPP_NUMBER = PHONE_NUMBER;
 
   useEffect(() => {
     const interval = setInterval(() => {
