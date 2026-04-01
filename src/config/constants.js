@@ -1,0 +1,2 @@
+export const PHONE_NUMBER = "22901405121 33";
+export const PHONE_DISPLAY = "+229 01 40 51 21 33";
