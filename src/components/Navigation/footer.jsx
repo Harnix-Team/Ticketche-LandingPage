@@ -27,7 +27,7 @@ export const Footer = () => {
     { label: "Emplacements", href: "#emplacements" },
     { label: "Avis clients", href: "#reviews" },
     { label: "Contactez-nous", href: "/contact" },
-    { label: "Recrutement", href: "https://recrutement.ticketche.com" },
+    { label: "Recrutement", href: "/recrutement" },
   ];
 
   const contactLinks = [
