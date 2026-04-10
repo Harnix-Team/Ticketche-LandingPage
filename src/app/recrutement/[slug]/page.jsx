@@ -515,21 +515,6 @@ export default function JobDetailPage() {
                 <div className="jd-salary-label">Rémunération mensuelle</div>
                 <div className="jd-salary-amount">{salaryText}</div>
               </div>
-
-              <button
-                onClick={() => setModalOpen(true)}
-                style={{
-                  display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  width: "100%", marginTop: 16, padding: "13px 20px",
-                  background: "linear-gradient(135deg, #005f69, #007d88)",
-                  color: "#fff", borderRadius: 12,
-                  font: "700 14px/1 'Archivo', sans-serif",
-                  border: "none", cursor: "pointer",
-                }}
-              >
-                Postuler maintenant
-                <ArrowRight size={15} weight="bold" />
-              </button>
             </div>
           </div>
         </div>

@@ -280,7 +280,7 @@ export function ApplicationModal({ job, onClose }) {
                 </Field>
 
                 <Field label="Numéro de téléphone *" error={errors.phone} icon={<Phone size={15} />}>
-                  <input type="tel" placeholder="+229 01 XX XX XX XX" value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))} className={errors.phone ? "field-error" : ""} />
+                  <input type="tel" placeholder="+229 01 XXXXXXXX" value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))} className={errors.phone ? "field-error" : ""} />
                 </Field>
 
                 <Field label="CV * (PDF uniquement — max 10 Mo)" error={errors.cv}>
