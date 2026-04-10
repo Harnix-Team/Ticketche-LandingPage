@@ -1,0 +1,192 @@
+{
+  "jobs": [
+    {
+      "id": "TCK-001",
+      "slug": "developpeur-fullstack-senior",
+      "job_title": "Développeur Fullstack Senior",
+      "department": "Technologie",
+      "type": "CDI",
+      "location": {
+        "city": "Calavi",
+        "country": "Bénin",
+        "remote": "hybride"
+      },
+      "remuneration": {
+        "min": 350000,
+        "max": 500000,
+        "currency": "FCFA",
+        "period": "mois",
+        "displayed": true
+      },
+      "conditions": {
+        "schedule": "Temps plein",
+        "hours_per_week": 40,
+        "start_date": "2026-05-01",
+        "experience_years": "3-5 ans"
+      },
+      "skills_required": ["React", "Node.js", "PostgreSQL", "Docker", "Git"],
+      "skills_bonus": ["Next.js", "AWS", "TypeScript"],
+      "description": "Vous rejoindrez l'équipe technique de Ticketché pour développer et maintenir notre plateforme de gestion de parkings, garages et centres de lavage. Vous serez au cœur de l'innovation numérique au Bénin.",
+      "missions": [
+        "Développer de nouvelles fonctionnalités sur notre application web et mobile",
+        "Concevoir et maintenir les APIs REST",
+        "Participer aux revues de code et à l'amélioration continue",
+        "Collaborer avec les équipes produit et design",
+        "Garantir la performance et la sécurité des applications"
+      ],
+      "profile": [
+        "Maîtrise de React / Next.js et Node.js",
+        "Bonne connaissance des bases de données relationnelles",
+        "Capacité à travailler en équipe agile",
+        "Autonomie et sens des responsabilités",
+        "Bonne communication en français"
+      ],
+      "benefits": ["Assurance santé", "Téléphone professionnel", "Formation continue", "Ambiance startup"],
+      "status": "open",
+      "published_at": "2026-04-01",
+      "expires_at": "2026-05-31",
+      "cover_image": "/images/jobs/tech.jpg"
+    },
+    {
+      "id": "TCK-002",
+      "slug": "charge-support-client",
+      "job_title": "Chargé(e) de Support Client",
+      "department": "Service Client",
+      "type": "CDI",
+      "location": {
+        "city": "Cotonou",
+        "country": "Bénin",
+        "remote": "présentiel"
+      },
+      "remuneration": {
+        "min": 150000,
+        "max": 220000,
+        "currency": "FCFA",
+        "period": "mois",
+        "displayed": true
+      },
+      "conditions": {
+        "schedule": "Temps plein",
+        "hours_per_week": 40,
+        "start_date": "2026-05-15",
+        "experience_years": "1-2 ans"
+      },
+      "skills_required": ["Communication", "Patience", "Maîtrise du français", "Outils CRM"],
+      "skills_bonus": ["Anglais", "Connaissance secteur auto"],
+      "description": "Vous serez le premier point de contact de nos clients et partenaires. Votre rôle est essentiel pour garantir une expérience utilisateur exceptionnelle sur la plateforme Ticketché.",
+      "missions": [
+        "Répondre aux demandes clients par téléphone, email et chat",
+        "Résoudre les problèmes et escalader si nécessaire",
+        "Documenter les tickets et suivre leur résolution",
+        "Recueillir et remonter les feedbacks clients",
+        "Participer à l'amélioration des processus support"
+      ],
+      "profile": [
+        "Excellente expression orale et écrite en français",
+        "Sens du service et empathie",
+        "Maîtrise des outils informatiques de base",
+        "Résistance au stress et gestion des priorités",
+        "Expérience en support client souhaitée"
+      ],
+      "benefits": ["Prime de performance", "Formation produit", "Environnement dynamique"],
+      "status": "open",
+      "published_at": "2026-04-02",
+      "expires_at": "2026-05-30",
+      "cover_image": "/images/jobs/support.jpg"
+    },
+    {
+      "id": "TCK-003",
+      "slug": "commercial-terrain-cotonou",
+      "job_title": "Commercial Terrain - Cotonou",
+      "department": "Commercial",
+      "type": "CDI",
+      "location": {
+        "city": "Cotonou",
+        "country": "Bénin",
+        "remote": "terrain"
+      },
+      "remuneration": {
+        "min": 120000,
+        "max": 300000,
+        "currency": "FCFA",
+        "period": "mois",
+        "displayed": true
+      },
+      "conditions": {
+        "schedule": "Temps plein",
+        "hours_per_week": 40,
+        "start_date": "2026-05-01",
+        "experience_years": "1-3 ans"
+      },
+      "skills_required": ["Vente", "Négociation", "Prospection", "Permis de conduire"],
+      "skills_bonus": ["Réseau établissements", "Maîtrise outils digitaux"],
+      "description": "Vous jouerez un rôle clé dans le développement commercial de Ticketché à Cotonou. Vous prospecterez et fidéliserez les parkings, garages et centres de lavage partenaires.",
+      "missions": [
+        "Prospecter de nouveaux établissements partenaires",
+        "Présenter et démo-er la solution Ticketché",
+        "Négocier et signer les contrats partenaires",
+        "Assurer le suivi et la fidélisation des partenaires",
+        "Reporter les activités et résultats hebdomadairement"
+      ],
+      "profile": [
+        "Excellent sens du relationnel et de la persuasion",
+        "Orientation résultats et dépassement d'objectifs",
+        "Mobilité sur Cotonou et environs",
+        "Esprit entrepreneurial et autonomie",
+        "Expérience en B2B ou vente terrain appréciée"
+      ],
+      "benefits": ["Commission sur ventes", "Moto ou indemnité transport", "Téléphone", "Prime objectif"],
+      "status": "open",
+      "published_at": "2026-04-03",
+      "expires_at": "2026-06-15",
+      "cover_image": "/images/jobs/commercial.jpg"
+    },
+    {
+      "id": "TCK-004",
+      "slug": "designer-ui-ux",
+      "job_title": "Designer UI/UX",
+      "department": "Produit & Design",
+      "type": "CDD",
+      "location": {
+        "city": "Cotonou",
+        "country": "Bénin",
+        "remote": "hybride"
+      },
+      "remuneration": {
+        "min": 200000,
+        "max": 320000,
+        "currency": "FCFA",
+        "period": "mois",
+        "displayed": true
+      },
+      "conditions": {
+        "schedule": "Temps plein",
+        "hours_per_week": 40,
+        "start_date": "2026-06-01",
+        "experience_years": "2-4 ans"
+      },
+      "skills_required": ["Figma", "Design System", "UX Research", "Prototypage"],
+      "skills_bonus": ["Motion design", "Illustrator", "Framer"],
+      "description": "Vous concevrez des interfaces intuitives et esthétiques pour l'application Ticketché utilisée par des milliers d'usagers béninois. Vos designs auront un impact direct sur l'expérience de nos utilisateurs.",
+      "missions": [
+        "Concevoir les maquettes UI pour le web et le mobile",
+        "Réaliser des recherches utilisateurs et tests d'usabilité",
+        "Maintenir et enrichir le Design System Ticketché",
+        "Collaborer étroitement avec les développeurs",
+        "Itérer rapidement sur les retours produit"
+      ],
+      "profile": [
+        "Maîtrise de Figma et des outils de design moderne",
+        "Sens esthétique affirmé et portfolio solide",
+        "Compréhension des principes d'accessibilité",
+        "Capacité à traduire les besoins en solutions visuelles",
+        "Sensibilité au contexte africain et à ses usages"
+      ],
+      "benefits": ["Licence Figma Pro", "Formation UX", "Ambiance créative", "Equipement fourni"],
+      "status": "open",
+      "published_at": "2026-04-05",
+      "expires_at": "2026-06-01",
+      "cover_image": "/images/jobs/design.jpg"
+    }
+  ]
+}

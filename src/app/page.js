@@ -9,6 +9,7 @@ import FAQSection from "@/app/Home/FaqSection";
 import ActiveUsers from "@/app/Home/Activeusers";
 import ReviewsSection from "@/app/Home/ReviewsSection";
 import WhyChooseUs from "@/app/Home/WhyChooseUs";
+import SondageSection from "@/app/Home/SondageSection";
 
 export default function Home() {
   return (
@@ -23,6 +24,7 @@ export default function Home() {
       <ReviewsSection />
       <FAQSection />
       <ActiveUsers />
+      <SondageSection />
       <CTASection />
     </div>
   );

@@ -61,6 +61,10 @@ html { scroll-behavior: smooth; }
   transition: padding 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .hdrContainer.scrolled { padding: 12px 6px 12px 32px; }
+@media (max-width: 1023px) {
+  .hdrContainer { padding: 12px 12px; }
+  .hdrContainer.scrolled { padding: 10px 12px; }
+}
 
 .hdrGlass {
   width: 100%; max-width: 1280px;
