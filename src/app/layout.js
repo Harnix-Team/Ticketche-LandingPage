@@ -2,7 +2,7 @@ import { Archivo } from "next/font/google";
 import "./globals.css";
 import { HeaderWrapper } from "@/components/Navigation/HeaderWrapper";
 import { Footer } from "@/components/Navigation/footer";
-import AppNotification from "@/components/AppNotification";
+import { AppNotificationWrapper } from "@/components/AppNotificationWrapper";
 import Providers from "@/app/providers";
 
 const archivo = Archivo({
@@ -103,7 +103,7 @@ export default function RootLayout({ children }) {
           <HeaderWrapper />
           {children}
           <Footer />
-          <AppNotification />
+          <AppNotificationWrapper />
         </Providers>
       </body>
     </html>
