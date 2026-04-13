@@ -5,9 +5,19 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  MapPin, Clock, Briefcase, ArrowLeft, CheckCircle,
-  Share, Check, ArrowRight,
-  CalendarBlank, Buildings, HouseLine, Globe, Motorcycle,
+  MapPin,
+  Clock,
+  Briefcase,
+  ArrowLeft,
+  CheckCircle,
+  Share,
+  Check,
+  ArrowRight,
+  CalendarBlank,
+  Buildings,
+  HouseLine,
+  Globe,
+  Motorcycle,
 } from "@phosphor-icons/react";
 import { fetchJobBySlug } from "@/app/services/jobsApi";
 import { ApplicationModal } from "@/components/recrutement/ApplicationModal";
@@ -20,7 +30,19 @@ function TypeBadge({ type }) {
   };
   const c = colors[type] || colors.CDI;
   return (
-    <span style={{ padding: "3px 12px", borderRadius: 100, fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase", background: c.bg, color: c.color, border: `1px solid ${c.border}` }}>
+    <span
+      style={{
+        padding: "3px 12px",
+        borderRadius: 100,
+        fontSize: 11,
+        fontWeight: 700,
+        letterSpacing: "0.07em",
+        textTransform: "uppercase",
+        background: c.bg,
+        color: c.color,
+        border: `1px solid ${c.border}`,
+      }}
+    >
       {type}
     </span>
   );
@@ -28,14 +50,27 @@ function TypeBadge({ type }) {
 
 function RemoteBadge({ remote }) {
   const map = {
-    hybride:      { icon: HouseLine,  label: "Hybride" },
-    présentiel:   { icon: Buildings,  label: "Présentiel" },
-    "full-remote":{ icon: Globe,      label: "Full Remote" },
-    terrain:      { icon: Motorcycle, label: "Terrain" },
+    hybride: { icon: HouseLine, label: "Hybride" },
+    présentiel: { icon: Buildings, label: "Présentiel" },
+    "full-remote": { icon: Globe, label: "Full Remote" },
+    terrain: { icon: Motorcycle, label: "Terrain" },
   };
   const { icon: Icon, label } = map[remote] || { icon: MapPin, label: remote };
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "3px 12px", borderRadius: 100, fontSize: 11, fontWeight: 600, background: "rgba(0,95,105,0.07)", color: "#005f69", border: "1px solid rgba(0,95,105,0.18)" }}>
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 5,
+        padding: "3px 12px",
+        borderRadius: 100,
+        fontSize: 11,
+        fontWeight: 600,
+        background: "rgba(0,95,105,0.07)",
+        color: "#005f69",
+        border: "1px solid rgba(0,95,105,0.18)",
+      }}
+    >
       <Icon size={11} weight="fill" />
       {label}
     </span>
@@ -57,7 +92,11 @@ function ShareButton() {
   };
   return (
     <button onClick={handleShare} className="jd-share-btn">
-      {copied ? <Check size={15} weight="bold" /> : <Share size={15} weight="bold" />}
+      {copied ? (
+        <Check size={15} weight="bold" />
+      ) : (
+        <Share size={15} weight="bold" />
+      )}
       {copied ? "Lien copié !" : "Partager"}
     </button>
   );
@@ -406,7 +445,6 @@ export default function JobDetailPage() {
             <div className="jd-breadcrumb">
               <Link href="/recrutement">
                 <ArrowLeft size={13} weight="bold" /> Offres d'emploi
-
               </Link>
               <span>/</span>
               <span className="jd-breadcrumb-current">{job.job_title}</span>
@@ -417,13 +455,19 @@ export default function JobDetailPage() {
               <TypeBadge type={job.type} />
               <RemoteBadge remote={job.location.remote} />
               <span className="jd-hero-meta-item--accent">
-                <MapPin size={14} weight="fill" /> {job.location.city}, {job.location.country}
+                <MapPin size={14} weight="fill" /> {job.location.city},{" "}
+                {job.location.country}
               </span>
               <span className="jd-hero-meta-item--accent">
-                <Clock size={14} weight="fill" /> {job.conditions.experience_years}
+                <Clock size={14} weight="fill" />{" "}
+                {job.conditions.experience_years} année(s) d'expérience
               </span>
               <span className="jd-hero-meta-item--accent">
-                <CalendarBlank size={14} weight="fill" /> Prise de poste : {new Date(job.conditions.start_date).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}
+                <CalendarBlank size={14} weight="fill" /> Prise de poste :{" "}
+                {new Date(job.conditions.start_date).toLocaleDateString(
+                  "fr-FR",
+                  { month: "long", year: "numeric" },
+                )}
               </span>
             </div>
             <div className="jd-hero-actions">
@@ -446,7 +490,9 @@ export default function JobDetailPage() {
             <div className="jd-card">
               <div className="jd-section-title">Vos missions</div>
               <ul className="jd-list">
-                {job.missions.map((m, i) => <li key={i}>{m}</li>)}
+                {job.missions.map((m, i) => (
+                  <li key={i}>{m}</li>
+                ))}
               </ul>
             </div>
 
@@ -454,7 +500,9 @@ export default function JobDetailPage() {
             <div className="jd-card">
               <div className="jd-section-title">Profil recherché</div>
               <ul className="jd-list">
-                {job.profile.map((p, i) => <li key={i}>{p}</li>)}
+                {job.profile.map((p, i) => (
+                  <li key={i}>{p}</li>
+                ))}
               </ul>
             </div>
 
@@ -462,16 +510,46 @@ export default function JobDetailPage() {
             <div className="jd-card">
               <div className="jd-section-title">Compétences</div>
               <div style={{ marginBottom: 16 }}>
-                <p style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.06em" }}>Requises</p>
+                <p
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: "#374151",
+                    marginBottom: 10,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  Requises
+                </p>
                 <div className="jd-tags">
-                  {job.skills_required.map((s) => <span key={s} className="jd-tag">{s}</span>)}
+                  {job.skills_required.map((s) => (
+                    <span key={s} className="jd-tag">
+                      {s}
+                    </span>
+                  ))}
                 </div>
               </div>
               {job.skills_bonus?.length > 0 && (
                 <div>
-                  <p style={{ fontSize: 12, fontWeight: 700, color: "#692c00", marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.06em" }}>Un plus</p>
+                  <p
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: "#692c00",
+                      marginBottom: 10,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.06em",
+                    }}
+                  >
+                    Un plus
+                  </p>
                   <div className="jd-tags">
-                    {job.skills_bonus.map((s) => <span key={s} className="jd-tag jd-tag-bonus">{s}</span>)}
+                    {job.skills_bonus.map((s) => (
+                      <span key={s} className="jd-tag jd-tag-bonus">
+                        {s}
+                      </span>
+                    ))}
                   </div>
                 </div>
               )}
@@ -482,8 +560,27 @@ export default function JobDetailPage() {
               <div className="jd-section-title">Avantages</div>
               <div className="jd-tags">
                 {job.benefits.map((b) => (
-                  <span key={b} style={{ padding: "6px 14px", borderRadius: 100, background: "#ecf5f5", border: "1px solid rgba(0,95,105,0.2)", fontSize: 12, fontWeight: 600, color: "#005f69", display: "flex", alignItems: "center", gap: 5 }}>
-                    <CheckCircle size={13} weight="fill" style={{ color: "#005f69", flexShrink: 0 }} /> {b}
+                  <span
+                    key={b}
+                    style={{
+                      padding: "6px 14px",
+                      borderRadius: 100,
+                      background: "#ecf5f5",
+                      border: "1px solid rgba(0,95,105,0.2)",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: "#005f69",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
+                    }}
+                  >
+                    <CheckCircle
+                      size={13}
+                      weight="fill"
+                      style={{ color: "#005f69", flexShrink: 0 }}
+                    />{" "}
+                    {b}
                   </span>
                 ))}
               </div>
@@ -496,13 +593,46 @@ export default function JobDetailPage() {
               <div className="jd-section-title">Détails</div>
 
               {[
-                { icon: <Buildings size={16} style={{ color: "#005f69" }} />, label: "Département", value: job.department, accent: false },
-                { icon: <Briefcase size={16} style={{ color: "#005f69" }} />, label: "Type de contrat", value: job.type, accent: false },
-                { icon: <MapPin size={16} style={{ color: "#005f69" }} />, label: "Localisation", value: `${job.location.city}, ${job.location.country}`, accent: true },
-                { icon: <Clock size={16} style={{ color: "#005f69" }} />, label: "Expérience", value: job.conditions.experience_years, accent: true },
-                { icon: <CalendarBlank size={16} style={{ color: "#005f69" }} />, label: "Prise de poste", value: new Date(job.conditions.start_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }), accent: true },
+                {
+                  icon: <Buildings size={16} style={{ color: "#005f69" }} />,
+                  label: "Département",
+                  value: job.department,
+                  accent: false,
+                },
+                {
+                  icon: <Briefcase size={16} style={{ color: "#005f69" }} />,
+                  label: "Type de contrat",
+                  value: job.type,
+                  accent: false,
+                },
+                {
+                  icon: <MapPin size={16} style={{ color: "#005f69" }} />,
+                  label: "Localisation",
+                  value: `${job.location.city}, ${job.location.country}`,
+                  accent: true,
+                },
+                {
+                  icon: <Clock size={16} style={{ color: "#005f69" }} />,
+                  label: "Expérience",
+                  value: job.conditions.experience_years,
+                  accent: true,
+                },
+                {
+                  icon: (
+                    <CalendarBlank size={16} style={{ color: "#005f69" }} />
+                  ),
+                  label: "Prise de poste",
+                  value: new Date(job.conditions.start_date).toLocaleDateString(
+                    "fr-FR",
+                    { day: "numeric", month: "long", year: "numeric" },
+                  ),
+                  accent: true,
+                },
               ].map(({ icon, label, value, accent }) => (
-                <div key={label} className={`jd-info-row${accent ? " jd-info-row--accent" : ""}`}>
+                <div
+                  key={label}
+                  className={`jd-info-row${accent ? " jd-info-row--accent" : ""}`}
+                >
                   <div className="jd-info-icon">{icon}</div>
                   <div>
                     <div className="jd-info-label">{label}</div>
@@ -540,11 +670,37 @@ export default function JobDetailPage() {
 
 function LoadingSkeleton() {
   return (
-    <div style={{ minHeight: "100vh", background: "#f4fafb", fontFamily: "Archivo, sans-serif" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f4fafb",
+        fontFamily: "Archivo, sans-serif",
+      }}
+    >
       <div style={{ height: 280, background: "#9dcccc" }} />
-      <div style={{ maxWidth: 900, margin: "40px auto", padding: "0 24px", display: "grid", gridTemplateColumns: "1fr 300px", gap: 24 }}>
+      <div
+        style={{
+          maxWidth: 900,
+          margin: "40px auto",
+          padding: "0 24px",
+          display: "grid",
+          gridTemplateColumns: "1fr 300px",
+          gap: 24,
+        }}
+      >
         {[1, 2, 3].map((i) => (
-          <div key={i} style={{ height: 180, borderRadius: 18, background: "linear-gradient(90deg, #e0f5f7 25%, #f4fafb 50%, #e0f5f7 75%)", backgroundSize: "200% 100%", animation: "skeletonShimmer 1.5s infinite", marginBottom: 20 }} />
+          <div
+            key={i}
+            style={{
+              height: 180,
+              borderRadius: 18,
+              background:
+                "linear-gradient(90deg, #e0f5f7 25%, #f4fafb 50%, #e0f5f7 75%)",
+              backgroundSize: "200% 100%",
+              animation: "skeletonShimmer 1.5s infinite",
+              marginBottom: 20,
+            }}
+          />
         ))}
       </div>
     </div>
@@ -556,8 +712,13 @@ function NotFound() {
     <div className="jd-not-found">
       <style>{`.jd-not-found { text-align: center; padding: 140px 24px; font-family: Archivo, sans-serif; }`}</style>
       <h2>Offre introuvable</h2>
-      <p style={{ color: "#7aaeb4", marginBottom: 24 }}>Cette offre n'existe pas ou a été pourvue.</p>
-      <Link href="/recrutement" style={{ color: "#005f69", fontWeight: 700, textDecoration: "none" }}>
+      <p style={{ color: "#7aaeb4", marginBottom: 24 }}>
+        Cette offre n'existe pas ou a été pourvue.
+      </p>
+      <Link
+        href="/recrutement"
+        style={{ color: "#005f69", fontWeight: 700, textDecoration: "none" }}
+      >
         <ArrowLeft size={13} weight="bold" /> Retour aux offres
       </Link>
     </div>
