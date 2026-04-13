@@ -4,29 +4,124 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Briefcase, MapPin, Clock, CurrencyCircleDollar,
-  ArrowRight, Star, Buildings, MagnifyingGlass,
-  ArrowUpRight, Desktop, Headset, ChartLineUp, PaintBrush,
+  Briefcase,
+  MapPin,
+  Clock,
+  CurrencyCircleDollar,
+  ArrowRight,
+  Star,
+  Buildings,
+  MagnifyingGlass,
+  ArrowUpRight,
+  Desktop,
+  Headset,
+  ChartLineUp,
+  PaintBrush,
 } from "@phosphor-icons/react";
 import { fetchJobs } from "@/app/services/jobsApi";
 import { ApplicationModal } from "@/components/recrutement/ApplicationModal";
 
 /* ─── Star Clusters ─────────────────────────────────────── */
 const CLUSTERS = [
-  { cx: "2%", cy: "6%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.45, anim: 0, delay: "0s", dur: "3.2s", color: "#00818f" }] },
-  { cx: "91%", cy: "5%", stars: [{ x: 0, y: 0, size: 13, opacity: 0.40, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" }] },
-  { cx: "1%", cy: "45%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.32, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" }] },
-  { cx: "94%", cy: "42%", stars: [{ x: 0, y: 0, size: 11, opacity: 0.35, anim: 0, delay: "0.3s", dur: "3.3s", color: "#00818f" }] },
+  {
+    cx: "2%",
+    cy: "6%",
+    stars: [
+      {
+        x: 0,
+        y: 0,
+        size: 13,
+        opacity: 0.45,
+        anim: 0,
+        delay: "0s",
+        dur: "3.2s",
+        color: "#00818f",
+      },
+    ],
+  },
+  {
+    cx: "91%",
+    cy: "5%",
+    stars: [
+      {
+        x: 0,
+        y: 0,
+        size: 13,
+        opacity: 0.4,
+        anim: 1,
+        delay: "0.2s",
+        dur: "3.0s",
+        color: "#00818f",
+      },
+    ],
+  },
+  {
+    cx: "1%",
+    cy: "45%",
+    stars: [
+      {
+        x: 0,
+        y: 0,
+        size: 10,
+        opacity: 0.32,
+        anim: 2,
+        delay: "0.1s",
+        dur: "3.5s",
+        color: "#00515a",
+      },
+    ],
+  },
+  {
+    cx: "94%",
+    cy: "42%",
+    stars: [
+      {
+        x: 0,
+        y: 0,
+        size: 11,
+        opacity: 0.35,
+        anim: 0,
+        delay: "0.3s",
+        dur: "3.3s",
+        color: "#00818f",
+      },
+    ],
+  },
 ];
 
 function StarClusters() {
   return (
     <>
       {CLUSTERS.map((cluster, ci) => (
-        <div key={ci} style={{ position: "absolute", left: cluster.cx, top: cluster.cy, width: 0, height: 0, zIndex: 0, pointerEvents: "none" }}>
+        <div
+          key={ci}
+          style={{
+            position: "absolute",
+            left: cluster.cx,
+            top: cluster.cy,
+            width: 0,
+            height: 0,
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
+        >
           {cluster.stars.map((s, si) => (
-            <div key={si} style={{ position: "absolute", left: s.x, top: s.y, transform: "translate(-50%,-50%)", opacity: s.opacity, animation: `recStar${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`, filter: `drop-shadow(0 0 3px ${s.color}88)` }}>
-              <Star weight="fill" style={{ width: s.size, height: s.size, color: s.color }} />
+            <div
+              key={si}
+              style={{
+                position: "absolute",
+                left: s.x,
+                top: s.y,
+                transform: "translate(-50%,-50%)",
+                opacity: s.opacity,
+                animation: `recStar${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`,
+                filter: `drop-shadow(0 0 3px ${s.color}88)`,
+              }}
+            >
+              <Star
+                weight="fill"
+                style={{ width: s.size, height: s.size, color: s.color }}
+              />
             </div>
           ))}
         </div>
@@ -44,18 +139,20 @@ function TypeBadge({ type }) {
   };
   const c = colors[type] || colors.CDI;
   return (
-    <span style={{
-      display: "inline-block",
-      padding: "2px 10px",
-      borderRadius: "100px",
-      fontSize: "10px",
-      fontWeight: 700,
-      letterSpacing: "0.08em",
-      textTransform: "uppercase",
-      background: c.bg,
-      color: c.color,
-      border: `1px solid ${c.border}`,
-    }}>
+    <span
+      style={{
+        display: "inline-block",
+        padding: "2px 10px",
+        borderRadius: "100px",
+        fontSize: "10px",
+        fontWeight: 700,
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        background: c.bg,
+        color: c.color,
+        border: `1px solid ${c.border}`,
+      }}
+    >
       {type}
     </span>
   );
@@ -63,18 +160,25 @@ function TypeBadge({ type }) {
 
 /* ─── Remote Badge ──────────────────────────────────────── */
 function RemoteBadge({ remote }) {
-  const labels = { hybride: "Hybride", présentiel: "Présentiel", "full-remote": "Full Remote", terrain: "Terrain" };
+  const labels = {
+    hybride: "Hybride",
+    présentiel: "Présentiel",
+    "full-remote": "Full Remote",
+    terrain: "Terrain",
+  };
   return (
-    <span style={{
-      display: "inline-block",
-      padding: "2px 10px",
-      borderRadius: "100px",
-      fontSize: "10px",
-      fontWeight: 600,
-      background: "rgba(0,95,105,0.07)",
-      color: "#005f69",
-      border: "1px solid rgba(0,95,105,0.18)",
-    }}>
+    <span
+      style={{
+        display: "inline-block",
+        padding: "2px 10px",
+        borderRadius: "100px",
+        fontSize: "10px",
+        fontWeight: 600,
+        background: "rgba(0,95,105,0.07)",
+        color: "#005f69",
+        border: "1px solid rgba(0,95,105,0.18)",
+      }}
+    >
       {labels[remote] || remote}
     </span>
   );
@@ -83,12 +187,32 @@ function RemoteBadge({ remote }) {
 /* ─── Job Card ──────────────────────────────────────────── */
 function JobCard({ job, index }) {
   const deptConfig = {
-    "Technologie":      { Icon: Desktop,     color: "#005f69", bg: "linear-gradient(135deg,#e0f5f7,#c5e8ec)" },
-    "Service Client":   { Icon: Headset,     color: "#692c00", bg: "linear-gradient(135deg,#fff1e6,#f5d9bf)" },
-    "Commercial":       { Icon: ChartLineUp, color: "#004a52", bg: "linear-gradient(135deg,#d6f0f3,#b8e4e9)" },
-    "Produit & Design": { Icon: PaintBrush,  color: "#692c00", bg: "linear-gradient(135deg,#fff1e6,#f5d9bf)" },
+    Technologie: {
+      Icon: Desktop,
+      color: "#005f69",
+      bg: "linear-gradient(135deg,#e0f5f7,#c5e8ec)",
+    },
+    "Service Client": {
+      Icon: Headset,
+      color: "#692c00",
+      bg: "linear-gradient(135deg,#fff1e6,#f5d9bf)",
+    },
+    Commercial: {
+      Icon: ChartLineUp,
+      color: "#004a52",
+      bg: "linear-gradient(135deg,#d6f0f3,#b8e4e9)",
+    },
+    "Produit & Design": {
+      Icon: PaintBrush,
+      color: "#692c00",
+      bg: "linear-gradient(135deg,#fff1e6,#f5d9bf)",
+    },
   };
-  const dept = deptConfig[job.department] || { Icon: Buildings, color: "#005f69", bg: "linear-gradient(135deg,#e0f5f7,#c5ecef)" };
+  const dept = deptConfig[job.department] || {
+    Icon: Buildings,
+    color: "#005f69",
+    bg: "linear-gradient(135deg,#e0f5f7,#c5ecef)",
+  };
   const { Icon: DeptIcon } = dept;
 
   const salaryText = job.remuneration.displayed
@@ -102,9 +226,11 @@ function JobCard({ job, index }) {
       transition={{ duration: 0.4, delay: index * 0.08, ease: "easeOut" }}
       style={{ height: "100%" }}
     >
-      <Link href={`/recrutement/${job.slug}`} style={{ textDecoration: "none", height: "100%", display: "block" }}>
+      <Link
+        href={`/recrutement/${job.slug}`}
+        style={{ textDecoration: "none", height: "100%", display: "block" }}
+      >
         <div className="job-card">
-
           {/* ── Gradient glow on hover ── */}
           <div className="job-card-glow" />
 
@@ -113,7 +239,14 @@ function JobCard({ job, index }) {
             <div className="job-dept-icon" style={{ background: dept.bg }}>
               <DeptIcon size={20} weight="fill" style={{ color: dept.color }} />
             </div>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 6,
+                flexWrap: "wrap",
+                justifyContent: "flex-end",
+              }}
+            >
               <TypeBadge type={job.type} />
               <RemoteBadge remote={job.location.remote} />
             </div>
@@ -124,7 +257,9 @@ function JobCard({ job, index }) {
             <p className="job-card-dept">{job.department}</p>
             <h3 className="job-card-title">{job.job_title}</h3>
             <p className="job-card-desc">
-              {job.description.length > 110 ? job.description.slice(0, 110) + "…" : job.description}
+              {job.description.length > 110
+                ? job.description.slice(0, 110) + "…"
+                : job.description}
             </p>
           </div>
 
@@ -140,7 +275,7 @@ function JobCard({ job, index }) {
               </span>
               <span className="job-chip">
                 <Clock size={11} weight="fill" />
-                {job.conditions.experience_years}
+                {job.conditions.experience_years} années d'expérience
               </span>
               <span className="job-chip job-chip--salary">
                 <CurrencyCircleDollar size={12} weight="fill" />
@@ -155,7 +290,6 @@ function JobCard({ job, index }) {
               </span>
             </div>
           </div>
-
         </div>
       </Link>
     </motion.div>
@@ -184,7 +318,10 @@ export default function RecrutementPage() {
     });
   }, []);
 
-  const departments = ["Tous", ...Array.from(new Set(jobs.map((j) => j.department)))];
+  const departments = [
+    "Tous",
+    ...Array.from(new Set(jobs.map((j) => j.department))),
+  ];
 
   const filtered = jobs.filter((j) => {
     const matchSearch =
@@ -442,28 +579,47 @@ export default function RecrutementPage() {
               Carrières & Recrutement
             </div>
             <h1>
-              Rejoignez l'équipe<br />
-              <span>qui réinvente</span> la mobilité<br />
+              Rejoignez l'équipe
+              <br />
+              <span>qui réinvente</span> la mobilité
+              <br />
               au Bénin
             </h1>
             <p>
-              Construisons ensemble l'avenir de la mobilité urbaine. Découvrez nos offres d'emploi et participez à une aventure qui transforme des milliers de vies chaque jour.
+              Construisons ensemble l'avenir de la mobilité urbaine. Découvrez
+              nos offres d'emploi et participez à une aventure qui transforme
+              des milliers de vies chaque jour.
             </p>
           </div>
         </div>
 
         {/* ── Stats ── */}
         <div className="rec-stats">
-          <div className="rec-stat"><div className="rec-stat-num">{jobs.length}</div><div className="rec-stat-label">Postes ouverts</div></div>
-          <div className="rec-stat"><div className="rec-stat-num">Cotonou</div><div className="rec-stat-label">Siège social</div></div>
-          <div className="rec-stat"><div className="rec-stat-num">2024</div><div className="rec-stat-label">Fondée en</div></div>
-          <div className="rec-stat"><div className="rec-stat-num">+1 000</div><div className="rec-stat-label">Utilisateurs actifs</div></div>
+          <div className="rec-stat">
+            <div className="rec-stat-num">{jobs.length}</div>
+            <div className="rec-stat-label">Postes ouverts</div>
+          </div>
+          <div className="rec-stat">
+            <div className="rec-stat-num">Cotonou</div>
+            <div className="rec-stat-label">Siège social</div>
+          </div>
+          <div className="rec-stat">
+            <div className="rec-stat-num">2024</div>
+            <div className="rec-stat-label">Fondée en</div>
+          </div>
+          <div className="rec-stat">
+            <div className="rec-stat-num">+1 000</div>
+            <div className="rec-stat-label">Utilisateurs actifs</div>
+          </div>
         </div>
 
         {/* ── Search & Filters ── */}
         <div className="rec-bar">
           <div className="rec-search">
-            <MagnifyingGlass size={16} style={{ color: "#7aaeb4", flexShrink: 0 }} />
+            <MagnifyingGlass
+              size={16}
+              style={{ color: "#7aaeb4", flexShrink: 0 }}
+            />
             <input
               type="text"
               placeholder="Rechercher un poste, département, ville…"
@@ -488,7 +644,10 @@ export default function RecrutementPage() {
         <div className="rec-grid">
           {loading ? (
             Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} style={{ borderRadius: 20, overflow: "hidden", height: 320 }}>
+              <div
+                key={i}
+                style={{ borderRadius: 20, overflow: "hidden", height: 320 }}
+              >
                 <div className="rec-skeleton" style={{ height: "100%" }} />
               </div>
             ))
@@ -511,7 +670,10 @@ export default function RecrutementPage() {
           <div className="rec-cta-band">
             <div>
               <h2>Vous ne trouvez pas votre bonheur ?</h2>
-              <p>Envoyez-nous une candidature spontanée. Nous sommes toujours à la recherche de talents exceptionnels.</p>
+              <p>
+                Envoyez-nous une candidature spontanée. Nous sommes toujours à
+                la recherche de talents exceptionnels.
+              </p>
             </div>
             <button onClick={() => setModalOpen(true)} className="rec-cta-btn">
               Candidature spontanée
@@ -522,7 +684,10 @@ export default function RecrutementPage() {
 
         <AnimatePresence>
           {modalOpen && (
-            <ApplicationModal job={SPONTANEOUS_JOB} onClose={() => setModalOpen(false)} />
+            <ApplicationModal
+              job={SPONTANEOUS_JOB}
+              onClose={() => setModalOpen(false)}
+            />
           )}
         </AnimatePresence>
       </div>
