@@ -10,7 +10,7 @@ on:
 
 env:
   APP_URL: https://ticketche.com
-  API_URL: https://api.ticketche.com
+  API_URL: https://api.ticketche.com/api/v2
   DEPLOY_FOLDER: /root/app/ticketche
 
 concurrency:
