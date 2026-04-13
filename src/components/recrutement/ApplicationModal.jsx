@@ -185,8 +185,12 @@ function FileUpload({ file, accept, onChange, placeholder }) {
   );
 }
 
+const DEV_PREFILL = process.env.NODE_ENV === "development"
+  ? { last_name: "Dupont", first_name: "Jean", email: "jean.dupont@dev.test", phone: "+2290112345678", message: "Ceci est une candidature de test (environnement de développement)." }
+  : { last_name: "", first_name: "", email: "", phone: "", message: "" };
+
 export function ApplicationModal({ job, onClose }) {
-  const [form, setForm] = useState({ last_name: "", first_name: "", email: "", phone: "", message: "" });
+  const [form, setForm] = useState(DEV_PREFILL);
   const [cv, setCv] = useState(null);
   const [motivationFile, setMotivationFile] = useState(null);
   const [errors, setErrors] = useState({});
