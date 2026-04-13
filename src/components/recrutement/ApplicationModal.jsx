@@ -186,7 +186,7 @@ function FileUpload({ file, accept, onChange, placeholder }) {
 }
 
 export function ApplicationModal({ job, onClose }) {
-  const [form, setForm] = useState({ nom: "", prenom: "", email: "", phone: "", message: "" });
+  const [form, setForm] = useState({ last_name: "", first_name: "", email: "", phone: "", message: "" });
   const [cv, setCv] = useState(null);
   const [motivationFile, setMotivationFile] = useState(null);
   const [errors, setErrors] = useState({});
@@ -208,8 +208,8 @@ export function ApplicationModal({ job, onClose }) {
 
   const validate = () => {
     const e = {};
-    if (!form.nom.trim()) e.nom = "Requis";
-    if (!form.prenom.trim()) e.prenom = "Requis";
+    if (!form.last_name.trim()) e.last_name = "Requis";
+    if (!form.first_name.trim()) e.first_name = "Requis";
     if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Email invalide";
     const phonePattern = /^\+229\s?01\d{8}$/;
     if (!form.phone.trim() || !phonePattern.test(form.phone.replace(/\s/g, ""))) e.phone = "Format requis : +229 01XXXXXXXX";
@@ -224,9 +224,10 @@ export function ApplicationModal({ job, onClose }) {
     try {
       const fd = new FormData();
       Object.entries(form).forEach(([k, v]) => fd.append(k, v));
-      if (job.id) fd.append("job_id", job.id);
+      fd.append("job_id", job.id ?? "spontaneous");
+      fd.append("job_title", job.job_title ?? "Candidature spontanée");
       if (cv) fd.append("cv", cv);
-      if (motivationFile) fd.append("lettre_motivation", motivationFile);
+      if (motivationFile) fd.append("motivation_letter", motivationFile);
       await submitApplication(job.id, fd);
       setSuccess(true);
     } catch {
@@ -267,11 +268,11 @@ export function ApplicationModal({ job, onClose }) {
 
               <div className="modal-body">
                 <div className="modal-row-2">
-                  <Field label="Prénom *" error={errors.prenom}>
-                    <input type="text" placeholder="Jean" value={form.prenom} onChange={(e) => setForm((p) => ({ ...p, prenom: e.target.value }))} className={errors.prenom ? "field-error" : ""} />
+                  <Field label="Prénom *" error={errors.first_name}>
+                    <input type="text" placeholder="Jean" value={form.first_name} onChange={(e) => setForm((p) => ({ ...p, first_name: e.target.value }))} className={errors.first_name ? "field-error" : ""} />
                   </Field>
-                  <Field label="Nom *" error={errors.nom}>
-                    <input type="text" placeholder="Ahouansou" value={form.nom} onChange={(e) => setForm((p) => ({ ...p, nom: e.target.value }))} className={errors.nom ? "field-error" : ""} />
+                  <Field label="Nom *" error={errors.last_name}>
+                    <input type="text" placeholder="Ahouansou" value={form.last_name} onChange={(e) => setForm((p) => ({ ...p, last_name: e.target.value }))} className={errors.last_name ? "field-error" : ""} />
                   </Field>
                 </div>
 
