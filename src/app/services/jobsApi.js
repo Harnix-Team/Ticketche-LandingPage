@@ -1,14 +1,14 @@
 // src/app/services/jobsApi.js
 // Source de données unique pour les offres d'emploi
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.ticketche.com/api/v2";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.ticketche.com/api/v2";
 
 /**
  * Récupère toutes les offres d'emploi actives depuis le backend.
  * @returns {Promise<Array>}
  */
 export async function fetchJobs() {
-  const res = await fetch(`${API_BASE}/jobs`);
+  const res = await fetch(`${API_URL}/jobs`);
   if (!res.ok) throw new Error(`Erreur réseau : ${res.status}`);
   const json = await res.json();
   const jobs = json.data ?? [];
@@ -31,7 +31,7 @@ export async function fetchJobBySlug(slug) {
  * @returns {Promise<{success: boolean, message: string}>}
  */
 export async function submitApplication(_jobId, formData) {
-  const res = await fetch(`${API_BASE}/jobs/apply`, {
+  const res = await fetch(`${API_URL}/jobs/apply`, {
     method: "POST",
     body: formData,
   });
