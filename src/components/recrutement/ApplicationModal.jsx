@@ -3,8 +3,15 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import {
-  X, CheckCircle, Check, Warning, EnvelopeSimple, Phone,
-  FileText, UploadSimple, ArrowRight,
+  X,
+  CheckCircle,
+  Check,
+  Warning,
+  EnvelopeSimple,
+  Phone,
+  FileText,
+  UploadSimple,
+  ArrowRight,
 } from "@phosphor-icons/react";
 import { submitApplication } from "@/app/services/jobsApi";
 
@@ -54,6 +61,9 @@ const MODAL_STYLES = `
 
   .modal-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media (max-width: 480px) { .modal-row-2 { grid-template-columns: 1fr; } }
+
+  .modal-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .modal-row-3 { grid-template-columns: 1fr; } }
 
   .modal-field { display: flex; flex-direction: column; gap: 5px; }
   .modal-field label { font-size: 12px; font-weight: 700; color: #374151; }
@@ -137,13 +147,25 @@ function Field({ label, error, icon, children }) {
   return (
     <div className="modal-field">
       <label>
-        {hasRequired ? <>{parts[0]}<span className="req">*</span>{parts[1]}</> : label}
+        {hasRequired ? (
+          <>
+            {parts[0]}
+            <span className="req">*</span>
+            {parts[1]}
+          </>
+        ) : (
+          label
+        )}
       </label>
       <div className={`field-wrap${icon ? " has-icon" : ""}`}>
         {icon && <span className="field-icon">{icon}</span>}
         {children}
       </div>
-      {error && <span className="field-err-msg"><Warning size={12} /> {error}</span>}
+      {error && (
+        <span className="field-err-msg">
+          <Warning size={12} /> {error}
+        </span>
+      )}
     </div>
   );
 }
@@ -168,12 +190,20 @@ function FileUpload({ file, accept, onChange, placeholder }) {
       onDrop={handleDrop}
       onClick={() => inputRef.current.click()}
     >
-      <input ref={inputRef} type="file" accept={accept} style={{ display: "none" }} onChange={(e) => onChange(e.target.files[0])} />
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        style={{ display: "none" }}
+        onChange={(e) => onChange(e.target.files[0])}
+      />
       {file ? (
         <div className="file-selected">
           <FileText size={18} style={{ color: "#005f69" }} />
           <span>{file.name}</span>
-          <span style={{ fontSize: 11, color: "#7aaeb4" }}>({formatSize(file.size)})</span>
+          <span style={{ fontSize: 11, color: "#7aaeb4" }}>
+            ({formatSize(file.size)})
+          </span>
         </div>
       ) : (
         <div className="file-placeholder">
@@ -185,9 +215,31 @@ function FileUpload({ file, accept, onChange, placeholder }) {
   );
 }
 
-const DEV_PREFILL = process.env.NODE_ENV === "development"
-  ? { last_name: "Dupont", first_name: "Jean", email: "jean.dupont@dev.test", phone: "+2290112345678", message: "Ceci est une candidature de test (environnement de développement)." }
-  : { last_name: "", first_name: "", email: "", phone: "", message: "" };
+const DEV_PREFILL =
+  process.env.NODE_ENV === "development"
+    ? {
+        last_name: "Dupont",
+        first_name: "Jean",
+        email: "jean.dupont@dev.test",
+        phone: "+2290112345678",
+        message:
+          "Ceci est une candidature de test (environnement de développement).",
+        license_number: "BJ-123456",
+        has_experience: "yes",
+        own_vehicle: "no",
+        want_vehicle: "yes",
+      }
+    : {
+        last_name: "",
+        first_name: "",
+        email: "",
+        phone: "",
+        message: "",
+        license_number: "",
+        has_experience: "",
+        own_vehicle: "",
+        want_vehicle: "",
+      };
 
 export function ApplicationModal({ job, onClose }) {
   const [form, setForm] = useState(DEV_PREFILL);
@@ -205,7 +257,11 @@ export function ApplicationModal({ job, onClose }) {
       setErrors((p) => ({ ...p, [field]: "Fichier trop lourd (max 10 Mo)" }));
       return;
     }
-    setErrors((p) => { const n = { ...p }; delete n[field]; return n; });
+    setErrors((p) => {
+      const n = { ...p };
+      delete n[field];
+      return n;
+    });
     if (field === "cv") setCv(file);
     else setMotivationFile(file);
   };
@@ -214,16 +270,21 @@ export function ApplicationModal({ job, onClose }) {
     const e = {};
     if (!form.last_name.trim()) e.last_name = "Requis";
     if (!form.first_name.trim()) e.first_name = "Requis";
-    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Email invalide";
+    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+      e.email = "Email invalide";
     const phonePattern = /^\+229\s?01\d{8}$/;
-    if (!form.phone.trim() || !phonePattern.test(form.phone.replace(/\s/g, ""))) e.phone = "Format requis : +229 01XXXXXXXX";
+    if (!form.phone.trim() || !phonePattern.test(form.phone.replace(/\s/g, "")))
+      e.phone = "Format requis : +229 01XXXXXXXX";
     if (!cv) e.cv = "CV obligatoire";
     return e;
   };
 
   const handleSubmit = async () => {
     const e = validate();
-    if (Object.keys(e).length) { setErrors(e); return; }
+    if (Object.keys(e).length) {
+      setErrors(e);
+      return;
+    }
     setSubmitting(true);
     try {
       const fd = new FormData();
@@ -244,7 +305,10 @@ export function ApplicationModal({ job, onClose }) {
   return (
     <>
       <style>{MODAL_STYLES}</style>
-      <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div
+        className="modal-overlay"
+        onClick={(e) => e.target === e.currentTarget && onClose()}
+      >
         <motion.div
           className="modal-box"
           initial={{ opacity: 0, y: 40, scale: 0.96 }}
@@ -252,7 +316,9 @@ export function ApplicationModal({ job, onClose }) {
           exit={{ opacity: 0, y: 40, scale: 0.96 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <button className="modal-close" onClick={onClose}><X size={18} weight="bold" /></button>
+          <button className="modal-close" onClick={onClose}>
+            <X size={18} weight="bold" />
+          </button>
 
           {success ? (
             <div className="modal-success">
@@ -260,45 +326,206 @@ export function ApplicationModal({ job, onClose }) {
                 <Check size={30} weight="regular" color="#fff" />
               </div>
               <h3>Candidature envoyée !</h3>
-              <p>Nous avons bien reçu votre candidature pour le poste de <b>{job.job_title}</b>. Nous reviendrons vers vous dans les plus brefs délais.</p>
-              <button onClick={onClose} className="modal-btn-close">Fermer</button>
+              <p>
+                Nous avons bien reçu votre candidature pour le poste de{" "}
+                <b>{job.job_title}</b>. Nous reviendrons vers vous dans les plus
+                brefs délais.
+              </p>
+              <button onClick={onClose} className="modal-btn-close">
+                Fermer
+              </button>
             </div>
           ) : (
             <>
               <div className="modal-header">
                 <h2>Postuler — {job.job_title}</h2>
-                <p>{job.department} · {job.location.city}</p>
+                <p>
+                  {job.department} · {job.location.city}
+                </p>
               </div>
 
               <div className="modal-body">
                 <div className="modal-row-2">
                   <Field label="Prénom *" error={errors.first_name}>
-                    <input type="text" placeholder="Jean" value={form.first_name} onChange={(e) => setForm((p) => ({ ...p, first_name: e.target.value }))} className={errors.first_name ? "field-error" : ""} />
+                    <input
+                      type="text"
+                      placeholder="Jean"
+                      value={form.first_name}
+                      onChange={(e) =>
+                        setForm((p) => ({ ...p, first_name: e.target.value }))
+                      }
+                      className={errors.first_name ? "field-error" : ""}
+                    />
                   </Field>
                   <Field label="Nom *" error={errors.last_name}>
-                    <input type="text" placeholder="Ahouansou" value={form.last_name} onChange={(e) => setForm((p) => ({ ...p, last_name: e.target.value }))} className={errors.last_name ? "field-error" : ""} />
+                    <input
+                      type="text"
+                      placeholder="Ahouansou"
+                      value={form.last_name}
+                      onChange={(e) =>
+                        setForm((p) => ({ ...p, last_name: e.target.value }))
+                      }
+                      className={errors.last_name ? "field-error" : ""}
+                    />
                   </Field>
                 </div>
 
-                <Field label="Adresse email *" error={errors.email} icon={<EnvelopeSimple size={15} />}>
-                  <input type="email" placeholder="jean@email.com" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} className={errors.email ? "field-error" : ""} />
+                <Field
+                  label="Adresse email *"
+                  error={errors.email}
+                  icon={<EnvelopeSimple size={15} />}
+                >
+                  <input
+                    type="email"
+                    placeholder="jean@email.com"
+                    value={form.email}
+                    onChange={(e) =>
+                      setForm((p) => ({ ...p, email: e.target.value }))
+                    }
+                    className={errors.email ? "field-error" : ""}
+                  />
                 </Field>
 
-                <Field label="Numéro de téléphone *" error={errors.phone} icon={<Phone size={15} />}>
-                  <input type="tel" placeholder="+229 01 XXXXXXXX" value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))} className={errors.phone ? "field-error" : ""} />
+                <Field
+                  label="Numéro de téléphone *"
+                  error={errors.phone}
+                  icon={<Phone size={15} />}
+                >
+                  <input
+                    type="tel"
+                    placeholder="+229 01 XXXXXXXX"
+                    value={form.phone}
+                    onChange={(e) =>
+                      setForm((p) => ({ ...p, phone: e.target.value }))
+                    }
+                    className={errors.phone ? "field-error" : ""}
+                  />
                 </Field>
 
-                <Field label="CV * (PDF uniquement — max 10 Mo)" error={errors.cv}>
-                  <FileUpload file={cv} accept=".pdf" onChange={(f) => handleFileChange("cv", f)} placeholder="Glissez votre CV ou cliquez pour parcourir" />
+                <Field
+                  label="CV * (PDF uniquement — max 10 Mo)"
+                  error={errors.cv}
+                >
+                  <FileUpload
+                    file={cv}
+                    accept=".pdf"
+                    onChange={(f) => handleFileChange("cv", f)}
+                    placeholder="Glissez votre CV ou cliquez pour parcourir"
+                  />
                 </Field>
 
-                <Field label="Lettre de motivation (optionnel — PDF uniquement)" error={errors.motivationFile}>
-                  <FileUpload file={motivationFile} accept=".pdf" onChange={(f) => handleFileChange("motivationFile", f)} placeholder="Glissez votre lettre ou cliquez pour parcourir" />
+                <Field
+                  label="Lettre de motivation (optionnel — PDF uniquement)"
+                  error={errors.motivationFile}
+                >
+                  <FileUpload
+                    file={motivationFile}
+                    accept=".pdf"
+                    onChange={(f) => handleFileChange("motivationFile", f)}
+                    placeholder="Glissez votre lettre ou cliquez pour parcourir"
+                  />
                 </Field>
 
                 <Field label="Message (optionnel)">
-                  <textarea placeholder="Présentez-vous brièvement…" rows={3} value={form.message} onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))} />
+                  <textarea
+                    placeholder="Présentez-vous brièvement…"
+                    rows={3}
+                    value={form.message}
+                    onChange={(e) =>
+                      setForm((p) => ({ ...p, message: e.target.value }))
+                    }
+                  />
                 </Field>
+
+                {(job?.job_title?.toLowerCase().includes("livreur") ||
+                  job?.id === "delivery_man") && (
+                  <>
+                    <Field label="Numéro de permis de conduire *">
+                      <input
+                        placeholder="Ex: BJ-123456"
+                        value={form.license_number}
+                        onChange={(e) =>
+                          setForm((p) => ({
+                            ...p,
+                            license_number: e.target.value,
+                          }))
+                        }
+                      />
+                    </Field>
+
+                    <div className="modal-row-2">
+                      <Field label="Expérience passée ?">
+                        <select
+                          value={form.has_experience}
+                          onChange={(e) =>
+                            setForm((p) => ({
+                              ...p,
+                              has_experience: e.target.value,
+                            }))
+                          }
+                          style={{
+                            width: "100%",
+                            padding: "10px",
+                            borderRadius: "10px",
+                            border: "1.5px solid rgba(0,95,105,0.15)",
+                            background: "#fafeff",
+                          }}
+                        >
+                          <option value="">Sélectionner</option>
+                          <option value="yes">Oui</option>
+                          <option value="no">Non</option>
+                        </select>
+                      </Field>
+                      <Field label="Avez-vous un véhicule ?">
+                        <select
+                          value={form.own_vehicle}
+                          onChange={(e) =>
+                            setForm((p) => ({
+                              ...p,
+                              own_vehicle: e.target.value,
+                            }))
+                          }
+                          style={{
+                            width: "100%",
+                            padding: "10px",
+                            borderRadius: "10px",
+                            border: "1.5px solid rgba(0,95,105,0.15)",
+                            background: "#fafeff",
+                          }}
+                        >
+                          <option value="">Sélectionner</option>
+                          <option value="yes">Oui</option>
+                          <option value="no">Non</option>
+                        </select>
+                      </Field>
+                    </div>
+
+                    {form.own_vehicle === "no" && (
+                      <Field label="Souhaitez-vous qu'on vous en fournisse un ?">
+                        <select
+                          value={form.want_vehicle}
+                          onChange={(e) =>
+                            setForm((p) => ({
+                              ...p,
+                              want_vehicle: e.target.value,
+                            }))
+                          }
+                          style={{
+                            width: "100%",
+                            padding: "10px",
+                            borderRadius: "10px",
+                            border: "1.5px solid rgba(0,95,105,0.15)",
+                            background: "#fafeff",
+                          }}
+                        >
+                          <option value="">Sélectionner</option>
+                          <option value="yes">Oui</option>
+                          <option value="no">Non</option>
+                        </select>
+                      </Field>
+                    )}
+                  </>
+                )}
 
                 {errors.submit && (
                   <div className="modal-error-band">
@@ -306,7 +533,11 @@ export function ApplicationModal({ job, onClose }) {
                   </div>
                 )}
 
-                <button onClick={handleSubmit} disabled={submitting} className="modal-submit-btn">
+                <button
+                  onClick={handleSubmit}
+                  disabled={submitting}
+                  className="modal-submit-btn"
+                >
                   {submitting ? "Envoi en cours…" : "Envoyer ma candidature"}
                   {!submitting && <ArrowRight size={16} weight="bold" />}
                 </button>
