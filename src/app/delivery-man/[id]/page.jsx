@@ -4,6 +4,17 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Star } from "lucide-react";
 
+// Main app colors
+const PRIMARY_COLOR = "#005F69";
+const ERROR_COLOR = "#FF3300";
+const WARNING_COLOR = "#F29E10";
+
+const getStarColor = (rating) => {
+  if (rating <= 2) return ERROR_COLOR; // Red for 1-2 stars
+  if (rating === 3) return WARNING_COLOR; // Orange for 3 stars
+  return PRIMARY_COLOR; // Green for 4-5 stars
+};
+
 export default function DeliveryManReviewPage() {
   const { id } = useParams();
   const [star, setStar] = useState(0);
@@ -22,11 +33,17 @@ export default function DeliveryManReviewPage() {
     }, 1500);
   };
 
+  const currentRating = hover || star;
+  const starColor = getStarColor(currentRating);
+
   if (submitted) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
         <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center space-y-4">
-          <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto">
+          <div 
+            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto"
+            style={{ backgroundColor: `${PRIMARY_COLOR}20`, color: PRIMARY_COLOR }}
+          >
             <Star size={32} fill="currentColor" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Merci !</h1>
@@ -63,10 +80,11 @@ export default function DeliveryManReviewPage() {
               >
                 <Star
                   size={36}
-                  fill={(hover || star) >= s ? "#22C55E" : "none"}
-                  className={
-                    (hover || star) >= s ? "text-green-500" : "text-gray-300"
-                  }
+                  fill={currentRating >= s ? starColor : "none"}
+                  className="transition-colors"
+                  style={{
+                    color: currentRating >= s ? starColor : "#D1D5DB",
+                  }}
                 />
               </button>
             ))}
@@ -79,7 +97,10 @@ export default function DeliveryManReviewPage() {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none min-h-[120px]"
+              className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:border-transparent outline-none min-h-[120px]"
+              style={{ 
+                "--tw-ring-color": PRIMARY_COLOR 
+              }}
               placeholder="Votre expérience..."
             />
           </div>
@@ -87,8 +108,12 @@ export default function DeliveryManReviewPage() {
           <button
             type="submit"
             disabled={star === 0 || loading}
-            className={`w-full py-4 rounded-xl font-bold text-white transition-all 
-                            ${star === 0 || loading ? "bg-gray-300 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 active:scale-95 shadow-lg shadow-green-200"}`}
+            className={`w-full py-4 rounded-xl font-bold text-white transition-all active:scale-95`}
+            style={{
+              backgroundColor: star === 0 || loading ? "#D1D5DB" : PRIMARY_COLOR,
+              boxShadow: star === 0 || loading ? "none" : `0 10px 15px -3px ${PRIMARY_COLOR}33`,
+              cursor: star === 0 || loading ? "not-allowed" : "pointer",
+            }}
           >
             {loading ? "Envoi en cours..." : "Soumettre l'avis"}
           </button>
