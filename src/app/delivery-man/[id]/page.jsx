@@ -40,9 +40,12 @@ export default function DeliveryManReviewPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
         <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center space-y-4">
-          <div 
+          <div
             className="w-16 h-16 rounded-full flex items-center justify-center mx-auto"
-            style={{ backgroundColor: `${PRIMARY_COLOR}20`, color: PRIMARY_COLOR }}
+            style={{
+              backgroundColor: `${PRIMARY_COLOR}20`,
+              color: PRIMARY_COLOR,
+            }}
           >
             <Star size={32} fill="currentColor" />
           </div>
@@ -98,8 +101,8 @@ export default function DeliveryManReviewPage() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:border-transparent outline-none min-h-[120px]"
-              style={{ 
-                "--tw-ring-color": PRIMARY_COLOR 
+              style={{
+                "--tw-ring-color": PRIMARY_COLOR,
               }}
               placeholder="Votre expérience..."
             />
@@ -110,8 +113,12 @@ export default function DeliveryManReviewPage() {
             disabled={star === 0 || loading}
             className={`w-full py-4 rounded-xl font-bold text-white transition-all active:scale-95`}
             style={{
-              backgroundColor: star === 0 || loading ? "#D1D5DB" : PRIMARY_COLOR,
-              boxShadow: star === 0 || loading ? "none" : `0 10px 15px -3px ${PRIMARY_COLOR}33`,
+              backgroundColor:
+                star === 0 || loading ? "#D1D5DB" : PRIMARY_COLOR,
+              boxShadow:
+                star === 0 || loading
+                  ? "none"
+                  : `0 10px 15px -3px ${PRIMARY_COLOR}33`,
               cursor: star === 0 || loading ? "not-allowed" : "pointer",
             }}
           >
