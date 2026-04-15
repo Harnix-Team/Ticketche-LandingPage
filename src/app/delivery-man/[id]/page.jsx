@@ -8,6 +8,8 @@ import { Star } from "lucide-react";
 const PRIMARY_COLOR = "#005F69";
 const ERROR_COLOR = "#FF3300";
 const WARNING_COLOR = "#F29E10";
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v2";
 
 const getStarColor = (rating) => {
   if (rating <= 2) return ERROR_COLOR; // Red for 1-2 stars
@@ -22,15 +24,38 @@ export default function DeliveryManReviewPage() {
   const [description, setDescription] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
     setLoading(true);
-    // Simulate API call to BACKEND/api/v1/delivery-man-reviews
-    setTimeout(() => {
+
+    try {
+      const response = await fetch(`${API_URL}/delivery-man-reviews`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          star: star,
+          description: description || null,
+          user_id: null, // Anonymous review
+          delivery_man_id: id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
+
       setLoading(false);
       setSubmitted(true);
-    }, 1500);
+    } catch (err) {
+      console.error("Error submitting review:", err);
+      setError(err.message || "Une erreur s'est produite. Veuillez réessayer.");
+      setLoading(false);
+    }
   };
 
   const currentRating = hover || star;
@@ -80,6 +105,7 @@ export default function DeliveryManReviewPage() {
                 onMouseEnter={() => setHover(s)}
                 onMouseLeave={() => setHover(0)}
                 className="transition-transform active:scale-95"
+                disabled={loading}
               >
                 <Star
                   size={36}
@@ -87,11 +113,18 @@ export default function DeliveryManReviewPage() {
                   className="transition-colors"
                   style={{
                     color: currentRating >= s ? starColor : "#D1D5DB",
+                    opacity: loading ? 0.5 : 1,
                   }}
                 />
               </button>
             ))}
           </div>
+
+          {error && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
 
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">
@@ -100,7 +133,8 @@ export default function DeliveryManReviewPage() {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:border-transparent outline-none min-h-[120px]"
+              disabled={loading}
+              className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:border-transparent outline-none min-h-[120px] disabled:opacity-50"
               style={{
                 "--tw-ring-color": PRIMARY_COLOR,
               }}
