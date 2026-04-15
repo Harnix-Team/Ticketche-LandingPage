@@ -3,13 +3,15 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Star } from "lucide-react";
+import {
+  fetchDeliveryManProfile,
+  submitDeliveryManReview,
+} from "@/api/deliveryApi";
 
 // Main app colors
 const PRIMARY_COLOR = "#005F69";
 const ERROR_COLOR = "#FF3300";
 const WARNING_COLOR = "#F29E10";
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v2";
 
 const getStarColor = (rating) => {
   if (rating <= 2) return ERROR_COLOR; // Red for 1-2 stars
@@ -25,6 +27,23 @@ export default function DeliveryManReviewPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [deliveryMan, setDeliveryMan] = useState(null);
+  const [loadingDeliveryMan, setLoadingDeliveryMan] = useState(true);
+
+  useEffect(() => {
+    const loadDeliveryMan = async () => {
+      try {
+        const profile = await fetchDeliveryManProfile(id);
+        setDeliveryMan(profile);
+      } catch (err) {
+        console.error("Error fetching delivery man:", err);
+      } finally {
+        setLoadingDeliveryMan(false);
+      }
+    };
+
+    if (id) loadDeliveryMan();
+  }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,22 +51,12 @@ export default function DeliveryManReviewPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/delivery-man-reviews`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          star: star,
-          description: description || null,
-          user_id: null, // Anonymous review
-          delivery_man_id: id,
-        }),
+      await submitDeliveryManReview({
+        star: star,
+        description: description || null,
+        user_id: null, // Anonymous review
+        delivery_man_id: id,
       });
-
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
-      }
 
       setLoading(false);
       setSubmitted(true);
@@ -87,6 +96,30 @@ export default function DeliveryManReviewPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
       <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full space-y-6">
+        {/* Delivery Man Profile Section */}
+        {!loadingDeliveryMan && deliveryMan && (
+          <div className="flex flex-col items-center space-y-3 pb-6 border-b border-gray-200">
+            <div
+              className="w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl"
+              style={{ backgroundColor: PRIMARY_COLOR }}
+            >
+              {deliveryMan.first_name?.[0]}
+              {deliveryMan.second_name?.[0]}
+            </div>
+            <div className="text-center">
+              <h2 className="text-xl font-bold text-gray-900">
+                {deliveryMan.first_name} {deliveryMan.second_name}
+              </h2>
+              <p
+                className="text-sm font-medium"
+                style={{ color: PRIMARY_COLOR }}
+              >
+                Livreur officiel Ticketché
+              </p>
+            </div>
+          </div>
+        )}
+
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-bold text-gray-900">Noter le Livreur</h1>
           <p className="text-gray-500">
