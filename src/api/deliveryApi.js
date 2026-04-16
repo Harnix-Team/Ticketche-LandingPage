@@ -32,3 +32,35 @@ export const submitDeliveryManReview = async (reviewData) => {
   const data = await response.json();
   return data;
 };
+
+/**
+ * Fetch delivery details by ID
+ */
+export const fetchDeliveryDetails = async (id) => {
+  const response = await fetch(`${API_URL}/deliveries/${id}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch delivery: ${response.status}`);
+  }
+  const data = await response.json();
+  return data.data || data;
+};
+
+/**
+ * Submit a review for a delivery
+ */
+export const submitDeliveryReview = async (reviewData) => {
+  const response = await fetch(`${API_URL}/delivery-reviews`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(reviewData),
+  });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data;
+};
