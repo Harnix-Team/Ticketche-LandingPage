@@ -2,8 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { Star } from "lucide-react";
-import { fetchDeliveryDetails, submitDeliveryReview } from "@/api/deliveryApi";
+import { Star, CheckCircle } from "lucide-react";
+import {
+  fetchDeliveryDetails,
+  submitDeliveryReview,
+  fetchDeliveryReviews,
+} from "@/api/deliveryApi";
 
 // Main app colors
 const PRIMARY_COLOR = "#005F69";
@@ -27,6 +31,7 @@ export default function DeliveryReviewPage() {
   const [delivery, setDelivery] = useState(null);
   const [deliveryMan, setDeliveryMan] = useState(null);
   const [loadingDelivery, setLoadingDelivery] = useState(true);
+  const [existingReviews, setExistingReviews] = useState([]);
 
   useEffect(() => {
     const loadDeliveryDetails = async () => {
@@ -36,6 +41,10 @@ export default function DeliveryReviewPage() {
         if (details.deliveryMan) {
           setDeliveryMan(details.deliveryMan);
         }
+
+        // Load existing reviews
+        const reviews = await fetchDeliveryReviews(id);
+        setExistingReviews(reviews);
       } catch (err) {
         console.error("Error fetching delivery:", err);
         setError("Impossible de charger les détails de la livraison");
@@ -99,6 +108,42 @@ export default function DeliveryReviewPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-gray-500">Chargement...</p>
+      </div>
+    );
+  }
+
+  // If review already exists, show message
+  if (existingReviews && existingReviews.length > 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center space-y-4">
+          <div
+            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto"
+            style={{
+              backgroundColor: `${PRIMARY_COLOR}20`,
+              color: PRIMARY_COLOR,
+            }}
+          >
+            <CheckCircle size={32} />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900">Déjà notée</h1>
+          <p className="text-gray-600">
+            Cette livraison a déjà été notée. Merci de votre participation !
+          </p>
+          <div className="pt-4 border-t border-gray-200">
+            <p className="text-sm text-gray-500">
+              Votre note:{" "}
+              <span style={{ color: PRIMARY_COLOR }} className="font-semibold">
+                {existingReviews[0].star} ⭐
+              </span>
+            </p>
+            {existingReviews[0].description && (
+              <p className="text-sm text-gray-600 mt-2 italic">
+                "{existingReviews[0].description}"
+              </p>
+            )}
+          </div>
+        </div>
       </div>
     );
   }

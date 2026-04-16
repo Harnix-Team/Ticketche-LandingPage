@@ -64,3 +64,15 @@ export const submitDeliveryReview = async (reviewData) => {
   const data = await response.json();
   return data;
 };
+
+/**
+ * Fetch reviews for a specific delivery
+ */
+export const fetchDeliveryReviews = async (deliveryId) => {
+  const response = await fetch(`${API_URL}/delivery-reviews/${deliveryId}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch reviews: ${response.status}`);
+  }
+  const data = await response.json();
+  return data.data || data;
+};
