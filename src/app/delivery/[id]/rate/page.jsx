@@ -31,6 +31,7 @@ export default function DeliveryReviewPage() {
   const [delivery, setDelivery] = useState(null);
   const [deliveryMan, setDeliveryMan] = useState(null);
   const [loadingDelivery, setLoadingDelivery] = useState(true);
+  const [showRating, setShowRating] = useState(false);
   const [existingReviews, setExistingReviews] = useState([]);
 
   useEffect(() => {
@@ -130,19 +131,24 @@ export default function DeliveryReviewPage() {
           <p className="text-gray-600">
             Cette livraison a déjà été notée. Merci de votre participation !
           </p>
-          <div className="pt-4 border-t border-gray-200">
-            <p className="text-sm text-gray-500">
-              Votre note:{" "}
-              <span style={{ color: PRIMARY_COLOR }} className="font-semibold">
-                {existingReviews[0].star} ⭐
-              </span>
-            </p>
-            {existingReviews[0].description && (
-              <p className="text-sm text-gray-600 mt-2 italic">
-                "{existingReviews[0].description}"
+          {showRating && (
+            <div className="pt-4 border-t border-gray-200">
+              <p className="text-sm text-gray-500">
+                Votre note:{" "}
+                <span
+                  style={{ color: PRIMARY_COLOR }}
+                  className="font-semibold"
+                >
+                  {existingReviews[0].star} ⭐
+                </span>
               </p>
-            )}
-          </div>
+              {existingReviews[0].description && (
+                <p className="text-sm text-gray-600 mt-2 italic">
+                  "{existingReviews[0].description}"
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     );
