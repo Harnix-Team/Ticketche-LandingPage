@@ -82,7 +82,7 @@ Cordialement,
 ${form.name}`;
 
     const encodedMessage = encodeURIComponent(whatsappMessage);
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, "_blank");
+    window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/[^0-9]/g, '')}?text=${encodedMessage}`, "_blank");
     setSent(true);
     setTimeout(() => setSent(false), 4000);
     setForm({ name: "", email: "", service: "", date: "", message: "" });

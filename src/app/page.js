@@ -14,7 +14,7 @@ import WhyChooseUs from "@/app/Home/WhyChooseUs";
 import SondageSection from "@/app/Home/SondageSection";
 
 // activer et désactiver la section sondage
-const SHOW_SONDAGE = 0;
+const SHOW_SONDAGE = 1;
 
 export default function Home() {
   const [showSondage] = useState(SHOW_SONDAGE);
