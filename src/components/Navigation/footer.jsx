@@ -3,11 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  FacebookLogo,
-  TiktokLogo,
-  InstagramLogo,
-} from "@phosphor-icons/react";
+import { FacebookLogo, TiktokLogo, InstagramLogo } from "@phosphor-icons/react";
 
 export const Footer = () => {
   const pathname = usePathname();
@@ -27,6 +23,7 @@ export const Footer = () => {
     { label: "Emplacements", href: "#emplacements" },
     { label: "Avis clients", href: "#reviews" },
     { label: "Contactez-nous", href: "/contact" },
+    { label: "Devenir livreur", href: "/recrutement" },
     { label: "Recrutement", href: "/recrutement" },
   ];
 
@@ -44,9 +41,21 @@ export const Footer = () => {
     { label: "Mentions légales", href: "/politiques/mentions" },
   ];
   const socialLinks = [
-    { icon: FacebookLogo, href: "https://www.facebook.com/share/1AaDERj83T/?mibextid=wwXIfr", label: "Facebook" },
-    { icon: TiktokLogo, href: "https://www.tiktok.com/@ticketch?_r=1&_t=ZS-94YYeuvBujN", label: "TikTok" },
-    { icon: InstagramLogo, href: "https://www.instagram.com/ticketche?igsh=eXl0MjZmeHByaDg5", label: "Instagram" },
+    {
+      icon: FacebookLogo,
+      href: "https://www.facebook.com/share/1AaDERj83T/?mibextid=wwXIfr",
+      label: "Facebook",
+    },
+    {
+      icon: TiktokLogo,
+      href: "https://www.tiktok.com/@ticketch?_r=1&_t=ZS-94YYeuvBujN",
+      label: "TikTok",
+    },
+    {
+      icon: InstagramLogo,
+      href: "https://www.instagram.com/ticketche?igsh=eXl0MjZmeHByaDg5",
+      label: "Instagram",
+    },
   ];
 
   const appStoreLinks = [
