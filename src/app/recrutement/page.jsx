@@ -216,7 +216,7 @@ function JobCard({ job, index }) {
   const { Icon: DeptIcon } = dept;
 
   const salaryText = job.remuneration.displayed
-    ? `${job.remuneration.min.toLocaleString()} – ${job.remuneration.max.toLocaleString()} ${job.remuneration.currency}/${job.remuneration.period}`
+    ? `${job.remuneration.min.toLocaleString()} - ${job.remuneration.max.toLocaleString()} ${job.remuneration.currency}/${job.remuneration.period}`
     : "Selon profil";
 
   return (

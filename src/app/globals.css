@@ -471,7 +471,7 @@ html, body { overflow-x: hidden !important; }
   }
 }
 
-/* ── Tablet breakpoint (768px–1023px) ── */
+/* ── Tablet breakpoint (768px-1023px) ── */
 @media (min-width: 768px) and (max-width: 1023px) {
   .hero-card-left { left: -4% !important; width: 26vw !important; }
   .hero-card-right-top { right: -2% !important; width: 20vw !important; }

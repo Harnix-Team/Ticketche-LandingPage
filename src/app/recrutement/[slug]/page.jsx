@@ -121,7 +121,7 @@ export default function JobDetailPage() {
   if (!job) return <NotFound />;
 
   const salaryText = job.remuneration.displayed
-    ? `${job.remuneration.min.toLocaleString()} – ${job.remuneration.max.toLocaleString()} ${job.remuneration.currency} / ${job.remuneration.period}`
+    ? `${job.remuneration.min.toLocaleString()} - ${job.remuneration.max.toLocaleString()} ${job.remuneration.currency} / ${job.remuneration.period}`
     : "Rémunération selon profil";
 
   return (
