@@ -25,6 +25,7 @@ export const Footer = () => {
     { label: "Contactez-nous", href: "/contact" },
     { label: "Devenir livreur", href: "/recrutement" },
     { label: "Recrutement", href: "/recrutement" },
+    { label: "Questionnaires", href: "/questionnaires" },
   ];
 
   const contactLinks = [

@@ -2,7 +2,10 @@
 import { usePathname } from "next/navigation";
 import AppNotification from "./AppNotification";
 
-const HIDDEN_ROUTES = [/^\/recrutement(\/.*)?$/];
+const HIDDEN_ROUTES = [
+  /^\/recrutement(\/.*)?$/,
+  /^\/sondage(\/.*)?$/,
+];
 
 export function AppNotificationWrapper() {
   const pathname = usePathname();

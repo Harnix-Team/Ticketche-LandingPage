@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { CTASection } from "@/app/Home/CTASection";
 import { EstablishmentsSection } from "@/app/Home/EstablishmentsSection";
 import { HeroV2 } from "@/app/Home/HeroV2";
@@ -11,14 +10,8 @@ import FAQSection from "@/app/Home/FaqSection";
 import ActiveUsers from "@/app/Home/Activeusers";
 import ReviewsSection from "@/app/Home/ReviewsSection";
 import WhyChooseUs from "@/app/Home/WhyChooseUs";
-import SondageSection from "@/app/Home/SondageSection";
-
-// activer et désactiver la section sondage
-const SHOW_SONDAGE = 0;
 
 export default function Home() {
-  const [showSondage] = useState(SHOW_SONDAGE);
-
   return (
     <div>
       <HeroV2 />
@@ -31,7 +24,6 @@ export default function Home() {
       <ReviewsSection />
       <FAQSection />
       <ActiveUsers />
-      {showSondage === 1 && <SondageSection />}
       <CTASection />
     </div>
   );
