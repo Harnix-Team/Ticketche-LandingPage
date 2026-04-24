@@ -3,6 +3,8 @@ import "./globals.css";
 import { HeaderWrapper } from "@/components/Navigation/HeaderWrapper";
 import { Footer } from "@/components/Navigation/footer";
 import { AppNotificationWrapper } from "@/components/AppNotificationWrapper";
+import SondageBandeau from "@/components/SondageBandeau";
+import SondagePopup from "@/components/SondagePopup";
 import Providers from "@/app/providers";
 
 const archivo = Archivo({
@@ -104,6 +106,8 @@ export default function RootLayout({ children }) {
           {children}
           <Footer />
           <AppNotificationWrapper />
+          <SondageBandeau />
+          <SondagePopup />
         </Providers>
       </body>
     </html>

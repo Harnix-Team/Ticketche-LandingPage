@@ -38,6 +38,7 @@ export const Header = () => {
     { href: "/a-propos", label: "À propos", isPage: true },
     { href: "/events", label: "Événements", isPage: true },
     { href: "/establishments", label: "Emplacements", isPage: true },
+    { href: "/questionnaires", label: "Sondages", isPage: true },
     { href: "/recrutement", label: "Recrutement", isPage: true },
     { href: "/contact", label: "Contact", isPage: true },
   ];
