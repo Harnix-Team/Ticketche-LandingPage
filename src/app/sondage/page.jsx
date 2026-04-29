@@ -313,6 +313,20 @@ function SuccessScreen() {
           </div>
         </Link>
       </motion.div>
+
+      <a
+        href={`https://wa.me/?text=${encodeURIComponent(
+          "TicketChé prépare un service de bus et de covoiturage sur Cotonou ↔ Abomey-Calavi. " +
+          "Donnez votre avis en 3 min : https://ticketche.com/sondage"
+        )}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="snd-wa-btn"
+        style={{ marginTop: 12 }}
+      >
+        <WhatsappLogo size={20} weight="fill" />
+        Partagez ce sondage à vos proches
+      </a>
     </motion.div>
   );
 }
@@ -341,6 +355,11 @@ export default function SondagePage() {
   /* B4 — mobile wizard : une question à la fois */
   const [isMobile, setIsMobile]                 = useState(false);
   const [mobileSubIdx, setMobileSubIdx]         = useState(0);
+
+  /* Refs pour éviter les closures stalées dans setTimeout */
+  const mobileSubIdxRef     = useRef(0);
+  const currentScreenIdxRef = useRef(0);
+  const answersRef          = useRef({});
 
   /* Ref sur la zone formulaire pour le scroll ciblé (évite de scroller le hero) */
   const formZoneRef = useRef(null);
@@ -374,10 +393,17 @@ export default function SondagePage() {
     if (!isMobile) return;
     setMobileSubIdx(prev => {
       const max = Math.max(0, visibleQIds.length - 1);
-      return prev > max ? max : prev;
+      const next = prev > max ? max : prev;
+      mobileSubIdxRef.current = next;
+      return next;
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentScreenIdx, answers, isMobile]);
+
+  /* Sync refs avec les états */
+  useEffect(() => { mobileSubIdxRef.current = mobileSubIdx; }, [mobileSubIdx]);
+  useEffect(() => { currentScreenIdxRef.current = currentScreenIdx; }, [currentScreenIdx]);
+  useEffect(() => { answersRef.current = answers; }, [answers]);
 
   useEffect(() => {
     if (!questionnaire) return;
@@ -462,10 +488,63 @@ export default function SondagePage() {
   const handleChange = useCallback((qId, value) => {
     setAnswers(prev => {
       const updated = { ...prev, [qId]: value };
-      saveProgress(updated, currentScreenIdx, commune, mobileSubIdx);
+      answersRef.current = updated;
+      saveProgress(updated, currentScreenIdxRef.current, commune, mobileSubIdxRef.current);
       return updated;
     });
-  }, [currentScreenIdx, commune, mobileSubIdx, saveProgress]);
+
+    /* ── Auto-avancement mobile pour les choix uniques ── */
+    if (!isMobile) return;
+    // Seulement les vraies questions (pas _autre, pas _reason)
+    if (qId.endsWith("_autre") || qId.endsWith("_reason")) return;
+    // Trouver le step correspondant
+    const step = questionnaire?.steps.find(s => s.id === qId);
+    if (!step) return;
+    // Seulement pour les choix uniques (pas multi, pas text)
+    if (step.type === "multi" || step.type === "text") return;
+    // Ne pas auto-avancer si l'option "autre" est sélectionnée
+    const isAutre = typeof value === "string" && value?.toLowerCase().includes("autre");
+    if (isAutre) return;
+
+    // Déclencher l'avancement après un court délai (pour voir la sélection)
+    // On utilise les refs pour avoir les valeurs ACTUELLES et éviter les closures stalées
+    setTimeout(() => {
+      const subIdx    = mobileSubIdxRef.current;
+      const scrIdx    = currentScreenIdxRef.current;
+      const currAnswers = { ...answersRef.current, [qId]: value };
+      const activeScrs  = SCREENS.filter(sc => {
+        if (!sc.showIf) return true;
+        const { questionId, values } = sc.showIf;
+        const given = currAnswers[questionId];
+        const arr = Array.isArray(given) ? given : given ? [given] : [];
+        return arr.some(v => values.includes(v));
+      });
+      const screen = activeScrs[scrIdx];
+      if (!screen) return;
+      const currentVisibleQIds = screen.questions.filter(q => isVisible(q, currAnswers));
+
+      if (subIdx < currentVisibleQIds.length - 1) {
+        // Question suivante dans la même section
+        const next = subIdx + 1;
+        mobileSubIdxRef.current = next;
+        setMobileSubIdx(next);
+        scrollToForm();
+      } else {
+        // Fin de section → section suivante
+        const nextScrIdx = scrIdx + 1;
+        if (nextScrIdx < activeScrs.length) {
+          mobileSubIdxRef.current = 0;
+          currentScreenIdxRef.current = nextScrIdx;
+          setMobileSubIdx(0);
+          setCurrentScreenIdx(nextScrIdx);
+          saveProgress(currAnswers, nextScrIdx, commune, 0);
+          scrollToForm();
+        }
+        // Si dernière section → pas de soumission auto, l'user clique "Envoyer"
+      }
+    }, 380);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMobile, questionnaire, commune, saveProgress, scrollToForm]);
 
   const handleNext = () => {
     /* ── Fix B6 : Q20 = "non" → soumettre immédiatement ── */
@@ -665,22 +744,32 @@ export default function SondagePage() {
           <>
             {/* Barre de progression */}
             <div className="snd-progress">
-              <div className="snd-progress__track">
-                {activeScreens.map((sc, i) => (
+              {isMobile ? (
+                /* Mobile : barre continue qui progresse question par question */
+                <div className="snd-progress__bar-wrap">
                   <div
-                    key={sc.id}
-                    className={`snd-progress__seg ${
-                      i < currentScreenIdx ? "snd-progress__seg--done"
-                      : i === currentScreenIdx ? "snd-progress__seg--active"
-                      : ""
-                    }`}
+                    className="snd-progress__bar-fill"
+                    style={{ width: `${Math.round((currentQuestionNum / Math.max(1, totalVisibleQuestions)) * 100)}%` }}
                   />
-                ))}
-              </div>
-              {/* B4 — "Question X sur N" */}
+                </div>
+              ) : (
+                /* Desktop : segments par section */
+                <div className="snd-progress__track">
+                  {activeScreens.map((sc, i) => (
+                    <div
+                      key={sc.id}
+                      className={`snd-progress__seg ${
+                        i < currentScreenIdx ? "snd-progress__seg--done"
+                        : i === currentScreenIdx ? "snd-progress__seg--active"
+                        : ""
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
               <span className="snd-progress__lbl">
                 {isMobile
-                  ? `Question ${currentQuestionNum} sur ${totalVisibleQuestions}`
+                  ? `${currentQuestionNum} / ${totalVisibleQuestions}`
                   : `Section ${currentScreenIdx + 1} / ${activeScreens.length}`}
               </span>
             </div>
@@ -711,7 +800,7 @@ export default function SondagePage() {
                 />
 
                 {/* Navigation */}
-                <div className="snd-nav">
+                <div className="snd-nav snd-nav--sticky">
                   <div>
                     {(currentScreenIdx > 0 || (isMobile && mobileSubIdx > 0)) && (
                       <button className="snd-nav__back" onClick={handleBack}>
@@ -726,26 +815,48 @@ export default function SondagePage() {
                         Une erreur est survenue. Vérifiez votre connexion et réessayez.
                       </p>
                     )}
-                    <button
-                      className="snd-nav__next"
-                      onClick={handleNext}
-                      disabled={!canProceed || submitting}
-                    >
-                      {submitting
-                        ? "Envoi en cours…"
-                        : answers.q20_interet === "non"
-                          ? "Terminer le sondage"
-                          : (isMobile
-                              ? (mobileSubIdx < visibleQIds.length - 1
-                                  ? "Question suivante"
+                    {/* Sur mobile : masquer "Question suivante" si choix unique (auto-avancement) */}
+                    {(() => {
+                      const currentStep = isMobile && questionnaire
+                        ? questionnaire.steps.find(s => s.id === visibleQIds[mobileSubIdx])
+                        : null;
+                      // Vérifie si l'option "autre" est sélectionnée pour cette question
+                      const currentVal = currentStep ? answers[currentStep.id] : null;
+                      const autreSelected = currentStep && (
+                        currentStep.type === "multi"
+                          ? (Array.isArray(currentVal) && currentVal.some(v => v === "autre" || v === "other" || v?.toLowerCase().includes("autre")))
+                          : (typeof currentVal === "string" && (currentVal === "autre" || currentVal === "other" || currentVal?.toLowerCase().includes("autre")))
+                      );
+                      const isAutoAdvance = isMobile
+                        && currentStep
+                        && currentStep.type !== "multi"   // choix multiples → bouton visible
+                        && currentStep.type !== "text"     // texte libre → bouton visible
+                        && !autreSelected                  // "autre" sélectionné → bouton visible
+                        && mobileSubIdx < visibleQIds.length - 1;
+                      if (isAutoAdvance) return null;
+                      return (
+                        <button
+                          className="snd-nav__next"
+                          onClick={handleNext}
+                          disabled={!canProceed || submitting}
+                        >
+                          {submitting
+                            ? "Envoi en cours…"
+                            : answers.q20_interet === "non"
+                              ? "Terminer le sondage"
+                              : (isMobile
+                                  ? (mobileSubIdx < visibleQIds.length - 1
+                                      ? "Question suivante"
+                                      : currentScreenIdx === activeScreens.length - 1
+                                        ? "Envoyer mes réponses"
+                                        : "Section suivante")
                                   : currentScreenIdx === activeScreens.length - 1
                                     ? "Envoyer mes réponses"
-                                    : "Section suivante")
-                              : currentScreenIdx === activeScreens.length - 1
-                                ? "Envoyer mes réponses"
-                                : "Section suivante")}
-                      {!submitting && <ArrowRight size={15} weight="bold" />}
-                    </button>
+                                    : "Section suivante")}
+                          {!submitting && <ArrowRight size={15} weight="bold" />}
+                        </button>
+                      );
+                    })()}
                   </div>
                 </div>
               </motion.div>
@@ -753,18 +864,7 @@ export default function SondagePage() {
           </>
         )}
 
-        {/* Bouton WhatsApp en bas de page */}
-        <div className="snd-wa-footer">
-          <a
-            href={`https://wa.me/?text=${shareText}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="snd-wa-btn"
-          >
-            <WhatsappLogo size={20} weight="fill" />
-            Partagez ce sondage à vos proches
-          </a>
-        </div>
+
       </div>
     </div>
   );
