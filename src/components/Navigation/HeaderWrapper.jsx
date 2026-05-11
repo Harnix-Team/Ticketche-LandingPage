@@ -2,7 +2,11 @@
 import { usePathname } from "next/navigation";
 import { Header } from "./header";
 
-const HIDDEN_ROUTES = [/^\/places\/[^/]+\/?$/, /^\/events\/[^/]+\/?$/];
+const HIDDEN_ROUTES = [
+  /^\/places\/[^/]+\/?$/,
+  /^\/events\/[^/]+\/?$/,
+  /^\/admin\/enquete\/?$/,
+];
 
 export function HeaderWrapper() {
   const pathname = usePathname();
