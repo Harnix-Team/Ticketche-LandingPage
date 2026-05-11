@@ -22,15 +22,15 @@ const OFFLINE_KEY = "tc_enqueteur_offline_queue";
 // Zones prédéfinies par login — mappées côté client pour la démo
 // En production : renvoyées par le backend à l'authentification
 const AGENT_ZONES = {
-    "ENQ-A1": { zone: "A", label: "Zone A — Tokpa / Godomey", points: "Échangeur Godomey, arrêts minibus bord RNIE1" },
-    "ENQ-A2": { zone: "A", label: "Zone A — Tokpa / Godomey", points: "Échangeur Godomey, arrêts minibus bord RNIE1" },
-    "ENQ-B1": { zone: "B", label: "Zone B — Calavi Gare", points: "Gare routière Abomey-Calavi, terminus minibus" },
-    "ENQ-B2": { zone: "B", label: "Zone B — Calavi Gare", points: "Gare routière Abomey-Calavi, terminus minibus" },
-    "ENQ-C1": { zone: "C", label: "Zone C — Campus UAC", points: "Entrées campus UAC, EPAC, FASEG, FLASH" },
-    "ENQ-C2": { zone: "C", label: "Zone C — Campus UAC", points: "Entrées campus UAC, EPAC, FASEG, FLASH" },
-    "ENQ-D1": { zone: "D", label: "Zone D — Cadjehoun / Centre", points: "Carrefour Cadjehoun, zone administrative" },
-    "ENQ-E1": { zone: "E", label: "Zone E — Glodjigbe / GDIZ", points: "Entrée GDIZ, axe Glodjigbe-Calavi, arrêts informels" },
-    "ENQ-F1": { zone: "F", label: "Zone F — Mobile (renforts)", points: "Axes RNIE1 et RNIE2 selon flux du jour" },
+    "ENQ-A1": { zone: "A", label: "Zone A - Tokpa / Godomey", points: "Échangeur Godomey, arrêts minibus bord RNIE1" },
+    "ENQ-A2": { zone: "A", label: "Zone A - Tokpa / Godomey", points: "Échangeur Godomey, arrêts minibus bord RNIE1" },
+    "ENQ-B1": { zone: "B", label: "Zone B - Calavi Gare", points: "Gare routière Abomey-Calavi, terminus minibus" },
+    "ENQ-B2": { zone: "B", label: "Zone B - Calavi Gare", points: "Gare routière Abomey-Calavi, terminus minibus" },
+    "ENQ-C1": { zone: "C", label: "Zone C - Campus UAC", points: "Entrées campus UAC, EPAC, FASEG, FLASH" },
+    "ENQ-C2": { zone: "C", label: "Zone C - Campus UAC", points: "Entrées campus UAC, EPAC, FASEG, FLASH" },
+    "ENQ-D1": { zone: "D", label: "Zone D - Cadjehoun / Centre", points: "Carrefour Cadjehoun, zone administrative" },
+    "ENQ-E1": { zone: "E", label: "Zone E - Glodjigbe / GDIZ", points: "Entrée GDIZ, axe Glodjigbe-Calavi, arrêts informels" },
+    "ENQ-F1": { zone: "F", label: "Zone F - Mobile (renforts)", points: "Axes RNIE1 et RNIE2 selon flux du jour" },
     // Mot de passe commun pour la démo : "ticketche2026"
 };
 
