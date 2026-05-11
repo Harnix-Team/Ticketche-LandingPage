@@ -13,6 +13,7 @@ const archivo = Archivo({
   weight: ["300", "400", "500", "600", "700", "900"],
   display: "swap",
   preload: false,
+  fallback: ["sans-serif"],
 });
 
 export const metadata = {
