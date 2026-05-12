@@ -37,19 +37,16 @@ export async function fetchQuestionnaireBySlug(slug) {
 }
 
 export async function submitQuestionnaireAnswers(questionnaireId, answers, metadata = {}) {
-  try {
-    const res = await fetch(`${API_URL}/questionnaires/${questionnaireId}/submit`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ answers, ...metadata }),
-    });
-    const json = await res.json();
-    if (!res.ok) throw new Error(json.message || `Erreur serveur : ${res.status}`);
-    return json;
-  } catch {
-    /* TODO: retirer ce fallback dès que le backend est prêt */
-    return { success: true, message: "Réponses enregistrées avec succès." };
+  const res = await fetch(`${API_URL}/questionnaires/${questionnaireId}/submit`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ answers, ...metadata }),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(json.message || `Erreur serveur : ${res.status}`);
   }
+  return json;
 }
 
 // ─── Données statiques de fallback ──────────────────────────────────────────
