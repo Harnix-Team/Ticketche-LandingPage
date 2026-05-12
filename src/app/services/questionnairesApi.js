@@ -20,15 +20,13 @@ import {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.ticketche.com/api/v2";
 
+/**
+ * Le rendu du sondage utilise toujours la définition statique côté front
+ * parce que les icônes sont des composants React Phosphor (non sérialisables).
+ * Le backend persiste les réponses ; il n'a pas besoin d'être consommé ici.
+ */
 export async function fetchQuestionnaires() {
-  try {
-    const res = await fetch(`${API_URL}/questionnaires`);
-    if (!res.ok) throw new Error(`Erreur réseau : ${res.status}`);
-    const json = await res.json();
-    return json.data ?? [];
-  } catch {
-    return STATIC_QUESTIONNAIRES;
-  }
+  return STATIC_QUESTIONNAIRES;
 }
 
 export async function fetchQuestionnaireBySlug(slug) {
@@ -37,19 +35,16 @@ export async function fetchQuestionnaireBySlug(slug) {
 }
 
 export async function submitQuestionnaireAnswers(questionnaireId, answers, metadata = {}) {
-  try {
-    const res = await fetch(`${API_URL}/questionnaires/${questionnaireId}/submit`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ answers, ...metadata }),
-    });
-    const json = await res.json();
-    if (!res.ok) throw new Error(json.message || `Erreur serveur : ${res.status}`);
-    return json;
-  } catch {
-    /* TODO: retirer ce fallback dès que le backend est prêt */
-    return { success: true, message: "Réponses enregistrées avec succès." };
+  const res = await fetch(`${API_URL}/questionnaires/${questionnaireId}/submit`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ answers, ...metadata }),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(json.message || `Erreur serveur : ${res.status}`);
   }
+  return json;
 }
 
 // ─── Données statiques de fallback ──────────────────────────────────────────
