@@ -73,6 +73,15 @@ export async function submitQuestionnaireAnswers(questionnaireId, answers, metad
 //     Q21 = "bus"/"indiff" → sauter Q22       (showIf q21=covoiturage|les_deux)
 //     Q28 = "non"          → sauter Q28b      (showIf q28=oui|peut_etre)
 
+export const ITINERAIRE_LABELS = {
+  iti_1: "Akassato → Calavi → Godomey → Stade → Étoile Rouge → Tokpa → Akpakpa",
+  iti_2: "Akassato → Calavi → Godomey → Stade → Agla → Fidjrossè → Cadjehoun",
+  iti_3: "Akassato → Calavi → Godomey → Stade → Vèdoko → Cadjehoun",
+  iti_4: "Akassato → Calavi → Godomey → Stade → Agla → Fidjrossè → Cadjehoun → Ganhi",
+  iti_5: "Akassato → Calavi → Godomey → Stade → Agla → Fidjrossè → Cadjehoun → Ganhi → Akpakpa",
+  autre: "Autre itinéraire",
+};
+
 export const STATIC_QUESTIONNAIRES = [
   {
     id: "1",
@@ -398,7 +407,6 @@ export const STATIC_QUESTIONNAIRES = [
           { id: "bus",         icon: Bus,             label: "Bus organisé avec horaires fixes", desc: "Réservation à l'avance" },
           { id: "covoiturage", icon: Car,             label: "Covoiturage avec un conducteur",   desc: "Partage de trajet" },
           { id: "les_deux",    icon: ArrowsLeftRight, label: "Les deux selon le moment",         desc: "" },
-          { id: "indifferent", icon: Question,        label: "Indifférent",                      desc: "" },
         ],
       },
       {
