@@ -20,66 +20,13 @@ import {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.ticketche.com/api/v2";
 
-/* ── Résolution des icônes string → composant Phosphor ──────────────────────
-   Quand le backend renvoie du JSON, les icônes sont des strings ("User", "Car"…).
-   Cette map les convertit en vraies références de composants avant usage dans le JSX.
-*/
-const ICON_MAP = {
-  User, GenderMale, GenderFemale, Briefcase, Car, Seat, GasPump,
-  CurrencyDollar, MapPin, ArrowsLeftRight, Clock,
-  Warning, DeviceMobile, CreditCard, Money, Tag,
-  ThumbsUp, List, Question, Sparkle, Bus, ArrowRight,
-  Path, PencilLine, Check, X, Motorcycle, Student,
-  Buildings, Baby, PersonSimpleRun, Wrench, ShoppingCart,
-  SunHorizon, Sun, Moon, SunDim, Hourglass, Timer,
-  CalendarCheck, CalendarX, Lightning,
-  HandCoins, Wallet, Coins,
-  ShieldCheck, ShieldSlash,
-  ThumbsDown, ArrowsClockwise,
-  UsersThree,
-  RoadHorizon, Barricade,
-};
-
-function resolveIcon(icon) {
-  if (!icon) return null;
-  if (typeof icon === "string") return ICON_MAP[icon] ?? null;
-  return icon; // déjà un composant (fallback statique)
-}
-
-function resolveIcons(questionnaire) {
-  if (!questionnaire?.steps) return questionnaire;
-  return {
-    ...questionnaire,
-    steps: questionnaire.steps.map(step => ({
-      ...step,
-      icon: resolveIcon(step.icon),
-      options: step.options?.map(opt => ({
-        ...opt,
-        icon: resolveIcon(opt.icon),
-      })),
-    })),
-  };
-}
-
+/**
+ * Le rendu du sondage utilise toujours la définition statique côté front
+ * parce que les icônes sont des composants React Phosphor (non sérialisables).
+ * Le backend persiste les réponses ; il n'a pas besoin d'être consommé ici.
+ */
 export async function fetchQuestionnaires() {
-  try {
-    const res = await fetch(`${API_URL}/questionnaires`);
-    if (!res.ok) throw new Error(`Erreur réseau : ${res.status}`);
-    const json = await res.json();
-    const data = json.data ?? [];
-    const STATIC_Q11 = STATIC_QUESTIONNAIRES[0].steps.find(s => s.id === "q11_itineraire");
-    return data.map(q => {
-      const resolved = resolveIcons(q);
-      return {
-        ...resolved,
-        steps: resolved.steps.map(step =>
-          step.id === "q11_itineraire" ? { ...STATIC_Q11 } : step
-        ),
-      };
-    });
-  } catch {
-    return STATIC_QUESTIONNAIRES;
-  }
+  return STATIC_QUESTIONNAIRES;
 }
 
 export async function fetchQuestionnaireBySlug(slug) {
@@ -88,19 +35,16 @@ export async function fetchQuestionnaireBySlug(slug) {
 }
 
 export async function submitQuestionnaireAnswers(questionnaireId, answers, metadata = {}) {
-  try {
-    const res = await fetch(`${API_URL}/questionnaires/${questionnaireId}/submit`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ answers, ...metadata }),
-    });
-    const json = await res.json();
-    if (!res.ok) throw new Error(json.message || `Erreur serveur : ${res.status}`);
-    return json;
-  } catch {
-    /* TODO: retirer ce fallback dès que le backend est prêt */
-    return { success: true, message: "Réponses enregistrées avec succès." };
+  const res = await fetch(`${API_URL}/questionnaires/${questionnaireId}/submit`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ answers, ...metadata }),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(json.message || `Erreur serveur : ${res.status}`);
   }
+  return json;
 }
 
 // ─── Données statiques de fallback ──────────────────────────────────────────
@@ -285,45 +229,8 @@ export const STATIC_QUESTIONNAIRES = [
         id: "q11_itineraire",
         icon: Path,
         question: "Précisez votre itinéraire habituel : départ → destination",
-        type: "single",
-        options: [
-          {
-            id: "iti_1",
-            icon: RoadHorizon,
-            label: "Akassato → Calavi → Godomey → Stade → Étoile Rouge → Tokpa → Akpakpa",
-            desc:  "via Arconville, Kpota, Zogbadjè, UAC",
-          },
-          {
-            id: "iti_2",
-            icon: RoadHorizon,
-            label: "Akassato → Calavi → Godomey → Stade → Agla → Fidjrossè → Cadjehoun",
-            desc:  "via Arconville, Kpota, Zogbadjè, UAC",
-          },
-          {
-            id: "iti_3",
-            icon: RoadHorizon,
-            label: "Akassato → Calavi → Godomey → Stade → Vèdoko → Cadjehoun",
-            desc:  "via Arconville, Kpota, Zogbadjè, UAC",
-          },
-          {
-            id: "iti_4",
-            icon: RoadHorizon,
-            label: "Akassato → Calavi → Godomey → Stade → Agla → Fidjrossè → Cadjehoun → Ganhi",
-            desc:  "via Arconville, Kpota, Zogbadjè, UAC",
-          },
-          {
-            id: "iti_5",
-            icon: RoadHorizon,
-            label: "Akassato → Calavi → Godomey → Stade → Agla → Fidjrossè → Cadjehoun → Ganhi → Akpakpa",
-            desc:  "via Arconville, Kpota, Zogbadjè, UAC",
-          },
-          {
-            id: "autre",
-            icon: PencilLine,
-            label: "Autre itinéraire",
-            desc:  "Précisez carrefour ou quartier",
-          },
-        ],
+        type: "text",
+        placeholder: "Ex : Godomey carrefour → Cadjehoun, Akassato → UAC…",
       },
       {
         id: "q12_frequence",

@@ -675,7 +675,7 @@ export default function SondagePage() {
       ...(commune.trim() ? { commune_declaree: commune.trim() } : {}),
     };
     try {
-      await submitQuestionnaireAnswers(questionnaire.id, cleanAnswers, metadata);
+      await submitQuestionnaireAnswers(questionnaire.slug || questionnaire.id, cleanAnswers, metadata);
       clearProgress();
       try { localStorage.setItem(DONE_KEY, "1"); } catch (_) {}
       setSubmitted(true);

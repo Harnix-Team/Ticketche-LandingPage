@@ -615,7 +615,7 @@ export default function BackofficeEnqueteurPage() {
             submitted_at: new Date().toISOString(),
         };
 
-        const payload = { questionnaireId: questionnaire.id, answers: { ...answers }, metadata };
+        const payload = { questionnaireId: questionnaire.slug || questionnaire.id, answers: { ...answers }, metadata };
 
         if (!isOnline) {
             addToOfflineQueue(payload);
@@ -626,7 +626,7 @@ export default function BackofficeEnqueteurPage() {
         }
 
         try {
-            await submitQuestionnaireAnswers(questionnaire.id, { ...answers }, metadata);
+            await submitQuestionnaireAnswers(questionnaire.slug || questionnaire.id, { ...answers }, metadata);
             setSubmitted(true);
         } catch {
             // Fallback offline si la requête échoue
