@@ -64,7 +64,7 @@ function formatDate(iso) {
 /* ─── Card ────────────────────────────────────────────────── */
 function QuestionnaireCard({ q, index }) {
   return (
-    <Link href="/sondage" className="qcard-wrap" style={{ textDecoration:"none" }}>
+    <Link href="/sondage?utm_source=site&utm_medium=popup" className="qcard-wrap" style={{ textDecoration:"none" }}>
       <motion.div
         className="qcard-wrap-inner"
         initial={{ opacity:0, y:32 }}

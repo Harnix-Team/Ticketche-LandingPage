@@ -71,13 +71,17 @@ function isVisible(qId, answers) {
   return arr.some(v => vals.includes(v));
 }
 
-function getRequired(screen, answers, questionnaire) {
+function getRequired(screen, answers, questionnaire, isMobile) {
   if (!screen || !questionnaire) return [];
   return screen.questions.filter(qId => {
     if (!isVisible(qId, answers)) return false;
+    // Desktop S6 : Q21/Q22/Q23 ne sont requises que si Q20 = oui/peut_etre
+    if (!isMobile && screen.id === "s6" && qId !== "q20_interet") {
+      const q20 = answers["q20_interet"];
+      if (q20 !== "oui" && q20 !== "peut_etre") return false;
+    }
     const step = questionnaire.steps.find(s => s.id === qId);
     if (!step || step.optional) return false;
-    if (screen.id === "s6" && answers.q20_interet === "non") return qId === "q20_interet";
     return true;
   });
 }
@@ -184,7 +188,10 @@ function QuestionCard({ step, answers, onChange, spanClass, isMobile }) {
                     className={`snd-opt ${selected ? "snd-opt--on" : ""}`}
                   >
                     {Ic && <Ic size={13} weight="fill" className="snd-opt__ic" />}
-                    <span className="snd-opt__lbl">{opt.label}</span>
+                    <span className="snd-opt__lbl">
+                      {opt.label}
+                      {opt.desc && <span className="snd-opt__desc">{opt.desc}</span>}
+                    </span>
                     {selected && <CheckCircle size={12} weight="fill" className="snd-opt__chk" />}
                   </button>
                 );
@@ -249,20 +256,31 @@ function ScreenGrid({ screen, visibleQIds, questionnaire, answers, onChange, isM
 
   return (
     <div className={gridClass}>
-      {visibleQIds.map((qId, idx) => {
-        const step = questionnaire.steps.find(s => s.id === qId);
-        if (!step) return null;
-        return (
-          <QuestionCard
-            key={qId}
-            step={step}
-            answers={answers}
-            onChange={onChange}
-            spanClass={spanClass(idx)}
-            isMobile={isMobile}
-          />
-        );
-      })}
+      <AnimatePresence initial={false}>
+        {visibleQIds.map((qId, idx) => {
+          const step = questionnaire.steps.find(s => s.id === qId);
+          if (!step) return null;
+          return (
+            <motion.div
+              key={qId}
+              className={spanClass(idx)}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.28, delay: idx > 0 ? (idx - 1) * 0.06 : 0, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <QuestionCard
+                key={qId}
+                step={step}
+                answers={answers}
+                onChange={onChange}
+                spanClass=""
+                isMobile={isMobile}
+              />
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
     </div>
   );
 }
@@ -342,6 +360,9 @@ export default function SondagePage() {
   const sourceTag   = resolveSourceTag(utmSource, utmMedium);
   const libreCanal  = resolveLibreCanal(utmMedium);
 
+  /* Auto-démarrage si l'utilisateur vient du bandeau ou du popup */
+  const autoStart = utmMedium === "bandeau" || utmMedium === "popup";
+
   const [questionnaire, setQuestionnaire]       = useState(null);
   const [loading, setLoading]                   = useState(true);
   const [currentScreenIdx, setCurrentScreenIdx] = useState(0);
@@ -360,6 +381,7 @@ export default function SondagePage() {
   const mobileSubIdxRef     = useRef(0);
   const currentScreenIdxRef = useRef(0);
   const answersRef          = useRef({});
+  const autoAdvanceTimer    = useRef(null);
 
   /* Ref sur la zone formulaire pour le scroll ciblé (évite de scroller le hero) */
   const formZoneRef = useRef(null);
@@ -407,17 +429,26 @@ export default function SondagePage() {
 
   useEffect(() => {
     if (!questionnaire) return;
+    let hasSaved = false;
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (!saved) return;
-      const { answers: a, screenIdx, slug, commune: c, mobileSubIdx: msi } = JSON.parse(saved);
-      if (slug !== SURVEY_SLUG) return;
-      setAnswers(a || {});
-      setCurrentScreenIdx(screenIdx || 0);
-      if (msi) setMobileSubIdx(msi);
-      if (c) setCommune(c);
-      setHasSavedProgress(true);
+      if (saved) {
+        const { answers: a, screenIdx, slug, commune: c, mobileSubIdx: msi } = JSON.parse(saved);
+        if (slug === SURVEY_SLUG) {
+          setAnswers(a || {});
+          setCurrentScreenIdx(screenIdx || 0);
+          if (msi) setMobileSubIdx(msi);
+          if (c) setCommune(c);
+          setHasSavedProgress(true);
+          hasSaved = true;
+        }
+      }
     } catch (_) {}
+
+    /* Venant du bandeau ou popup :
+       - si pas de progrès sauvegardé → démarrer directement
+       - si progrès sauvegardé → afficher les boutons reprendre/recommencer (ne pas setShowForm) */
+    if (autoStart && !hasSaved) setShowForm(true);
   }, [questionnaire]);
 
   const saveProgress = useCallback((ans, idx, com, subIdx = 0) => {
@@ -445,8 +476,19 @@ export default function SondagePage() {
 
   const currentScreen = activeScreens[currentScreenIdx];
 
+  /* Sur desktop, S6 : afficher Q20 seule jusqu'à ce que l'utilisateur réponde oui/peut_etre.
+     Dès que Q20 est répondu (oui/peut_etre), les autres questions apparaissent.
+     Sur mobile, on garde le wizard question par question — pas de filtre spécial. */
   const visibleQIds = currentScreen && questionnaire
-    ? currentScreen.questions.filter(qId => isVisible(qId, answers))
+    ? currentScreen.questions.filter(qId => {
+        if (!isVisible(qId, answers)) return false;
+        // Desktop uniquement : sur S6, masquer Q21/Q22/Q23 tant que Q20 n'est pas oui/peut_etre
+        if (!isMobile && currentScreen.id === "s6" && qId !== "q20_interet") {
+          const q20 = answers["q20_interet"];
+          if (q20 !== "oui" && q20 !== "peut_etre") return false;
+        }
+        return true;
+      })
     : [];
 
   /* B4 — sur mobile : la question courante dans la section */
@@ -476,7 +518,7 @@ export default function SondagePage() {
             return !!answers[qId];
           })()
         /* desktop : toutes les questions requises de la section */
-        : getRequired(currentScreen, answers, questionnaire).every(qId => {
+        : getRequired(currentScreen, answers, questionnaire, isMobile).every(qId => {
             const step = questionnaire.steps.find(s => s.id === qId);
             if (!step) return true;
             if (step.type === "text") return !!(answers[qId] || "").trim();
@@ -495,6 +537,8 @@ export default function SondagePage() {
 
     /* ── Auto-avancement mobile pour les choix uniques ── */
     if (!isMobile) return;
+    // Annuler tout timer en cours
+    if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
     // Seulement les vraies questions (pas _autre, pas _reason)
     if (qId.endsWith("_autre") || qId.endsWith("_reason")) return;
     // Trouver le step correspondant
@@ -505,10 +549,12 @@ export default function SondagePage() {
     // Ne pas auto-avancer si l'option "autre" est sélectionnée
     const isAutre = typeof value === "string" && value?.toLowerCase().includes("autre");
     if (isAutre) return;
+    // Ne pas auto-avancer si endIf est déclenché (ex: Q20="non" → afficher "Pourquoi ?")
+    if (step.endIf?.values?.includes(value)) return;
 
     // Déclencher l'avancement après un court délai (pour voir la sélection)
     // On utilise les refs pour avoir les valeurs ACTUELLES et éviter les closures stalées
-    setTimeout(() => {
+    autoAdvanceTimer.current = setTimeout(() => {
       const subIdx    = mobileSubIdxRef.current;
       const scrIdx    = currentScreenIdxRef.current;
       const currAnswers = { ...answersRef.current, [qId]: value };
@@ -547,8 +593,23 @@ export default function SondagePage() {
   }, [isMobile, questionnaire, commune, saveProgress, scrollToForm]);
 
   const handleNext = () => {
-    /* ── Fix B6 : Q20 = "non" → soumettre immédiatement ── */
-    if (answers.q20_interet === "non") {
+    /* ── endIf : si la question courante déclenche une fin anticipée → soumettre ── */
+    // Mobile : vérifier la question affichée
+    const endIfQId = isMobile ? visibleQIds[mobileSubIdx] : null;
+    const endIfStep = endIfQId && questionnaire
+      ? questionnaire.steps.find(s => s.id === endIfQId)
+      : null;
+    const mobileEndIf = !!endIfStep?.endIf?.values?.includes(answers[endIfQId]);
+
+    // Desktop : vérifier toutes les questions visibles de la section courante
+    const desktopEndIf = !isMobile && questionnaire && currentScreen
+      ? visibleQIds.some(qId => {
+          const step = questionnaire.steps.find(s => s.id === qId);
+          return step?.endIf?.values?.includes(answers[qId]);
+        })
+      : false;
+
+    if (mobileEndIf || desktopEndIf) {
       handleSubmit();
       return;
     }
@@ -644,9 +705,10 @@ export default function SondagePage() {
   const SectionIcon = currentScreen ? SECTION_ICONS[currentScreen.id] : null;
 
   return (
-    <div className="snd-page">
+    <div className={`snd-page${!autoStart && !showForm && !submitted ? " snd-page--hero" : ""}`}>
 
-      {/* ════════ HERO (toujours visible, formulaire en dessous) ════════ */}
+      {/* ════════ HERO (masqué si venant du bandeau/popup, ou dès que le formulaire est actif) ════════ */}
+      {!autoStart && !showForm && !submitted && (
       <section className="snd-hero">
         <div className="snd-hero__inner">
           <motion.div
@@ -660,15 +722,19 @@ export default function SondagePage() {
               Sondage anonyme · 3 min
             </div>
 
-            {/* Accroche */}
-            <h1 className="snd-hero__title">
-              Vos déplacements quotidiens méritent mieux.<br />
-              Dites-nous comment.
-            </h1>
-            <p className="snd-hero__sub">
-              TicketChé prépare un service de bus et de covoiturage sur
-              Cotonou ↔ Abomey-Calavi. Votre avis compte — anonyme, gratuit.
-            </p>
+            {/* Accroche — masquée dès que le formulaire est actif */}
+            {!showForm && !submitted && (
+              <>
+                <h1 className="snd-hero__title">
+                  Vos déplacements quotidiens méritent mieux.<br />
+                  Dites-nous comment.
+                </h1>
+                <p className="snd-hero__sub">
+                  TicketChé prépare un service de bus et de covoiturage sur
+                  Cotonou ↔ Abomey-Calavi. Votre avis compte — anonyme, gratuit.
+                </p>
+              </>
+            )}
 
             {/* 3 chiffres clés */}
             <div className="snd-stats">
@@ -703,6 +769,7 @@ export default function SondagePage() {
           </motion.div>
         </div>
       </section>
+      )}
 
       {/* ════════ FORMULAIRE INTÉGRÉ ════════ */}
       <div className="snd-form-zone" ref={formZoneRef}>
@@ -744,32 +811,47 @@ export default function SondagePage() {
           <>
             {/* Barre de progression */}
             <div className="snd-progress">
-              {isMobile ? (
-                /* Mobile : barre continue qui progresse question par question */
-                <div className="snd-progress__bar-wrap">
-                  <div
-                    className="snd-progress__bar-fill"
-                    style={{ width: `${Math.round((currentQuestionNum / Math.max(1, totalVisibleQuestions)) * 100)}%` }}
-                  />
-                </div>
-              ) : (
-                /* Desktop : segments par section */
-                <div className="snd-progress__track">
-                  {activeScreens.map((sc, i) => (
-                    <div
-                      key={sc.id}
-                      className={`snd-progress__seg ${
-                        i < currentScreenIdx ? "snd-progress__seg--done"
-                        : i === currentScreenIdx ? "snd-progress__seg--active"
-                        : ""
-                      }`}
-                    />
-                  ))}
-                </div>
-              )}
+              {/* Segments par section — mobile et desktop */}
+              <div className="snd-progress__track">
+                {activeScreens.map((sc, i) => {
+                  /* Calcul du remplissage du segment courant */
+                  let fillPct = 0;
+                  if (i < currentScreenIdx) {
+                    fillPct = 100;
+                  } else if (i === currentScreenIdx) {
+                    if (isMobile) {
+                      /* mobile : progression question par question dans la section */
+                      fillPct = visibleQIds.length > 0
+                        ? Math.round(((mobileSubIdx + 1) / visibleQIds.length) * 100)
+                        : 0;
+                    } else {
+                      /* desktop : nombre de questions répondues / total de la section */
+                      const reqIds = getRequired(currentScreen, answers, questionnaire, isMobile);
+                      const answeredCount = reqIds.filter(qId => {
+                        const step = questionnaire.steps.find(s => s.id === qId);
+                        if (!step) return false;
+                        if (step.type === "text") return !!(answers[qId] || "").trim();
+                        if (step.type === "multi") return (answers[qId] || []).length > 0;
+                        return !!answers[qId];
+                      }).length;
+                      fillPct = reqIds.length > 0
+                        ? Math.round((answeredCount / reqIds.length) * 100)
+                        : 0;
+                    }
+                  }
+                  return (
+                    <div key={sc.id} className="snd-progress__seg">
+                      <div
+                        className="snd-progress__seg-fill"
+                        style={{ width: `${fillPct}%` }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
               <span className="snd-progress__lbl">
                 {isMobile
-                  ? `${currentQuestionNum} / ${totalVisibleQuestions}`
+                  ? `${currentScreen.label} · ${mobileSubIdx + 1}/${visibleQIds.length}`
                   : `Section ${currentScreenIdx + 1} / ${activeScreens.length}`}
               </span>
             </div>
@@ -832,6 +914,7 @@ export default function SondagePage() {
                         && currentStep.type !== "multi"   // choix multiples → bouton visible
                         && currentStep.type !== "text"     // texte libre → bouton visible
                         && !autreSelected                  // "autre" sélectionné → bouton visible
+                        && !(currentStep.endIf?.values?.includes(currentVal)) // endIf déclenché → bouton visible
                         && mobileSubIdx < visibleQIds.length - 1;
                       if (isAutoAdvance) return null;
                       return (
@@ -842,7 +925,9 @@ export default function SondagePage() {
                         >
                           {submitting
                             ? "Envoi en cours…"
-                            : answers.q20_interet === "non"
+                            : (isMobile
+                                ? !!questionnaire?.steps.find(s => s.id === visibleQIds[mobileSubIdx])?.endIf?.values?.includes(answers[visibleQIds[mobileSubIdx]])
+                                : visibleQIds.some(qId => questionnaire?.steps.find(s => s.id === qId)?.endIf?.values?.includes(answers[qId])))
                               ? "Terminer le sondage"
                               : (isMobile
                                   ? (mobileSubIdx < visibleQIds.length - 1

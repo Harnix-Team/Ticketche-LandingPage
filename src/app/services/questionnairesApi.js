@@ -229,8 +229,45 @@ export const STATIC_QUESTIONNAIRES = [
         id: "q11_itineraire",
         icon: Path,
         question: "Précisez votre itinéraire habituel : départ → destination",
-        type: "text",
-        placeholder: "Ex : Godomey carrefour → Cadjehoun, Akassato → UAC…",
+        type: "single",
+        options: [
+          {
+            id: "iti_1",
+            icon: RoadHorizon,
+            label: "Akassato → Calavi → Godomey → Stade → Étoile Rouge → Tokpa → Akpakpa",
+            desc:  "via Arconville, Kpota, Zogbadjè, UAC",
+          },
+          {
+            id: "iti_2",
+            icon: RoadHorizon,
+            label: "Akassato → Calavi → Godomey → Stade → Agla → Fidjrossè → Cadjehoun",
+            desc:  "via Arconville, Kpota, Zogbadjè, UAC",
+          },
+          {
+            id: "iti_3",
+            icon: RoadHorizon,
+            label: "Akassato → Calavi → Godomey → Stade → Vèdoko → Cadjehoun",
+            desc:  "via Arconville, Kpota, Zogbadjè, UAC",
+          },
+          {
+            id: "iti_4",
+            icon: RoadHorizon,
+            label: "Akassato → Calavi → Godomey → Stade → Agla → Fidjrossè → Cadjehoun → Ganhi",
+            desc:  "via Arconville, Kpota, Zogbadjè, UAC",
+          },
+          {
+            id: "iti_5",
+            icon: RoadHorizon,
+            label: "Akassato → Calavi → Godomey → Stade → Agla → Fidjrossè → Cadjehoun → Ganhi → Akpakpa",
+            desc:  "via Arconville, Kpota, Zogbadjè, UAC",
+          },
+          {
+            id: "autre",
+            icon: PencilLine,
+            label: "Autre itinéraire",
+            desc:  "Précisez carrefour ou quartier",
+          },
+        ],
       },
       {
         id: "q12_frequence",
