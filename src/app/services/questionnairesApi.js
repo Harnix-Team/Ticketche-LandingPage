@@ -66,12 +66,16 @@ export async function submitQuestionnaireAnswers(questionnaireId, answers, metad
 //                                     (+ champ texte "Pourquoi ?" si endIfLabel défini)
 //   endIfLabel : libellé du champ complémentaire affiché quand endIf est déclenché
 //
-//   Logique du document :
-//     Q4  = "non"          → sauter Q5–Q8b    (showIf q4=oui)
-//     Q18 = "non"          → sauter Q19       (showIf q18=oui)
-//     Q20 = "non"          → fin + "Pourquoi ?" (endIf + endIfLabel)
-//     Q21 = "bus"/"indiff" → sauter Q22       (showIf q21=covoiturage|les_deux)
-//     Q28 = "non"          → sauter Q28b      (showIf q28=oui|peut_etre)
+//   Logique du document (v2.0) :
+//     Q4  = "non"               → sauter Q5–Q8b    (showIf q4=oui)
+//     Q13                       → showIf q4=non (conducteurs exclus)
+//     Q17                       → showIf q4=non (conducteurs exclus)
+//     Q18 = "non"               → sauter Q19       (showIf q18=oui)
+//     Q20 = "non"               → fin + "Pourquoi ?" (endIf + endIfLabel)
+//     Q21 = "bus"               → Q22a (réservation bus) ; sauter Q22/Q23
+//     Q21 = "covoiturage"|"les_deux" → Q22 (rôle) puis Q23 (showIf q22=passager|les_deux)
+//     Section 6 (Q24–Q28b)      → showIf q22_role=passager|les_deux
+//     Q28 = "non"               → sauter Q28b      (showIf q28=oui|peut_etre)
 
 export const ITINERAIRE_LABELS = {
   iti_1: "Akassato → Calavi → Godomey → Stade → Étoile Rouge → Tokpa → Akpakpa",
@@ -295,11 +299,11 @@ export const STATIC_QUESTIONNAIRES = [
         icon: ArrowsLeftRight,
         question: "Quel(s) moyen(s) de transport utilisez-vous actuellement ?",
         type: "multi",
+        showIf: { questionId: "q4_vehicule", values: ["non"] },
         options: [
           { id: "zemi",      icon: Motorcycle,     label: "Zémidjan",              desc: "Moto-taxi" },
           { id: "minibus",   icon: Bus,            label: "Tokpa-Tokpa / minibus", desc: "Transport informel" },
           { id: "taxi",      icon: Car,            label: "Taxi-ville",            desc: "" },
-          { id: "perso",     icon: Car,            label: "Véhicule personnel",    desc: "" },
           { id: "autostop",  icon: RoadHorizon,    label: "Autostop",              desc: "" },
           { id: "autre_tsp", icon: List,           label: "Autre",                 desc: "" },
         ],
@@ -345,11 +349,12 @@ export const STATIC_QUESTIONNAIRES = [
         icon: CurrencyDollar,
         question: "Quel est votre coût actuel pour un trajet aller simple ?",
         type: "single",
+        showIf: { questionId: "q4_vehicule", values: ["non"] },
         options: [
-          { id: "lt200",    icon: Coins,          label: "Moins de 200 FCFA",  desc: "" },
-          { id: "200_500",  icon: Wallet,         label: "200 – 500 FCFA",     desc: "" },
-          { id: "500_1000", icon: Money,          label: "500 – 1 000 FCFA",   desc: "" },
-          { id: "gt1000",   icon: CurrencyDollar, label: "Plus de 1 000 FCFA", desc: "" },
+          { id: "lt200",       icon: Coins,          label: "Moins de 200 FCFA",  desc: "" },
+          { id: "200_500",     icon: Wallet,         label: "200 – 500 FCFA",     desc: "" },
+          { id: "500_1000",    icon: Money,          label: "500 – 1 000 FCFA",   desc: "" },
+          { id: "autre_cout",  icon: CurrencyDollar, label: "Plus de 1 000 FCFA (préciser)", desc: "" },
         ],
       },
 
@@ -409,6 +414,19 @@ export const STATIC_QUESTIONNAIRES = [
           { id: "les_deux",    icon: ArrowsLeftRight, label: "Les deux selon le moment",         desc: "" },
         ],
       },
+      // Q22a — Si bus organisé uniquement
+      {
+        id: "q22a_reservation_bus",
+        icon: CalendarCheck,
+        question: "Seriez-vous prêt(e) à réserver votre trajet à l'avance ?",
+        type: "single",
+        showIf: { questionId: "q21_service", values: ["bus"] },
+        options: [
+          { id: "veille",  icon: CalendarCheck, label: "Oui, la veille",     desc: "" },
+          { id: "matin",   icon: SunHorizon,    label: "Oui, le matin même", desc: "" },
+          { id: "non",     icon: X,             label: "Non",                desc: "" },
+        ],
+      },
       {
         id: "q22_role",
         icon: ArrowRight,
@@ -426,6 +444,7 @@ export const STATIC_QUESTIONNAIRES = [
         icon: Clock,
         question: "Seriez-vous prêt(e) à réserver votre trajet à l'avance ?",
         type: "single",
+        showIf: { questionId: "q22_role", values: ["passager", "les_deux"] },
         options: [
           { id: "veille",  icon: CalendarCheck,   label: "Oui, la veille",               desc: "" },
           { id: "matin",   icon: SunHorizon,      label: "Oui, le matin même",           desc: "" },
@@ -434,11 +453,13 @@ export const STATIC_QUESTIONNAIRES = [
       },
 
       // ── Section 6 — Paiement & adoption digitale ──────────────────────
+      // ⚠️ Ne s'affiche QUE si Q22_role = passager ou les_deux
       {
         id: "q24_mobile_money",
         icon: DeviceMobile,
         question: "Utilisez-vous le Mobile Money (MTN MoMo, Moov Money) ?",
         type: "single",
+        showIf: { questionId: "q22_role", values: ["passager", "les_deux"] },
         options: [
           { id: "oui_reg", icon: CalendarCheck, label: "Oui, régulièrement",    desc: "" },
           { id: "oui_occ", icon: Lightning,     label: "Oui, occasionnellement",desc: "" },
@@ -450,6 +471,7 @@ export const STATIC_QUESTIONNAIRES = [
         icon: DeviceMobile,
         question: "Disposez-vous d'un smartphone avec accès internet ?",
         type: "single",
+        showIf: { questionId: "q22_role", values: ["passager", "les_deux"] },
         options: [
           { id: "oui", icon: DeviceMobile, label: "Oui", desc: "" },
           { id: "non", icon: X,            label: "Non", desc: "" },
@@ -460,6 +482,7 @@ export const STATIC_QUESTIONNAIRES = [
         icon: CreditCard,
         question: "Seriez-vous prêt(e) à payer via une application ?",
         type: "single",
+        showIf: { questionId: "q22_role", values: ["passager", "les_deux"] },
         options: [
           { id: "oui",     icon: Check,      label: "Oui",                         desc: "" },
           { id: "non",     icon: X,          label: "Non",                         desc: "" },
@@ -471,6 +494,7 @@ export const STATIC_QUESTIONNAIRES = [
         icon: CurrencyDollar,
         question: "Combien seriez-vous prêt(e) à payer via TicketChé pour un trajet aller simple ?",
         type: "single",
+        showIf: { questionId: "q22_role", values: ["passager", "les_deux"] },
         options: [
           { id: "lt300",   icon: Coins,          label: "Moins de 300 FCFA", desc: "" },
           { id: "300_500", icon: Wallet,         label: "300 – 500 FCFA",    desc: "" },
@@ -483,6 +507,7 @@ export const STATIC_QUESTIONNAIRES = [
         icon: Tag,
         question: "Un abonnement mensuel illimité sur ce trajet vous intéresserait-il ?",
         type: "single",
+        showIf: { questionId: "q22_role", values: ["passager", "les_deux"] },
         options: [
           { id: "oui",       icon: ThumbsUp,   label: "Oui",       desc: "" },
           { id: "non",       icon: ThumbsDown, label: "Non",       desc: "" },
