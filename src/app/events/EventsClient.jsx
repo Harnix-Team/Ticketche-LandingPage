@@ -43,6 +43,12 @@ function isUpcoming(dateStr) {
   return diffDays >= 0 && diffDays <= 7;
 }
 
+// Un event dont la date n'est pas encore passée
+function isNotPast(dateStr) {
+  if (!dateStr) return true;
+  return new Date(dateStr) >= new Date();
+}
+
 function selectHeroEvent(events) {
   if (!events.length) return null;
 
@@ -52,9 +58,9 @@ function selectHeroEvent(events) {
     .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
   if (weekendEvents.length > 0) return { event: weekendEvents[0], label: "weekend" };
 
-  // 2. Bon plan (is_featured)
+  // 2. Bon plan (is_featured) — uniquement si date pas passée
   const featured = events
-    .filter(e => e.is_featured)
+    .filter(e => e.is_featured && isNotPast(e.start_date))
     .sort((a, b) => (a.featured_order ?? 99) - (b.featured_order ?? 99));
   if (featured.length > 0) return { event: featured[0], label: "featured" };
 
@@ -86,7 +92,7 @@ function HeroCard({ event, onClick }) {
 
       {/* badges top */}
       <div className="absolute top-5 left-5 flex gap-2">
-        {event.is_featured && (
+        {event.is_featured && isNotPast(event.start_date) && (
           <span className="bg-[#692C00] text-white text-[11px] font-black px-3 py-1.5 rounded-full tracking-wide">
             ✦ À LA UNE
           </span>
@@ -159,7 +165,7 @@ function ListCard({ event, index, onClick }) {
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        {event.is_featured && (
+        {event.is_featured && isNotPast(event.start_date) && (
           <div className="absolute top-2 left-2">
             <span className="bg-[#692C00] text-white text-[9px] font-black px-2 py-0.5 rounded-full">★ UNE</span>
           </div>
@@ -208,9 +214,10 @@ function ListCard({ event, index, onClick }) {
 /* ── Compact grid card ── */
 /* ── Compact grid card ── */
 function GridCard({ event, index, onClick }) {
-  const price  = getMinPrice(event.tickets);
+  const price = getMinPrice(event.tickets);
   const isFree = price === "Gratuit";
   const dateStr = formatDateShort(event.start_date);
+  const featuredActive = event.is_featured && isNotPast(event.start_date);
 
   return (
     <motion.article
@@ -284,7 +291,7 @@ function GridCard({ event, index, onClick }) {
       }}>
         {/* Tags */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
-          {event.is_featured && (
+          {featuredActive && (
             <span style={{
               background: "rgba(255,255,255,0.18)", border: "1.5px solid rgba(255,255,255,0.45)",
               borderRadius: "999px", padding: "2px 10px",
@@ -308,7 +315,7 @@ function GridCard({ event, index, onClick }) {
           display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
         }}>
           {event.title}
-          {event.is_featured && (
+          {featuredActive && (
             <span style={{
               display: "inline-flex", alignItems: "center", justifyContent: "center",
               width: 16, height: 16, background: "#005f69", borderRadius: "50%",
@@ -460,13 +467,13 @@ export default function EventsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-useEffect(() => {
-  fetchEventCategories()
-    .then((data) => {
-      if (data?.success) setCategories(data?.data ?? []);
-    })
-    .catch(console.error);
-}, []);
+  useEffect(() => {
+    fetchEventCategories()
+      .then((data) => {
+        if (data?.success) setCategories(data?.data ?? []);
+      })
+      .catch(console.error);
+  }, []);
 
   const handleSearch = useCallback((query) => {
     setSearchQuery(query);
@@ -494,8 +501,10 @@ useEffect(() => {
 
     return [...byCat].sort((a, b) => {
       if (sortBy === "featured") {
-        if (a.is_featured && !b.is_featured) return -1;
-        if (!a.is_featured && b.is_featured) return 1;
+        const aFeatured = a.is_featured && isNotPast(a.start_date);
+        const bFeatured = b.is_featured && isNotPast(b.start_date);
+        if (aFeatured && !bFeatured) return -1;
+        if (!aFeatured && bFeatured) return 1;
         return (a.featured_order ?? 99) - (b.featured_order ?? 99);
       }
       if (sortBy === "date") {
@@ -644,8 +653,8 @@ useEffect(() => {
                   <button key={key}
                     onClick={() => setSortBy(key)}
                     className={`text-left px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${sortBy === key
-                        ? "bg-[#005f69]/10 text-[#005f69]"
-                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                      ? "bg-[#005f69]/10 text-[#005f69]"
+                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       }`}
                   >
                     {sortBy === key && <span className="mr-1.5 text-[#005f69]">›</span>}
@@ -664,8 +673,8 @@ useEffect(() => {
                 <button
                   onClick={() => setActiveCategory(null)}
                   className={`text-left px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${!activeCategory
-                      ? "bg-[#005f69] text-white shadow-sm"
-                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                    ? "bg-[#005f69] text-white shadow-sm"
+                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                     }`}
                 >
                   Toutes les catégories
@@ -674,8 +683,8 @@ useEffect(() => {
                   <button key={cat.id}
                     onClick={() => setActiveCategory((p) => p?.id === cat.id ? null : cat)}
                     className={`text-left px-3 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${activeCategory?.id === cat.id
-                        ? "bg-[#692C00] text-white shadow-sm"
-                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                      ? "bg-[#692C00] text-white shadow-sm"
+                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                       }`}
                   >
                     <Tag className="w-3.5 h-3.5 flex-shrink-0" />

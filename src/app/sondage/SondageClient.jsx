@@ -15,7 +15,7 @@ import {
 } from "@/app/services/questionnairesApi";
 
 const SURVEY_SLUG = "transport-covoiturage-2026";
-const STORAGE_KEY = "ticketche_sondage_progress_v3";
+const STORAGE_KEY = "ticketche_sondage_progress_v4";
 const DONE_KEY    = "ticketche_sondage_done";
 
 /* ── Icônes par section ───────────────────────────────────────────────────── */
@@ -44,28 +44,45 @@ const SCREENS = [
   { id:"s5", label:"Difficultés", layout:"1x2",
     questions:["q18_difficultes","q19_type_difficultes"] },
   { id:"s6", label:"TicketChé",   layout:"2x2",
-    questions:["q20_interet","q21_service","q22_role","q23_reservation"] },
+    questions:["q20_interet","q21_service","q22a_reservation_bus","q22_role","q23_reservation"] },
   { id:"s7", label:"Paiement",    layout:"3x2",
-    questions:["q24_mobile_money","q25_smartphone","q26_paiement_app","q27_prix","q28_abonnement","q28b_prix_abo"] },
+    questions:["q24_mobile_money","q25_smartphone","q26_paiement_app","q27_prix","q28_abonnement","q28b_prix_abo"],
+    showIf:{ questionId:"q22_role", values:["passager","les_deux"] } },
   { id:"s8", label:"Perception",  layout:"2+1",
     questions:["q29_avantages","q30_obstacles","q31_suggestions"] },
 ];
 
 /* ── Conditions de visibilité ─────────────────────────────────────────────── */
 const CONDS = {
+  // Section 2 — Conducteurs
   q5_type_vehicule:     { dep:"q4_vehicule",    vals:["oui"] },
   q6_places:            { dep:"q4_vehicule",    vals:["oui"] },
   q7_carburant:         { dep:"q4_vehicule",    vals:["oui"] },
   q8_passagers:         { dep:"q4_vehicule",    vals:["oui"] },
   q8b_app:              { dep:"q4_vehicule",    vals:["oui"] },
+  // Section 4 — Q13 et Q17 masquées si conducteur
+  q13_transport:        { dep:"q4_vehicule",    vals:["non"] },
+  q17_cout:             { dep:"q4_vehicule",    vals:["non"] },
+  // Section 5 — Difficultés
   q19_type_difficultes: { dep:"q18_difficultes",vals:["oui"] },
+  // Section 6 — TicketChé
+  q22a_reservation_bus: { dep:"q21_service",    vals:["bus"] },
   q22_role:             { dep:"q21_service",    vals:["covoiturage","les_deux"] },
+  q23_reservation:      { dep:"q22_role",       vals:["passager","les_deux"] },
+  // Section 7 — Paiement (passagers uniquement)
+  q24_mobile_money:     { dep:"q22_role",       vals:["passager","les_deux"] },
+  q25_smartphone:       { dep:"q22_role",       vals:["passager","les_deux"] },
+  q26_paiement_app:     { dep:"q22_role",       vals:["passager","les_deux"] },
+  q27_prix:             { dep:"q22_role",       vals:["passager","les_deux"] },
+  q28_abonnement:       { dep:"q22_role",       vals:["passager","les_deux"] },
   q28b_prix_abo:        { dep:"q28_abonnement", vals:["oui","peut_etre"] },
 };
 
 function isVisible(qId, answers) {
   if (!CONDS[qId]) return true;
   const { dep, vals } = CONDS[qId];
+  // Vérifier d'abord que la question parente est elle-même visible (récursif)
+  if (!isVisible(dep, answers)) return false;
   const given = answers[dep];
   const arr = Array.isArray(given) ? given : given ? [given] : [];
   return arr.some(v => vals.includes(v));
@@ -75,7 +92,7 @@ function getRequired(screen, answers, questionnaire, isMobile) {
   if (!screen || !questionnaire) return [];
   return screen.questions.filter(qId => {
     if (!isVisible(qId, answers)) return false;
-    // Desktop S6 : Q21/Q22/Q23 ne sont requises que si Q20 = oui/peut_etre
+    // Desktop S6 : Q21/Q22a/Q22/Q23 ne sont requises que si Q20 = oui/peut_etre
     if (!isMobile && screen.id === "s6" && qId !== "q20_interet") {
       const q20 = answers["q20_interet"];
       if (q20 !== "oui" && q20 !== "peut_etre") return false;
@@ -468,6 +485,8 @@ export default function SondagePage() {
     ? SCREENS.filter(sc => {
         if (!sc.showIf) return true;
         const { questionId, values } = sc.showIf;
+        // Utiliser isVisible pour gérer les conditions chaînées
+        if (!isVisible(questionId, answers)) return false;
         const given = answers[questionId];
         const arr = Array.isArray(given) ? given : given ? [given] : [];
         return arr.some(v => values.includes(v));
@@ -482,7 +501,7 @@ export default function SondagePage() {
   const visibleQIds = currentScreen && questionnaire
     ? currentScreen.questions.filter(qId => {
         if (!isVisible(qId, answers)) return false;
-        // Desktop uniquement : sur S6, masquer Q21/Q22/Q23 tant que Q20 n'est pas oui/peut_etre
+        // Desktop uniquement : sur S6, masquer Q21/Q22a/Q22/Q23 tant que Q20 n'est pas oui/peut_etre
         if (!isMobile && currentScreen.id === "s6" && qId !== "q20_interet") {
           const q20 = answers["q20_interet"];
           if (q20 !== "oui" && q20 !== "peut_etre") return false;
@@ -561,6 +580,8 @@ export default function SondagePage() {
       const activeScrs  = SCREENS.filter(sc => {
         if (!sc.showIf) return true;
         const { questionId, values } = sc.showIf;
+        // Utiliser isVisible pour gérer les conditions chaînées
+        if (!isVisible(questionId, currAnswers)) return false;
         const given = currAnswers[questionId];
         const arr = Array.isArray(given) ? given : given ? [given] : [];
         return arr.some(v => values.includes(v));
@@ -661,8 +682,40 @@ export default function SondagePage() {
   const handleSubmit = async () => {
     setSubmitError(false);
     setSubmitting(true);
-    // answers = uniquement les réponses Q1-Q31
-    const cleanAnswers = { ...answers };
+
+    // ── Construire cleanAnswers : uniquement les questions visibles + leurs champs _autre/_reason ──
+    const allAnswers = { ...answers };
+
+    // Garder uniquement les réponses des questions actuellement visibles
+    // (évite d'envoyer des réponses orphelines si l'utilisateur a changé Q4 en cours de route)
+    const visibleIds = new Set(
+      questionnaire.steps
+        .filter(step => isVisible(step.id, allAnswers))
+        .map(step => step.id)
+    );
+    const cleanAnswers = Object.fromEntries(
+      Object.entries(allAnswers).filter(([key]) => {
+        if (key.endsWith("_autre") || key.endsWith("_reason")) {
+          const parentId = key.replace(/_autre$/, "").replace(/_reason$/, "");
+          return visibleIds.has(parentId);
+        }
+        return visibleIds.has(key);
+      })
+    );
+
+    // ── Normalisation avant envoi ──────────────────────────────────────────
+    // 1. Q22a (bus uniquement) → mapper sur q23_reservation pour le backend
+    if (cleanAnswers.q22a_reservation_bus && !cleanAnswers.q23_reservation) {
+      cleanAnswers.q23_reservation = cleanAnswers.q22a_reservation_bus;
+    }
+    delete cleanAnswers.q22a_reservation_bus;
+
+    // 2. Q17 — conserver "gt1000" comme valeur envoyée au backend
+    if (cleanAnswers.q17_cout === "autre_cout") {
+      cleanAnswers.q17_cout = "gt1000";
+    }
+    // ──────────────────────────────────────────────────────────────────────
+
     // metadata = champs doc B1 au même niveau que answers
     const metadata = {
       mode: "libre",
@@ -774,8 +827,149 @@ export default function SondagePage() {
       {/* ════════ FORMULAIRE INTÉGRÉ ════════ */}
       <div className="snd-form-zone" ref={formZoneRef}>
 
-        {/* CTA initial */}
-        {!showForm && !submitted && (
+        {/* CTA initial — bandeau/popup + progression sauvegardée : carte de reprise */}
+        {autoStart && hasSavedProgress && !showForm && !submitted && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            style={{ maxWidth: 520, margin: "0 auto" }}
+          >
+            {/* Carte principale */}
+            <div style={{
+              background: "#fff",
+              border: "1.5px solid rgba(0,95,105,0.13)",
+              borderRadius: 24,
+              overflow: "hidden",
+              boxShadow: "0 8px 40px rgba(0,95,105,0.10)",
+            }}>
+              {/* Bandeau top */}
+              <div style={{
+                background: "linear-gradient(135deg, #003f46 0%, #005f69 60%, #00818f 100%)",
+                padding: "24px 28px 20px",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                  <div style={{
+                    width: 44, height: 44, borderRadius: 14,
+                    background: "rgba(255,255,255,0.15)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    color: "#fff", flexShrink: 0,
+                  }}>
+                    <ChartBar size={22} weight="fill" />
+                  </div>
+                  <div>
+                    <p style={{ margin: 0, fontSize: 16, fontWeight: 900, color: "#fff", letterSpacing: "-0.01em" }}>
+                      Sondage en cours
+                    </p>
+                    <p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.65)", marginTop: 2 }}>
+                      Vous vous étiez arrêté·e ici
+                    </p>
+                  </div>
+                  {/* Badge section */}
+                  <div style={{
+                    marginLeft: "auto",
+                    background: "rgba(255,255,255,0.15)",
+                    border: "1px solid rgba(255,255,255,0.25)",
+                    borderRadius: 100,
+                    padding: "4px 12px",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "rgba(255,255,255,0.9)",
+                    whiteSpace: "nowrap",
+                  }}>
+                    {activeScreens[currentScreenIdx]?.label || "En cours"}
+                  </div>
+                </div>
+
+                {/* Barre de progression */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                      Progression
+                    </span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.7)" }}>
+                      {currentScreenIdx} / {activeScreens.length} sections
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", gap: 4 }}>
+                    {activeScreens.map((sc, i) => (
+                      <div key={sc.id} style={{
+                        flex: 1, height: 5, borderRadius: 100,
+                        background: i < currentScreenIdx
+                          ? "#fff"
+                          : i === currentScreenIdx
+                            ? "rgba(255,255,255,0.45)"
+                            : "rgba(255,255,255,0.15)",
+                        transition: "background 0.3s",
+                      }} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Corps */}
+              <div style={{ padding: "24px 28px" }}>
+                {/* Résumé sections */}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
+                  {activeScreens.map((sc, i) => {
+                    const Icon = SECTION_ICONS[sc.id];
+                    const done = i < currentScreenIdx;
+                    const current = i === currentScreenIdx;
+                    return (
+                      <div key={sc.id} style={{
+                        display: "flex", alignItems: "center", gap: 5,
+                        padding: "5px 12px",
+                        borderRadius: 100,
+                        fontSize: 11, fontWeight: 700,
+                        background: done
+                          ? "rgba(0,95,105,0.08)"
+                          : current
+                            ? "rgba(0,95,105,0.12)"
+                            : "#f4fafb",
+                        border: current
+                          ? "1.5px solid rgba(0,95,105,0.35)"
+                          : "1.5px solid transparent",
+                        color: done ? "#005f69" : current ? "#003f46" : "#9dcccc",
+                      }}>
+                        {done
+                          ? <CheckCircle size={11} weight="fill" />
+                          : Icon ? <Icon size={11} weight="fill" /> : null}
+                        {sc.label}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Boutons */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  <button
+                    className="snd-cta-btn"
+                    onClick={() => setShowForm(true)}
+                    style={{ maxWidth: "100%" }}
+                  >
+                    Reprendre le sondage
+                    <ArrowRight size={16} weight="bold" />
+                  </button>
+                  <button
+                    className="snd-restart-btn"
+                    onClick={() => {
+                      clearProgress();
+                      setAnswers({});
+                      setCurrentScreenIdx(0);
+                      setHasSavedProgress(false);
+                      setShowForm(true);
+                    }}
+                  >
+                    Recommencer depuis le début
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* CTA initial — header/footer (hero visible) ou bandeau sans progression */}
+        {(!autoStart || !hasSavedProgress) && !showForm && !submitted && (
           <motion.div
             className="snd-cta-wrap"
             initial={{ opacity: 0, y: 12 }}

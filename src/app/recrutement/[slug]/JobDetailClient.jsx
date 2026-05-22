@@ -282,7 +282,7 @@ export default function JobDetailPage() {
 
         /* ── Floating Apply button ── */
         .jd-float-btn {
-          position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
           z-index: 100;
           display: inline-flex; align-items: center; gap: 10px;
           padding: 14px 32px; border-radius: 100px;
@@ -434,7 +434,7 @@ export default function JobDetailPage() {
         @media (max-width: 640px) {
           .jd-hero { padding: 90px 20px 40px; }
           .jd-layout { padding: 20px 16px 0; gap: 16px; }
-          .jd-float-btn { bottom: 16px; padding: 13px 24px; font-size: 14px; }
+          .jd-float-btn { bottom: 90px; padding: 13px 24px; font-size: 14px; }
         }
       `}</style>
 
