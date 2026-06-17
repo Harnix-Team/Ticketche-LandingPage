@@ -440,7 +440,7 @@ export function ApplicationModal({ job, onClose }) {
                 {(job?.job_title?.toLowerCase().includes("livreur") ||
                   job?.id === "delivery_man") && (
                   <>
-                    <Field label="Numéro de permis de conduire *">
+                    <Field label="Numéro de permis de conduire (facultatif)">
                       <input
                         placeholder="Ex: BJ-123456"
                         value={form.license_number}
