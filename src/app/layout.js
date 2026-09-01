@@ -3,8 +3,8 @@ import "./globals.css";
 import { HeaderWrapper } from "@/components/Navigation/HeaderWrapper";
 import { Footer } from "@/components/Navigation/footer";
 import { AppNotificationWrapper } from "@/components/AppNotificationWrapper";
-import SondageBandeau from "@/components/SondageBandeau";
-import SondagePopup from "@/components/SondagePopup";
+// import SondageBandeau from "@/components/SondageBandeau";
+// import SondagePopup from "@/components/SondagePopup";
 import Providers from "@/app/providers";
 
 const archivo = Archivo({
@@ -44,7 +44,7 @@ export const metadata = {
     telephone: false,
   },
 
-  metadataBase: new URL("https://www.ticketche.com"),
+  metadataBase: new URL("https://www.ticketche.com" ),
 
   alternates: {
     canonical: "/",
@@ -92,7 +92,7 @@ export const metadata = {
   manifest: "/site.webmanifest",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children } ) {
   return (
     <html lang="fr">
       <head>
@@ -101,14 +101,17 @@ export default function RootLayout({ children }) {
           content="KduTih3KqfMa3oOnXKluxcZ9HivlOJ6vOIp2cqH3Lm0"
         />
       </head>
+
       <body className={`${archivo.variable} antialiased bg-[#047b7f13]`}>
         <Providers>
           <HeaderWrapper />
           {children}
           <Footer />
           <AppNotificationWrapper />
-          <SondageBandeau />
-          <SondagePopup />
+
+          {/* Sondage désactivé temporairement */}
+          {/* <SondageBandeau /> */}
+          {/* <SondagePopup /> */}
         </Providers>
       </body>
     </html>
