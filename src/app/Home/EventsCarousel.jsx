@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, MapPin, Ticket, ArrowRight, ArrowUpRight, Users, Star, MusicNote, FilmSlate, SoccerBall, Confetti, DeviceMobile } from "@phosphor-icons/react";
 import { getDownloadLink } from "@/utils/deviceDetection";
 import { fetchAllEvents } from "@/app/services/api";
+import { eventPath } from "@/lib/event-slug";
 
 /* ─── helpers ─────────────────────────────────── */
 const getEventImage = (e) =>
@@ -57,7 +58,7 @@ function EventCard({ event }) {
   const handleClick = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("selectedEvent", JSON.stringify(event));
-      router.push(`/events/details?eventId=${event.id}`);
+      router.push(eventPath(event));
     }
   };
 
@@ -200,7 +201,7 @@ function EventCard({ event }) {
               transition: "background 0.15s, transform 0.15s",
               boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
             }}
-            onClick={(e) => { e.stopPropagation(); router.push(`/events/details?eventId=${event.id}`); }}
+            onClick={(e) => { e.stopPropagation(); router.push(eventPath(event)); }}
             onMouseEnter={e => { e.currentTarget.style.background = "#e6f7f8"; e.currentTarget.style.transform = "scale(1.04)"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.transform = "scale(1)"; }}
           >

@@ -10,6 +10,7 @@ import {
   SlidersHorizontal, CaretRight, Confetti, Star
 } from "@phosphor-icons/react";
 import { fetchAllEvents, fetchEventCategories, searchEvents } from "@/app/services/api";
+import { eventPath } from "@/lib/event-slug";
 
 /* ── helpers ── */
 const formatDate = (d) => {
@@ -489,8 +490,11 @@ export default function EventsPage() {
     }, 400);
   }, []);
 
+  // Audit SEO 2026-09-04 (SEO-02) : la navigation pointe vers l'URL canonique
+  // en slug, pas vers l'ancienne URL a parametre de requete (qui redirige
+  // desormais en 308 - la conserver ici ferait payer un aller-retour inutile).
   const handleEventClick = (event) => {
-    router.push(`/events/details?eventId=${event.id}`);
+    router.push(eventPath(event));
   };
 
   const filteredEvents = useMemo(() => {

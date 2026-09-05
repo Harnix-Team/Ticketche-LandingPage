@@ -17,7 +17,7 @@ export const metadata = {
     title: "Carrières & Recrutement | Rejoignez l'équipe Ticketché",
     description:
       "Découvrez les offres d'emploi de Ticketché. Développeurs, designers, commerciaux — postulez en ligne.",
-    url: "https://www.ticketche.com/recrutement",
+    url: "https://ticketche.com/recrutement",
     images: [{ url: "/images/og-image.png", width: 1200, height: 630, alt: "Recrutement Ticketché" }],
   },
 };

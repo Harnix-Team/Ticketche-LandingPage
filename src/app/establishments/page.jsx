@@ -18,7 +18,7 @@ export const metadata = {
     title: "Parkings, Garages & Lavages Auto au Bénin | Ticketché",
     description:
       "Trouvez les parkings, garages et lavages auto les mieux notés près de vous au Bénin. Réservez et payez via Ticketché.",
-    url: "https://www.ticketche.com/establishments",
+    url: "https://ticketche.com/establishments",
     images: [{ url: "/images/og-image.png", width: 1200, height: 630, alt: "Établissements Ticketché" }],
   },
 };
