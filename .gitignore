@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Configuration locale de l'outillage agent (lancement du serveur de dev).
+.claude/
