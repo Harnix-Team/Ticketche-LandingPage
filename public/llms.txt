@@ -1,0 +1,47 @@
+# Ticketché
+
+> Application béninoise qui réunit en un seul compte la billetterie d'événements,
+> la livraison à la demande, le covoiturage et la gestion de parkings, garages et
+> centres de lavage. Éditée par Harnix-Team, basée à Abomey-Calavi, Bénin.
+
+Ticketché s'adresse à trois publics : les particuliers qui achètent un billet,
+commandent une livraison ou garent un véhicule ; les organisateurs d'événements
+et gérants d'établissements qui vendent et supervisent depuis un tableau de bord ;
+les livreurs partenaires et salariés. Les paiements passent par Mobile Money
+(FedaPay) et par un portefeuille interne. La devise est le franc CFA (XOF).
+
+## Pages de référence
+
+- [Accueil](https://ticketche.com/) : présentation générale des services.
+- [Événements et billetterie](https://ticketche.com/events/) : concerts, festivals, soirées et conférences au Bénin, achat de billets en ligne.
+- [Établissements](https://ticketche.com/establishments/) : parkings, garages et centres de lavage partenaires.
+- [Télécharger l'application](https://ticketche.com/download/) : liens App Store et Google Play.
+- [À propos](https://ticketche.com/a-propos/) : présentation de l'entreprise et de sa mission.
+- [Recrutement](https://ticketche.com/recrutement/) : offres d'emploi, dont les postes de livreur partenaire.
+- [Contact](https://ticketche.com/contact/) : formulaire, e-mail et téléphone.
+
+## Informations juridiques
+
+- [Mentions légales](https://ticketche.com/politiques/mentions/)
+- [Politique de confidentialité](https://ticketche.com/politiques/confidentialite/)
+- [Conditions générales](https://ticketche.com/politiques/conditions/)
+
+## Faits vérifiables
+
+- Raison sociale de l'éditeur : Harnix-Team
+- Nom de l'application : Ticketché
+- Siège : Abomey-Calavi, Bénin
+- Zone couverte : Bénin, avec une activité concentrée sur Cotonou et Abomey-Calavi
+- Contact : support@ticketche.com, +229 01 40 51 21 33
+- Plateformes : Android, iOS et web
+- Moyens de paiement : Mobile Money via FedaPay, portefeuille interne Ticketché
+- Devise : franc CFA (XOF)
+
+## Notes
+
+- Le domaine canonique est `https://ticketche.com`. `www.ticketche.com` n'est pas
+  un hôte valide.
+- L'API publique est documentée à usage interne et n'est pas destinée à
+  l'indexation ; `/admin/`, `/sondage/`, `/questionnaires/` et `/api/` sont
+  exclus par `robots.txt`.
+- Le contenu de ce site est en français.

@@ -1,30 +1,31 @@
-import { Suspense } from "react";
-import EventDetailsClient from "@/components/Events/EventDetailsClient";
+import { permanentRedirect, redirect } from "next/navigation";
+import { fetchEventById } from "@/app/services/api";
+import { eventPath } from "@/lib/event-slug";
 
+/**
+ * Ancienne URL de detail d'un evenement (audit SEO 2026-09-04, SEO-02).
+ *
+ * `/events/details?eventId=<uuid>` reste servie parce qu'elle circule deja dans
+ * des liens partages, des SMS et le lien universel de l'application mobile. Elle
+ * redirige desormais en 308 vers l'URL canonique `/events/<slug>-<uuid>/`, pour
+ * que les moteurs transferent le signal vers la nouvelle adresse plutot que
+ * d'indexer deux URL pour la meme page.
+ */
 export const dynamic = "force-dynamic";
 
-export function generateMetadata({ searchParams }) {
-  const eventId = searchParams?.eventId ?? "";
-  return {
-    title: "Détail de l'événement | Ticketché",
-    description:
-      "Consultez les détails de cet événement — lieu, date, tarif — et achetez votre billet en ligne via Ticketché au Bénin.",
-    openGraph: {
-      title: "Événement | Ticketché",
-      description: "Achetez votre billet pour cet événement au Bénin via Ticketché.",
-      url: `https://www.ticketche.com/events/details?eventId=${eventId}`,
-      images: [{ url: "/images/og-image.png", width: 1200, height: 630, alt: "Événement Ticketché" }],
-    },
-    other: {
-      "apple-itunes-app": `app-id=6758046811, app-argument=ticketche://events/details?eventId=${eventId}`,
-    },
-  };
-}
+export default async function LegacyEventDetailsPage({ searchParams }) {
+  const params = await searchParams;
+  const eventId = typeof params?.eventId === "string" ? params.eventId : null;
 
-export default function EventDetailsPage() {
-  return (
-    <Suspense fallback={null}>
-      <EventDetailsClient />
-    </Suspense>
-  );
+  if (!eventId) redirect("/events/");
+
+  const payload = await fetchEventById(eventId);
+  const event = payload?.data ?? null;
+
+  // Evenement introuvable (supprime, ou identifiant invalide) : on renvoie vers
+  // la liste plutot que de laisser une page morte. Redirection temporaire, la
+  // ressource pouvant reapparaitre.
+  if (!event?.id) redirect("/events/");
+
+  permanentRedirect(eventPath(event));
 }

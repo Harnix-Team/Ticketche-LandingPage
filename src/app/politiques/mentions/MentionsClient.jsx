@@ -156,7 +156,7 @@ export default function MentionsLegalesPage() {
           <InfoRow icon={MapPin}             label="Siège social"   value="Abomey-Calavi, Bénin" />
           <InfoRow icon={Envelope}           label="Email"          value="support@ticketche.com"  href="mailto:support@ticketche.com" />
           <InfoRow icon={Phone}              label="Téléphone"      value="+229 01 40 51 21 33"    href="tel:+2290140512133" />
-          <InfoRow icon={Globe}              label="Site web"       value="www.ticketche.com"       href="https://www.ticketche.com" />
+          <InfoRow icon={Globe}              label="Site web"       value="ticketche.com"       href="https://ticketche.com" />
         </div>
       ),
     },

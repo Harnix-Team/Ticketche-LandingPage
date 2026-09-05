@@ -17,7 +17,7 @@ export const metadata = {
     title: "Télécharger Ticketché | Application iOS & Android",
     description:
       "Téléchargez Ticketché gratuitement sur App Store et Google Play. Parkings, garages, lavages et billetterie au Bénin.",
-    url: "https://www.ticketche.com/download",
+    url: "https://ticketche.com/download",
     images: [{ url: "/images/og-image.png", width: 1200, height: 630, alt: "Télécharger l'application Ticketché" }],
   },
 };

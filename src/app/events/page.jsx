@@ -17,7 +17,7 @@ export const metadata = {
     title: "Événements & Billetterie en Ligne au Bénin | Ticketché",
     description:
       "Concerts, festivals, soirées et conférences au Bénin. Achetez vos billets en ligne avec Ticketché.",
-    url: "https://www.ticketche.com/events",
+    url: "https://ticketche.com/events",
     images: [{ url: "/images/og-image.png", width: 1200, height: 630, alt: "Événements Ticketché" }],
   },
 };

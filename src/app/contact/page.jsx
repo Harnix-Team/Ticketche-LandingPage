@@ -16,7 +16,7 @@ export const metadata = {
     title: "Contactez Ticketché | Support & Assistance",
     description:
       "Une question ou un partenariat ? Contactez l'équipe Ticketché — nous répondons dans les plus brefs délais.",
-    url: "https://www.ticketche.com/contact",
+    url: "https://ticketche.com/contact",
     images: [{ url: "/images/og-image.png", width: 1200, height: 630, alt: "Contact Ticketché" }],
   },
 };
