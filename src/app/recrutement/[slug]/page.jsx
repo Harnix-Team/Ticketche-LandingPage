@@ -20,7 +20,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: `${formattedTitle} | Offre d'emploi — Ticketché`,
       description: `Postulez au poste de ${formattedTitle} chez Ticketché.`,
-      url: `https://www.ticketche.com/recrutement/${slug}`,
+      url: `https://ticketche.com/recrutement/${slug}`,
       images: [{ url: "/images/og-image.png", width: 1200, height: 630, alt: `Offre d'emploi — Ticketché` }],
     },
   };

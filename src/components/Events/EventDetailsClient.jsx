@@ -145,9 +145,16 @@ function ProgramItem({ item, index }) {
 /* ══════════════════════════════════════════════
    PAGE PRINCIPALE
 ══════════════════════════════════════════════ */
-export default function EventDetailsPage() {
+/**
+ * @param {{ eventId?: string, initialEvent?: object }} props
+ *   `eventId` et `initialEvent` sont fournis par la page serveur
+ *   `/events/[slug]` (audit SEO 2026-09-04, SEO-02) : l'evenement est deja
+ *   charge cote serveur, la requete client n'a donc pas a repartir de zero.
+ *   Sans ces props, le composant retombe sur l'ancien parametre de requete.
+ */
+export default function EventDetailsPage({ eventId, initialEvent }) {
   const searchParams = useSearchParams();
-  const id = searchParams.get("eventId");
+  const id = eventId ?? searchParams.get("eventId");
   const router = useRouter();
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState("tickets");
@@ -161,6 +168,9 @@ export default function EventDetailsPage() {
     queryFn: () => fetchEventById(id),
     enabled: !!id,
     select: (res) => res?.data ?? null,
+    // Rendu immediat a partir des donnees deja recuperees cote serveur : pas de
+    // Loader au premier affichage, la revalidation se fait en arriere-plan.
+    initialData: initialEvent ? { data: initialEvent } : undefined,
   });
 
   if (loading) return <Loader />;

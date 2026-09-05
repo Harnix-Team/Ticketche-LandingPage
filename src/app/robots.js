@@ -7,7 +7,7 @@ export default function robots() {
         disallow: ["/admin/", "/sondage/", "/questionnaires/", "/api/"],
       },
     ],
-    sitemap: "https://www.ticketche.com/sitemap.xml",
-    host: "https://www.ticketche.com",
+    sitemap: "https://ticketche.com/sitemap.xml",
+    host: "https://ticketche.com",
   };
 }
