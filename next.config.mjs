@@ -13,6 +13,12 @@ const nextConfig = {
     // on ne la reactive que dans le mode serveur, celui reellement deploye.
     unoptimized: process.env.STATIC_EXPORT === "true",
     formats: ["image/avif", "image/webp"],
+    // Les visuels des lieux et des evenements viennent du storage de l'API.
+    // Sans cette autorisation, l'optimiseur repond 400 ("url" parameter is not
+    // allowed) et l'image reste cassee : regression introduite par PERF-04.
+    remotePatterns: [
+      { protocol: "https", hostname: "api.ticketche.com", pathname: "/storage/**" },
+    ],
   },
   async headers() {
     return [

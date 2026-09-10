@@ -34,7 +34,9 @@ RUN npm ci --omit=dev
 
 # Copie les fichiers nécessaires au runtime
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
+# Proprietaire nextjs : l'optimiseur ecrit son cache dans .next/cache/images,
+# sinon chaque image optimisee echoue sur EACCES.
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/next.config.mjs ./next.config.mjs
 
 # Désactive l'exécution de shells
