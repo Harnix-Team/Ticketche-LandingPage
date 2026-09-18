@@ -19,7 +19,7 @@ import {
   Globe,
   Motorcycle,
 } from "@phosphor-icons/react";
-import { fetchJobBySlug, formatSalaryText } from "@/app/services/jobsApi";
+import { fetchJobBySlug, formatSalaryText, formatJobDate } from "@/app/services/jobsApi";
 import { ApplicationModal } from "@/components/recrutement/ApplicationModal";
 
 /* ─── Helpers ─────────────────────────────────────── */
@@ -462,10 +462,10 @@ position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
               </span>
               <span className="jd-hero-meta-item--accent">
                 <CalendarBlank size={14} weight="fill" /> Prise de poste :{" "}
-                {new Date(job.conditions.start_date).toLocaleDateString(
-                  "fr-FR",
-                  { month: "long", year: "numeric" },
-                )}
+                {formatJobDate(job.conditions.start_date, {
+                  month: "long",
+                  year: "numeric",
+                })}
               </span>
             </div>
             <div className="jd-hero-actions">
@@ -620,10 +620,11 @@ position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
                     <CalendarBlank size={16} style={{ color: "#005f69" }} />
                   ),
                   label: "Prise de poste",
-                  value: new Date(job.conditions.start_date).toLocaleDateString(
-                    "fr-FR",
-                    { day: "numeric", month: "long", year: "numeric" },
-                  ),
+                  value: formatJobDate(job.conditions.start_date, {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  }),
                   accent: true,
                 },
               ].map(({ icon, label, value, accent }) => (
