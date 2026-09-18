@@ -1,4 +1,9 @@
-import { fetchJobs, fetchJobBySlug, submitApplication } from "@/app/services/jobsApi";
+import {
+  fetchJobs,
+  fetchJobBySlug,
+  submitApplication,
+  formatSalaryText,
+} from "@/app/services/jobsApi";
 
 const OPEN_JOB = {
   id: "TCK-001",
@@ -137,5 +142,47 @@ describe("submitApplication", () => {
     await expect(submitApplication(null, new FormData())).rejects.toThrow(
       "Erreur serveur : 500"
     );
+  });
+});
+
+describe("formatSalaryText", () => {
+  it("affiche une fourchette min - max", () => {
+    const text = formatSalaryText(
+      { displayed: true, min: 30000, max: 80000, currency: "XOF", period: "mensuel" },
+      "Selon profil"
+    );
+    expect(text).toBe("30,000 - 80,000 XOF/mensuel");
+  });
+
+  it("affiche uniquement min quand max est null (remuneration fixe)", () => {
+    const text = formatSalaryText(
+      { displayed: true, min: 1000, max: null, currency: "XOF", period: "journalier" },
+      "Selon profil"
+    );
+    expect(text).toBe("1,000 XOF/journalier");
+  });
+
+  it("affiche uniquement max quand min est null", () => {
+    const text = formatSalaryText(
+      { displayed: true, min: null, max: 50000, currency: "XOF", period: "mensuel" },
+      "Selon profil"
+    );
+    expect(text).toBe("50,000 XOF/mensuel");
+  });
+
+  it("retourne le fallback quand displayed est false", () => {
+    const text = formatSalaryText(
+      { displayed: false, min: null, max: null, currency: "XOF", period: "mensuel" },
+      "Selon profil"
+    );
+    expect(text).toBe("Selon profil");
+  });
+
+  it("retourne le fallback quand displayed est true mais min et max sont null", () => {
+    const text = formatSalaryText(
+      { displayed: true, min: null, max: null, currency: "XOF", period: "mensuel" },
+      "Selon profil"
+    );
+    expect(text).toBe("Selon profil");
   });
 });
