@@ -246,7 +246,7 @@ export default function EventDetailsPage({ eventId, initialEvent }) {
 
           {/* Photo principale */}
           <div style={{ position: "relative" }}>
-            <Image src={img1} alt={event.title} fill style={{ objectFit: "cover" }} priority />
+            <Image src={img1} alt={event.title} fill sizes="(max-width: 640px) 100vw, 700px" style={{ objectFit: "cover" }} priority />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 55%)" }} />
 
             {event.category && (
@@ -292,7 +292,7 @@ export default function EventDetailsPage({ eventId, initialEvent }) {
 
           {/* Photo secondaire + dots */}
           <div style={{ position: "relative" }}>
-            <Image src={img2} alt={event.title} fill style={{ objectFit: "cover" }} />
+            <Image src={img2} alt={event.title} fill sizes="(max-width: 640px) 0px, 430px" style={{ objectFit: "cover" }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.25) 0%, transparent 50%)" }} />
 
             {heroImages.length > 1 && (

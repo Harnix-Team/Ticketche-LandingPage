@@ -84,7 +84,7 @@ export const Header = () => {
             <div className="hdrContent">
               <Link href="/" className="hdrLogo">
                 <div className={`hdrLogoImg ${isScrolled ? "scrolled" : ""}`}>
-                  <Image src="/images/logo.png" alt="Ticketché" fill className="object-contain" priority />
+                  <Image src="/images/logo.png" alt="Ticketché" fill sizes="160px" className="object-contain" priority />
                 </div>
               </Link>
               <div className={`hdrRight ${isScrolled ? "scrolled" : ""}`}>
@@ -112,7 +112,7 @@ export const Header = () => {
             <div className="hdrMobileWrapper">
               <Link href="/" className="hdrLogo">
                 <div className={`hdrLogoImg ${isScrolled ? "scrolled" : ""}`}>
-                  <Image src="/images/logo.png" alt="Ticketché" fill className="object-contain" priority />
+                  <Image src="/images/logo.png" alt="Ticketché" fill sizes="120px" className="object-contain" priority />
                 </div>
               </Link>
               <button onClick={() => setIsMenuOpen(!isMenuOpen)} className={`hdrToggle ${isScrolled ? "scrolled" : ""}`} aria-label="Toggle menu">

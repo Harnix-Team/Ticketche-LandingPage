@@ -335,7 +335,7 @@ export default function PlaceDetailsClient() {
         >
           {/* Photo principale */}
           <div className="pd-hero-main" style={{ position: "relative", height: "100%" }}>
-            <Image src={img1} alt={place.name} fill style={{ objectFit: "cover" }} priority />
+            <Image src={img1} alt={place.name} fill sizes="(max-width: 640px) 100vw, 700px" style={{ objectFit: "cover" }} priority />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 55%)" }} />
 
             {activeServices[0] && (
@@ -385,7 +385,7 @@ export default function PlaceDetailsClient() {
 
           {/* Photo secondaire */}
           <div className="pd-hero-secondary" style={{ position: "relative" }}>
-            <Image src={img2} alt={place.name} fill style={{ objectFit: "cover" }} />
+            <Image src={img2} alt={place.name} fill sizes="(max-width: 640px) 0px, 430px" style={{ objectFit: "cover" }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.25) 0%, transparent 50%)" }} />
 
             {heroImages.length > 1 && (
