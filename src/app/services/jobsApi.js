@@ -26,6 +26,27 @@ export async function fetchJobBySlug(slug) {
 }
 
 /**
+ * Formate le texte de rémunération d'une offre, en gérant les cas où
+ * min et/ou max sont absents (rémunération fixe ou non renseignée).
+ * @param {{displayed: boolean, min: number|null, max: number|null, currency: string, period: string}} remuneration
+ * @param {string} fallback - Texte affiché quand la rémunération n'est pas affichable
+ * @returns {string}
+ */
+export function formatSalaryText(remuneration, fallback) {
+  const { displayed, min, max, currency, period } = remuneration;
+
+  if (!displayed || (min == null && max == null)) {
+    return fallback;
+  }
+
+  if (min != null && max != null && min !== max) {
+    return `${min.toLocaleString()} - ${max.toLocaleString()} ${currency}/${period}`;
+  }
+
+  return `${(min ?? max).toLocaleString()} ${currency}/${period}`;
+}
+
+/**
  * Soumet une candidature au backend.
  * @param {FormData} formData - Les données du formulaire (champs backend)
  * @returns {Promise<{success: boolean, message: string}>}

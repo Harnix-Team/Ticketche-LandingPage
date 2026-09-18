@@ -19,7 +19,7 @@ import {
   Globe,
   Motorcycle,
 } from "@phosphor-icons/react";
-import { fetchJobBySlug } from "@/app/services/jobsApi";
+import { fetchJobBySlug, formatSalaryText } from "@/app/services/jobsApi";
 import { ApplicationModal } from "@/components/recrutement/ApplicationModal";
 
 /* ─── Helpers ─────────────────────────────────────── */
@@ -120,9 +120,7 @@ export default function JobDetailPage() {
   if (loading) return <LoadingSkeleton />;
   if (!job) return <NotFound />;
 
-  const salaryText = job.remuneration.displayed
-    ? `${job.remuneration.min.toLocaleString()} - ${job.remuneration.max.toLocaleString()} ${job.remuneration.currency} / ${job.remuneration.period}`
-    : "Rémunération selon profil";
+  const salaryText = formatSalaryText(job.remuneration, "Rémunération selon profil");
 
   return (
     <>

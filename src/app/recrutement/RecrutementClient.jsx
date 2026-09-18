@@ -18,7 +18,7 @@ import {
   ChartLineUp,
   PaintBrush,
 } from "@phosphor-icons/react";
-import { fetchJobs } from "@/app/services/jobsApi";
+import { fetchJobs, formatSalaryText } from "@/app/services/jobsApi";
 import { ApplicationModal } from "@/components/recrutement/ApplicationModal";
 
 /* ─── Star Clusters ─────────────────────────────────────── */
@@ -215,9 +215,7 @@ function JobCard({ job, index }) {
   };
   const { Icon: DeptIcon } = dept;
 
-  const salaryText = job.remuneration.displayed
-    ? `${job.remuneration.min.toLocaleString()} - ${job.remuneration.max.toLocaleString()} ${job.remuneration.currency}/${job.remuneration.period}`
-    : "Selon profil";
+  const salaryText = formatSalaryText(job.remuneration, "Selon profil");
 
   return (
     <motion.div
