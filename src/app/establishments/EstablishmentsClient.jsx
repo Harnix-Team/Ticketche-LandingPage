@@ -110,7 +110,7 @@ function HeroCard({ place, onClick, onItinerary, isNearby, distanceKm }) {
 
       <div className="hero-grid">
         <div style={{ position: "relative", borderRadius: 18, overflow: "hidden" }}>
-          <Image src={getPlaceImage(place)} alt={place.name} fill style={{ objectFit: "cover" }} priority />
+          <Image src={getPlaceImage(place)} alt={place.name} fill sizes="(max-width: 640px) 100vw, 700px" style={{ objectFit: "cover" }} priority />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.75) 0%, rgba(0,0,0,.15) 55%, transparent 100%)" }} />
 
           <div style={{ position: "absolute", top: 12, left: 12, display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
@@ -161,7 +161,7 @@ function HeroCard({ place, onClick, onItinerary, isNearby, distanceKm }) {
         </div>
 
         <div className="hero-second-photo" style={{ borderRadius: 18, overflow: "hidden", position: "relative" }}>
-          <Image src={getSecondImage(place)} alt={place.name} fill style={{ objectFit: "cover" }} />
+          <Image src={getSecondImage(place)} alt={place.name} fill sizes="(max-width: 640px) 0px, 430px" style={{ objectFit: "cover" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,.38) 0%, transparent 55%)" }} />
           <div style={{ position: "absolute", bottom: 12, right: 12 }}>
             <span style={{ background: "rgba(255,255,255,.9)", backdropFilter: "blur(8px)", fontSize: 11, fontWeight: 700, padding: "5px 12px", borderRadius: 20, color: "#374151", display: "flex", alignItems: "center", gap: 5 }}>
@@ -217,7 +217,7 @@ function ListCard({ place, index, onClick, onItinerary }) {
       </div>
 
       <div className="relative flex-shrink-0 w-24 sm:w-36 overflow-hidden">
-        <Image src={getPlaceImage(place)} alt={place.name} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
+        <Image src={getPlaceImage(place)} alt={place.name} fill sizes="(max-width: 640px) 96px, 144px" className="object-cover transition-transform duration-500 group-hover:scale-110" />
         {rating && (
           <div className="absolute top-2 left-2 flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-full px-2 py-0.5">
             <Star weight="fill" className="w-2.5 h-2.5 text-yellow-400" />
@@ -279,7 +279,7 @@ function GridCard({ place, index, onClick, onItinerary }) {
       className="group bg-white rounded-2xl overflow-hidden cursor-pointer border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-[#005f69]/10 hover:border-[#005f69]/20 transition-all duration-300"
     >
       <div className="relative w-full aspect-video overflow-hidden">
-        <Image src={getPlaceImage(place)} alt={place.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+        <Image src={getPlaceImage(place)} alt={place.name} fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         {rating && (
           <div className="absolute top-2.5 left-2.5 flex items-center gap-1 bg-white/92 backdrop-blur-sm rounded-full px-2 py-0.5">
