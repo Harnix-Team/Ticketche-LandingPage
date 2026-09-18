@@ -3,6 +3,7 @@ import {
   fetchJobBySlug,
   submitApplication,
   formatSalaryText,
+  formatJobDate,
 } from "@/app/services/jobsApi";
 
 const OPEN_JOB = {
@@ -184,5 +185,48 @@ describe("formatSalaryText", () => {
       "Selon profil"
     );
     expect(text).toBe("Selon profil");
+  });
+
+  it("privilegie le champ note quand il est fourni (ex : fixe + commission)", () => {
+    const text = formatSalaryText(
+      {
+        displayed: true,
+        min: 1000,
+        max: 1000,
+        currency: "XOF",
+        period: "journalier",
+        note: "Fixe : 1 000 FCFA / jour + Commission : 200 FCFA par app installee",
+      },
+      "Selon profil"
+    );
+    expect(text).toBe(
+      "Fixe : 1 000 FCFA / jour + Commission : 200 FCFA par app installee"
+    );
+  });
+});
+
+describe("formatJobDate", () => {
+  it("formate une date valide en francais", () => {
+    const text = formatJobDate("2026-10-05", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    expect(text).toBe("5 octobre 2026");
+  });
+
+  it("retourne le fallback quand la date est null (evite l'epoch Unix)", () => {
+    const text = formatJobDate(null, { day: "numeric", month: "long", year: "numeric" });
+    expect(text).toBe("À définir");
+  });
+
+  it("retourne le fallback quand la date est absente", () => {
+    const text = formatJobDate(undefined, { month: "long", year: "numeric" });
+    expect(text).toBe("À définir");
+  });
+
+  it("accepte un fallback personnalise", () => {
+    const text = formatJobDate(null, { month: "long", year: "numeric" }, "Non communiquée");
+    expect(text).toBe("Non communiquée");
   });
 });
