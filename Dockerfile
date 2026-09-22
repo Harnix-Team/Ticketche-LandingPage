@@ -1,5 +1,5 @@
 # Étape 1 : Build
-FROM node:22-alpine AS builder
+FROM ghcr.io/harnix-team/mirror-node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ ENV NODE_ENV=production
 RUN npm run build
 
 # Étape 2 : Runtime
-FROM node:22-alpine AS runner
+FROM ghcr.io/harnix-team/mirror-node:22-alpine AS runner
 
 # Créer utilisateur non-root
 RUN addgroup -g 1001 -S nodejs && \
