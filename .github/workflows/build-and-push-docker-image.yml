@@ -27,6 +27,17 @@ jobs:
       packages: write
 
     steps:
+      - name: Isolate Docker credentials
+        # Les runners self-hosted du VPS partagent ~/.docker/config.json : le
+        # login/logout d'un job d'un autre repo ecraserait nos identifiants en
+        # cours de build (unauthenticated / write_package denied aleatoires).
+        run: |
+          mkdir -p "$RUNNER_TEMP/docker-config"
+          if [ -d "$HOME/.docker/cli-plugins" ]; then
+            ln -sfn "$HOME/.docker/cli-plugins" "$RUNNER_TEMP/docker-config/cli-plugins"
+          fi
+          echo "DOCKER_CONFIG=$RUNNER_TEMP/docker-config" >> "$GITHUB_ENV"
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
