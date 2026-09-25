@@ -9,6 +9,8 @@ on:
         default: true
 
 env:
+  DOCKER_BUILD_RECORD_UPLOAD: "false"
+  DOCKER_BUILD_SUMMARY: "false"
   APP_URL: https://ticketche.com
   API_URL: https://api.ticketche.com/api/v2
   DEPLOY_FOLDER: /root/app/ticketche
