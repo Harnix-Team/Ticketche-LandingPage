@@ -1,0 +1,60 @@
+name: Collect Logs
+
+# Collecte les logs Docker du VPS et les affiche directement dans le job
+# (aucun artefact : le quota de stockage d'artefacts est partage par tout le compte).
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environnement (utilise comme filtre de nom de conteneur, vide = tous)"
+        required: false
+        default: ""
+      container_filter:
+        description: "Regex sur le nom des conteneurs"
+        required: false
+        default: "landing|ticketche"
+      lines:
+        description: "Nombre de lignes par conteneur (0 = tout)"
+        required: false
+        default: "500"
+
+jobs:
+  collect-logs:
+    runs-on: self-hosted
+    steps:
+      - name: Collect logs on VPS
+        uses: appleboy/ssh-action@v1.0.0
+        env:
+          ENV_FILTER: ${{ github.event.inputs.environment }}
+          CONTAINER_FILTER: ${{ github.event.inputs.container_filter }}
+          LOG_LINES: ${{ github.event.inputs.lines }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          envs: ENV_FILTER,CONTAINER_FILTER,LOG_LINES
+          command_timeout: 10m
+          script: |
+            TAIL_ARGS=""
+            if [ -n "$LOG_LINES" ] && [ "$LOG_LINES" != "0" ]; then TAIL_ARGS="--tail $LOG_LINES"; fi
+
+            NAMES=$(docker ps -a --format '{{.Names}}' | grep -E "$CONTAINER_FILTER" || true)
+            if [ -n "$ENV_FILTER" ]; then NAMES=$(echo "$NAMES" | grep -E "$ENV_FILTER" || true); fi
+
+            if [ -z "$NAMES" ]; then
+              echo "Aucun conteneur ne correspond. Conteneurs presents :"
+              docker ps -a --format 'table {{.Names}}\t{{.Status}}'
+              exit 1
+            fi
+
+            # Les logs applicatifs ne doivent pas etre interpretes comme des commandes de workflow.
+            STOP="stop-$RANDOM$RANDOM"
+            for C in $NAMES; do
+              echo "::group::$C ($(docker inspect -f '{{.State.Status}}' "$C"))"
+              echo "::stop-commands::$STOP"
+              docker logs $TAIL_ARGS "$C" 2>&1
+              echo "::$STOP::"
+              echo "::endgroup::"
+            done
