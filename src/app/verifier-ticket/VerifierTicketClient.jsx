@@ -115,7 +115,10 @@ function ItemCard({ item, onReplace }) {
   const [zoom, setZoom] = useState(false);
   const online = item.format_chosen === "EN_LIGNE";
   const canShowQr = item.status === "ISSUED" && !online && !!item.qr_data;
-  const pending = item.pending_replacement;
+  // L'API renvoie un booleen dans le recapitulatif, un objet {status, new_reference} ailleurs.
+  const rawPending = item.pending_replacement;
+  const pending = rawPending === true ? { status: "PENDING" } : rawPending && typeof rawPending === "object" ? rawPending : null;
+  const replacedBy = item.replaced_by_reference;
 
   return (
     <li className={cardClass}>
@@ -133,6 +136,12 @@ function ItemCard({ item, onReplace }) {
         <p className="mt-3 rounded-xl bg-[#ecf5f5] px-4 py-3 text-sm text-[#003c42]">
           {REPLACEMENT_LABELS[pending.status] || "Demande de remplacement en cours"}
           {pending.new_reference ? ` : nouvelle référence ${pending.new_reference}` : ""}
+        </p>
+      )}
+
+      {replacedBy && (
+        <p className="mt-3 rounded-xl bg-[#ecf5f5] px-4 py-3 text-sm text-[#003c42]">
+          Ce ticket a été remplacé par {replacedBy}.
         </p>
       )}
 

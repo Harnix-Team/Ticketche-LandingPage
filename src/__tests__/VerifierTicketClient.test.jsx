@@ -199,4 +199,21 @@ describe("VerifierTicketClient", () => {
     );
     expect(screen.getByText(/Demande acceptée/)).toHaveTextContent("TKEV-2222-2222");
   });
+
+  it("treats a boolean pending_replacement as a pending request", async () => {
+    const user = userEvent.setup();
+    render(<VerifierTicketClient />);
+    await toResult(user, summary([item({ pending_replacement: true, can_request_replacement: false })]));
+    expect(screen.getByText(/Demande de remplacement en attente/i)).toBeInTheDocument();
+  });
+
+  it("shows the reference that replaced a lost ticket", async () => {
+    const user = userEvent.setup();
+    render(<VerifierTicketClient />);
+    await toResult(
+      user,
+      summary([item({ status: "LOST", can_request_replacement: false, replaced_by_reference: "TKBI-2222-2222" })]),
+    );
+    expect(screen.getByText(/remplacé par TKBI-2222-2222/)).toBeInTheDocument();
+  });
 });
