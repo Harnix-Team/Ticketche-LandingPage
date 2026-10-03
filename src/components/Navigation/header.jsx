@@ -40,6 +40,7 @@ export const Header = () => {
     { href: "/establishments", label: "Emplacements", isPage: true },
     { href: "/questionnaires", label: "Sondages", isPage: true },
     { href: "/recrutement", label: "Recrutement", isPage: true },
+    { href: "/verifier-ticket", label: "Vérifier un ticket", isPage: true },
     { href: "/contact", label: "Contact", isPage: true },
   ];
 

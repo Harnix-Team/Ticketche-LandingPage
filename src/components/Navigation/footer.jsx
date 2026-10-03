@@ -26,6 +26,7 @@ export const Footer = () => {
     { label: "Devenir livreur", href: "/recrutement" },
     { label: "Recrutement", href: "/recrutement" },
     { label: "Questionnaires", href: "/questionnaires" },
+    { label: "Vérifier un ticket", href: "/verifier-ticket" },
   ];
 
   const contactLinks = [
