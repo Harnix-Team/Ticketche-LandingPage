@@ -3,6 +3,14 @@ name: Build & push docker image
 on:
   workflow_dispatch:
     inputs:
+      environment:
+        description: "Environnement a construire et deployer"
+        type: choice
+        options:
+          - dev
+          - prod
+          - both
+        default: dev
       deploy:
         description: "Deploy after pushing the image?"
         type: boolean
@@ -11,19 +19,36 @@ on:
 env:
   DOCKER_BUILD_RECORD_UPLOAD: "false"
   DOCKER_BUILD_SUMMARY: "false"
-  APP_URL: https://ticketche.com
-  API_URL: https://api.ticketche.com/api/v2
   DEPLOY_FOLDER: /root/app/ticketche
 
 concurrency:
-  group: build-and-push-docker-image
+  group: build-and-push-docker-image-${{ inputs.environment }}
   cancel-in-progress: true
 
 jobs:
-  build-and-push:
-    name: Build & push frontend image
+  setup-matrix:
+    name: Resolve environments
     runs-on: self-hosted
-    environment: prod
+    outputs:
+      environments: ${{ steps.set.outputs.environments }}
+    steps:
+      - id: set
+        run: |
+          case "${{ inputs.environment }}" in
+            both) echo 'environments=["prod","dev"]' >> "$GITHUB_OUTPUT" ;;
+            prod) echo 'environments=["prod"]' >> "$GITHUB_OUTPUT" ;;
+            *) echo 'environments=["dev"]' >> "$GITHUB_OUTPUT" ;;
+          esac
+
+  build-and-push:
+    name: Build & push frontend image (${{ matrix.env }})
+    runs-on: self-hosted
+    needs: setup-matrix
+    environment: ${{ matrix.env }}
+    strategy:
+      matrix:
+        env: ${{ fromJson(needs.setup-matrix.outputs.environments) }}
+      fail-fast: false
     permissions:
       contents: read
       packages: write
@@ -43,11 +68,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Get app version
+      - name: Resolve environment settings
+        # Les NEXT_PUBLIC_* sont figees au build : une image par environnement.
         run: |
           APP_VERSION=$(jq -r .version package.json)
-          echo "TAG=$APP_VERSION" >> $GITHUB_ENV
-          echo "TAG=$APP_VERSION"
+          if [ "${{ matrix.env }}" = "prod" ]; then
+            echo "TAG=$APP_VERSION" >> $GITHUB_ENV
+            echo "FLOATING_TAG=latest" >> $GITHUB_ENV
+            echo "APP_URL=https://ticketche.com" >> $GITHUB_ENV
+            echo "API_URL=https://api.ticketche.com/api/v2" >> $GITHUB_ENV
+          else
+            echo "TAG=dev-$APP_VERSION" >> $GITHUB_ENV
+            echo "FLOATING_TAG=dev" >> $GITHUB_ENV
+            echo "APP_URL=https://dev.ticketche.com" >> $GITHUB_ENV
+            echo "API_URL=https://dev.api.ticketche.com/api/v2" >> $GITHUB_ENV
+          fi
 
       - name: Create .env file and set client vars only
         run: |
@@ -82,7 +117,7 @@ jobs:
           load: true
           tags: |
             ghcr.io/${{ env.OWNER }}/ticketche-landing-page:${{ env.TAG }}
-            ghcr.io/${{ env.OWNER }}/ticketche-landing-page:latest
+            ghcr.io/${{ env.OWNER }}/ticketche-landing-page:${{ env.FLOATING_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -97,7 +132,7 @@ jobs:
         run: |
           set -e
           docker push ghcr.io/${{ env.OWNER }}/ticketche-landing-page:${{ env.TAG }}
-          docker push ghcr.io/${{ env.OWNER }}/ticketche-landing-page:latest
+          docker push ghcr.io/${{ env.OWNER }}/ticketche-landing-page:${{ env.FLOATING_TAG }}
 
       - name: Summary
         if: always()
@@ -115,16 +150,20 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Tags poussés :**" >> $GITHUB_STEP_SUMMARY
           echo "- \`ghcr.io/${{ env.OWNER }}/ticketche-landing-page:${{ env.TAG }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- \`ghcr.io/${{ env.OWNER }}/ticketche-landing-page:latest\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`ghcr.io/${{ env.OWNER }}/ticketche-landing-page:${{ env.FLOATING_TAG }}\`" >> $GITHUB_STEP_SUMMARY
   
   deploy:
-    name: Deploy on VPS
+    name: Deploy on VPS (${{ matrix.env }})
     runs-on: self-hosted
-    environment: prod
+    environment: ${{ matrix.env }}
     permissions:
       contents: read
-    needs: build-and-push
+    needs: [setup-matrix, build-and-push]
     if: inputs.deploy == true
+    strategy:
+      matrix:
+        env: ${{ fromJson(needs.setup-matrix.outputs.environments) }}
+      fail-fast: false
 
     steps:
       - name: Verify required secrets
@@ -166,13 +205,12 @@ jobs:
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u $OWNER --password-stdin
 
             echo "Pulling latest landing page image..."
-            docker pull ghcr.io/${OWNER}/ticketche-landing-page:latest
-            
+            if [ "${{ matrix.env }}" = "prod" ]; then TAG=latest; else TAG=dev; fi
+            docker pull ghcr.io/${OWNER}/ticketche-landing-page:${TAG}
+
             echo "Restarting landing page container with new image..."
-            for env in prod dev; do
-              cd ${{ env.DEPLOY_FOLDER }}/$env/INFRA
-              docker compose -p ticketche-${env} -f docker-compose.${env}.yml up -d --remove-orphans --force-recreate ticketche-${env}-landing-page
-            done
+            cd ${{ env.DEPLOY_FOLDER }}/${{ matrix.env }}/INFRA
+            docker compose -p ticketche-${{ matrix.env }} -f docker-compose.${{ matrix.env }}.yml up -d --remove-orphans --force-recreate ticketche-${{ matrix.env }}-landing-page
 
       - name: Deployment Summary
         if: always()
@@ -182,8 +220,8 @@ jobs:
           echo "| | |" >> $GITHUB_STEP_SUMMARY
           echo "|---|---|" >> $GITHUB_STEP_SUMMARY
           echo "| Serveur | VPS |" >> $GITHUB_STEP_SUMMARY
-          echo "| Environnements | prod, dev |" >> $GITHUB_STEP_SUMMARY
-          echo "| Image | \`ghcr.io/${{ secrets.REGISTRY_OWNER || github.repository_owner }}/ticketche-landing-page:latest\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Environnement | ${{ matrix.env }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Image | \`ghcr.io/${{ secrets.REGISTRY_OWNER || github.repository_owner }}/ticketche-landing-page:${{ matrix.env == 'prod' && 'latest' || 'dev' }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Branche | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
 
