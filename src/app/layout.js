@@ -7,7 +7,7 @@ import { AppNotificationWrapper } from "@/components/AppNotificationWrapper";
 // import SondagePopup from "@/components/SondagePopup";
 import Providers from "@/app/providers";
 import { SiteStructuredData } from "@/components/StructuredData";
-import { NixiaChatbot } from "@/components/NixiaChatbot";
+import { TawkChatbot } from "@/components/TawkChatbot";
 
 // Audit performance 2026-09-04 (PERF-05) : `preload: false` retardait la
 // decouverte de la police jusqu'apres le CSS, ajoutant un aller-retour reseau et
@@ -138,7 +138,7 @@ export default function RootLayout({ children } ) {
           {children}
           <Footer />
           <AppNotificationWrapper />
-          <NixiaChatbot />
+          <TawkChatbot />
 
           {/* Sondage désactivé temporairement */}
           {/* <SondageBandeau /> */}

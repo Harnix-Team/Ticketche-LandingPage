@@ -1,4 +1,5 @@
-// Widget de chat Nixia : le script est servi par l'API du bot et ajoute lui-meme le bouton de discussion.
-// L'identifiant dans l'URL est public (celui de l'integration), pas un secret.
-export const NIXIA_CHATBOT_SRC =
-  "https://api.bot.nixia.app/api/v2/embed/nUQoX1yG6KW4625EiOI4qZULWfCfT5gx/chatbot.js";
+// Widget de chat Tawk.to : le script ajoute lui-meme le bouton de discussion.
+// Les identifiants de propriete et de widget sont publics (visibles dans le code embarque), pas des secrets.
+export const TAWK_PROPERTY_ID = "684b6b404b5a53190afc5880";
+export const TAWK_WIDGET_ID = "1itj9ltg3";
+export const TAWK_CHATBOT_SRC = `https://embed.tawk.to/${TAWK_PROPERTY_ID}/${TAWK_WIDGET_ID}`;
