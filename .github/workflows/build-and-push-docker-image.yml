@@ -11,6 +11,14 @@ on:
           - prod
           - both
         default: dev
+      chatbot:
+        description: "Widget de chat actif dans l'image (un seul a la fois)"
+        type: choice
+        options:
+          - nixia
+          - tawk
+          - none
+        default: nixia
       deploy:
         description: "Deploy after pushing the image?"
         type: boolean
@@ -90,6 +98,7 @@ jobs:
           sed -i "s|NODE_ENV=.*|NODE_ENV=production|" .env
           sed -i "s|NEXT_PUBLIC_APP_URL=.*|NEXT_PUBLIC_APP_URL=${{ env.APP_URL }}|" .env
           sed -i "s|NEXT_PUBLIC_API_URL=.*|NEXT_PUBLIC_API_URL=${{ env.API_URL }}|" .env
+          sed -i "s|NEXT_PUBLIC_CHATBOT_PROVIDER=.*|NEXT_PUBLIC_CHATBOT_PROVIDER=${{ inputs.chatbot }}|" .env
 
       - name: Set lowercase registry owner
         run: echo "OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
