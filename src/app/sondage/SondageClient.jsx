@@ -1,416 +1,277 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import {
+  ArrowLeft, ArrowRight, Car, ChartColumn, Check, CircleCheck, CreditCard, MessageSquareText,
+  Repeat, Route, Share2, Sparkles, TriangleAlert, User,
+} from "@/components/icons";
 import { useSearchParams } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
-import {
-  ArrowRight, ArrowLeft, CheckCircle, ChartBar, Star,
-  WhatsappLogo, MapPin, User, Car, Path, ArrowsClockwise,
-  Warning, Sparkle, CreditCard, ChatText,
-} from "@phosphor-icons/react";
-import {
-  fetchQuestionnaireBySlug,
-  submitQuestionnaireAnswers,
-} from "@/app/services/questionnairesApi";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { fetchQuestionnaireBySlug, submitQuestionnaireAnswers } from "@/app/services/questionnairesApi";
+import { FormShell, LoadingState, Notice, StatePanel, WRAP_BUTTON } from "@/components/survey/Panels";
+import { QuestionField, hasAnswer, isOtherOption } from "@/components/survey/QuestionField";
+import { StarRating } from "@/components/survey/StarRating";
+import { StepTransition } from "@/components/survey/StepTransition";
+import { SurveyProgress } from "@/components/survey/SurveyProgress";
+import { Button } from "@/components/ui/Button";
+import { Field, Input } from "@/components/ui/Field";
 
 const SURVEY_SLUG = "transport-covoiturage-2026";
 const STORAGE_KEY = "ticketche_sondage_progress_v4";
-const DONE_KEY    = "ticketche_sondage_done";
+const DONE_KEY = "ticketche_sondage_done";
 
-/* ── Icônes par section ───────────────────────────────────────────────────── */
+const SHARE_URL = `https://wa.me/?text=${encodeURIComponent(
+  "Ticketché prépare un service de bus et de covoiturage sur Cotonou ↔ Abomey-Calavi. " +
+    "Donnez votre avis en 3 min : https://ticketche.com/sondage"
+)}`;
+
 const SECTION_ICONS = {
   s1: User,
   s2: Car,
-  s3: Path,
-  s4: ArrowsClockwise,
-  s5: Warning,
-  s6: Sparkle,
+  s3: Route,
+  s4: Repeat,
+  s5: TriangleAlert,
+  s6: Sparkles,
   s7: CreditCard,
-  s8: ChatText,
+  s8: MessageSquareText,
 };
 
-/* ── Écrans ───────────────────────────────────────────────────────────────── */
 const SCREENS = [
-  { id:"s1", label:"Profil",      layout:"2x2",
-    questions:["q1_age","q2_sexe","q3_profession","q4_vehicule"] },
-  { id:"s2", label:"Conducteur",  layout:"2+3",
-    questions:["q5_type_vehicule","q6_places","q7_carburant","q8_passagers","q8b_app"],
-    showIf:{ questionId:"q4_vehicule", values:["oui"] } },
-  { id:"s3", label:"Trajet",      layout:"1+2",
-    questions:["q9_residence","q10_lieu_activite","q11_itineraire"] },
-  { id:"s4", label:"Habitudes",   layout:"3x2",
-    questions:["q12_frequence","q13_transport","q14_depart","q15_retour","q16_duree","q17_cout"] },
-  { id:"s5", label:"Difficultés", layout:"1x2",
-    questions:["q18_difficultes","q19_type_difficultes"] },
-  { id:"s6", label:"TicketChé",   layout:"2x2",
-    questions:["q20_interet","q21_service","q22a_reservation_bus","q22_role","q23_reservation"] },
-  { id:"s7", label:"Paiement",    layout:"3x2",
-    questions:["q24_mobile_money","q25_smartphone","q26_paiement_app","q27_prix","q28_abonnement","q28b_prix_abo"],
-    showIf:{ questionId:"q22_role", values:["passager","les_deux"] } },
-  { id:"s8", label:"Perception",  layout:"2+1",
-    questions:["q29_avantages","q30_obstacles","q31_suggestions"] },
+  { id: "s1", label: "Profil", questions: ["q1_age", "q2_sexe", "q3_profession", "q4_vehicule"] },
+  {
+    id: "s2", label: "Conducteur",
+    questions: ["q5_type_vehicule", "q6_places", "q7_carburant", "q8_passagers", "q8b_app"],
+    showIf: { questionId: "q4_vehicule", values: ["oui"] },
+  },
+  { id: "s3", label: "Trajet", questions: ["q9_residence", "q10_lieu_activite", "q11_itineraire"] },
+  {
+    id: "s4", label: "Habitudes",
+    questions: ["q12_frequence", "q13_transport", "q14_depart", "q15_retour", "q16_duree", "q17_cout"],
+  },
+  { id: "s5", label: "Difficultés", questions: ["q18_difficultes", "q19_type_difficultes"] },
+  {
+    id: "s6", label: "Ticketché",
+    questions: ["q20_interet", "q21_service", "q22a_reservation_bus", "q22_role", "q23_reservation"],
+  },
+  {
+    id: "s7", label: "Paiement",
+    questions: ["q24_mobile_money", "q25_smartphone", "q26_paiement_app", "q27_prix", "q28_abonnement", "q28b_prix_abo"],
+    showIf: { questionId: "q22_role", values: ["passager", "les_deux"] },
+  },
+  { id: "s8", label: "Perception", questions: ["q29_avantages", "q30_obstacles", "q31_suggestions"] },
 ];
 
-/* ── Conditions de visibilité ─────────────────────────────────────────────── */
+/* Conditions de visibilité : la question n'apparaît que si la réponse à `dep` est dans `vals`. */
 const CONDS = {
-  // Section 2 — Conducteurs
-  q5_type_vehicule:     { dep:"q4_vehicule",    vals:["oui"] },
-  q6_places:            { dep:"q4_vehicule",    vals:["oui"] },
-  q7_carburant:         { dep:"q4_vehicule",    vals:["oui"] },
-  q8_passagers:         { dep:"q4_vehicule",    vals:["oui"] },
-  q8b_app:              { dep:"q4_vehicule",    vals:["oui"] },
-  // Section 4 — Q13 et Q17 masquées si conducteur
-  q13_transport:        { dep:"q4_vehicule",    vals:["non"] },
-  q17_cout:             { dep:"q4_vehicule",    vals:["non"] },
-  // Section 5 — Difficultés
-  q19_type_difficultes: { dep:"q18_difficultes",vals:["oui"] },
-  // Section 6 — TicketChé
-  q22a_reservation_bus: { dep:"q21_service",    vals:["bus"] },
-  q22_role:             { dep:"q21_service",    vals:["covoiturage","les_deux"] },
-  q23_reservation:      { dep:"q22_role",       vals:["passager","les_deux"] },
-  // Section 7 — Paiement (passagers uniquement)
-  q24_mobile_money:     { dep:"q22_role",       vals:["passager","les_deux"] },
-  q25_smartphone:       { dep:"q22_role",       vals:["passager","les_deux"] },
-  q26_paiement_app:     { dep:"q22_role",       vals:["passager","les_deux"] },
-  q27_prix:             { dep:"q22_role",       vals:["passager","les_deux"] },
-  q28_abonnement:       { dep:"q22_role",       vals:["passager","les_deux"] },
-  q28b_prix_abo:        { dep:"q28_abonnement", vals:["oui","peut_etre"] },
+  q5_type_vehicule: { dep: "q4_vehicule", vals: ["oui"] },
+  q6_places: { dep: "q4_vehicule", vals: ["oui"] },
+  q7_carburant: { dep: "q4_vehicule", vals: ["oui"] },
+  q8_passagers: { dep: "q4_vehicule", vals: ["oui"] },
+  q8b_app: { dep: "q4_vehicule", vals: ["oui"] },
+  q13_transport: { dep: "q4_vehicule", vals: ["non"] },
+  q17_cout: { dep: "q4_vehicule", vals: ["non"] },
+  q19_type_difficultes: { dep: "q18_difficultes", vals: ["oui"] },
+  q22a_reservation_bus: { dep: "q21_service", vals: ["bus"] },
+  q22_role: { dep: "q21_service", vals: ["covoiturage", "les_deux"] },
+  q23_reservation: { dep: "q22_role", vals: ["passager", "les_deux"] },
+  q24_mobile_money: { dep: "q22_role", vals: ["passager", "les_deux"] },
+  q25_smartphone: { dep: "q22_role", vals: ["passager", "les_deux"] },
+  q26_paiement_app: { dep: "q22_role", vals: ["passager", "les_deux"] },
+  q27_prix: { dep: "q22_role", vals: ["passager", "les_deux"] },
+  q28_abonnement: { dep: "q22_role", vals: ["passager", "les_deux"] },
+  q28b_prix_abo: { dep: "q28_abonnement", vals: ["oui", "peut_etre"] },
 };
+
+const COPY = {
+  textPlaceholder: "Votre réponse…",
+  multiMax: (max) => `Max ${max} choix`,
+  multiAny: "Réponses multiples",
+  reasonPlaceholder: "Votre réponse (optionnel)…",
+  other: { label: "Précisez votre réponse :", placeholder: "Écrivez votre réponse ici…", autoFocus: true },
+};
+
+const STATS = [
+  { value: "51 000", label: "étudiants concernés" },
+  { value: "0", label: "bus organisé aujourd'hui" },
+  { value: "Votre avis", label: "change ça" },
+];
 
 function isVisible(qId, answers) {
   if (!CONDS[qId]) return true;
   const { dep, vals } = CONDS[qId];
-  // Vérifier d'abord que la question parente est elle-même visible (récursif)
+  // Une question dont la question parente est masquée l'est aussi.
   if (!isVisible(dep, answers)) return false;
   const given = answers[dep];
   const arr = Array.isArray(given) ? given : given ? [given] : [];
-  return arr.some(v => vals.includes(v));
+  return arr.some((v) => vals.includes(v));
+}
+
+function getActiveScreens(answers) {
+  return SCREENS.filter((sc) => {
+    if (!sc.showIf) return true;
+    const { questionId, values } = sc.showIf;
+    if (!isVisible(questionId, answers)) return false;
+    const given = answers[questionId];
+    const arr = Array.isArray(given) ? given : given ? [given] : [];
+    return arr.some((v) => values.includes(v));
+  });
+}
+
+// Sur grand écran, la section 6 n'affiche que Q20 tant que la réponse n'est ni « oui » ni « peut-être ».
+function isHeldBack(screen, qId, answers, isMobile) {
+  if (isMobile || screen.id !== "s6" || qId === "q20_interet") return false;
+  const q20 = answers["q20_interet"];
+  return q20 !== "oui" && q20 !== "peut_etre";
 }
 
 function getRequired(screen, answers, questionnaire, isMobile) {
   if (!screen || !questionnaire) return [];
-  return screen.questions.filter(qId => {
+  return screen.questions.filter((qId) => {
     if (!isVisible(qId, answers)) return false;
-    // Desktop S6 : Q21/Q22a/Q22/Q23 ne sont requises que si Q20 = oui/peut_etre
-    if (!isMobile && screen.id === "s6" && qId !== "q20_interet") {
-      const q20 = answers["q20_interet"];
-      if (q20 !== "oui" && q20 !== "peut_etre") return false;
-    }
-    const step = questionnaire.steps.find(s => s.id === qId);
+    if (isHeldBack(screen, qId, answers, isMobile)) return false;
+    const step = questionnaire.steps.find((s) => s.id === qId);
     if (!step || step.optional) return false;
     return true;
   });
 }
 
-/* ── UTM ──────────────────────────────────────────────────────────────────── */
 function resolveSourceTag(s, m) {
-  if (s==="terrain"&&m==="qrcode")  return "qrcode_terrain";
-  if (s==="whatsapp"&&m==="social") return "whatsapp_uac";
-  if (s==="gdiz"&&m==="interne")    return "gdiz_interne";
-  if (s==="site"&&m==="bandeau")    return "bandeau_site";
-  if (s==="site"&&m==="popup")      return "popup_site";
+  if (s === "terrain" && m === "qrcode") return "qrcode_terrain";
+  if (s === "whatsapp" && m === "social") return "whatsapp_uac";
+  if (s === "gdiz" && m === "interne") return "gdiz_interne";
+  if (s === "site" && m === "bandeau") return "bandeau_site";
+  if (s === "site" && m === "popup") return "popup_site";
   return "organic";
 }
+
 function resolveLibreCanal(m) {
-  if (m==="qrcode") return "libre_qrcode";
-  if (m==="social") return "libre_whatsapp";
+  if (m === "qrcode") return "libre_qrcode";
+  if (m === "social") return "libre_whatsapp";
   return "libre_web";
 }
 
-/* ════════════════════════════════════════════════════════
-   QuestionCard — cellule individuelle dans la grille
-   ════════════════════════════════════════════════════════ */
-function QuestionCard({ step, answers, onChange, spanClass, isMobile }) {
-  if (!step) return null;
-  const val = answers[step.id];
-  const Icon = step.icon;
-  /* Sur mobile : toujours en colonne pour respecter min 48px B4 */
-  const isRow = !isMobile && step.options && step.options.length <= 3;
-
-  const isAutreOpt = (id) => id === "autre" || id === "other" || id?.toLowerCase().includes("autre");
-
-  const handleClick = (optId) => {
-    if (step.type === "multi") {
-      const cur = val || [];
-      let next;
-      if (cur.includes(optId)) {
-        // désélectionner
-        next = cur.filter(v => v !== optId);
-      } else if (isAutreOpt(optId)) {
-        // "Autre" sélectionné → effacer tous les autres choix
-        next = [optId];
-      } else {
-        // autre option sélectionnée → retirer "autre" s'il était coché
-        const withoutAutre = cur.filter(v => !isAutreOpt(v));
-        if (step.maxSelect && withoutAutre.length >= step.maxSelect) return;
-        next = [...withoutAutre, optId];
-      }
-      onChange(step.id, next);
-    } else {
-      onChange(step.id, optId);
-    }
-  };
-
-  const autreSelected =
-    step.type === "multi"
-      ? (Array.isArray(val) && val.some(v => isAutreOpt(v)))
-      : (typeof val === "string" && isAutreOpt(val));
-
-  const isAnswered = Array.isArray(val) ? val.length > 0 : !!val;
-
-  return (
-    <div className={`snd-qcard ${isAnswered ? "snd-qcard--answered" : ""} ${spanClass || ""}`}>
-
-      {/* En-tête question */}
-      <div className="snd-qcard__head">
-        {Icon && (
-          <span className="snd-qcard__icon">
-            <Icon size={15} weight="fill" />
-          </span>
-        )}
-        <p className="snd-qcard__label">{step.question}</p>
-        {step.type === "multi" && (
-          <span className="snd-qcard__hint">
-            {step.maxSelect ? `max ${step.maxSelect} choix` : "Réponses multiples"}
-          </span>
-        )}
-      </div>
-
-      {/* Intro TicketChé */}
-      {step.intro && (
-        <div className="snd-qcard__intro">{step.intro}</div>
-      )}
-
-      {/* Corps */}
-      <div className="snd-qcard__body">
-        {step.type === "text" ? (
-          <textarea
-            className="snd-qcard__textarea"
-            placeholder={step.placeholder || "Votre réponse…"}
-            value={val || ""}
-            onChange={e => onChange(step.id, e.target.value)}
-            rows={3}
-          />
-        ) : (
-          <>
-            <div className={`snd-opts ${isRow ? "snd-opts--row" : ""}`}>
-              {step.options?.map(opt => {
-                const Ic = opt.icon;
-                const selected = Array.isArray(val) ? val.includes(opt.id) : val === opt.id;
-                return (
-                  <button
-                    key={opt.id}
-                    onClick={() => handleClick(opt.id)}
-                    className={`snd-opt ${selected ? "snd-opt--on" : ""}`}
-                  >
-                    {Ic && <Ic size={13} weight="fill" className="snd-opt__ic" />}
-                    <span className="snd-opt__lbl">
-                      {opt.label}
-                      {opt.desc && <span className="snd-opt__desc">{opt.desc}</span>}
-                    </span>
-                    {selected && <CheckCircle size={12} weight="fill" className="snd-opt__chk" />}
-                  </button>
-                );
-              })}
-            </div>
-            {autreSelected && (
-              <div className="snd-autre-wrap">
-                <label className="snd-autre-label">Précisez votre réponse :</label>
-                <textarea
-                  className="snd-qcard__textarea snd-qcard__textarea--sm"
-                  placeholder="Écrivez votre réponse ici…"
-                  value={answers[`${step.id}_autre`] || ""}
-                  onChange={e => onChange(`${step.id}_autre`, e.target.value)}
-                  rows={2}
-                  autoFocus
-                />
-              </div>
-            )}
-          </>
-        )}
-      </div>
-
-      {/* Champ "Pourquoi ?" conditionnel */}
-      {step.endIfLabel && step.endIf?.values?.includes(val) && (
-        <textarea
-          className="snd-qcard__textarea snd-qcard__textarea--sm"
-          placeholder="Pourquoi ? (optionnel)"
-          value={answers[`${step.id}_reason`] || ""}
-          onChange={e => onChange(`${step.id}_reason`, e.target.value)}
-          rows={2}
-        />
-      )}
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════
-   ScreenGrid — grille adaptative par layout
-   ════════════════════════════════════════════════════════ */
-function ScreenGrid({ screen, visibleQIds, questionnaire, answers, onChange, isMobile }) {
-  /* Sur mobile : toujours 1 colonne, quel que soit le layout */
-  const gridClass = isMobile
-    ? "snd-grid snd-grid--1col"
-    : ({
-        "2x2":  "snd-grid snd-grid--2x2",
-        "3x2":  "snd-grid snd-grid--3x2",
-        "1x2":  "snd-grid snd-grid--1col",
-        "2+3":  "snd-grid snd-grid--6col",
-        "2+1":  "snd-grid snd-grid--2col",
-        "1+2":  "snd-grid snd-grid--2col",
-      }[screen.layout] || "snd-grid snd-grid--1col");
-
-  /* spanClass inutile sur mobile (grille 1col) */
-  function spanClass(idx) {
-    if (isMobile) return "";
-    if (screen.layout === "2+3") return idx < 2 ? "snd-span3" : "snd-span2";
-    if (screen.layout === "2+1") return idx >= 2 ? "snd-spanfull" : "";
-    if (screen.layout === "1+2") return idx === 0 ? "snd-spanfull" : "";
-    if (screen.layout === "1x2") return "snd-spanfull";
-    return "";
-  }
-
-  return (
-    <div className={gridClass}>
-      <AnimatePresence initial={false}>
-        {visibleQIds.map((qId, idx) => {
-          const step = questionnaire.steps.find(s => s.id === qId);
-          if (!step) return null;
-          return (
-            <motion.div
-              key={qId}
-              className={spanClass(idx)}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.28, delay: idx > 0 ? (idx - 1) * 0.06 : 0, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <QuestionCard
-                key={qId}
-                step={step}
-                answers={answers}
-                onChange={onChange}
-                spanClass=""
-                isMobile={isMobile}
-              />
-            </motion.div>
-          );
-        })}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════
-   SuccessScreen
-   ════════════════════════════════════════════════════════ */
 function SuccessScreen() {
   const [rating, setRating] = useState(0);
+
   return (
-    <motion.div
-      className="snd-success"
-      initial={{ opacity:0, y:20 }}
-      animate={{ opacity:1, y:0 }}
-      transition={{ duration:0.45 }}
-    >
-      <div className="snd-success__ring">
-        <CheckCircle size={44} weight="fill" />
+    <StatePanel icon={CircleCheck} title="Merci ! Vos réponses ont été enregistrées.">
+      <div className="w-full">
+        <StarRating
+          legend="Comment évaluez-vous ce questionnaire ?"
+          legendClassName="tk-label mb-2 w-full text-center text-[0.9375rem] text-ink"
+          value={rating}
+          onChange={setRating}
+        />
+        <p aria-live="polite" className="tk-label mt-1 min-h-6 text-[0.875rem] text-brand">
+          {rating > 0 && "Merci pour votre note !"}
+        </p>
       </div>
-      <h2 className="snd-success__title">Merci ! Vos réponses ont été enregistrées.</h2>
 
-      <p className="snd-success__stars-lbl">Comment évaluez-vous ce questionnaire ?</p>
-      <div className="snd-success__stars">
-        {[1,2,3,4,5].map(n => (
-          <button key={n} className="snd-star-btn" onClick={() => setRating(n)}>
-            <Star
-              size={28}
-              weight={n <= rating ? "fill" : "regular"}
-              className={n <= rating ? "text-[#005f69]" : "text-[#c4d9db]"}
-            />
-          </button>
-        ))}
-      </div>
-      {rating > 0 && <p className="snd-success__rated">Merci ✦</p>}
-
-      <motion.div
-        animate={{ scale: [1, 1.04, 1] }}
-        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-        style={{ width: "100%", display: "flex", justifyContent: "center" }}
-      >
-        <Link href="/download" className="snd-hero-cta">
-          <div className="snd-hero-cta__ring" />
-          <span style={{ flex: 1, textAlign: "center", paddingRight: "clamp(8px,1.5vw,12px)" }}>
-            Téléchargez Ticketché
-          </span>
-          <div className="snd-hero-cta__circle">
-            <ArrowRight weight="bold" className="snd-hero-cta__arrow" style={{ width: 22, height: 22 }} />
-          </div>
-        </Link>
-      </motion.div>
-
-      <a
-        href={`https://wa.me/?text=${encodeURIComponent(
-          "TicketChé prépare un service de bus et de covoiturage sur Cotonou ↔ Abomey-Calavi. " +
-          "Donnez votre avis en 3 min : https://ticketche.com/sondage"
-        )}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="snd-wa-btn"
-        style={{ marginTop: 12 }}
-      >
-        <WhatsappLogo size={20} weight="fill" />
+      <Button href="/download" variant="gold" size="lg" className="w-full">
+        Téléchargez Ticketché
+        <ArrowRight className="size-5" aria-hidden />
+      </Button>
+      <Button href={SHARE_URL} variant="outline" className={`w-full ${WRAP_BUTTON}`}>
+        <Share2 className="size-4 shrink-0" aria-hidden />
         Partagez ce sondage à vos proches
-      </a>
-    </motion.div>
+      </Button>
+    </StatePanel>
   );
 }
 
-/* ════════════════════════════════════════════════════════
-   PAGE PRINCIPALE
-   ════════════════════════════════════════════════════════ */
-export default function SondagePage() {
-  const searchParams = useSearchParams();
-  const utmSource   = searchParams.get("utm_source")   || "organic";
-  const utmMedium   = searchParams.get("utm_medium")   || null;
-  const utmCampaign = searchParams.get("utm_campaign") || null;
-  const sourceTag   = resolveSourceTag(utmSource, utmMedium);
-  const libreCanal  = resolveLibreCanal(utmMedium);
+function ResumeCard({ screens, currentIdx, onResume, onRestart }) {
+  return (
+    <section className="rounded-panel border border-line bg-surface p-5 sm:p-7">
+      <div className="flex items-start gap-3.5">
+        <span className="grid size-11 shrink-0 place-items-center rounded-media bg-brand-soft text-brand">
+          <ChartColumn className="size-5" aria-hidden />
+        </span>
+        <div className="min-w-0">
+          <h1 className="tk-title text-[1.375rem]">Sondage en cours</h1>
+          <p className="mt-0.5 text-[0.9375rem] text-ink-2">
+            Vous vous étiez arrêté(e) ici : <span className="tk-label text-ink">{screens[currentIdx]?.label || "En cours"}</span>
+          </p>
+        </div>
+      </div>
 
-  /* Auto-démarrage si l'utilisateur vient du bandeau ou du popup */
+      <SurveyProgress
+        className="mt-5"
+        segments={screens.map((sc, i) => ({ id: sc.id, fill: i < currentIdx ? 100 : 0, current: i === currentIdx }))}
+        label={`Progression : ${currentIdx} / ${screens.length} sections`}
+      />
+
+      <ol className="mt-4 flex flex-wrap gap-2">
+        {screens.map((sc, i) => {
+          const done = i < currentIdx;
+          const current = i === currentIdx;
+          const Icon = done ? Check : SECTION_ICONS[sc.id];
+          const state = done
+            ? "border-transparent bg-brand-soft text-brand"
+            : current
+              ? "border-brand bg-surface text-ink"
+              : "border-transparent bg-sunken text-ink-2";
+
+          return (
+            <li
+              key={sc.id}
+              aria-current={current ? "step" : undefined}
+              className={`tk-label flex items-center gap-1.5 rounded-full border px-3 py-1 text-[0.8125rem] ${state}`}
+            >
+              {Icon && <Icon className="size-3.5" aria-hidden />}
+              {sc.label}
+              {done && <span className="sr-only"> (terminée)</span>}
+            </li>
+          );
+        })}
+      </ol>
+
+      <div className="mt-6 flex flex-col gap-2">
+        <Button onClick={onResume} className="w-full">
+          Reprendre le sondage
+          <ArrowRight className="size-4" aria-hidden />
+        </Button>
+        <Button variant="ghost" onClick={onRestart} className={`w-full ${WRAP_BUTTON}`}>
+          Recommencer depuis le début
+        </Button>
+      </div>
+    </section>
+  );
+}
+
+export default function SondageClient() {
+  const searchParams = useSearchParams();
+  const utmSource = searchParams.get("utm_source") || "organic";
+  const utmMedium = searchParams.get("utm_medium") || null;
+  const utmCampaign = searchParams.get("utm_campaign") || null;
+  const sourceTag = resolveSourceTag(utmSource, utmMedium);
+  const libreCanal = resolveLibreCanal(utmMedium);
+
+  // Depuis le bandeau ou la fenêtre du site, le sondage démarre sans passer par la page d'accueil.
   const autoStart = utmMedium === "bandeau" || utmMedium === "popup";
 
-  const [questionnaire, setQuestionnaire]       = useState(null);
-  const [loading, setLoading]                   = useState(true);
+  const [questionnaire, setQuestionnaire] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [currentScreenIdx, setCurrentScreenIdx] = useState(0);
-  const [answers, setAnswers]                   = useState({});
-  const [submitted, setSubmitted]               = useState(false);
-  const [showForm, setShowForm]                 = useState(false);
+  const [answers, setAnswers] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [hasSavedProgress, setHasSavedProgress] = useState(false);
-  const [commune, setCommune]                   = useState("");
-  const [submitError, setSubmitError]           = useState(false);
-  const [submitting, setSubmitting]             = useState(false);
-  /* B4 — mobile wizard : une question à la fois */
-  const [isMobile, setIsMobile]                 = useState(false);
-  const [mobileSubIdx, setMobileSubIdx]         = useState(0);
+  const [commune, setCommune] = useState("");
+  const [submitError, setSubmitError] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  // Sur téléphone, une seule question à la fois.
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileSubIdx, setMobileSubIdx] = useState(0);
 
-  /* Refs pour éviter les closures stalées dans setTimeout */
-  const mobileSubIdxRef     = useRef(0);
+  // Le minuteur d'avancement automatique lit ces valeurs après coup : il lui faut les plus récentes.
+  const mobileSubIdxRef = useRef(0);
   const currentScreenIdxRef = useRef(0);
-  const answersRef          = useRef({});
-  const autoAdvanceTimer    = useRef(null);
+  const answersRef = useRef({});
+  const autoAdvanceTimer = useRef(null);
 
-  /* Ref sur la zone formulaire pour le scroll ciblé (évite de scroller le hero) */
   const formZoneRef = useRef(null);
 
   const scrollToForm = useCallback(() => {
-    if (formZoneRef.current) {
-      const headerH = document.querySelector(".hdrContainer")?.offsetHeight || 72;
-      const top = formZoneRef.current.getBoundingClientRect().top + window.scrollY - headerH - 8;
-      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    formZoneRef.current?.scrollIntoView({ block: "start" });
   }, []);
 
   useEffect(() => {
@@ -419,7 +280,6 @@ export default function SondagePage() {
       .finally(() => setLoading(false));
   }, []);
 
-  /* Détection mobile — B4 */
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
@@ -427,19 +287,25 @@ export default function SondagePage() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  /* Clamp mobileSubIdx si visibleQIds rétrécit suite à un changement de réponse */
+  const activeScreens = questionnaire ? getActiveScreens(answers) : [];
+  const currentScreen = activeScreens[currentScreenIdx];
+
+  const visibleQIds = currentScreen && questionnaire
+    ? currentScreen.questions.filter((qId) => isVisible(qId, answers) && !isHeldBack(currentScreen, qId, answers, isMobile))
+    : [];
+
+  // La liste des questions visibles peut raccourcir quand une réponse change.
   useEffect(() => {
     if (!isMobile) return;
-    setMobileSubIdx(prev => {
+    setMobileSubIdx((prev) => {
       const max = Math.max(0, visibleQIds.length - 1);
       const next = prev > max ? max : prev;
       mobileSubIdxRef.current = next;
       return next;
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentScreenIdx, answers, isMobile]);
 
-  /* Sync refs avec les états */
   useEffect(() => { mobileSubIdxRef.current = mobileSubIdx; }, [mobileSubIdx]);
   useEffect(() => { currentScreenIdxRef.current = currentScreenIdx; }, [currentScreenIdx]);
   useEffect(() => { answersRef.current = answers; }, [answers]);
@@ -462,11 +328,9 @@ export default function SondagePage() {
       }
     } catch (_) {}
 
-    /* Venant du bandeau ou popup :
-       - si pas de progrès sauvegardé → démarrer directement
-       - si progrès sauvegardé → afficher les boutons reprendre/recommencer (ne pas setShowForm) */
+    // Avec une progression enregistrée, on propose de reprendre ou de recommencer au lieu de démarrer d'office.
     if (autoStart && !hasSaved) setShowForm(true);
-  }, [questionnaire]);
+  }, [questionnaire, autoStart]);
 
   const saveProgress = useCallback((ans, idx, com, subIdx = 0) => {
     try {
@@ -480,124 +344,62 @@ export default function SondagePage() {
     try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
   }, []);
 
-  /* Écrans actifs (filtrés par showIf) */
-  const activeScreens = questionnaire
-    ? SCREENS.filter(sc => {
-        if (!sc.showIf) return true;
-        const { questionId, values } = sc.showIf;
-        // Utiliser isVisible pour gérer les conditions chaînées
-        if (!isVisible(questionId, answers)) return false;
-        const given = answers[questionId];
-        const arr = Array.isArray(given) ? given : given ? [given] : [];
-        return arr.some(v => values.includes(v));
-      })
-    : [];
+  const shownQIds = isMobile ? [visibleQIds[mobileSubIdx]].filter(Boolean) : visibleQIds;
 
-  const currentScreen = activeScreens[currentScreenIdx];
-
-  /* Sur desktop, S6 : afficher Q20 seule jusqu'à ce que l'utilisateur réponde oui/peut_etre.
-     Dès que Q20 est répondu (oui/peut_etre), les autres questions apparaissent.
-     Sur mobile, on garde le wizard question par question — pas de filtre spécial. */
-  const visibleQIds = currentScreen && questionnaire
-    ? currentScreen.questions.filter(qId => {
-        if (!isVisible(qId, answers)) return false;
-        // Desktop uniquement : sur S6, masquer Q21/Q22a/Q22/Q23 tant que Q20 n'est pas oui/peut_etre
-        if (!isMobile && currentScreen.id === "s6" && qId !== "q20_interet") {
-          const q20 = answers["q20_interet"];
-          if (q20 !== "oui" && q20 !== "peut_etre") return false;
-        }
-        return true;
-      })
-    : [];
-
-  /* B4 — sur mobile : la question courante dans la section */
-  const mobileVisibleQIds = isMobile ? [visibleQIds[mobileSubIdx]].filter(Boolean) : visibleQIds;
-  const currentMobileQId  = isMobile ? visibleQIds[mobileSubIdx] : null;
-
-  /* Calcul question globale pour le label "Question X sur N" — B4 */
-  const totalVisibleQuestions = activeScreens.reduce((acc, sc) => {
-    const visible = sc.questions.filter(qId => isVisible(qId, answers));
-    return acc + visible.length;
-  }, 0);
-  const questionsBeforeScreen = activeScreens.slice(0, currentScreenIdx).reduce((acc, sc) => {
-    return acc + sc.questions.filter(qId => isVisible(qId, answers)).length;
-  }, 0);
-  const currentQuestionNum = questionsBeforeScreen + (isMobile ? mobileSubIdx + 1 : visibleQIds.length ? 1 : 0);
+  const mobileStep = isMobile && questionnaire
+    ? questionnaire.steps.find((s) => s.id === visibleQIds[mobileSubIdx])
+    : null;
+  const mobileValue = mobileStep ? answers[mobileStep.id] : null;
 
   const canProceed = currentScreen && questionnaire
     ? (isMobile
-        /* mobile : juste la question courante */
-        ? (() => {
-            const qId = visibleQIds[mobileSubIdx];
-            if (!qId) return true;
-            const step = questionnaire.steps.find(s => s.id === qId);
-            if (!step || step.optional) return true;
-            if (step.type === "text") return !!(answers[qId] || "").trim();
-            if (step.type === "multi") return (answers[qId] || []).length > 0;
-            return !!answers[qId];
-          })()
-        /* desktop : toutes les questions requises de la section */
-        : getRequired(currentScreen, answers, questionnaire, isMobile).every(qId => {
-            const step = questionnaire.steps.find(s => s.id === qId);
-            if (!step) return true;
-            if (step.type === "text") return !!(answers[qId] || "").trim();
-            if (step.type === "multi") return (answers[qId] || []).length > 0;
-            return !!answers[qId];
+        ? !mobileStep || mobileStep.optional || hasAnswer(mobileStep, answers)
+        : getRequired(currentScreen, answers, questionnaire, isMobile).every((qId) => {
+            const step = questionnaire.steps.find((s) => s.id === qId);
+            return !step || hasAnswer(step, answers);
           }))
     : false;
 
+  // Une réponse qui met fin au sondage (ex. Q20 = « non ») transforme le bouton en envoi.
+  const endsSurvey = isMobile
+    ? !!mobileStep?.endIf?.values?.includes(mobileValue)
+    : visibleQIds.some((qId) => questionnaire?.steps.find((s) => s.id === qId)?.endIf?.values?.includes(answers[qId]));
+
   const handleChange = useCallback((qId, value) => {
-    setAnswers(prev => {
+    setAnswers((prev) => {
       const updated = { ...prev, [qId]: value };
       answersRef.current = updated;
       saveProgress(updated, currentScreenIdxRef.current, commune, mobileSubIdxRef.current);
       return updated;
     });
 
-    /* ── Auto-avancement mobile pour les choix uniques ── */
+    /* Avancement automatique sur téléphone, pour les choix uniques seulement. */
     if (!isMobile) return;
-    // Annuler tout timer en cours
     if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
-    // Seulement les vraies questions (pas _autre, pas _reason)
     if (qId.endsWith("_autre") || qId.endsWith("_reason")) return;
-    // Trouver le step correspondant
-    const step = questionnaire?.steps.find(s => s.id === qId);
+    const step = questionnaire?.steps.find((s) => s.id === qId);
     if (!step) return;
-    // Seulement pour les choix uniques (pas multi, pas text)
     if (step.type === "multi" || step.type === "text") return;
-    // Ne pas auto-avancer si l'option "autre" est sélectionnée
-    const isAutre = typeof value === "string" && value?.toLowerCase().includes("autre");
-    if (isAutre) return;
-    // Ne pas auto-avancer si endIf est déclenché (ex: Q20="non" → afficher "Pourquoi ?")
+    if (typeof value === "string" && isOtherOption(value)) return;
     if (step.endIf?.values?.includes(value)) return;
 
-    // Déclencher l'avancement après un court délai (pour voir la sélection)
-    // On utilise les refs pour avoir les valeurs ACTUELLES et éviter les closures stalées
+    // Court délai : le temps de voir sa sélection avant de passer à la suite.
     autoAdvanceTimer.current = setTimeout(() => {
-      const subIdx    = mobileSubIdxRef.current;
-      const scrIdx    = currentScreenIdxRef.current;
+      const subIdx = mobileSubIdxRef.current;
+      const scrIdx = currentScreenIdxRef.current;
       const currAnswers = { ...answersRef.current, [qId]: value };
-      const activeScrs  = SCREENS.filter(sc => {
-        if (!sc.showIf) return true;
-        const { questionId, values } = sc.showIf;
-        // Utiliser isVisible pour gérer les conditions chaînées
-        if (!isVisible(questionId, currAnswers)) return false;
-        const given = currAnswers[questionId];
-        const arr = Array.isArray(given) ? given : given ? [given] : [];
-        return arr.some(v => values.includes(v));
-      });
+      const activeScrs = getActiveScreens(currAnswers);
       const screen = activeScrs[scrIdx];
       if (!screen) return;
-      const currentVisibleQIds = screen.questions.filter(q => isVisible(q, currAnswers));
+      const currentVisibleQIds = screen.questions.filter((q) => isVisible(q, currAnswers));
 
       if (subIdx < currentVisibleQIds.length - 1) {
-        // Question suivante dans la même section
         const next = subIdx + 1;
         mobileSubIdxRef.current = next;
         setMobileSubIdx(next);
         scrollToForm();
       } else {
-        // Fin de section → section suivante
+        // À la dernière section, pas d'envoi automatique : c'est à la personne de valider.
         const nextScrIdx = scrIdx + 1;
         if (nextScrIdx < activeScrs.length) {
           mobileSubIdxRef.current = 0;
@@ -607,91 +409,21 @@ export default function SondagePage() {
           saveProgress(currAnswers, nextScrIdx, commune, 0);
           scrollToForm();
         }
-        // Si dernière section → pas de soumission auto, l'user clique "Envoyer"
       }
     }, 380);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile, questionnaire, commune, saveProgress, scrollToForm]);
-
-  const handleNext = () => {
-    /* ── endIf : si la question courante déclenche une fin anticipée → soumettre ── */
-    // Mobile : vérifier la question affichée
-    const endIfQId = isMobile ? visibleQIds[mobileSubIdx] : null;
-    const endIfStep = endIfQId && questionnaire
-      ? questionnaire.steps.find(s => s.id === endIfQId)
-      : null;
-    const mobileEndIf = !!endIfStep?.endIf?.values?.includes(answers[endIfQId]);
-
-    // Desktop : vérifier toutes les questions visibles de la section courante
-    const desktopEndIf = !isMobile && questionnaire && currentScreen
-      ? visibleQIds.some(qId => {
-          const step = questionnaire.steps.find(s => s.id === qId);
-          return step?.endIf?.values?.includes(answers[qId]);
-        })
-      : false;
-
-    if (mobileEndIf || desktopEndIf) {
-      handleSubmit();
-      return;
-    }
-
-    /* ── Fix B4 : mobile wizard — avancer question par question ── */
-    if (isMobile && mobileSubIdx < visibleQIds.length - 1) {
-      const next = mobileSubIdx + 1;
-      setMobileSubIdx(next);
-      scrollToForm();
-      return;
-    }
-
-    /* ── Avancer à la section suivante (desktop ou fin de section mobile) ── */
-    setMobileSubIdx(0);
-    if (currentScreenIdx < activeScreens.length - 1) {
-      const next = currentScreenIdx + 1;
-      setCurrentScreenIdx(next);
-      saveProgress(answers, next, commune, 0);
-      scrollToForm();
-    } else {
-      handleSubmit();
-    }
-  };
-
-  const handleBack = () => {
-    /* ── Fix B4 : mobile wizard — reculer question par question ── */
-    if (isMobile && mobileSubIdx > 0) {
-      setMobileSubIdx(mobileSubIdx - 1);
-      scrollToForm();
-      return;
-    }
-
-    if (currentScreenIdx > 0) {
-      const prev = currentScreenIdx - 1;
-      /* sur mobile, aller à la dernière question de la section précédente */
-      if (isMobile && questionnaire) {
-        const prevScreen = activeScreens[prev];
-        const prevVisible = prevScreen.questions.filter(qId => isVisible(qId, answers));
-        setMobileSubIdx(Math.max(0, prevVisible.length - 1));
-      } else {
-        setMobileSubIdx(0);
-      }
-      setCurrentScreenIdx(prev);
-      saveProgress(answers, prev, commune, isMobile ? Math.max(0, activeScreens[prev]?.questions.filter(q => isVisible(q, answers)).length - 1) : 0);
-      scrollToForm();
-    }
-  };
 
   const handleSubmit = async () => {
     setSubmitError(false);
     setSubmitting(true);
 
-    // ── Construire cleanAnswers : uniquement les questions visibles + leurs champs _autre/_reason ──
+    // On n'envoie que les réponses des questions encore visibles, avec leurs champs _autre et _reason :
+    // une réponse devenue orpheline après un changement de Q4 ne doit pas partir.
     const allAnswers = { ...answers };
-
-    // Garder uniquement les réponses des questions actuellement visibles
-    // (évite d'envoyer des réponses orphelines si l'utilisateur a changé Q4 en cours de route)
     const visibleIds = new Set(
       questionnaire.steps
-        .filter(step => isVisible(step.id, allAnswers))
-        .map(step => step.id)
+        .filter((step) => isVisible(step.id, allAnswers))
+        .map((step) => step.id)
     );
     const cleanAnswers = Object.fromEntries(
       Object.entries(allAnswers).filter(([key]) => {
@@ -703,20 +435,17 @@ export default function SondagePage() {
       })
     );
 
-    // ── Normalisation avant envoi ──────────────────────────────────────────
-    // 1. Q22a (bus uniquement) → mapper sur q23_reservation pour le backend
+    // Le backend attend la réservation du parcours « bus » dans q23_reservation.
     if (cleanAnswers.q22a_reservation_bus && !cleanAnswers.q23_reservation) {
       cleanAnswers.q23_reservation = cleanAnswers.q22a_reservation_bus;
     }
     delete cleanAnswers.q22a_reservation_bus;
 
-    // 2. Q17 — conserver "gt1000" comme valeur envoyée au backend
+    // Le backend attend « gt1000 » pour la dernière tranche de Q17.
     if (cleanAnswers.q17_cout === "autre_cout") {
       cleanAnswers.q17_cout = "gt1000";
     }
-    // ──────────────────────────────────────────────────────────────────────
 
-    // metadata = champs doc B1 au même niveau que answers
     const metadata = {
       mode: "libre",
       mode_canal: libreCanal,
@@ -741,410 +470,238 @@ export default function SondagePage() {
     }
   };
 
-  const shareText = encodeURIComponent(
-    "TicketChé prépare un service de bus et de covoiturage sur Cotonou ↔ Abomey-Calavi. " +
-    "Donnez votre avis en 3 min : https://ticketche.com/sondage"
-  );
+  const handleNext = () => {
+    if (endsSurvey) {
+      handleSubmit();
+      return;
+    }
 
-  /* ── Loading ── */
-  if (loading) return (
-    <div className="snd-loading">
-      <div className="snd-loading__spinner" />
-      <p>Chargement du sondage…</p>
-    </div>
-  );
+    if (isMobile && mobileSubIdx < visibleQIds.length - 1) {
+      setMobileSubIdx(mobileSubIdx + 1);
+      scrollToForm();
+      return;
+    }
 
-  /* ── HERO — formulaire intégré directement, pas de redirection ── */
+    setMobileSubIdx(0);
+    if (currentScreenIdx < activeScreens.length - 1) {
+      const next = currentScreenIdx + 1;
+      setCurrentScreenIdx(next);
+      saveProgress(answers, next, commune, 0);
+      scrollToForm();
+    } else {
+      handleSubmit();
+    }
+  };
+
+  const handleBack = () => {
+    if (isMobile && mobileSubIdx > 0) {
+      setMobileSubIdx(mobileSubIdx - 1);
+      scrollToForm();
+      return;
+    }
+
+    if (currentScreenIdx > 0) {
+      const prev = currentScreenIdx - 1;
+      // Sur téléphone, on revient à la dernière question de la section précédente.
+      const prevSubIdx = isMobile
+        ? Math.max(0, activeScreens[prev].questions.filter((qId) => isVisible(qId, answers)).length - 1)
+        : 0;
+      setMobileSubIdx(prevSubIdx);
+      setCurrentScreenIdx(prev);
+      saveProgress(answers, prev, commune, prevSubIdx);
+      scrollToForm();
+    }
+  };
+
+  const handleRestart = () => {
+    clearProgress();
+    setAnswers({});
+    setCurrentScreenIdx(0);
+    setHasSavedProgress(false);
+    setShowForm(true);
+  };
+
+  if (loading) return <LoadingState label="Chargement du sondage…" />;
+
+  if (submitted) {
+    return (
+      <FormShell>
+        <div ref={formZoneRef} className="scroll-mt-20">
+          <SuccessScreen />
+        </div>
+      </FormShell>
+    );
+  }
+
+  const showHero = !autoStart && !showForm;
+  const showResume = autoStart && hasSavedProgress && !showForm;
+  const showStart = (!autoStart || !hasSavedProgress) && !showForm;
   const SectionIcon = currentScreen ? SECTION_ICONS[currentScreen.id] : null;
 
+  // Sur téléphone, un choix unique fait avancer tout seul : le bouton « suivant » n'a alors pas lieu d'être.
+  const mobileOtherSelected = mobileStep && (
+    mobileStep.type === "multi"
+      ? Array.isArray(mobileValue) && mobileValue.some(isOtherOption)
+      : typeof mobileValue === "string" && isOtherOption(mobileValue)
+  );
+  const isAutoAdvance = isMobile
+    && mobileStep
+    && mobileStep.type !== "multi"
+    && mobileStep.type !== "text"
+    && !mobileOtherSelected
+    && !mobileStep.endIf?.values?.includes(mobileValue)
+    && mobileSubIdx < visibleQIds.length - 1;
+
+  const nextLabel = submitting
+    ? "Envoi en cours…"
+    : endsSurvey
+      ? "Terminer le sondage"
+      : isMobile && mobileSubIdx < visibleQIds.length - 1
+        ? "Question suivante"
+        : currentScreenIdx === activeScreens.length - 1
+          ? "Envoyer mes réponses"
+          : "Section suivante";
+
+  const segments = activeScreens.map((sc, i) => {
+    let fill = 0;
+    if (i < currentScreenIdx) {
+      fill = 100;
+    } else if (i === currentScreenIdx) {
+      if (isMobile) {
+        fill = visibleQIds.length > 0 ? Math.round(((mobileSubIdx + 1) / visibleQIds.length) * 100) : 0;
+      } else {
+        const required = getRequired(currentScreen, answers, questionnaire, isMobile);
+        const answered = required.filter((qId) => {
+          const step = questionnaire.steps.find((s) => s.id === qId);
+          return !!step && hasAnswer(step, answers);
+        }).length;
+        fill = required.length > 0 ? Math.round((answered / required.length) * 100) : 0;
+      }
+    }
+    return { id: sc.id, fill };
+  });
+
   return (
-    <div className={`snd-page${!autoStart && !showForm && !submitted ? " snd-page--hero" : ""}`}>
+    <FormShell>
+      {showHero && (
+        <header className="mb-6">
+          <h1 className="tk-display text-[clamp(2rem,9vw,3.25rem)]">
+            Vos déplacements quotidiens méritent mieux. <span className="whitespace-nowrap">Dites-nous</span> comment.
+          </h1>
+          <p className="mt-4 text-[1.0625rem] text-ink-2">
+            Ticketché prépare un service de bus et de covoiturage sur Cotonou ↔ Abomey-Calavi. Votre avis compte :
+            anonyme, gratuit.
+          </p>
+          <p className="tk-label mt-3 flex items-center gap-1.5 text-[0.875rem] text-brand">
+            <ChartColumn className="size-4" aria-hidden />
+            Sondage anonyme, 3 min
+          </p>
 
-      {/* ════════ HERO (masqué si venant du bandeau/popup, ou dès que le formulaire est actif) ════════ */}
-      {!autoStart && !showForm && !submitted && (
-      <section className="snd-hero">
-        <div className="snd-hero__inner">
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
-            {/* Badge */}
-            <div className="snd-hero__badge">
-              <ChartBar size={12} weight="fill" />
-              Sondage anonyme · 3 min
-            </div>
+          <ul className="mt-6 grid gap-2 xs:grid-cols-3">
+            {STATS.map(({ value, label }) => (
+              <li key={label} className="rounded-card border border-line bg-surface px-4 py-3 text-[0.8125rem] text-ink-2">
+                <span className="tk-title block text-xl text-brand">{value}</span>
+                {label}
+              </li>
+            ))}
+          </ul>
 
-            {/* Accroche — masquée dès que le formulaire est actif */}
-            {!showForm && !submitted && (
-              <>
-                <h1 className="snd-hero__title">
-                  Vos déplacements quotidiens méritent mieux.<br />
-                  Dites-nous comment.
-                </h1>
-                <p className="snd-hero__sub">
-                  TicketChé prépare un service de bus et de covoiturage sur
-                  Cotonou ↔ Abomey-Calavi. Votre avis compte — anonyme, gratuit.
-                </p>
-              </>
+          <Field label="Votre commune (optionnel)" className="mt-6">
+            {(props) => (
+              <Input
+                {...props}
+                type="text"
+                autoComplete="address-level2"
+                value={commune}
+                onChange={(e) => setCommune(e.target.value)}
+                maxLength={80}
+              />
             )}
-
-            {/* 3 chiffres clés */}
-            <div className="snd-stats">
-              <div className="snd-stat">
-                <span className="snd-stat__val">51 000</span>
-                <span className="snd-stat__lbl">étudiants concernés</span>
-              </div>
-              <div className="snd-stat">
-                <span className="snd-stat__val">0</span>
-                <span className="snd-stat__lbl">bus organisé aujourd&apos;hui</span>
-              </div>
-              <div className="snd-stat">
-                <span className="snd-stat__val">Votre avis</span>
-                <span className="snd-stat__lbl">change ça</span>
-              </div>
-            </div>
-
-            {/* Commune (optionnel) */}
-            {!showForm && !submitted && (
-              <div className="snd-commune">
-                <MapPin size={15} weight="fill" />
-                <input
-                  type="text"
-                  placeholder="Votre commune (optionnel)"
-                  value={commune}
-                  onChange={e => setCommune(e.target.value)}
-                  maxLength={80}
-                  className="snd-commune__input"
-                />
-              </div>
-            )}
-          </motion.div>
-        </div>
-      </section>
+          </Field>
+        </header>
       )}
 
-      {/* ════════ FORMULAIRE INTÉGRÉ ════════ */}
-      <div className="snd-form-zone" ref={formZoneRef}>
+      {!showHero && !showResume && questionnaire && (
+        <h1 className="tk-title mb-5 text-[1.375rem]">{questionnaire.title}</h1>
+      )}
 
-        {/* CTA initial — bandeau/popup + progression sauvegardée : carte de reprise */}
-        {autoStart && hasSavedProgress && !showForm && !submitted && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            style={{ maxWidth: 520, margin: "0 auto" }}
-          >
-            {/* Carte principale */}
-            <div style={{
-              background: "#fff",
-              border: "1.5px solid rgba(0,95,105,0.13)",
-              borderRadius: 24,
-              overflow: "hidden",
-              boxShadow: "0 8px 40px rgba(0,95,105,0.10)",
-            }}>
-              {/* Bandeau top */}
-              <div style={{
-                background: "linear-gradient(135deg, #003f46 0%, #005f69 60%, #00818f 100%)",
-                padding: "24px 28px 20px",
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-                  <div style={{
-                    width: 44, height: 44, borderRadius: 14,
-                    background: "rgba(255,255,255,0.15)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    color: "#fff", flexShrink: 0,
-                  }}>
-                    <ChartBar size={22} weight="fill" />
-                  </div>
-                  <div>
-                    <p style={{ margin: 0, fontSize: 16, fontWeight: 900, color: "#fff", letterSpacing: "-0.01em" }}>
-                      Sondage en cours
-                    </p>
-                    <p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.65)", marginTop: 2 }}>
-                      Vous vous étiez arrêté·e ici
-                    </p>
-                  </div>
-                  {/* Badge section */}
-                  <div style={{
-                    marginLeft: "auto",
-                    background: "rgba(255,255,255,0.15)",
-                    border: "1px solid rgba(255,255,255,0.25)",
-                    borderRadius: 100,
-                    padding: "4px 12px",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    color: "rgba(255,255,255,0.9)",
-                    whiteSpace: "nowrap",
-                  }}>
-                    {activeScreens[currentScreenIdx]?.label || "En cours"}
-                  </div>
-                </div>
-
-                {/* Barre de progression */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                      Progression
-                    </span>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.7)" }}>
-                      {currentScreenIdx} / {activeScreens.length} sections
-                    </span>
-                  </div>
-                  <div style={{ display: "flex", gap: 4 }}>
-                    {activeScreens.map((sc, i) => (
-                      <div key={sc.id} style={{
-                        flex: 1, height: 5, borderRadius: 100,
-                        background: i < currentScreenIdx
-                          ? "#fff"
-                          : i === currentScreenIdx
-                            ? "rgba(255,255,255,0.45)"
-                            : "rgba(255,255,255,0.15)",
-                        transition: "background 0.3s",
-                      }} />
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Corps */}
-              <div style={{ padding: "24px 28px" }}>
-                {/* Résumé sections */}
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
-                  {activeScreens.map((sc, i) => {
-                    const Icon = SECTION_ICONS[sc.id];
-                    const done = i < currentScreenIdx;
-                    const current = i === currentScreenIdx;
-                    return (
-                      <div key={sc.id} style={{
-                        display: "flex", alignItems: "center", gap: 5,
-                        padding: "5px 12px",
-                        borderRadius: 100,
-                        fontSize: 11, fontWeight: 700,
-                        background: done
-                          ? "rgba(0,95,105,0.08)"
-                          : current
-                            ? "rgba(0,95,105,0.12)"
-                            : "#f4fafb",
-                        border: current
-                          ? "1.5px solid rgba(0,95,105,0.35)"
-                          : "1.5px solid transparent",
-                        color: done ? "#005f69" : current ? "#003f46" : "#9dcccc",
-                      }}>
-                        {done
-                          ? <CheckCircle size={11} weight="fill" />
-                          : Icon ? <Icon size={11} weight="fill" /> : null}
-                        {sc.label}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Boutons */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  <button
-                    className="snd-cta-btn"
-                    onClick={() => setShowForm(true)}
-                    style={{ maxWidth: "100%" }}
-                  >
-                    Reprendre le sondage
-                    <ArrowRight size={16} weight="bold" />
-                  </button>
-                  <button
-                    className="snd-restart-btn"
-                    onClick={() => {
-                      clearProgress();
-                      setAnswers({});
-                      setCurrentScreenIdx(0);
-                      setHasSavedProgress(false);
-                      setShowForm(true);
-                    }}
-                  >
-                    Recommencer depuis le début
-                  </button>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+      <div ref={formZoneRef} className="scroll-mt-20">
+        {showResume && (
+          <ResumeCard
+            screens={activeScreens}
+            currentIdx={currentScreenIdx}
+            onResume={() => setShowForm(true)}
+            onRestart={handleRestart}
+          />
         )}
 
-        {/* CTA initial — header/footer (hero visible) ou bandeau sans progression */}
-        {(!autoStart || !hasSavedProgress) && !showForm && !submitted && (
-          <motion.div
-            className="snd-cta-wrap"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-          >
-            <button className="snd-cta-btn" onClick={() => setShowForm(true)}>
+        {showStart && (
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <Button size="lg" onClick={() => setShowForm(true)}>
               {hasSavedProgress ? "Reprendre le sondage" : "Participer au sondage"}
-              <ArrowRight size={16} weight="bold" />
-            </button>
+              <ArrowRight className="size-5" aria-hidden />
+            </Button>
             {hasSavedProgress && (
-              <button
-                className="snd-restart-btn"
-                onClick={() => {
-                  clearProgress();
-                  setAnswers({});
-                  setCurrentScreenIdx(0);
-                  setHasSavedProgress(false);
-                  setShowForm(true);
-                }}
-              >
+              <Button variant="ghost" size="lg" onClick={handleRestart} className={WRAP_BUTTON}>
                 Recommencer depuis le début
-              </button>
+              </Button>
             )}
-          </motion.div>
+          </div>
         )}
 
-        {/* Succès */}
-        {submitted && <SuccessScreen />}
-
-        {/* Formulaire actif */}
-        {showForm && !submitted && currentScreen && questionnaire && (
+        {showForm && currentScreen && questionnaire && (
           <>
-            {/* Barre de progression */}
-            <div className="snd-progress">
-              {/* Segments par section — mobile et desktop */}
-              <div className="snd-progress__track">
-                {activeScreens.map((sc, i) => {
-                  /* Calcul du remplissage du segment courant */
-                  let fillPct = 0;
-                  if (i < currentScreenIdx) {
-                    fillPct = 100;
-                  } else if (i === currentScreenIdx) {
-                    if (isMobile) {
-                      /* mobile : progression question par question dans la section */
-                      fillPct = visibleQIds.length > 0
-                        ? Math.round(((mobileSubIdx + 1) / visibleQIds.length) * 100)
-                        : 0;
-                    } else {
-                      /* desktop : nombre de questions répondues / total de la section */
-                      const reqIds = getRequired(currentScreen, answers, questionnaire, isMobile);
-                      const answeredCount = reqIds.filter(qId => {
-                        const step = questionnaire.steps.find(s => s.id === qId);
-                        if (!step) return false;
-                        if (step.type === "text") return !!(answers[qId] || "").trim();
-                        if (step.type === "multi") return (answers[qId] || []).length > 0;
-                        return !!answers[qId];
-                      }).length;
-                      fillPct = reqIds.length > 0
-                        ? Math.round((answeredCount / reqIds.length) * 100)
-                        : 0;
-                    }
-                  }
+            <SurveyProgress
+              segments={segments}
+              label={isMobile
+                ? `${currentScreen.label}, question ${mobileSubIdx + 1} sur ${visibleQIds.length}`
+                : `Section ${currentScreenIdx + 1} sur ${activeScreens.length}`}
+            />
+
+            <StepTransition stepKey={isMobile ? `${currentScreen.id}-${mobileSubIdx}` : currentScreen.id} className="mt-6">
+              <h2 className="tk-title flex items-center gap-2.5 text-xl">
+                {SectionIcon && (
+                  <span className="grid size-9 shrink-0 place-items-center rounded-media bg-brand-soft text-brand">
+                    <SectionIcon className="size-[1.125rem]" aria-hidden />
+                  </span>
+                )}
+                {currentScreen.label}
+              </h2>
+
+              <div className="mt-4 grid gap-3">
+                {shownQIds.map((qId) => {
+                  const step = questionnaire.steps.find((s) => s.id === qId);
+                  if (!step) return null;
                   return (
-                    <div key={sc.id} className="snd-progress__seg">
-                      <div
-                        className="snd-progress__seg-fill"
-                        style={{ width: `${fillPct}%` }}
-                      />
-                    </div>
+                    <QuestionField key={qId} step={step} answers={answers} onChange={handleChange} copy={COPY} markAnswered />
                   );
                 })}
               </div>
-              <span className="snd-progress__lbl">
-                {isMobile
-                  ? `${currentScreen.label} · ${mobileSubIdx + 1}/${visibleQIds.length}`
-                  : `Section ${currentScreenIdx + 1} / ${activeScreens.length}`}
-              </span>
+            </StepTransition>
+
+            {submitError && (
+              <Notice role="alert" tone="error" icon={TriangleAlert} className="mt-5">
+                Une erreur est survenue. Vérifiez votre connexion et réessayez.
+              </Notice>
+            )}
+
+            <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:items-center">
+              {(currentScreenIdx > 0 || (isMobile && mobileSubIdx > 0)) && (
+                <Button variant="ghost" onClick={handleBack}>
+                  <ArrowLeft className="size-4" aria-hidden />
+                  Précédent
+                </Button>
+              )}
+              {!isAutoAdvance && (
+                <Button className="sm:ml-auto" onClick={handleNext} disabled={!canProceed || submitting}>
+                  {nextLabel}
+                  {!submitting && <ArrowRight className="size-4" aria-hidden />}
+                </Button>
+              )}
             </div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={isMobile ? `${currentScreen.id}-${mobileSubIdx}` : currentScreen.id}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.2 }}
-              >
-                {/* En-tête section */}
-                <div className="snd-section-head">
-                  {SectionIcon && <SectionIcon size={16} weight="fill" className="snd-section-head__icon" />}
-                  <span className="snd-section-head__lbl">{currentScreen.label}</span>
-                  <div className="snd-section-head__line" />
-                </div>
-
-                {/* Grille de cards */}
-                <ScreenGrid
-                  screen={currentScreen}
-                  visibleQIds={isMobile ? mobileVisibleQIds : visibleQIds}
-                  questionnaire={questionnaire}
-                  answers={answers}
-                  onChange={handleChange}
-                  isMobile={isMobile}
-                />
-
-                {/* Navigation */}
-                <div className="snd-nav snd-nav--sticky">
-                  <div>
-                    {(currentScreenIdx > 0 || (isMobile && mobileSubIdx > 0)) && (
-                      <button className="snd-nav__back" onClick={handleBack}>
-                        <ArrowLeft size={14} weight="bold" />
-                        Précédent
-                      </button>
-                    )}
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
-                    {submitError && (
-                      <p style={{ fontSize: 12, color: "#dc2626", margin: 0 }}>
-                        Une erreur est survenue. Vérifiez votre connexion et réessayez.
-                      </p>
-                    )}
-                    {/* Sur mobile : masquer "Question suivante" si choix unique (auto-avancement) */}
-                    {(() => {
-                      const currentStep = isMobile && questionnaire
-                        ? questionnaire.steps.find(s => s.id === visibleQIds[mobileSubIdx])
-                        : null;
-                      // Vérifie si l'option "autre" est sélectionnée pour cette question
-                      const currentVal = currentStep ? answers[currentStep.id] : null;
-                      const autreSelected = currentStep && (
-                        currentStep.type === "multi"
-                          ? (Array.isArray(currentVal) && currentVal.some(v => v === "autre" || v === "other" || v?.toLowerCase().includes("autre")))
-                          : (typeof currentVal === "string" && (currentVal === "autre" || currentVal === "other" || currentVal?.toLowerCase().includes("autre")))
-                      );
-                      const isAutoAdvance = isMobile
-                        && currentStep
-                        && currentStep.type !== "multi"   // choix multiples → bouton visible
-                        && currentStep.type !== "text"     // texte libre → bouton visible
-                        && !autreSelected                  // "autre" sélectionné → bouton visible
-                        && !(currentStep.endIf?.values?.includes(currentVal)) // endIf déclenché → bouton visible
-                        && mobileSubIdx < visibleQIds.length - 1;
-                      if (isAutoAdvance) return null;
-                      return (
-                        <button
-                          className="snd-nav__next"
-                          onClick={handleNext}
-                          disabled={!canProceed || submitting}
-                        >
-                          {submitting
-                            ? "Envoi en cours…"
-                            : (isMobile
-                                ? !!questionnaire?.steps.find(s => s.id === visibleQIds[mobileSubIdx])?.endIf?.values?.includes(answers[visibleQIds[mobileSubIdx]])
-                                : visibleQIds.some(qId => questionnaire?.steps.find(s => s.id === qId)?.endIf?.values?.includes(answers[qId])))
-                              ? "Terminer le sondage"
-                              : (isMobile
-                                  ? (mobileSubIdx < visibleQIds.length - 1
-                                      ? "Question suivante"
-                                      : currentScreenIdx === activeScreens.length - 1
-                                        ? "Envoyer mes réponses"
-                                        : "Section suivante")
-                                  : currentScreenIdx === activeScreens.length - 1
-                                    ? "Envoyer mes réponses"
-                                    : "Section suivante")}
-                          {!submitting && <ArrowRight size={15} weight="bold" />}
-                        </button>
-                      );
-                    })()}
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
           </>
         )}
-
-
       </div>
-    </div>
+    </FormShell>
   );
 }

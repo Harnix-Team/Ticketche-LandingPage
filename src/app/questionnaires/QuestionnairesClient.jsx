@@ -1,139 +1,83 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { ArrowUpRight, CalendarDays, ChartColumn, Clock, MessageCircle, Search, ShieldCheck, Users } from "@/components/icons";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  ChartBar,
-  Clock,
-  Users,
-  CalendarBlank,
-  ArrowUpRight,
-  CheckCircle,
-  Star,
-  MagnifyingGlass,
-  Sparkle,
-  ShieldCheck,
-} from "@phosphor-icons/react";
+import { useEffect, useId, useState } from "react";
 import { fetchQuestionnaires } from "@/app/services/questionnairesApi";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Field";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { PHONE_NUMBER } from "@/config/constants";
 
-/* ─── Star Clusters ─────────────────────────────────────── */
-const CLUSTERS = [
-  { cx: "2%",  cy: "6%",  stars: [{ x: 0, y: 0, size: 13, opacity: 0.45, anim: 0, delay: "0s",   dur: "3.2s", color: "#00818f" }] },
-  { cx: "91%", cy: "5%",  stars: [{ x: 0, y: 0, size: 13, opacity: 0.40, anim: 1, delay: "0.2s", dur: "3.0s", color: "#00818f" }] },
-  { cx: "1%",  cy: "45%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.32, anim: 2, delay: "0.1s", dur: "3.5s", color: "#00515a" }] },
-  { cx: "94%", cy: "42%", stars: [{ x: 0, y: 0, size: 11, opacity: 0.35, anim: 0, delay: "0.3s", dur: "3.3s", color: "#00818f" }] },
-  { cx: "48%", cy: "2%",  stars: [{ x: 0, y: 0, size: 8,  opacity: 0.22, anim: 1, delay: "0.1s", dur: "3.0s", color: "#00818f" }] },
-  { cx: "5%",  cy: "78%", stars: [{ x: 0, y: 0, size: 9,  opacity: 0.28, anim: 2, delay: "0.2s", dur: "2.9s", color: "#00818f" }] },
-  { cx: "88%", cy: "75%", stars: [{ x: 0, y: 0, size: 10, opacity: 0.30, anim: 0, delay: "0.4s", dur: "3.1s", color: "#00515a" }] },
-];
+const WHATSAPP_URL = `https://wa.me/${PHONE_NUMBER.replace(/\s/g, "")}?text=${encodeURIComponent(
+  "Bonjour, j'ai une question concernant vos questionnaires en ligne."
+)}`;
 
-function StarClusters() {
-  return (
-    <>
-      {CLUSTERS.map((cluster, ci) => (
-        <div
-          key={ci}
-          style={{ position:"absolute", left:cluster.cx, top:cluster.cy, width:0, height:0, zIndex:0, pointerEvents:"none" }}
-        >
-          {cluster.stars.map((s, si) => (
-            <div
-              key={si}
-              style={{
-                position:"absolute", left:s.x, top:s.y,
-                transform:"translate(-50%,-50%)", opacity:s.opacity,
-                animation:`qStar${s.anim} ${s.dur} ease-in-out ${s.delay} infinite`,
-                filter:`drop-shadow(0 0 3px ${s.color}88)`,
-              }}
-            >
-              <Star weight="fill" style={{ width:s.size, height:s.size, color:s.color }} />
-            </div>
-          ))}
-        </div>
-      ))}
-    </>
-  );
-}
-
-/* ─── Helpers ─────────────────────────────────────────────── */
 function formatDate(iso) {
-  return new Date(iso).toLocaleDateString("fr-FR", { day:"numeric", month:"long", year:"numeric" });
+  return new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 }
 
-/* ─── Card ────────────────────────────────────────────────── */
-function QuestionnaireCard({ q, index }) {
+function QuestionnaireCard({ q }) {
   return (
-    <Link href="/sondage?utm_source=site&utm_medium=popup" className="qcard-wrap" style={{ textDecoration:"none" }}>
-      <motion.div
-        className="qcard-wrap-inner"
-        initial={{ opacity:0, y:32 }}
-        animate={{ opacity:1, y:0 }}
-        transition={{ duration:0.45, delay:index*0.12, ease:[0.22,1,0.36,1] }}
-      >
-      <div className="qcard">
-        <div className="qcard-glow" aria-hidden />
-        <div className="qcard-accent" aria-hidden />
-
-        <div className="qcard-header">
-          <div className="qcard-icon"><ChartBar size={22} weight="fill" /></div>
-          <span className="qcard-badge"><ShieldCheck size={11} weight="fill" />Anonyme</span>
-        </div>
-
-        <div className="qcard-body">
-          <h2 className="qcard-title">{q.title}</h2>
-          <p className="qcard-desc">{q.description}</p>
-        </div>
-
-        <div className="qcard-meta">
-          <span className="qcard-chip"><CalendarBlank size={12} weight="fill" />{formatDate(q.createdAt)}</span>
-          <span className="qcard-chip"><Clock size={12} weight="fill" />~{q.estimatedMinutes} min</span>
-          <span className="qcard-chip"><Users size={12} weight="fill" />{q.totalResponses} participants</span>
-        </div>
-
-        <div className="qcard-cta">
-          <span>Participer</span>
-          <div className="qcard-cta-arrow"><ArrowUpRight size={14} weight="bold" /></div>
-        </div>
+    <Link
+      href="/sondage?utm_source=site&utm_medium=popup"
+      className="group flex h-full flex-col rounded-card border border-line bg-surface p-5 transition-colors duration-200 hover:border-brand"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <span className="grid size-11 place-items-center rounded-media bg-brand-soft text-brand">
+          <ChartColumn className="size-5" aria-hidden />
+        </span>
+        <span className="tk-label inline-flex items-center gap-1 rounded-full bg-brand-soft px-2.5 py-1 text-[0.75rem] text-brand">
+          <ShieldCheck className="size-3.5" aria-hidden />
+          Anonyme
+        </span>
       </div>
-      </motion.div>
+
+      <h2 className="tk-title mt-4 text-xl">{q.title}</h2>
+      <p className="mt-1.5 text-[0.9375rem] text-ink-2">{q.description}</p>
+
+      <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-[0.8125rem] text-ink-2">
+        <li className="flex items-center gap-1.5">
+          <CalendarDays className="size-3.5" aria-hidden />
+          {formatDate(q.createdAt)}
+        </li>
+        <li className="flex items-center gap-1.5">
+          <Clock className="size-3.5" aria-hidden />~{q.estimatedMinutes} min
+        </li>
+        <li className="flex items-center gap-1.5">
+          <Users className="size-3.5" aria-hidden />
+          {q.totalResponses} participants
+        </li>
+      </ul>
+
+      <span className="tk-label mt-auto flex items-center gap-1 pt-5 text-[0.9375rem] text-brand">
+        Participer
+        <ArrowUpRight
+          className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          aria-hidden
+        />
+      </span>
     </Link>
   );
 }
 
-/* ─── Skeleton ────────────────────────────────────────────── */
 function SkeletonCard() {
   return (
-    <div className="qcard">
-      <div className="qcard-accent" aria-hidden />
-      <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-        <div className="q-skel" style={{ width:48, height:48, borderRadius:14 }} />
-        <div className="q-skel" style={{ width:"70%", height:20, borderRadius:6 }} />
-        <div className="q-skel" style={{ width:"100%", height:14, borderRadius:6 }} />
-        <div className="q-skel" style={{ width:"85%",  height:14, borderRadius:6 }} />
-        <div className="q-skel" style={{ width:"55%",  height:14, borderRadius:6, marginTop:8 }} />
-        <div className="q-skel" style={{ width:"100%", height:44, borderRadius:12, marginTop:16 }} />
-      </div>
-    </div>
+    <li className="flex flex-col gap-3 rounded-card border border-line bg-surface p-5" aria-hidden>
+      <div className="tk-skeleton size-11" />
+      <div className="tk-skeleton h-5 w-2/3" />
+      <div className="tk-skeleton h-3.5 w-full" />
+      <div className="tk-skeleton h-3.5 w-5/6" />
+      <div className="tk-skeleton mt-2 h-3.5 w-1/2" />
+    </li>
   );
 }
 
-/* ─── Empty ───────────────────────────────────────────────── */
-function EmptyState() {
-  return (
-    <motion.div className="qlist-empty" initial={{ opacity:0 }} animate={{ opacity:1 }}>
-      <Sparkle size={44} weight="fill" style={{ color:"#00949f", marginBottom:16 }} />
-      <h3>Aucun questionnaire pour le moment</h3>
-      <p>Revenez bientôt — de nouveaux sondages seront publiés prochainement.</p>
-    </motion.div>
-  );
-}
-
-/* ─── Page ────────────────────────────────────────────────── */
-export default function QuestionnairesPage() {
+export default function QuestionnairesClient() {
+  const searchId = useId();
   const [questionnaires, setQuestionnaires] = useState([]);
-  const [loading, setLoading]               = useState(true);
-  const [search, setSearch]                 = useState("");
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchQuestionnaires().then(setQuestionnaires).finally(() => setLoading(false));
@@ -147,109 +91,85 @@ export default function QuestionnairesPage() {
 
   const activeCount = questionnaires.filter((q) => q.status === "active").length;
 
+  const stats = [
+    { icon: Users, value: "50+", label: "Participants" },
+    { icon: ChartColumn, value: loading ? "…" : String(activeCount), label: "Sondages actifs" },
+    { icon: Clock, value: "< 5 min", label: "Par sondage" },
+  ];
+
   return (
-    <div className="qlist-page">
+    <div className="pb-16">
+      <PageHeader
+        title="Votre voix façonne nos prochains services"
+        intro="Participez à nos sondages anonymes et contribuez directement à l'évolution de Ticketché. Chaque réponse compte et façonne les services de demain."
+      />
 
-      {/* ── HERO ── */}
-      <div className="qlist-hero">
-        <StarClusters />
-        <div className="qlist-hero-inner">
-          <motion.div initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.55 }}>
-            <div className="qlist-hero-badge">
-              <ChartBar size={12} weight="fill" />
-              Sondages &amp; Questionnaires
-            </div>
-            <h1>
-              Votre voix&nbsp;façonne<br />
-              nos prochains services
-            </h1>
-            <p className="qlist-hero-sub">
-              Participez à nos sondages anonymes et contribuez directement à l&apos;évolution
-              de Ticketché. Chaque réponse compte et façonne les services de demain.
-            </p>
-          </motion.div>
-        </div>
-      </div>
+      <div className="tk-shell mt-8">
+        <ul className="grid gap-2 xs:grid-cols-3">
+          {stats.map(({ icon: Icon, value, label }) => (
+            <li key={label} className="flex items-center gap-3 rounded-card border border-line bg-surface px-4 py-3.5">
+              <Icon className="size-5 shrink-0 text-brand" aria-hidden />
+              <p className="min-w-0 text-[0.8125rem] text-ink-2">
+                <span className="tk-title block text-xl text-ink">{value}</span>
+                {label}
+              </p>
+            </li>
+          ))}
+        </ul>
 
-      {/* ── STATS STRIP ── */}
-      <motion.div
-        className="qlist-stats"
-        initial={{ opacity:0, y:-10 }}
-        animate={{ opacity:1, y:0 }}
-        transition={{ duration:0.4, delay:0.15 }}
-      >
-        {[
-          { icon: Users,    val: "50+",                              lbl: "Participants"    },
-          { icon: ChartBar, val: loading ? "—" : String(activeCount), lbl: "Sondages actifs" },
-          { icon: Clock,    val: "< 5 min",                          lbl: "Par sondage"     },
-        ].map(({ icon: Icon, val, lbl }) => (
-          <div key={lbl} className="qlist-stat">
-            <div className="qlist-stat-icon"><Icon size={17} weight="fill" /></div>
-            <div>
-              <div className="qlist-stat-val">{val}</div>
-              <div className="qlist-stat-lbl">{lbl}</div>
-            </div>
-          </div>
-        ))}
-      </motion.div>
-
-      {/* ── BODY ── */}
-      <div className="qlist-body">
-
-        {/* Search */}
-        <div className="qlist-search-row">
-          <div className="qlist-search">
-            <MagnifyingGlass size={16} weight="bold" style={{ color:"#7aaeb4", flexShrink:0 }} />
-            <input
-              type="text"
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative sm:w-80">
+            <label htmlFor={searchId} className="sr-only">
+              Rechercher un questionnaire
+            </label>
+            <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-ink-3" aria-hidden />
+            <Input
+              id={searchId}
+              type="search"
+              className="pl-10"
               placeholder="Rechercher un questionnaire…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <div className="qlist-count">
+          <p aria-live="polite" className="text-[0.875rem] text-ink-2">
             {loading ? "Chargement…" : `${filtered.length} questionnaire${filtered.length !== 1 ? "s" : ""}`}
-          </div>
+          </p>
         </div>
 
-        {/* Cards */}
         {loading ? (
-          <div className="qlist-grid">
-            {[1, 2].map((i) => <SkeletonCard key={i} />)}
-          </div>
+          <ul className="mt-4 grid gap-3 md:grid-cols-2">
+            <SkeletonCard />
+            <SkeletonCard />
+          </ul>
         ) : filtered.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <div className="qlist-grid">
-            <AnimatePresence>
-              {filtered.map((q, i) => (
-                <QuestionnaireCard key={q.id} q={q} index={i} />
-              ))}
-            </AnimatePresence>
+          <div className="mt-4 rounded-card border border-line bg-surface px-5 py-10 text-center">
+            <h2 className="tk-title text-xl">Aucun questionnaire pour le moment</h2>
+            <p className="mt-1.5 text-ink-2">Revenez bientôt : de nouveaux sondages seront publiés prochainement.</p>
           </div>
+        ) : (
+          <ul className="mt-4 grid gap-3 md:grid-cols-2">
+            {filtered.map((q) => (
+              <li key={q.id}>
+                <QuestionnaireCard q={q} />
+              </li>
+            ))}
+          </ul>
         )}
 
-        {/* Bottom CTA */}
-        <motion.div
-          className="qlist-cta-band"
-          initial={{ opacity:0, y:24 }}
-          animate={{ opacity:1, y:0 }}
-          transition={{ delay:0.5 }}
-        >
+        <div className="mt-8 flex flex-col items-start gap-4 rounded-panel border border-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <div>
-            <h2>100 % anonyme &amp; confidentiel</h2>
-            <p>Vos réponses ne sont jamais associées à votre identité. Elles servent uniquement à améliorer nos services pour vous.</p>
+            <h2 className="tk-title text-xl">100 % anonyme & confidentiel</h2>
+            <p className="mt-1.5 max-w-[60ch] text-[0.9375rem] text-ink-2">
+              Vos réponses ne sont jamais associées à votre identité. Elles servent uniquement à améliorer nos
+              services pour vous.
+            </p>
           </div>
-          <a
-            href={`https://wa.me/${PHONE_NUMBER.replace(/\s/g, "")}?text=${encodeURIComponent("Bonjour, j'ai une question concernant vos questionnaires en ligne.")}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="qlist-cta-btn"
-          >
-            <CheckCircle size={16} weight="fill" />
+          <Button href={WHATSAPP_URL} variant="outline" className="shrink-0">
+            <MessageCircle className="size-4" aria-hidden />
             Une question ?
-          </a>
-        </motion.div>
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,21 @@
+const isDev = process.env.NODE_ENV !== "production";
+
+/** Hote de l'API : c'est lui qui sert les visuels (`/storage/**`), quel que soit l'environnement. */
+function apiImagePattern() {
+  try {
+    const url = new URL(process.env.NEXT_PUBLIC_API_URL || "https://api.ticketche.com/api/v2");
+
+    return {
+      protocol: url.protocol.replace(":", ""),
+      hostname: url.hostname,
+      ...(url.port && { port: url.port }),
+      pathname: "/storage/**",
+    };
+  } catch {
+    return null;
+  }
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Audit securite 2026-09-04 : ne pas divulguer le framework et sa version.
@@ -5,29 +23,30 @@ const nextConfig = {
   ...(process.env.STATIC_EXPORT === 'true' && { output: 'export' }),
   trailingSlash: true,
   images: {
-    // Audit performance 2026-09-04 (PERF-04) : l'optimiseur etait desactive
-    // globalement, donc aucune conversion WebP/AVIF ni aucun `srcset` sur les
-    // composants qui utilisent pourtant `next/image`.
-    //
     // `output: "export"` (build statique) interdit l'optimisation a la demande :
     // on ne la reactive que dans le mode serveur, celui reellement deploye.
     unoptimized: process.env.STATIC_EXPORT === "true",
     formats: ["image/avif", "image/webp"],
     // Les visuels des lieux et des evenements viennent du storage de l'API.
-    // Sans cette autorisation, l'optimiseur repond 400 ("url" parameter is not
-    // allowed) et l'image reste cassee : regression introduite par PERF-04.
+    // Sans cette autorisation, l'optimiseur repond 400 ("url" parameter is not allowed).
     remotePatterns: [
       { protocol: "https", hostname: "api.ticketche.com", pathname: "/storage/**" },
-    ],
+      apiImagePattern(),
+      // Les seeders locaux pointent vers picsum.photos : hors production uniquement.
+      ...(isDev
+        ? [
+            { protocol: "https", hostname: "picsum.photos" },
+            { protocol: "https", hostname: "fastly.picsum.photos" },
+          ]
+        : []),
+    ].filter(Boolean),
+    // API locale sur localhost : l'optimiseur refuse les IP privees par defaut.
+    dangerouslyAllowLocalIP: isDev,
   },
   async headers() {
     return [
       {
-        // Audit performance 2026-09-04 (PERF-04) : les images de `public/` etaient
-        // servies avec `Cache-Control: public, max-age=0`, donc retelechargees a
-        // chaque visite - 18,9 Mo sur la seule page d'accueil. Elles sont
-        // statiques et versionnees par le deploiement : un cache long est le
-        // comportement attendu.
+        // Les images de `public/` sont statiques et versionnees par le deploiement.
         source: "/images/:path*",
         headers: [
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },

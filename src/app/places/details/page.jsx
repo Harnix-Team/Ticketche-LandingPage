@@ -1,30 +1,22 @@
-import { Suspense } from "react";
-import PlaceDetailsClient from "@/components/place/PlaceDetailsClient";
+import { permanentRedirect, redirect } from "next/navigation";
+import { getPlace } from "@/lib/api";
+import { placePath } from "@/lib/paths";
 
+/**
+ * Ancienne adresse d'un lieu : `/places/details?placeId=<uuid>`.
+ *
+ * Elle circule dans les liens partages depuis l'application et reste le lien universel reconnu par
+ * l'app (apple-app-site-association). Sur le web, elle redirige vers l'adresse lisible `/places/<nom>-<uuid>/`.
+ */
 export const dynamic = "force-dynamic";
 
-export function generateMetadata({ searchParams }) {
-  const placeId = searchParams?.placeId ?? "";
-  return {
-    title: "Détail de l'établissement | Ticketché",
-    description:
-      "Consultez les détails de cet établissement — parking, garage ou lavage auto — ses horaires, tarifs et avis clients au Bénin.",
-    openGraph: {
-      title: "Établissement | Ticketché",
-      description: "Parking, garage ou lavage auto au Bénin. Réservez via Ticketché.",
-      url: `https://ticketche.com/places/details?placeId=${placeId}`,
-      images: [{ url: "/images/og-image.png", width: 1200, height: 630, alt: "Établissement Ticketché" }],
-    },
-    other: {
-      "apple-itunes-app": `app-id=6758046811, app-argument=ticketche://places/details?placeId=${placeId}`,
-    },
-  };
-}
+export default async function LegacyPlaceDetailsPage({ searchParams }) {
+  const params = await searchParams;
+  const placeId = typeof params?.placeId === "string" ? params.placeId : null;
+  if (!placeId) redirect("/establishments/");
 
-export default function PlaceDetailsPage() {
-  return (
-    <Suspense fallback={null}>
-      <PlaceDetailsClient />
-    </Suspense>
-  );
+  const place = await getPlace(placeId);
+  if (!place?.id) redirect("/establishments/");
+
+  permanentRedirect(placePath(place));
 }

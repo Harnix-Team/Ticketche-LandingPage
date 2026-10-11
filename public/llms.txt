@@ -1,20 +1,24 @@
 # Ticketché
 
 > Application béninoise qui réunit en un seul compte la billetterie d'événements,
-> la livraison à la demande, le covoiturage et la gestion de parkings, garages et
-> centres de lavage. Éditée par Harnix-Team, basée à Abomey-Calavi, Bénin.
+> les lieux à découvrir (hôtels, lieux culturels, parcs, attractions, sorties,
+> sport, shopping, parkings, garages, lavages, stations), les restaurants et la
+> livraison à la demande. Éditée par Harnix-Team, basée à Abomey-Calavi, Bénin.
 
-Ticketché s'adresse à trois publics : les particuliers qui achètent un billet,
-commandent une livraison ou garent un véhicule ; les organisateurs d'événements
-et gérants d'établissements qui vendent et supervisent depuis un tableau de bord ;
-les livreurs partenaires et salariés. Les paiements passent par Mobile Money
-(FedaPay) et par un portefeuille interne. La devise est le franc CFA (XOF).
+Ticketché s'adresse à trois publics : les particuliers qui cherchent où sortir,
+achètent un billet ou réservent un lieu ; les organisateurs d'événements et
+gérants d'établissements qui vendent et supervisent depuis l'application et un
+tableau de bord ; les livreurs partenaires et salariés. Les paiements passent
+par Mobile Money (FedaPay) et par un portefeuille interne. La devise est le
+franc CFA (XOF).
 
 ## Pages de référence
 
-- [Accueil](https://ticketche.com/) : présentation générale des services.
-- [Événements et billetterie](https://ticketche.com/events/) : concerts, festivals, soirées et conférences au Bénin, achat de billets en ligne.
-- [Établissements](https://ticketche.com/establishments/) : parkings, garages et centres de lavage partenaires.
+- [Accueil](https://ticketche.com/) : tendances, prochains événements, lieux ouverts, carte.
+- [Événements et billetterie](https://ticketche.com/events/) : concerts, festivals, conférences et rencontres sportives au Bénin ; chaque événement a sa page (date, lieu, tickets et prix).
+- [Lieux](https://ticketche.com/establishments/) : hôtels, culture, nature, attractions, sorties, sport, shopping, parkings, garages ; chaque lieu a sa page (horaires, services et tarifs, avis).
+- [Restaurants](https://ticketche.com/restaurants/) : menus complets, prix et horaires.
+- [Carte](https://ticketche.com/carte/) : lieux et événements sur une carte, filtrables par type.
 - [Télécharger l'application](https://ticketche.com/download/) : liens App Store et Google Play.
 - [À propos](https://ticketche.com/a-propos/) : présentation de l'entreprise et de sa mission.
 - [Recrutement](https://ticketche.com/recrutement/) : offres d'emploi, dont les postes de livreur partenaire.

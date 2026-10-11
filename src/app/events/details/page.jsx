@@ -1,6 +1,5 @@
 import { permanentRedirect, redirect } from "next/navigation";
-import { fetchEventById } from "@/app/services/api";
-import { eventPath } from "@/lib/event-slug";
+import { getEvent } from "@/lib/api";
 
 /**
  * Ancienne URL de detail d'un evenement (audit SEO 2026-09-04, SEO-02).
@@ -19,13 +18,12 @@ export default async function LegacyEventDetailsPage({ searchParams }) {
 
   if (!eventId) redirect("/events/");
 
-  const payload = await fetchEventById(eventId);
-  const event = payload?.data ?? null;
+  const event = await getEvent(eventId);
 
   // Evenement introuvable (supprime, ou identifiant invalide) : on renvoie vers
   // la liste plutot que de laisser une page morte. Redirection temporaire, la
   // ressource pouvant reapparaitre.
   if (!event?.id) redirect("/events/");
 
-  permanentRedirect(eventPath(event));
+  permanentRedirect(event.path);
 }
