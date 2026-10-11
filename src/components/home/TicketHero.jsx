@@ -1,14 +1,19 @@
 "use client";
 
 import { ArrowRight, Clock, MapPin, Star } from "@/components/icons";
+import gsap from "gsap";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Media } from "@/components/ui/Media";
 import { dateBadge, formatPrice } from "@/lib/format";
 import { eventCategoryIcon, placeTypeIcon, RECO_REASONS } from "@/lib/icons";
 import { track } from "@/lib/tracking";
 
 const SLIDE_MS = 6500;
+// Inclinaison maximale du billet, en degres, quand le pointeur atteint le bord de la fenetre.
+const MAX_TILT = 9;
+// Amplitude du gyroscope, en degres, qui donne l'inclinaison maximale.
+const GYRO_RANGE = 25;
 
 /** Contenu du talon : ce qu'on lirait sur un vrai billet, selon le type d'objet. */
 function stub(item) {
@@ -54,10 +59,13 @@ const kicker = (item) => {
 /**
  * Le billet de la une : les objets que le moteur de recommandation classe en tete, presentes comme un
  * ticket (affiche a gauche, talon detachable a droite). Defile seul, se met en pause au survol et au focus.
+ * A la souris, il pivote vers le pointeur et un reflet de lumiere glisse a sa surface.
  */
 export function TicketHero({ items }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const ticketRef = useRef(null);
+  const glareRef = useRef(null);
   const item = items[index];
 
   useEffect(() => {
@@ -67,11 +75,70 @@ export function TicketHero({ items }) {
     return () => clearTimeout(timer);
   }, [index, paused, items.length]);
 
+  // Une impression par diapositive affichee.
   useEffect(() => {
     if (item) track("IMPRESSION", item, { surface: "HOME" });
-    // Une impression par diapositive affichee.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [item?.id]);
+  }, [item]);
+
+  useEffect(() => {
+    const ticket = ticketRef.current;
+    const glare = glareRef.current;
+    if (!ticket || !glare || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const context = gsap.context(() => {
+      gsap.set(ticket, { transformPerspective: 1100 });
+      gsap.set(glare, { "--glare-x": "50%", "--glare-y": "50%" });
+    });
+    const motion = { duration: 0.9, ease: "power3.out", overwrite: "auto" };
+    const unit = gsap.utils.clamp(-1, 1);
+    const stops = [];
+    const listen = (target, type, handler, options) => {
+      target.addEventListener(type, handler, options);
+      stops.push(() => target.removeEventListener(type, handler, options));
+    };
+    const onScreen = () => {
+      const box = ticket.getBoundingClientRect();
+
+      return box.bottom > 0 && box.top < innerHeight ? box : null;
+    };
+    // x et y entre -1 et 1 : le billet pivote vers ce point et le reflet s'y pose.
+    const tilt = (x, y) => {
+      gsap.to(ticket, { rotationY: x * MAX_TILT, rotationX: -y * MAX_TILT, ...motion });
+      gsap.to(glare, { "--glare-x": `${50 + x * 60}%`, "--glare-y": `${50 + y * 60}%`, opacity: Math.min(1, 0.25 + Math.hypot(x, y) * 1.3), ...motion });
+    };
+
+    if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      listen(window, "pointermove", (event) => {
+        const box = onScreen();
+        if (box) tilt(unit((event.clientX - box.left - box.width / 2) / (innerWidth / 2)), unit((event.clientY - box.top - box.height / 2) / (innerHeight / 2)));
+      }, { passive: true });
+      listen(document.documentElement, "pointerleave", () => {
+        gsap.to(ticket, { rotationX: 0, rotationY: 0, duration: 1.4, ease: "elastic.out(1, 0.7)", overwrite: "auto" });
+        gsap.to(glare, { opacity: 0, duration: 0.6, overwrite: "auto" });
+      });
+    } else if ("DeviceOrientationEvent" in window) {
+      // Sur telephone, le gyroscope remplace le pointeur. La premiere mesure sert de position de repos.
+      let rest = null;
+      const start = () =>
+        listen(window, "deviceorientation", ({ beta, gamma }) => {
+          if (beta === null || gamma === null || !onScreen()) return;
+          rest ??= { beta, gamma };
+          tilt(unit((gamma - rest.gamma) / GYRO_RANGE), unit((beta - rest.beta) / GYRO_RANGE));
+        });
+
+      if (typeof DeviceOrientationEvent.requestPermission === "function") {
+        // iOS n'ouvre le gyroscope qu'a la demande, depuis un geste de l'utilisateur.
+        listen(window, "touchend", () => DeviceOrientationEvent.requestPermission().then((state) => state === "granted" && start()).catch(() => {}), { once: true });
+      } else {
+        start();
+      }
+    }
+
+    return () => {
+      stops.forEach((stop) => stop());
+      context.revert();
+    };
+  }, []);
 
   if (!item) return null;
 
@@ -87,9 +154,10 @@ export function TicketHero({ items }) {
       onBlur={() => setPaused(false)}
     >
       <Link
+        ref={ticketRef}
         href={item.path}
         onClick={() => track("CLICK", item, { surface: "HOME" })}
-        className="tk-ticket group/ticket h-[30rem] md:h-[25rem] lg:h-[27rem]"
+        className="tk-ticket group/ticket h-[30rem] will-change-transform md:h-[25rem] lg:h-[27rem]"
         aria-label={`${item.name}. ${action}`}
       >
         <div className="relative min-h-0 overflow-hidden">
@@ -162,6 +230,7 @@ export function TicketHero({ items }) {
             </span>
           </div>
         </div>
+        <span ref={glareRef} className="tk-ticket-glare" aria-hidden />
       </Link>
 
       {items.length > 1 && (

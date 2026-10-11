@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { track } from "@/lib/tracking";
+import { useLatest } from "@/lib/use-latest";
 
 /**
  * Impression d'une carte : visible a moitie pendant une seconde, comptee une seule fois (meme regle que l'app).
@@ -9,6 +10,7 @@ import { track } from "@/lib/tracking";
  */
 export function useCardTracking(item, context) {
   const ref = useRef(null);
+  const latest = useLatest(item);
   const surface = context?.surface;
   const seedKind = context?.seed?.kind;
   const seedId = context?.seed?.id;
@@ -23,7 +25,7 @@ export function useCardTracking(item, context) {
       ([entry]) => {
         if (entry.isIntersecting) {
           timer ??= setTimeout(() => {
-            track("IMPRESSION", item, tracking);
+            track("IMPRESSION", latest.current, tracking);
             observer.disconnect();
           }, 1000);
         } else {
@@ -40,8 +42,7 @@ export function useCardTracking(item, context) {
       observer.disconnect();
     };
     // L'identite de la carte suffit : `item` est recree a chaque rendu serveur.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [item.id, surface, seedKind, seedId]);
+  }, [item.id, surface, seedKind, seedId, latest]);
 
   const onClick = () => {
     if (surface) track("CLICK", item, { surface, ...(seedId && { seed: { kind: seedKind, id: seedId } }) });

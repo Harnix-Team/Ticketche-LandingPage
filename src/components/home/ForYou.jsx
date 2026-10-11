@@ -69,7 +69,7 @@ export function ForYou({ pool }) {
           </div>
           <div className="flex shrink-0 flex-wrap gap-2.5">
             <Button onClick={() => setConsent("granted")}>Personnaliser mes suggestions</Button>
-            <Button variant="ghost" onClick={() => setConsent("denied")}>
+            <Button variant="outline" onClick={() => setConsent("denied")}>
               Non merci
             </Button>
           </div>

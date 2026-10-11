@@ -271,13 +271,13 @@ export default function QuestionnairePage() {
           <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex gap-2">
               {currentStep > 0 && (
-                <Button variant="ghost" className="flex-1 sm:flex-none" onClick={() => setCurrentStep((p) => p - 1)}>
+                <Button variant="outline" className="flex-1 sm:flex-none" onClick={() => setCurrentStep((p) => p - 1)}>
                   <ArrowLeft className="size-4" aria-hidden />
                   Précédent
                 </Button>
               )}
               {!isLastStep && (
-                <Button variant="ghost" className="flex-1 sm:flex-none" onClick={() => setCurrentStep((p) => p + 1)}>
+                <Button variant="outline" className="flex-1 sm:flex-none" onClick={() => setCurrentStep((p) => p + 1)}>
                   Passer
                 </Button>
               )}

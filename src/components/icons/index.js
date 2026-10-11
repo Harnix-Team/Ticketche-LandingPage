@@ -114,6 +114,7 @@ export const Zap = animated(ZapIcon);
 
 export {
   Baby, Banknote, Bike, Briefcase, Building2, CalendarClock, CalendarPlus, Camera, ChartColumn, Church, CircleAlert,
+  CircleHelp,
   Clapperboard, ClipboardList, Coins, Drama, Dumbbell, FerrisWheel, Fuel, Globe, Handshake, Headset, Hotel, Images,
   Landmark, LocateFixed, LogOut, Mail, Map, Martini, MessageSquareText, Monitor, Motorbike, Music, Navigation,
   Paintbrush, Presentation, QrCode, Repeat, SearchX, Share2, Shirt, Smartphone, Star, Store, Tag, ThumbsUp, Trees,

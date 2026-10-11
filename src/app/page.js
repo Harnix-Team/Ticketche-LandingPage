@@ -17,7 +17,8 @@ import { byStart, isUpcoming, toCard } from "@/lib/cards";
 import { placeTypeIcon } from "@/lib/icons";
 import { hydrateReco, indexCatalog } from "@/lib/reco";
 
-export const revalidate = 300;
+// Courte : le catalogue a deja son propre cache de 5 minutes, les deux delais s'additionnent.
+export const revalidate = 60;
 
 const ALL_TYPES = ["EVENT", "PLACE", "RESTAURANT"];
 const TRACKING = { surface: "HOME" };

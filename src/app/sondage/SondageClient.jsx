@@ -229,7 +229,7 @@ function ResumeCard({ screens, currentIdx, onResume, onRestart }) {
           Reprendre le sondage
           <ArrowRight className="size-4" aria-hidden />
         </Button>
-        <Button variant="ghost" onClick={onRestart} className={`w-full ${WRAP_BUTTON}`}>
+        <Button variant="outline" onClick={onRestart} className={`w-full ${WRAP_BUTTON}`}>
           Recommencer depuis le début
         </Button>
       </div>
@@ -294,17 +294,17 @@ export default function SondageClient() {
     ? currentScreen.questions.filter((qId) => isVisible(qId, answers) && !isHeldBack(currentScreen, qId, answers, isMobile))
     : [];
 
+  const lastVisibleIdx = Math.max(0, visibleQIds.length - 1);
+
   // La liste des questions visibles peut raccourcir quand une réponse change.
   useEffect(() => {
     if (!isMobile) return;
     setMobileSubIdx((prev) => {
-      const max = Math.max(0, visibleQIds.length - 1);
-      const next = prev > max ? max : prev;
+      const next = Math.min(prev, lastVisibleIdx);
       mobileSubIdxRef.current = next;
       return next;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentScreenIdx, answers, isMobile]);
+  }, [lastVisibleIdx, isMobile]);
 
   useEffect(() => { mobileSubIdxRef.current = mobileSubIdx; }, [mobileSubIdx]);
   useEffect(() => { currentScreenIdxRef.current = currentScreenIdx; }, [currentScreenIdx]);
@@ -642,7 +642,7 @@ export default function SondageClient() {
               <ArrowRight className="size-5" aria-hidden />
             </Button>
             {hasSavedProgress && (
-              <Button variant="ghost" size="lg" onClick={handleRestart} className={WRAP_BUTTON}>
+              <Button variant="outline" size="lg" onClick={handleRestart} className={WRAP_BUTTON}>
                 Recommencer depuis le début
               </Button>
             )}
@@ -687,7 +687,7 @@ export default function SondageClient() {
 
             <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:items-center">
               {(currentScreenIdx > 0 || (isMobile && mobileSubIdx > 0)) && (
-                <Button variant="ghost" onClick={handleBack}>
+                <Button variant="outline" onClick={handleBack}>
                   <ArrowLeft className="size-4" aria-hidden />
                   Précédent
                 </Button>

@@ -68,7 +68,7 @@ function JobCard({ job }) {
           </li>
         </ul>
 
-        <span className="tk-label flex items-center gap-1 border-t border-line pt-3.5 text-[0.875rem] text-brand">
+        <span className="tk-label -mx-5 flex items-center gap-1 border-t border-line px-5 pt-3.5 text-[0.875rem] text-brand">
           Voir l&apos;offre
           <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden />
         </span>

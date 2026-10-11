@@ -518,7 +518,7 @@ export default function BackofficeEnqueteurPage() {
 
             <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:items-center">
               {currentScreenIdx > 0 && (
-                <Button variant="ghost" onClick={handleBack}>
+                <Button variant="outline" onClick={handleBack}>
                   <ArrowLeft className="size-4" aria-hidden />
                   Précédent
                 </Button>
