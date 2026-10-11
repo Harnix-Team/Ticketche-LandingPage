@@ -26,7 +26,7 @@ const organization = {
   },
   image: `${SITE_URL}/images/og-image.png`,
   description:
-    "Ticketché est une application béninoise de billetterie d'événements, de livraison et de gestion de parkings, garages et centres de lavage.",
+    "Ticketché est une application béninoise qui réunit la billetterie d’événements, les lieux à découvrir (hôtels, culture, nature, sorties, parkings, garages) et les restaurants.",
   email: "support@ticketche.com",
   telephone: "+229 01 40 51 21 33",
   address: {

@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Site vitrine Ticketché
 
-## Getting Started
+Site public de Ticketché (ticketche.com) : événements, lieux et restaurants au Bénin, avec pour objectif d'amener le visiteur dans l'application mobile. Next.js 16 (App Router), JavaScript, Tailwind CSS 4.
 
-First, run the development server:
+## Lancer en local
+
+Le site lit l'API Ticketché. En local, démarrer d'abord la pile du monorepo `Ticketche` (API sur `http://localhost:8000`, données de démonstration incluses) :
+
+```bash
+cd ../Ticketche/INFRA && ./scripts/local-up.sh
+```
+
+Puis le site, **sur le port 3000** (seule origine locale autorisée par le CORS de l'API pour les appels faits depuis le navigateur : recherche, suivi, fil personnel) :
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Variables d'environnement (`.env`, voir `.env.example`) :
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+| Variable | Rôle |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | Racine de l'API, par exemple `http://localhost:8000/api/v2` |
+| `NEXT_PUBLIC_CHATBOT_PROVIDER` | Widget de chat : `nixia`, `tawk` ou `none` |
+| `NEXT_PUBLIC_RECO_GUEST_SESSION` | `1` pour créer une session invité après accord du visiteur (suggestions personnalisées) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Vérifier
 
-## Learn More
+```bash
+npm run lint
+npm test
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Organisation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Dossier | Contenu |
+|---|---|
+| `src/app` | Pages. `/` accueil, `/events`, `/establishments` (lieux), `/restaurants`, `/carte`, fiches en `/events/<slug>-<id>`, `/places/<slug>-<id>`, `/restaurants/<slug>-<id>` |
+| `src/lib/api.js` | Accès à l'API côté serveur, mis en cache (l'API limite à 60 requêtes par minute et par IP, et tout le rendu serveur partage une IP) |
+| `src/lib/catalog.js` | Mise en forme des réponses de l'API : seuls les champs affichés sortent du serveur, jamais les données personnelles des propriétaires |
+| `src/lib/tracking.js` | Suivi des consultations pour le moteur de recommandation, uniquement après accord du visiteur |
+| `src/components/ui` | Primitives (bouton, puce, rangée défilante, champ de formulaire, fenêtre modale) |
+| `src/components/shell` | En-tête, recherche, pied de page, thème, bouton « Obtenir l'app » |
+| `src/components/cards`, `home`, `explore`, `detail`, `map` | Cartes, sections de l'accueil, listes, fiches, carte |
+| `src/app/globals.css` | Couleurs des thèmes clair et sombre (reprises de l'application mobile) et utilitaires `tk-*` |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Recommandations
 
-## Deploy on Vercel
+Le site s'appuie sur le moteur de recommandation de l'API (`GET /recommendations`, `GET /recommendations/related`, `POST /tracking/events`) :
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- accueil : billet de la une, « Tendances », « Ouvert maintenant », « Nouveautés » ;
+- listes : tri par défaut « Recommandés » ;
+- fiches : rangée « Vous aimeriez aussi », avec la raison sous chaque carte ;
+- carte : ordre « Près de vous » après localisation ;
+- « Pour vous » : fil personnel, alimenté par les consultations du visiteur une fois son accord donné.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Quand le moteur est coupé (`enabled: false`) ou injoignable, chaque rubrique retombe sur un classement simple (note, date, distance).
+
+## Carte
+
+MapLibre GL avec les fonds OpenFreeMap (données OpenStreetMap), sans clé. Le worker de MapLibre est copié de `node_modules` vers `public/vendor/` avant `dev` et `build` (`scripts/copy-map-worker.mjs`).

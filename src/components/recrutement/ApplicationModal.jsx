@@ -1,173 +1,28 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { motion } from "framer-motion";
-import {
-  X,
-  CheckCircle,
-  Check,
-  Warning,
-  EnvelopeSimple,
-  Phone,
-  FileText,
-  UploadSimple,
-  ArrowRight,
-} from "@phosphor-icons/react";
+import { Check, ChevronDown, CircleAlert, FileText, Mail, Phone, Upload, X } from "@/components/icons";
+import { useEffect, useId, useRef, useState } from "react";
 import { submitApplication } from "@/app/services/jobsApi";
+import { Button } from "@/components/ui/Button";
+import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 
-const MODAL_STYLES = `
-  .modal-overlay {
-    position: fixed; inset: 0; z-index: 200;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(4px);
-    display: flex; align-items: flex-end; justify-content: center;
-    padding: 0;
-  }
-  @media (min-width: 640px) {
-    .modal-overlay { align-items: center; padding: 20px; }
-  }
-  .modal-box {
-    background: #fff;
-    border-radius: 24px 24px 0 0;
-    width: 100%; max-width: 600px;
-    max-height: 92vh; overflow-y: auto;
-    position: relative;
-    scrollbar-width: none;
-  }
-  .modal-box::-webkit-scrollbar { display: none; }
-    outline: none;
-  }
-  .modal-box:focus { outline: none; }
-  .modal-overlay:focus { outline: none; }
-  @media (min-width: 640px) { .modal-box { border-radius: 24px; } }
+const MAX_SIZE = 10 * 1024 * 1024;
 
-  .modal-close {
-    position: sticky; top: 16px; float: right; margin: 16px 16px 0 0; z-index: 10;
-    width: 32px; height: 32px; border-radius: 50%;
-    background: rgba(0,0,0,0.06); border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: #374151; transition: background 0.2s;
-  }
-  .modal-close:hover { background: rgba(0,0,0,0.12); }
+const FOCUSABLE = "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])";
 
-  .modal-header {
-    padding: 20px 24px 16px;
-    border-bottom: 1px solid rgba(0,95,105,0.1);
-  }
-  .modal-header h2 { font-size: 1.1rem; font-weight: 900; color: #111827; margin: 0 0 4px; }
-  .modal-header p { font-size: 13px; color: #7aaeb4; margin: 0; }
+function trapFocus(event, panel) {
+  const items = panel.querySelectorAll(FOCUSABLE);
+  const first = items[0];
+  const last = items[items.length - 1];
+  const current = document.activeElement;
 
-  .modal-body { padding: 20px 24px 28px; display: flex; flex-direction: column; gap: 16px; }
-
-  .modal-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  @media (max-width: 480px) { .modal-row-2 { grid-template-columns: 1fr; } }
-
-  .modal-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  @media (max-width: 640px) { .modal-row-3 { grid-template-columns: 1fr; } }
-
-  .modal-field { display: flex; flex-direction: column; gap: 5px; }
-  .modal-field label { font-size: 12px; font-weight: 700; color: #374151; }
-  .modal-field label .req { color: #e53e3e; margin-left: 2px; }
-  .field-wrap { position: relative; }
-  .field-wrap.has-icon input { padding-left: 36px; }
-  .field-icon {
-    position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
-    color: #7aaeb4; display: flex; align-items: center;
+  if (event.shiftKey && (current === first || current === panel)) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && current === last) {
+    event.preventDefault();
+    first.focus();
   }
-  .modal-field input, .modal-field textarea {
-    width: 100%; padding: 10px 12px;
-    border: 1.5px solid rgba(0,95,105,0.15);
-    border-radius: 10px; font-size: 14px;
-    font-family: 'Archivo', sans-serif; color: #111827;
-    background: #fafeff; outline: none;
-    transition: border-color 0.2s;
-    box-sizing: border-box;
-  }
-  .modal-field input:focus, .modal-field textarea:focus { border-color: #005f69; }
-  .modal-field input.field-error, .modal-field textarea.field-error { border-color: #e53e3e; }
-  .field-err-msg {
-    font-size: 11px; color: #e53e3e; font-weight: 600;
-    display: flex; align-items: center; gap: 4px;
-  }
-
-  .file-drop {
-    border: 2px dashed rgba(0,95,105,0.2);
-    border-radius: 10px; padding: 16px;
-    cursor: pointer; text-align: center;
-    background: rgba(0,95,105,0.03);
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .file-drop:hover { border-color: #005f69; background: rgba(0,95,105,0.06); }
-  .file-placeholder { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #7aaeb4; font-size: 12px; }
-  .file-selected { display: flex; align-items: center; gap: 8px; justify-content: center; font-size: 13px; color: #005f69; font-weight: 600; }
-
-  .modal-error-band {
-    display: flex; align-items: center; gap: 8px;
-    background: #fff5f5; border: 1px solid #feb2b2;
-    border-radius: 8px; padding: 10px 14px;
-    font-size: 13px; color: #e53e3e; font-weight: 500;
-  }
-
-  .modal-submit-btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    background: linear-gradient(135deg, #005f69, #007d88);
-    color: #fff; padding: 14px 24px; border-radius: 12px;
-    font-size: 15px; font-weight: 800;
-    border: none; cursor: pointer; width: 100%;
-    font-family: 'Archivo', sans-serif;
-    transition: opacity 0.2s;
-  }
-  .modal-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-  .modal-submit-btn:not(:disabled):hover { opacity: 0.9; }
-
-  .modal-success { padding: 48px 24px; text-align: center; }
-  .modal-success-icon {
-    width: 76px; height: 76px; border-radius: 50%;
-    background: #00818f;
-    box-shadow: 0 0 0 8px rgba(0,129,143,0.15);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 20px;
-  }
-  .modal-success h3 { font-size: 1.3rem; font-weight: 900; color: #111827; margin: 0 0 10px; }
-  .modal-success p { font-size: 14px; color: #5a7a80; line-height: 1.7; margin: 0 0 24px; }
-  .modal-btn-close {
-    padding: 10px 28px; border-radius: 100px;
-    background: rgba(0,95,105,0.1); border: none;
-    color: #005f69; font-size: 14px; font-weight: 700;
-    cursor: pointer; font-family: 'Archivo', sans-serif;
-    transition: background 0.2s;
-  }
-  .modal-btn-close:hover { background: rgba(0,95,105,0.18); }
-`;
-
-function Field({ label, error, icon, children }) {
-  // Split label so the * renders in red
-  const parts = label.split("*");
-  const hasRequired = parts.length > 1;
-  return (
-    <div className="modal-field">
-      <label>
-        {hasRequired ? (
-          <>
-            {parts[0]}
-            <span className="req">*</span>
-            {parts[1]}
-          </>
-        ) : (
-          label
-        )}
-      </label>
-      <div className={`field-wrap${icon ? " has-icon" : ""}`}>
-        {icon && <span className="field-icon">{icon}</span>}
-        {children}
-      </div>
-      {error && (
-        <span className="field-err-msg">
-          <Warning size={12} /> {error}
-        </span>
-      )}
-    </div>
-  );
 }
 
 function formatSize(bytes) {
@@ -176,17 +31,40 @@ function formatSize(bytes) {
   return bytes + " o";
 }
 
-function FileUpload({ file, accept, onChange, placeholder }) {
-  const inputRef = useRef();
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const f = e.dataTransfer.files[0];
-    if (f) onChange(f);
+function IconInput({ icon: Icon, ...props }) {
+  return (
+    <div className="relative">
+      <Icon className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-ink-3" aria-hidden />
+      <Input className="pl-10" {...props} />
+    </div>
+  );
+}
+
+function YesNoSelect(props) {
+  return (
+    <div className="relative">
+      <Select {...props}>
+        <option value="">Sélectionner</option>
+        <option value="yes">Oui</option>
+        <option value="no">Non</option>
+      </Select>
+      <ChevronDown className="pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 text-ink-3" aria-hidden />
+    </div>
+  );
+}
+
+function FileUpload({ file, accept, onChange, placeholder, ...field }) {
+  const inputRef = useRef(null);
+  const handleDrop = (event) => {
+    event.preventDefault();
+    const dropped = event.dataTransfer.files[0];
+    if (dropped) onChange(dropped);
   };
+
   return (
     <div
-      className="file-drop"
-      onDragOver={(e) => e.preventDefault()}
+      className="relative cursor-pointer rounded-xl border border-dashed border-line-strong bg-sunken/50 px-4 py-5 text-center transition-colors hover:border-brand has-[:focus-visible]:border-brand has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand/20 has-[[aria-invalid=true]]:border-danger"
+      onDragOver={(event) => event.preventDefault()}
       onDrop={handleDrop}
       onClick={() => inputRef.current.click()}
     >
@@ -194,22 +72,23 @@ function FileUpload({ file, accept, onChange, placeholder }) {
         ref={inputRef}
         type="file"
         accept={accept}
-        style={{ display: "none" }}
-        onChange={(e) => onChange(e.target.files[0])}
+        className="sr-only"
+        // Le clic relayé par le libellé ne doit pas remonter à la zone, qui rouvrirait le sélecteur.
+        onClick={(event) => event.stopPropagation()}
+        onChange={(event) => onChange(event.target.files[0])}
+        {...field}
       />
       {file ? (
-        <div className="file-selected">
-          <FileText size={18} style={{ color: "#005f69" }} />
-          <span>{file.name}</span>
-          <span style={{ fontSize: 11, color: "#7aaeb4" }}>
-            ({formatSize(file.size)})
-          </span>
-        </div>
+        <p className="tk-label flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-[0.875rem] text-brand">
+          <FileText className="size-[1.125rem] shrink-0" aria-hidden />
+          <span className="min-w-0 break-all">{file.name}</span>
+          <span className="text-[0.75rem] font-normal text-ink-3">({formatSize(file.size)})</span>
+        </p>
       ) : (
-        <div className="file-placeholder">
-          <UploadSimple size={20} style={{ color: "#7aaeb4" }} />
-          <span>{placeholder}</span>
-        </div>
+        <p className="flex flex-col items-center gap-1.5 text-[0.8125rem] text-ink-2">
+          <Upload className="size-5 text-ink-3" aria-hidden />
+          {placeholder}
+        </p>
       )}
     </div>
   );
@@ -222,8 +101,7 @@ const DEV_PREFILL =
         first_name: "Jean",
         email: "jean.dupont@dev.test",
         phone: "+2290112345678",
-        message:
-          "Ceci est une candidature de test (environnement de développement).",
+        message: "Ceci est une candidature de test (environnement de développement).",
         license_number: "BJ-123456",
         has_experience: "yes",
         own_vehicle: "no",
@@ -248,8 +126,32 @@ export function ApplicationModal({ job, onClose }) {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const titleId = useId();
+  const panelRef = useRef(null);
 
-  const MAX_SIZE = 10 * 1024 * 1024;
+  // Fenêtre maison plutôt que <dialog> : jsdom n'implémente pas showModal, les tests ne l'ouvriraient pas.
+  useEffect(() => {
+    const previous = document.activeElement;
+    panelRef.current.focus();
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "";
+      previous?.focus?.();
+    };
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") onClose();
+      if (event.key === "Tab") trapFocus(event, panelRef.current);
+    };
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
+  const setField = (name) => (event) => setForm((previous) => ({ ...previous, [name]: event.target.value }));
 
   const handleFileChange = (field, file) => {
     if (!file) return;
@@ -302,250 +204,160 @@ export function ApplicationModal({ job, onClose }) {
     }
   };
 
+  const isDelivery = job?.job_title?.toLowerCase().includes("livreur") || job?.id === "delivery_man";
+
   return (
-    <>
-      <style>{MODAL_STYLES}</style>
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-scrim backdrop-blur-[2px] sm:items-center sm:p-5"
+      onClick={(event) => event.target === event.currentTarget && onClose()}
+    >
       <div
-        className="modal-overlay"
-        onClick={(e) => e.target === e.currentTarget && onClose()}
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        className="relative flex max-h-[92dvh] w-full max-w-[38rem] flex-col rounded-t-panel border border-line bg-surface text-ink outline-none motion-safe:animate-[tk-rise_0.28s_var(--ease-out-soft)] sm:rounded-panel"
       >
-        <motion.div
-          className="modal-box"
-          initial={{ opacity: 0, y: 40, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 40, scale: 0.96 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Fermer"
+          className="absolute top-3.5 right-3.5 z-10 grid size-9 place-items-center rounded-full text-ink-2 transition-colors hover:bg-sunken hover:text-ink"
         >
-          <button className="modal-close" onClick={onClose}>
-            <X size={18} weight="bold" />
-          </button>
+          <X className="size-[1.125rem]" aria-hidden />
+        </button>
 
-          {success ? (
-            <div className="modal-success">
-              <div className="modal-success-icon">
-                <Check size={30} weight="regular" color="#fff" />
-              </div>
-              <h3>Candidature envoyée !</h3>
-              <p>
-                Nous avons bien reçu votre candidature pour le poste de{" "}
-                <b>{job.job_title}</b>. Nous reviendrons vers vous dans les plus
-                brefs délais.
+        {success ? (
+          <div className="flex flex-col items-center overflow-y-auto px-6 py-12 text-center">
+            <span className="grid size-16 place-items-center rounded-full bg-brand-fill text-white">
+              <Check className="size-7" aria-hidden />
+            </span>
+            <h2 id={titleId} className="tk-title mt-5 text-[1.5rem]">
+              Candidature envoyée !
+            </h2>
+            <p className="mt-2.5 max-w-[44ch] text-ink-2">
+              Nous avons bien reçu votre candidature pour le poste de{" "}
+              <strong className="font-semibold text-ink">{job.job_title}</strong>. Nous reviendrons vers vous dans les
+              plus brefs délais.
+            </p>
+            <Button variant="soft" onClick={onClose} className="mt-6">
+              Fermer
+            </Button>
+          </div>
+        ) : (
+          <>
+            <header className="border-b border-line px-5 pt-5 pr-14 pb-4 sm:px-7 sm:pr-16">
+              <h2 id={titleId} className="tk-title text-[1.25rem]">
+                Postuler — {job.job_title}
+              </h2>
+              <p className="mt-1 text-[0.875rem] text-ink-2">
+                {job.department} · {job.location.city}
               </p>
-              <button onClick={onClose} className="modal-btn-close">
-                Fermer
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className="modal-header">
-                <h2>Postuler — {job.job_title}</h2>
-                <p>
-                  {job.department} · {job.location.city}
-                </p>
+            </header>
+
+            <form
+              noValidate
+              onSubmit={(event) => {
+                event.preventDefault();
+                handleSubmit();
+              }}
+              className="flex flex-col gap-4 overflow-y-auto px-5 py-5 sm:px-7 sm:py-6"
+            >
+              <div className="grid gap-4 xs:grid-cols-2">
+                <Field label="Prénom" required error={errors.first_name}>
+                  {(field) => (
+                    <Input {...field} type="text" placeholder="Jean" autoComplete="given-name" value={form.first_name} onChange={setField("first_name")} />
+                  )}
+                </Field>
+                <Field label="Nom" required error={errors.last_name}>
+                  {(field) => (
+                    <Input {...field} type="text" placeholder="Ahouansou" autoComplete="family-name" value={form.last_name} onChange={setField("last_name")} />
+                  )}
+                </Field>
               </div>
 
-              <div className="modal-body">
-                <div className="modal-row-2">
-                  <Field label="Prénom *" error={errors.first_name}>
-                    <input
-                      type="text"
-                      placeholder="Jean"
-                      value={form.first_name}
-                      onChange={(e) =>
-                        setForm((p) => ({ ...p, first_name: e.target.value }))
-                      }
-                      className={errors.first_name ? "field-error" : ""}
-                    />
-                  </Field>
-                  <Field label="Nom *" error={errors.last_name}>
-                    <input
-                      type="text"
-                      placeholder="Ahouansou"
-                      value={form.last_name}
-                      onChange={(e) =>
-                        setForm((p) => ({ ...p, last_name: e.target.value }))
-                      }
-                      className={errors.last_name ? "field-error" : ""}
-                    />
-                  </Field>
-                </div>
+              <Field label="Adresse email" required error={errors.email}>
+                {(field) => (
+                  <IconInput {...field} icon={Mail} type="email" placeholder="jean@email.com" autoComplete="email" value={form.email} onChange={setField("email")} />
+                )}
+              </Field>
 
-                <Field
-                  label="Adresse email *"
-                  error={errors.email}
-                  icon={<EnvelopeSimple size={15} />}
-                >
-                  <input
-                    type="email"
-                    placeholder="jean@email.com"
-                    value={form.email}
-                    onChange={(e) =>
-                      setForm((p) => ({ ...p, email: e.target.value }))
-                    }
-                    className={errors.email ? "field-error" : ""}
-                  />
-                </Field>
+              <Field label="Numéro de téléphone" required error={errors.phone}>
+                {(field) => (
+                  <IconInput {...field} icon={Phone} type="tel" placeholder="+229 01 XXXXXXXX" autoComplete="tel" value={form.phone} onChange={setField("phone")} />
+                )}
+              </Field>
 
-                <Field
-                  label="Numéro de téléphone *"
-                  error={errors.phone}
-                  icon={<Phone size={15} />}
-                >
-                  <input
-                    type="tel"
-                    placeholder="+229 01 XXXXXXXX"
-                    value={form.phone}
-                    onChange={(e) =>
-                      setForm((p) => ({ ...p, phone: e.target.value }))
-                    }
-                    className={errors.phone ? "field-error" : ""}
-                  />
-                </Field>
-
-                <Field
-                  label="CV * (PDF uniquement — max 10 Mo)"
-                  error={errors.cv}
-                >
+              <Field label="CV" required hint="PDF uniquement, 10 Mo maximum" error={errors.cv}>
+                {(field) => (
                   <FileUpload
+                    {...field}
                     file={cv}
                     accept=".pdf"
-                    onChange={(f) => handleFileChange("cv", f)}
+                    onChange={(file) => handleFileChange("cv", file)}
                     placeholder="Glissez votre CV ou cliquez pour parcourir"
                   />
-                </Field>
+                )}
+              </Field>
 
-                <Field
-                  label="Lettre de motivation (optionnel — PDF uniquement)"
-                  error={errors.motivationFile}
-                >
+              <Field label="Lettre de motivation" hint="Facultatif, PDF uniquement" error={errors.motivationFile}>
+                {(field) => (
                   <FileUpload
+                    {...field}
                     file={motivationFile}
                     accept=".pdf"
-                    onChange={(f) => handleFileChange("motivationFile", f)}
+                    onChange={(file) => handleFileChange("motivationFile", file)}
                     placeholder="Glissez votre lettre ou cliquez pour parcourir"
                   />
-                </Field>
+                )}
+              </Field>
 
-                <Field label="Message (optionnel)">
-                  <textarea
-                    placeholder="Présentez-vous brièvement…"
-                    rows={3}
-                    value={form.message}
-                    onChange={(e) =>
-                      setForm((p) => ({ ...p, message: e.target.value }))
-                    }
-                  />
-                </Field>
+              <Field label="Message" hint="Facultatif">
+                {(field) => (
+                  <Textarea {...field} rows={3} placeholder="Présentez-vous brièvement…" value={form.message} onChange={setField("message")} />
+                )}
+              </Field>
 
-                {(job?.job_title?.toLowerCase().includes("livreur") ||
-                  job?.id === "delivery_man") && (
-                  <>
-                    <Field label="Numéro de permis de conduire (facultatif)">
-                      <input
-                        placeholder="Ex: BJ-123456"
-                        value={form.license_number}
-                        onChange={(e) =>
-                          setForm((p) => ({
-                            ...p,
-                            license_number: e.target.value,
-                          }))
-                        }
-                      />
-                    </Field>
-
-                    <div className="modal-row-2">
-                      <Field label="Expérience passée ?">
-                        <select
-                          value={form.has_experience}
-                          onChange={(e) =>
-                            setForm((p) => ({
-                              ...p,
-                              has_experience: e.target.value,
-                            }))
-                          }
-                          style={{
-                            width: "100%",
-                            padding: "10px",
-                            borderRadius: "10px",
-                            border: "1.5px solid rgba(0,95,105,0.15)",
-                            background: "#fafeff",
-                          }}
-                        >
-                          <option value="">Sélectionner</option>
-                          <option value="yes">Oui</option>
-                          <option value="no">Non</option>
-                        </select>
-                      </Field>
-                      <Field label="Avez-vous un véhicule ?">
-                        <select
-                          value={form.own_vehicle}
-                          onChange={(e) =>
-                            setForm((p) => ({
-                              ...p,
-                              own_vehicle: e.target.value,
-                            }))
-                          }
-                          style={{
-                            width: "100%",
-                            padding: "10px",
-                            borderRadius: "10px",
-                            border: "1.5px solid rgba(0,95,105,0.15)",
-                            background: "#fafeff",
-                          }}
-                        >
-                          <option value="">Sélectionner</option>
-                          <option value="yes">Oui</option>
-                          <option value="no">Non</option>
-                        </select>
-                      </Field>
-                    </div>
-
-                    {form.own_vehicle === "no" && (
-                      <Field label="Souhaitez-vous qu'on vous en fournisse un ?">
-                        <select
-                          value={form.want_vehicle}
-                          onChange={(e) =>
-                            setForm((p) => ({
-                              ...p,
-                              want_vehicle: e.target.value,
-                            }))
-                          }
-                          style={{
-                            width: "100%",
-                            padding: "10px",
-                            borderRadius: "10px",
-                            border: "1.5px solid rgba(0,95,105,0.15)",
-                            background: "#fafeff",
-                          }}
-                        >
-                          <option value="">Sélectionner</option>
-                          <option value="yes">Oui</option>
-                          <option value="no">Non</option>
-                        </select>
-                      </Field>
+              {isDelivery && (
+                <>
+                  <Field label="Numéro de permis de conduire" hint="Facultatif">
+                    {(field) => (
+                      <Input {...field} placeholder="Ex. : BJ-123456" value={form.license_number} onChange={setField("license_number")} />
                     )}
-                  </>
-                )}
+                  </Field>
 
-                {errors.submit && (
-                  <div className="modal-error-band">
-                    <Warning size={16} /> {errors.submit}
+                  <div className="grid gap-4 xs:grid-cols-2">
+                    <Field label="Expérience passée ?">
+                      {(field) => <YesNoSelect {...field} value={form.has_experience} onChange={setField("has_experience")} />}
+                    </Field>
+                    <Field label="Avez-vous un véhicule ?">
+                      {(field) => <YesNoSelect {...field} value={form.own_vehicle} onChange={setField("own_vehicle")} />}
+                    </Field>
                   </div>
-                )}
 
-                <button
-                  onClick={handleSubmit}
-                  disabled={submitting}
-                  className="modal-submit-btn"
-                >
-                  {submitting ? "Envoi en cours…" : "Envoyer ma candidature"}
-                  {!submitting && <ArrowRight size={16} weight="bold" />}
-                </button>
-              </div>
-            </>
-          )}
-        </motion.div>
+                  {form.own_vehicle === "no" && (
+                    <Field label="Souhaitez-vous qu'on vous en fournisse un ?">
+                      {(field) => <YesNoSelect {...field} value={form.want_vehicle} onChange={setField("want_vehicle")} />}
+                    </Field>
+                  )}
+                </>
+              )}
+
+              {errors.submit && (
+                <p role="alert" className="flex items-center gap-2 rounded-xl border border-danger/40 bg-danger/10 px-3.5 py-2.5 text-[0.875rem] text-danger">
+                  <CircleAlert className="size-4 shrink-0" aria-hidden />
+                  {errors.submit}
+                </p>
+              )}
+
+              <Button type="submit" size="lg" disabled={submitting} className="w-full shrink-0">
+                {submitting ? "Envoi en cours…" : "Envoyer ma candidature"}
+              </Button>
+            </form>
+          </>
+        )}
       </div>
-    </>
+    </div>
   );
 }

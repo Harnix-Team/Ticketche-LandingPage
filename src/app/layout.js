@@ -1,50 +1,39 @@
 import { Archivo } from "next/font/google";
 import "./globals.css";
-import { HeaderWrapper } from "@/components/Navigation/HeaderWrapper";
-import { Footer } from "@/components/Navigation/footer";
-import { AppNotificationWrapper } from "@/components/AppNotificationWrapper";
-// import SondageBandeau from "@/components/SondageBandeau";
-// import SondagePopup from "@/components/SondagePopup";
-import Providers from "@/app/providers";
+import { Chatbot } from "@/components/Chatbot";
+import { Footer } from "@/components/shell/Footer";
+import { Header } from "@/components/shell/Header";
+import { MotionProvider } from "@/components/shell/MotionProvider";
+import { THEME_SCRIPT } from "@/components/shell/theme";
 import { SiteStructuredData } from "@/components/StructuredData";
-import { NixiaChatbot } from "@/components/NixiaChatbot";
 
-// Audit performance 2026-09-04 (PERF-05) : `preload: false` retardait la
-// decouverte de la police jusqu'apres le CSS, ajoutant un aller-retour reseau et
-// allongeant le basculement depuis la police de secours.
-//
-// La graisse 300 est retiree : `font-light` n'apparait nulle part dans `src/`
-// (verifie par grep). Les cinq autres sont bien utilisees - notamment 900
-// (`font-black`, 56 occurrences), qu'il ne faut surtout pas retirer.
+// Une seule famille, variable en graisse et en largeur : la largeur (axe `wdth`) distingue les titres du texte.
 const archivo = Archivo({
   variable: "--font-archivo",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "900"],
+  axes: ["wdth"],
   display: "swap",
-  preload: true,
-  fallback: ["sans-serif"],
+  fallback: ["system-ui", "sans-serif"],
 });
 
-// Audit SEO 2026-09-04 (SEO-04) : le titre et les mots-clés ne parlaient que de
-// parking, garage et lavage. Le produit couvre aussi la billetterie
-// événementielle, la livraison, le covoiturage et l'intégration restaurateurs -
-// toute la demande de recherche sur « billetterie Bénin » ou « livraison
-// Cotonou » était absente de la page la plus forte du site.
+const TITLE = "Ticketché - Événements, lieux et restaurants au Bénin";
+const DESCRIPTION =
+  "Concerts, hôtels, plages, musées, maquis : trouvez où sortir au Bénin, puis réservez et payez par Mobile Money depuis l’application Ticketché.";
+
 export const metadata = {
-  title: "Ticketché - Billetterie, livraison et parking au Bénin",
-  description:
-    "Achetez vos billets d'événements, commandez une livraison et réservez votre place de parking au Bénin, depuis une seule application. Paiement Mobile Money, suivi en temps réel.",
+  title: TITLE,
+  description: DESCRIPTION,
 
   keywords: [
+    "que faire à Cotonou",
+    "sorties Bénin",
     "billetterie en ligne Bénin",
     "acheter billet concert Cotonou",
     "événements Cotonou",
-    "livraison Cotonou",
-    "coursier Bénin",
-    "covoiturage Bénin",
+    "hôtels Bénin",
+    "restaurants Cotonou",
+    "lieux touristiques Bénin",
     "parking Cotonou",
-    "lavage auto Bénin",
-    "garage automobile Cotonou",
     "Ticketché",
   ],
 
@@ -52,98 +41,72 @@ export const metadata = {
   creator: "Ticketché",
   publisher: "Ticketché",
 
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
+  formatDetection: { email: false, address: false, telephone: false },
 
-  // Audit SEO 2026-09-04 (SEO-01) : `www.ticketche.com` n'a aucun enregistrement
-  // DNS. Tous les canonicals, OG urls, le sitemap et robots.txt pointaient donc
-  // vers un hote injoignable. Le domaine canonique est l'apex.
+  // Audit SEO 2026-09-04 (SEO-01) : le domaine canonique est l'apex, `www` n'a aucun enregistrement DNS.
   metadataBase: new URL("https://ticketche.com"),
 
-  alternates: {
-    canonical: "/",
-    languages: {
-      fr: "/",
-    },
-  },
+  alternates: { canonical: "/", languages: { fr: "/" } },
 
   openGraph: {
-    title: "Ticketché - Billetterie, livraison et parking au Bénin",
-    description:
-      "Billets d'événements, livraison et parking au Bénin, dans une seule application. Paiement Mobile Money, suivi en temps réel.",
+    title: TITLE,
+    description: DESCRIPTION,
     url: "https://ticketche.com",
     siteName: "Ticketché",
-    images: [
-      {
-        url: "/images/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Ticketché - billetterie, livraison et parking au Bénin",
-      },
-    ],
+    images: [{ url: "/images/og-image.png", width: 1200, height: 630, alt: "Ticketché, événements, lieux et restaurants au Bénin" }],
     locale: "fr_BJ",
     type: "website",
   },
 
-  // Audit SEO 2026-09-04 (SEO-06) : aucune balise Twitter Card n'etait declaree.
-  // Sans elle, un partage sur X affiche un lien nu, sans visuel ni description.
   twitter: {
     card: "summary_large_image",
-    title: "Ticketché - Billetterie, livraison et parking au Bénin",
-    description:
-      "Billets d'événements, livraison et parking au Bénin, dans une seule application.",
+    title: TITLE,
+    description: DESCRIPTION,
     images: ["/images/og-image.png"],
   },
 
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
+    googleBot: { index: true, follow: true, "max-video-preview": -1, "max-image-preview": "large", "max-snippet": -1 },
   },
 
-  icons: {
-    icon: "/images/logonav.png",
-    shortcut: "/images/logonav.png",
-    apple: "/images/logonav.png",
-  },
+  icons: { icon: "/images/logonav.png", shortcut: "/images/logonav.png", apple: "/images/logonav.png" },
 
   manifest: "/site.webmanifest",
 };
 
-export default function RootLayout({ children } ) {
+export const viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f3f6f5" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b191b" },
+  ],
+};
+
+export default function RootLayout({ children }) {
   return (
-    <html lang="fr">
+    // `data-scroll-behavior` : Next 16 ne neutralise plus le defilement doux (globals.css) pendant un changement de
+    // page ; sans cet attribut, le retour en haut s'anime et s'arrete avant d'y arriver.
+    <html lang="fr" className={archivo.variable} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
-        <meta
-          name="google-site-verification"
-          content="KduTih3KqfMa3oOnXKluxcZ9HivlOJ6vOIp2cqH3Lm0"
-        />
-        {/* Donnees structurees globales : Organization, WebSite, MobileApplication.
-            Audit SEO 2026-09-04 (SEO-03) : le site n'en portait aucune. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <meta name="google-site-verification" content="KduTih3KqfMa3oOnXKluxcZ9HivlOJ6vOIp2cqH3Lm0" />
         <SiteStructuredData />
       </head>
 
-      <body className={`${archivo.variable} antialiased bg-[#047b7f13]`}>
-        <Providers>
-          <HeaderWrapper />
-          {children}
+      <body className="antialiased">
+        <a
+          href="#contenu"
+          className="tk-label sr-only z-50 rounded-full bg-brand-fill px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+        >
+          Aller au contenu
+        </a>
+        <MotionProvider>
+          <Header />
+          <main id="contenu">{children}</main>
           <Footer />
-          <AppNotificationWrapper />
-          <NixiaChatbot />
-
-          {/* Sondage désactivé temporairement */}
-          {/* <SondageBandeau /> */}
-          {/* <SondagePopup /> */}
-        </Providers>
+        </MotionProvider>
+        <Chatbot />
       </body>
     </html>
   );
