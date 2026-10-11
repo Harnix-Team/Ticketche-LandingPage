@@ -10,6 +10,7 @@ const hostOf = (url) => {
 const OPTIMIZED_HOSTS = new Set(
   [
     "api.ticketche.com",
+    "dev.api.ticketche.com",
     hostOf(process.env.NEXT_PUBLIC_API_URL),
     ...(process.env.NODE_ENV !== "production" ? ["picsum.photos", "fastly.picsum.photos"] : []),
   ].filter(Boolean)

@@ -29,8 +29,11 @@ const nextConfig = {
     formats: ["image/avif", "image/webp"],
     // Les visuels des lieux et des evenements viennent du storage de l'API.
     // Sans cette autorisation, l'optimiseur repond 400 ("url" parameter is not allowed).
+    // Les deux API sont listees en dur : `next start` relit ce fichier dans le conteneur, ou
+    // NEXT_PUBLIC_API_URL (figee au build dans le code) n'est plus definie.
     remotePatterns: [
       { protocol: "https", hostname: "api.ticketche.com", pathname: "/storage/**" },
+      { protocol: "https", hostname: "dev.api.ticketche.com", pathname: "/storage/**" },
       apiImagePattern(),
       // Les seeders locaux pointent vers picsum.photos : hors production uniquement.
       ...(isDev
