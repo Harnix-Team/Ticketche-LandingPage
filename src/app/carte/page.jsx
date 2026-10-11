@@ -21,7 +21,9 @@ export default async function MapPage({ searchParams }) {
 
   return (
     <>
-      <h1 className="sr-only">Carte des lieux et événements au Bénin</h1>
+      <h1 className="sr-only" data-flush-footer>
+        Carte des lieux et événements au Bénin
+      </h1>
       <MapExplorer
         items={items}
         placeTypes={placeTypes}

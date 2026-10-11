@@ -5,16 +5,19 @@ import { useEffect, useState } from "react";
 import { GetApp } from "@/components/shell/GetApp";
 import { Button } from "@/components/ui/Button";
 import { track } from "@/lib/tracking";
+import { useLatest } from "@/lib/use-latest";
 
 /** Vue d'une fiche : comptee apres 10 secondes de consultation, comme dans l'app. */
 export function ViewTracker({ item, surface }) {
+  const latest = useLatest(item);
+
+  // Le decompte ne repart que pour une autre fiche : `item` est recree a chaque rendu serveur.
   useEffect(() => {
     const startedAt = Date.now();
-    const timer = setTimeout(() => track("VIEW", item, { surface, durationMs: Date.now() - startedAt }), 10_000);
+    const timer = setTimeout(() => track("VIEW", latest.current, { surface, durationMs: Date.now() - startedAt }), 10_000);
 
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [item.id, surface]);
+  }, [item.id, surface, latest]);
 
   return null;
 }

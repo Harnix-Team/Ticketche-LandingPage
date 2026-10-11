@@ -1,4 +1,4 @@
-import { CalendarDays, Map, MapPin, UtensilsCrossed } from "@/components/icons";
+import { Briefcase, CalendarDays, ClipboardList, Mail, Map, MapPin, Users, UtensilsCrossed } from "@/components/icons";
 
 export const PRIMARY_NAV = [
   { href: "/events/", label: "Événements", icon: CalendarDays, match: /^\/events/ },
@@ -8,10 +8,10 @@ export const PRIMARY_NAV = [
 ];
 
 export const SECONDARY_NAV = [
-  { href: "/a-propos/", label: "À propos" },
-  { href: "/recrutement/", label: "Recrutement" },
-  { href: "/questionnaires/", label: "Sondages" },
-  { href: "/contact/", label: "Contact" },
+  { href: "/a-propos/", label: "À propos", icon: Users },
+  { href: "/recrutement/", label: "Recrutement", icon: Briefcase },
+  { href: "/questionnaires/", label: "Sondages", icon: ClipboardList },
+  { href: "/contact/", label: "Contact", icon: Mail },
 ];
 
 export const LEGAL_NAV = [

@@ -223,7 +223,7 @@ export function ApplicationModal({ job, onClose }) {
           type="button"
           onClick={onClose}
           aria-label="Fermer"
-          className="absolute top-3.5 right-3.5 z-10 grid size-9 place-items-center rounded-full text-ink-2 transition-colors hover:bg-sunken hover:text-ink"
+          className="absolute top-3.5 right-3.5 z-10 grid size-9 place-items-center rounded-full border border-line-strong text-ink-2 transition-colors hover:border-brand hover:text-brand"
         >
           <X className="size-[1.125rem]" aria-hidden />
         </button>

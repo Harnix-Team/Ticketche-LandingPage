@@ -96,10 +96,10 @@ export default function DeliveryReviewPage() {
       <p className="mt-3 text-ink-2">Laissez une note et un commentaire sur votre expérience de livraison.</p>
 
       <div className="mt-6 rounded-panel border border-line bg-surface p-5 sm:p-7">
-        {deliveryMan && <CourierIdentity courier={deliveryMan} className="mb-5 border-b border-line pb-5" />}
+        {deliveryMan && <CourierIdentity courier={deliveryMan} className="-mx-5 mb-5 border-b border-line px-5 pb-5 sm:-mx-7 sm:px-7" />}
 
         {delivery && (
-          <div className="mb-5 border-b border-line pb-5">
+          <div className="-mx-5 mb-5 border-b border-line px-5 pb-5 sm:-mx-7 sm:px-7">
             <h2 className="tk-title text-[1.0625rem]">{delivery.title}</h2>
             <dl className="mt-2 grid gap-1.5 text-[0.9375rem] text-ink-2">
               <div>

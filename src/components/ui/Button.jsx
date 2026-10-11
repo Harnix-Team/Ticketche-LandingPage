@@ -9,7 +9,6 @@ const VARIANTS = {
   brand: "bg-brand-fill text-white hover:brightness-110",
   soft: "bg-brand-soft text-brand hover:bg-sunken",
   outline: "border border-line-strong text-ink hover:border-brand hover:text-brand",
-  ghost: "text-ink-2 hover:bg-sunken hover:text-ink",
   onDark: "bg-white/15 text-white hover:bg-white/25",
 };
 
@@ -17,7 +16,7 @@ const SIZES = {
   sm: "h-9 px-3.5 text-[0.8125rem]",
   md: "h-11 px-5 text-[0.9375rem]",
   lg: "h-13 px-7 text-base",
-  icon: "size-10",
+  icon: "size-10 shrink-0",
 };
 
 export function Button({ href, variant = "brand", size = "md", className = "", external = false, ...props }) {

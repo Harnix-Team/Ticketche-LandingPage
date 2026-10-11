@@ -248,7 +248,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--stub);
   border-radius: var(--radius-panel);
-  background: var(--night);
+  background-color: var(--night);
   color: #fff;
   isolation: isolate;
   mask:
@@ -265,6 +265,47 @@
   bottom: calc(var(--notch) + 8px);
   right: var(--stub);
   border-left: 2px dashed rgb(255 255 255 / 0.28);
+  pointer-events: none;
+}
+
+/* Matiere du billet : deux bruits SVG, un grain fin et des fibres couchees, fondus dans la couleur du carton.
+   Le grain repasse au-dessus de l'affiche pour qu'elle paraisse imprimee sur le meme papier. */
+:root {
+  --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  --paper-fibres: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='480'%3E%3Cfilter id='f' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.008 .28' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.23 .23 .23 0 .15 .23 .23 .23 0 .15 .23 .23 .23 0 .15 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+}
+
+.tk-ticket,
+.tk-ticket-row {
+  background-image: var(--paper-grain), var(--paper-fibres);
+  background-blend-mode: soft-light, soft-light, normal;
+}
+
+.tk-ticket::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: var(--paper-grain);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+/* Reflet de lumiere sur le billet de la une : position et opacite pilotees par GSAP (TicketHero). */
+.tk-ticket-glare {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background:
+    radial-gradient(circle at var(--glare-x) var(--glare-y), rgb(255 244 214 / 0.55), rgb(255 244 214 / 0.16) 26%, transparent 56%),
+    linear-gradient(
+      112deg,
+      transparent calc(var(--glare-x) - 26%),
+      rgb(255 255 255 / 0.14) var(--glare-x),
+      transparent calc(var(--glare-x) + 26%)
+    );
+  mix-blend-mode: screen;
+  opacity: 0;
   pointer-events: none;
 }
 
@@ -299,7 +340,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--stub);
   border-radius: var(--radius-card);
-  background: var(--night);
+  background-color: var(--night);
   color: #fff;
   mask:
     radial-gradient(circle var(--notch) at calc(100% - var(--stub)) 0, transparent 97%, #000) top / 100% 51% no-repeat,
@@ -626,6 +667,11 @@
 @keyframes tk-drift {
   from { transform: scale(1.02); }
   to { transform: scale(1.1); }
+}
+
+/* Page carte : la carte va jusqu'au pied de page, sans marge entre les deux. */
+body:has([data-flush-footer]) footer {
+  margin-top: 0;
 }
 
 /* Fiches avec barre d'action fixe sur telephone : le pied de page reste lisible jusqu'au bout. */

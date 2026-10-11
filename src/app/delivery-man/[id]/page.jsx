@@ -76,7 +76,7 @@ export default function DeliveryManReviewPage() {
 
       <div className="mt-6 rounded-panel border border-line bg-surface p-5 sm:p-7">
         {!loadingDeliveryMan && deliveryMan && (
-          <CourierIdentity courier={deliveryMan} className="mb-5 border-b border-line pb-5" />
+          <CourierIdentity courier={deliveryMan} className="-mx-5 mb-5 border-b border-line px-5 pb-5 sm:-mx-7 sm:px-7" />
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
