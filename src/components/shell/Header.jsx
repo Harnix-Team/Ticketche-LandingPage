@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { GetApp } from "@/components/shell/GetApp";
 import { Logo } from "@/components/shell/Logo";
-import { PRIMARY_NAV, SECONDARY_NAV } from "@/components/shell/nav";
+import { HEADER_NAV, PRIMARY_NAV, SECONDARY_NAV } from "@/components/shell/nav";
 import { Search } from "@/components/shell/Search";
 import { ThemeToggle } from "@/components/shell/ThemeToggle";
 import { Button } from "@/components/ui/Button";
@@ -50,11 +50,11 @@ export function Header() {
         scrolled || panel ? "border-line" : "border-transparent"
       } ${panel === "menu" ? MENU_OPEN : ""}`}
     >
-      <div className="tk-shell flex h-16 shrink-0 items-center gap-2 sm:gap-3 lg:gap-6">
+      <div className="tk-shell flex h-16 shrink-0 items-center gap-2 sm:gap-3 lg:gap-4 xl:gap-6">
         <Logo compact className="h-[1.375rem] sm:h-6" />
 
         <nav aria-label="Navigation principale" className="hidden items-center gap-1 lg:flex">
-          {PRIMARY_NAV.map(({ href, label, match }) => {
+          {HEADER_NAV.map(({ href, label, match }) => {
             const active = match.test(pathname);
 
             return (
@@ -62,18 +62,18 @@ export function Header() {
                 key={href}
                 href={href}
                 aria-current={active ? "page" : undefined}
-                className={`tk-label relative rounded-full px-3.5 py-2 text-[0.9375rem] transition-colors ${
+                className={`tk-label relative rounded-full px-2.5 py-2 text-[0.9375rem] whitespace-nowrap transition-colors xl:px-3.5 ${
                   active ? "text-brand" : "text-ink-2 hover:text-ink"
                 }`}
               >
                 {label}
-                {active && <span className="absolute inset-x-3.5 -bottom-[0.6875rem] h-0.5 rounded-full bg-brand" aria-hidden />}
+                {active && <span className="absolute inset-x-2.5 -bottom-[0.6875rem] h-0.5 rounded-full bg-brand xl:inset-x-3.5" aria-hidden />}
               </Link>
             );
           })}
         </nav>
 
-        <Search className="ml-auto hidden w-full max-w-sm md:block" />
+        <Search className="ml-auto hidden w-full max-w-sm min-w-0 md:block" />
 
         <div className="ml-auto flex items-center gap-1.5 md:ml-0">
           <ThemeToggle className="hidden sm:grid" />

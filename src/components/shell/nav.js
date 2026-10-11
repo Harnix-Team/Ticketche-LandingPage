@@ -7,8 +7,13 @@ export const PRIMARY_NAV = [
   { href: "/carte/", label: "Carte", icon: Map, match: /^\/carte/ },
 ];
 
+const ABOUT = { href: "/a-propos/", label: "À propos", icon: Users, match: /^\/a-propos/ };
+
+/** Liens de la barre du haut sur grand ecran. */
+export const HEADER_NAV = [...PRIMARY_NAV, ABOUT];
+
 export const SECONDARY_NAV = [
-  { href: "/a-propos/", label: "À propos", icon: Users },
+  ABOUT,
   { href: "/recrutement/", label: "Recrutement", icon: Briefcase },
   { href: "/questionnaires/", label: "Sondages", icon: ClipboardList },
   { href: "/contact/", label: "Contact", icon: Mail },
